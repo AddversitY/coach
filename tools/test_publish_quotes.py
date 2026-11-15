@@ -52,6 +52,7 @@ class FakeProvider:
             raise ValueError('Unavailable')
         return (self.raw if event_id else [provider_event()]), {
             'x-requests-last': str(self.charged if event_id else 0),
+            'x-requests-used': str(self.charged if event_id else 0),
             'x-requests-remaining': str(self.remaining - (self.charged if event_id else 0))}
 
 
@@ -81,6 +82,18 @@ class QuotePublicationTests(unittest.TestCase):
         self.assertEqual(result['schemaVersion'], 1)
         self.assertIn('ledger', message)
         self.assertEqual(self.provider.calls, [])
+
+    def test_rolled_back_ledger_blocks_paid_request_using_provider_counter(self):
+        original = self.provider.request
+        def changed_usage(event_id=None):
+            data, headers = original(event_id)
+            headers['x-requests-used'] = '4'
+            return data, headers
+        self.provider.request = changed_usage
+        result, message = self.publish()
+        self.assertEqual(result['schemaVersion'], 1)
+        self.assertIn('checkpoint', message)
+        self.assertEqual(self.provider.calls, [None])
 
     def test_cli_enabled_without_key_writes_unchanged_schedule_successfully(self):
         root = Path(self.temp.name)
@@ -142,7 +155,7 @@ class QuotePublicationTests(unittest.TestCase):
     def test_monthly_cap_and_fifty_credit_reserve(self):
         self.state.mkdir()
         entries = [{'at': iso(NOW - timedelta(days=1)), 'credits': 4} for _ in range(15)]
-        (self.state / 'ledger.json').write_text(json.dumps({'version': 1, 'fixture': False, 'reservations': entries}))
+        (self.state / 'ledger.json').write_text(json.dumps({'version': 1, 'fixture': False, 'reservations': entries, 'providerUsed': 0}))
         result, _ = self.publish(initialize_state=False)
         self.assertEqual(result['schemaVersion'], 1)
         self.assertEqual(self.provider.calls, [])
@@ -177,8 +190,8 @@ class QuotePublicationTests(unittest.TestCase):
         fixtures = Path(self.temp.name) / 'fixtures'
         fixtures.mkdir()
         for name, value in {'events.json': [provider_event()], 'odds.json': response(),
-                'headers.json': {'events': {'x-requests-last': '0', 'x-requests-remaining': '100'},
-                                 'odds': {'x-requests-last': '4', 'x-requests-remaining': '96'}}}.items():
+                'headers.json': {'events': {'x-requests-last': '0', 'x-requests-remaining': '100', 'x-requests-used': '0'},
+                                 'odds': {'x-requests-last': '4', 'x-requests-remaining': '96', 'x-requests-used': '4'}}}.items():
             (fixtures / name).write_text(json.dumps(value))
         result, _ = run(schedule(), dataset(), NOW, enabled=True, fixture_dir=fixtures,
                         state_dir=self.state, initialize_state=True)

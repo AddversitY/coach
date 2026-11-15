@@ -331,9 +331,10 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         if not ledger_path.exists():
             if not initialize_state:
                 return copy.deepcopy(schedule), 'Schedule only; private pilot credit ledger unavailable.'
-            write_json(ledger_path, {'version': 1, 'fixture': fixture_dir is not None, 'reservations': []})
+            write_json(ledger_path, {'version': 1, 'fixture': fixture_dir is not None, 'reservations': [], 'providerUsed': 0})
         ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
-        if (set(ledger) != {'version', 'fixture', 'reservations'} or ledger.get('version') != 1
+        if (set(ledger) != {'version', 'fixture', 'reservations', 'providerUsed'} or ledger.get('version') != 1
+                or type(ledger.get('providerUsed')) is not int or ledger['providerUsed'] < 0
                 or ledger.get('fixture') is not (fixture_dir is not None)
                 or not isinstance(ledger.get('reservations'), list)):
             raise ValueError('Private credit ledger is invalid.')
@@ -364,6 +365,9 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         upstream, headers = source.request()
         if not isinstance(upstream, list) or credits(headers, 'x-requests-last') != 0:
             raise ValueError('Free event index or credit accounting is invalid.')
+        provider_used = credits(headers, 'x-requests-used')
+        if provider_used != ledger['providerUsed']:
+            return copy.deepcopy(schedule), 'Schedule only; provider usage differs from quota checkpoint; manual reconciliation required.'
         if credits(headers, 'x-requests-remaining') < RESERVE + COST:
             return copy.deepcopy(schedule), 'Schedule only; protected provider credit reserve.'
         pair = match_event(upstream, schedule['board']['events'], now)
@@ -376,14 +380,22 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         # Reserve the maximum before the paid call, even if it times out or its
         # response is invalid. Never retry a possibly charged request.
         ledger['reservations'].append({'at': iso(now), 'credits': COST})
+        ledger['providerUsed'] = provider_used + COST
         write_json(ledger_path, ledger)
         raw, headers = source.request(provider_event['id'])
+        observed_used = credits(headers, 'x-requests-used')
+        if observed_used != provider_used + credits(headers, 'x-requests-last'):
+            ledger['blocked'] = True
+            write_json(ledger_path, ledger)
+            raise ValueError('Provider usage accounting changed unexpectedly.')
         if credits(headers, 'x-requests-last') > COST or credits(headers, 'x-requests-remaining') < RESERVE:
             # Unexpected billing must require manual investigation, rather than
             # silently resuming with an understated ledger on a later day.
             ledger['blocked'] = True
             write_json(ledger_path, ledger)
             raise ValueError('Provider credit accounting exceeded the pilot budget.')
+        ledger['providerUsed'] = observed_used
+        write_json(ledger_path, ledger)
         quotes, players = normalize_quotes(raw, event, provider_event, directory, now)
         if not quotes:
             return copy.deepcopy(schedule), 'Schedule only; no validated exact price observations.'

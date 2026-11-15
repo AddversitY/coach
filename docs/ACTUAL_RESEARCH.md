@@ -19,11 +19,14 @@ snapshot pilot: four prop markets, one scheduled game, protected quota limits,
 source/collection timestamps and stable player mappings. Fixture publication is
 explicitly rejected by the app. Tests exercise the adapter without paid calls.
 
-Real price publication remains disabled. No provider key is configured. The
-Pages workflow explicitly sets ODDS_PUBLISH_ENABLED=0 and makes no provider
-request. Activation also requires durable private quota storage: disposable
-Actions caches can restore an older ledger and cannot enforce spending limits.
-Do not enable automated paid requests using cache-only state.
+The provider key is configured as an encrypted Actions secret. Publication is
+bounded to four credits per UTC day and sixty per calendar month, preserving
+fifty provider credits. Initialization is a one-time manual workflow input.
+Missing state fails closed. Before every charged request the provider's durable
+account-usage counter must equal the saved checkpoint: restored older caches,
+other account usage, or a billing reset block new requests for reconciliation.
+Reservations and the expected counter are saved before a charged call; actual
+usage is checked afterward. Cache reuse never changes price timestamps.
 
 The private publisher requires explicit ledger initialization, reserves credits
 before a potentially charged request, does not retry failed paid calls, and

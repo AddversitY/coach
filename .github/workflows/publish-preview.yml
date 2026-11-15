@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      initialize_price_state:
+        description: 'Initialize the private quota ledger once after account verification'
+        type: boolean
+        default: false
   workflow_run:
     workflows: ["Refresh research evidence", "Coach's Line"]
     types: [completed]
@@ -51,12 +56,27 @@ jobs:
         run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
       - name: Fetch attributed public NFL schedule
         run: python tools/publish_snapshot.py --output build/web/data/snapshot.json
-      - name: Validate schedule-only price publication
+      - name: Restore price quota checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: .tools/odds-publish-state
+          key: odds-pilot-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: odds-pilot-
+      - name: Publish bounded NFL price snapshots
         env:
-          # Activation requires a private provider connection and durable quota
-          # state. Disposable Actions caches cannot safely enforce this budget.
-          ODDS_PUBLISH_ENABLED: '0'
-        run: python tools/publish_quotes.py --schedule build/web/data/snapshot.json --output build/web/data/snapshot.json
+          ODDS_PUBLISH_ENABLED: '1'
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          INITIALIZE: ${{ github.event_name == 'workflow_dispatch' && inputs.initialize_price_state || false }}
+        run: |
+          args=(--schedule build/web/data/snapshot.json --output build/web/data/snapshot.json)
+          if [ "$INITIALIZE" = "true" ]; then args+=(--initialize-state); fi
+          python tools/publish_quotes.py "${args[@]}"
+      - name: Save quota reservations even after failure
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .tools/odds-publish-state
+          key: odds-pilot-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Record the deployed source version
         run: |
           python -c "import hashlib,json,os,pathlib,subprocess; names=['nfl-player-stats.json','nfl-history.json','nfl-matchup.json','parlay-calibration.json']; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'run':os.environ['GITHUB_RUN_ID'],'evidenceHashes':{name:hashlib.sha256((pathlib.Path('assets')/name).read_bytes()).hexdigest() for name in names}}))"
