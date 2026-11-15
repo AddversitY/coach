@@ -244,7 +244,10 @@ class InjuryReport {
   factory InjuryReport.fromMatchup(MatchupContext context, {DateTime? now}) {
     final clock = (now ?? DateTime.now()).toUtc();
     final byWeek = <int, List<InjuryEntry>>{};
-    for (final injury in context.injuries) {
+    for (final injury
+        in context.injuriesMatchSeason
+            ? context.injuries
+            : const <ListedInjury>[]) {
       final status = normalizeInjuryStatus(injury.status);
       if (status == null || injury.player.isEmpty) continue;
       byWeek
@@ -275,10 +278,10 @@ class InjuryReport {
             id: 'nflverse',
             label: 'nflverse, stored report',
             ok: false,
-            problem: 'The stored file has no injury rows.',
+            problem: 'No stored injury rows match this research season.',
           ),
         ],
-        notice: 'The stored nflverse file has no injury rows. Connect the local backend for a live check.',
+        notice: 'No stored injury rows match this research season. Current availability has not been checked.',
       );
     }
     final weeks = byWeek.keys.toList()..sort();
@@ -300,7 +303,7 @@ class InjuryReport {
           id: 'nflverse',
           label: 'nflverse, stored report',
           ok: true,
-          fetchedAt: clock,
+          fetchedAt: context.injuryEvidence.retrievedAt,
         ),
       ],
       storedWeek: week,

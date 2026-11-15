@@ -192,7 +192,7 @@ OddsBoard demoBoard(DateTime now) {
     fetchedAt: now,
     demo: true,
     notices: [
-      'Example matchups and invented prices, not the actual NFL schedule. Player clubs follow the bundled box scores through 2026-11-09; these are not live roster confirmations. No sportsbook feed is connected.',
+      'Example matchups and invented prices, not the actual NFL schedule or live rosters. Historical player data has its own stated cutoff. No sportsbook feed is connected.',
     ],
   );
 }

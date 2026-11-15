@@ -29,6 +29,21 @@ class EvidenceDataNote extends StatelessWidget {
   String _day(DateTime day) => day.toIso8601String().substring(0, 10);
   String _week(int? week) => week == null ? 'unknown' : 'W$week';
 
+  String _contextSummary() {
+    final snaps = matchup!.snapEvidence;
+    final storedInjuries = matchup!.injuryEvidence;
+    final sharedSeason = snaps.season == storedInjuries.season;
+    final season = sharedSeason ? ' ${snaps.season ?? 'season unknown'}' : '';
+    String source(String name, EvidenceSourceMetadata data) =>
+        '$name ${sharedSeason ? '' : '${data.season ?? 'season unknown'} '}${_week(data.throughWeek)}';
+    return 'Stored context$season · ${source('snaps', snaps)} · ${source('injuries', storedInjuries)}'
+        '${snaps.refreshFailed || storedInjuries.refreshFailed
+            ? ' · refresh incomplete'
+            : snaps.cutoff == null || storedInjuries.cutoff == null
+            ? ' · date unknown'
+            : ''}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final cutoff = parseEvidenceDay(boxScores?['cutoff']);
@@ -63,8 +78,15 @@ class EvidenceDataNote extends StatelessWidget {
         ),
         if (matchup != null)
           Text(
-            'Stored context ${matchup!.reportedSeason ?? 'season unknown'} · snaps ${_week(matchup!.snapThroughWeek)} · injuries ${_week(matchup!.injuryThroughWeek)}${matchup!.cutoff == null ? ' · date unknown' : ''}',
-            style: EdgeType.label.copyWith(fontSize: 11),
+            _contextSummary(),
+            style: EdgeType.label.copyWith(
+              fontSize: 11,
+              color:
+                  matchup!.snapEvidence.refreshFailed ||
+                      matchup!.injuryEvidence.refreshFailed
+                  ? EdgeColors.warn
+                  : EdgeColors.textSecondary,
+            ),
           ),
       ],
     );
@@ -89,10 +111,22 @@ class EvidenceDataNote extends StatelessWidget {
     return 'Retrieved ${formatEastern(at, year: true)}. Retrieval time is separate from coverage.';
   }
 
-  String _contextCoverage(int? week) {
-    final season = matchup?.reportedSeason;
-    return '${season == null ? 'Season unknown' : '$season season'} · ${week == null ? 'recorded week unknown' : 'recorded through Week $week'}. '
-        '${_coverage(matchup?.cutoff)} ${_retrieval(matchup?.retrievedAt)}';
+  String _contextCoverage(EvidenceSourceMetadata source) {
+    final status = switch (source.status) {
+      'retained' => 'Latest refresh failed. Previous records retained. ',
+      'unavailable' =>
+        'Source unavailable. No refreshed records are available. ',
+      'undated' => 'Source coverage is undated. ',
+      'stale' => 'Source coverage is older than the refresh window. ',
+      _ => source.error != null ? 'Latest refresh failed. ' : '',
+    };
+    final attempt = source.lastAttemptAt == null
+        ? ''
+        : source.lastAttemptAt!.isAfter(now.toUtc())
+        ? ' Last attempt timestamp is after the research time; it does not establish freshness.'
+        : ' Last attempt ${formatEastern(source.lastAttemptAt!, year: true)}.';
+    return '$status${source.season == null ? 'Season unknown' : '${source.season} season'} · ${source.throughWeek == null ? 'recorded week unknown' : 'recorded through Week ${source.throughWeek}'}. '
+        '${_coverage(source.cutoff)} ${_retrieval(source.retrievedAt)}$attempt';
   }
 
   String _availability() {
@@ -118,6 +152,7 @@ class EvidenceDataNote extends StatelessWidget {
         child: FractionallySizedBox(
           heightFactor: .8,
           child: ListView(
+            key: const Key('evidence-source-list'),
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             children: [
               Text('Evidence dates and sources', style: EdgeType.title),
@@ -134,13 +169,15 @@ class EvidenceDataNote extends StatelessWidget {
                 'Stored snap counts',
                 matchup == null
                     ? 'No stored matchup context is loaded.'
-                    : _contextCoverage(matchup!.snapThroughWeek),
+                    : _contextCoverage(matchup!.snapEvidence),
+                sourceUrl: matchup?.snapEvidence.sourceUrl,
               ),
               _section(
                 'Stored injury context',
                 matchup == null
                     ? 'No stored matchup context is loaded.'
-                    : _contextCoverage(matchup!.injuryThroughWeek),
+                    : _contextCoverage(matchup!.injuryEvidence),
+                sourceUrl: matchup?.injuryEvidence.sourceUrl,
               ),
               _section('Current availability', _availability()),
               if (matchup?.sourceName != null)
@@ -148,10 +185,6 @@ class EvidenceDataNote extends StatelessWidget {
                   'Stored context source: ${matchup!.sourceName}',
                   style: EdgeType.label,
                 ),
-              if (matchup?.snapSource != null)
-                SelectableText(matchup!.snapSource!, style: EdgeType.label),
-              if (matchup?.injurySource != null)
-                SelectableText(matchup!.injurySource!, style: EdgeType.label),
             ],
           ),
         ),
@@ -159,7 +192,7 @@ class EvidenceDataNote extends StatelessWidget {
     );
   }
 
-  Widget _section(String title, String detail) => Padding(
+  Widget _section(String title, String detail, {String? sourceUrl}) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 12),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,6 +200,10 @@ class EvidenceDataNote extends StatelessWidget {
         Text(title, style: EdgeType.label),
         const SizedBox(height: 4),
         Text(detail, style: EdgeType.body),
+        if (sourceUrl != null) ...[
+          const SizedBox(height: 6),
+          SelectableText(sourceUrl, style: EdgeType.label),
+        ],
       ],
     ),
   );

@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/coach/report_card_screen.dart';
 import 'package:odds_edge/coach/stale_board_screen.dart';
 import 'package:odds_edge/data/demo.dart';
+import 'package:odds_edge/data/nfl_assets.dart';
 import 'package:odds_edge/domain/coach_model.dart';
+import 'package:odds_edge/domain/prop_model.dart';
 import 'package:odds_edge/theme/edge_theme.dart';
 
 void main() {
@@ -16,6 +18,14 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       final now = DateTime.utc(2026, 11, 12);
       final model = (await tester.runAsync(loadBundledCoachModel))!;
+      final expected = (await tester.runAsync(() async {
+        final data = await loadBundledNflPlayers();
+        return cachedPropComparison(
+          data.rows,
+          scores: await loadBundledHistoryGames(),
+          matchup: await loadBundledMatchup(),
+        );
+      }))!;
       await tester.pumpWidget(
         MaterialApp(
           theme: edgeTheme(),
@@ -57,10 +67,19 @@ void main() {
       expect(find.text('Record Brier'), findsOneWidget);
       expect(find.text('Usage Brier'), findsOneWidget);
       expect(find.text('Calibrated Brier'), findsOneWidget);
-      expect(find.text('0.241'), findsWidgets);
-      expect(find.text('0.238'), findsWidgets);
-      expect(find.text('0.239'), findsWidgets);
-      expect(find.textContaining('17,097 player-games'), findsOneWidget);
+      for (final score in [
+        expected.pairedRecord,
+        expected.usage,
+        expected.calibrated,
+      ]) {
+        expect(find.text(score.brier!.toStringAsFixed(3)), findsWidgets);
+      }
+      expect(expected.paired, greaterThan(1000));
+      final countText = tester.widget<Text>(
+        find.textContaining('player-games, same for each version.'),
+      ).data!;
+      expect(countText.replaceAll(',', ''),
+          '${expected.paired} player-games same for each version.');
       expect(
         find.text('Usage model was not scored in this view.'),
         findsNothing,

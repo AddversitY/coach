@@ -213,6 +213,14 @@ Phone verification: `.\tools\flutter.ps1 test --no-pub test/simulator_flow_test.
 
 ## Hosted research prototype
 
+Daily evidence refreshes, atomic replacement, source coverage and dated player
+comparisons are documented in [CONTENT_REFRESH.md](docs/CONTENT_REFRESH.md).
+`Refresh research evidence` runs at 10:00 UTC, validates and commits the four
+research assets, then triggers Pages publication. The existing Tuesday model
+job only refreshes model reports. Successful trusted main-branch data/model
+workflow completions publish current `main`; bot commits do not depend on a
+push event. `version.json` records the actual checkout commit and evidence hashes.
+
 Public preview: https://addversity.github.io/odds-edge/ . `.github/workflows/publish-preview.yml` builds and publishes from `main` and twice daily (10:20 and 22:20 UTC). It uploads only `build/web`, never backend storage or credentials. A failed schedule fetch/build leaves the previous deployment intact. `version.json` records the deployed commit/run. This is a noncommercial prototype preview; a commercial service needs an appropriate production host and data plan. GitHub Pages is static hosting, not the existing Dart backend.
 
 Hosted builds use `--base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json`. Local desktop and default builds retain sample mode. Never use this define for a secret or put a provider key in Flutter. The hosted app does not call the optional loopback backend.
@@ -223,4 +231,4 @@ Public mode starts on actual scheduled games with prices explicitly unavailable.
 
 No Odds API credential was found in the supported local environment scopes or GitHub Actions secrets during setup. Real sportsbook quotes are not activated by this release. A provider credential and a separately tested, quota-controlled quote publication/backend integration are still required. Do not add raw keys to commits, chat, browser storage or public data files. The current schedule-only schema deliberately rejects quotes until that integration is implemented.
 
-Checks after the 15 November design pass: 296 Flutter tests, 43 model tests, 4 schedule-export tests; clean analyzer, web and Windows release builds passed. The public deployment workflow repeats app checks and schedule tests before publishing. Design decisions and content refresh priorities are in [the design and content review](docs/DESIGN_REVIEW_2026-11-15.md). Official hosting references: https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically and https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits .
+Checks after the daily content milestone: 314 Flutter tests, 43 model tests, 52 exporter/coordinator tests; clean analyzer, web and Windows release builds passed. The public deployment workflow repeats app and exporter checks before publishing. Design decisions are in [the design and content review](docs/DESIGN_REVIEW_2026-11-15.md); current refresh behavior is in [CONTENT_REFRESH.md](docs/CONTENT_REFRESH.md). Official hosting references: https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically and https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits .

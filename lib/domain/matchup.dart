@@ -51,6 +51,65 @@ class SnapShare {
   }
 }
 
+/// One evidence source's coverage and retrieval are independent of every other
+/// source, including the schedule. An undated source stays undated after a
+/// successful download, and a failed refresh retains the original retrieval.
+class EvidenceSourceMetadata {
+  const EvidenceSourceMetadata({
+    this.sourceUrl,
+    this.cutoff,
+    this.retrievedAt,
+    this.season,
+    this.throughWeek,
+    this.sha256,
+    this.status,
+    this.rowCount,
+    this.lastAttemptAt,
+    this.error,
+  });
+
+  final String? sourceUrl, sha256, status, error;
+  final DateTime? cutoff, retrievedAt, lastAttemptAt;
+  final int? season, throughWeek, rowCount;
+
+  bool get refreshFailed =>
+      status == 'retained' || status == 'unavailable' || error != null;
+
+  factory EvidenceSourceMetadata.fromJson(Map<String, dynamic> json) {
+    final rawStatus = json['status'];
+    final hash = json['sha256'];
+    final count = json['rowCount'];
+    return EvidenceSourceMetadata(
+      sourceUrl: _provenanceUrl(json['sourceUrl']),
+      cutoff: parseEvidenceDay(json['cutoff']),
+      retrievedAt: parseEvidenceTimestamp(json['retrievedAt']),
+      lastAttemptAt: parseEvidenceTimestamp(json['lastAttemptAt']),
+      season: _provenanceSeason(json['season']),
+      throughWeek:
+          json['throughWeek'] is int &&
+              json['throughWeek'] >= 1 &&
+              json['throughWeek'] <= 23
+          ? json['throughWeek'] as int
+          : null,
+      sha256: hash is String && RegExp(r'^[a-fA-F0-9]{64}$').hasMatch(hash)
+          ? hash.toLowerCase()
+          : null,
+      status:
+          const {
+            'fresh',
+            'stale',
+            'undated',
+            'retained',
+            'unavailable',
+          }.contains(rawStatus)
+          ? rawStatus as String
+          : null,
+      rowCount: count is int && count >= 0 ? count : null,
+      error: _provenanceText(json['error']),
+    );
+  }
+}
+
 class MatchupContext {
   const MatchupContext({
     required this.injuries,
@@ -63,6 +122,8 @@ class MatchupContext {
     this.snapSource,
     this.cutoff,
     this.retrievedAt,
+    this.snapProvenance,
+    this.injuryProvenance,
   });
 
   final List<ListedInjury> injuries;
@@ -75,9 +136,34 @@ class MatchupContext {
   final int? reportedSeason;
   final String? sourceName, injurySource, snapSource;
   final DateTime? cutoff, retrievedAt;
+  final EvidenceSourceMetadata? snapProvenance, injuryProvenance;
   int? get snapThroughWeek => _lastRecordedWeek(snaps.map((row) => row.week));
   int? get injuryThroughWeek =>
       _lastRecordedWeek(injuries.map((row) => row.week));
+
+  /// Legacy combined metadata is used only when that source has no provenance
+  /// entry. Null fields in a newer per-source entry deliberately stay unknown.
+  EvidenceSourceMetadata get snapEvidence =>
+      snapProvenance ??
+      EvidenceSourceMetadata(
+        sourceUrl: snapSource,
+        cutoff: cutoff,
+        retrievedAt: retrievedAt,
+        season: reportedSeason,
+        throughWeek: snapThroughWeek,
+      );
+  EvidenceSourceMetadata get injuryEvidence =>
+      injuryProvenance ??
+      EvidenceSourceMetadata(
+        sourceUrl: injurySource,
+        cutoff: cutoff,
+        retrievedAt: retrievedAt,
+        season: reportedSeason,
+        throughWeek: injuryThroughWeek,
+      );
+
+  bool get injuriesMatchSeason =>
+      injuryEvidence.season == null || injuryEvidence.season == season;
 
   static const participationNote =
       'nflverse participation, the play-by-play record of who was on the field, is not updated during the season. Snap counts are used instead.';
@@ -90,17 +176,14 @@ class MatchupContext {
     }
     return MatchupContext(
       season: json['season'] is int ? json['season'] as int : 2026,
-      reportedSeason:
-          json['season'] is int &&
-              json['season'] >= 1920 &&
-              json['season'] <= 2200
-          ? json['season'] as int
-          : null,
+      reportedSeason: _provenanceSeason(json['season']),
       sourceName: _provenanceText(json['sourceName']),
       injurySource: _provenanceUrl(json['injurySource']),
       snapSource: _provenanceUrl(json['snapSource']),
       cutoff: parseEvidenceDay(json['cutoff']),
       retrievedAt: parseEvidenceTimestamp(json['retrievedAt']),
+      snapProvenance: _sourceMetadata(json['provenance'], 'snaps'),
+      injuryProvenance: _sourceMetadata(json['provenance'], 'injuries'),
       note: json['participationNote'] is String
           ? json['participationNote'] as String
           : participationNote,
@@ -131,6 +214,17 @@ class MatchupContext {
       ],
     );
   }
+}
+
+int? _provenanceSeason(Object? raw) =>
+    raw is int && raw >= 1920 && raw <= 2200 ? raw : null;
+
+EvidenceSourceMetadata? _sourceMetadata(Object? raw, String key) {
+  if (raw is! Map || !raw.containsKey(key)) return null;
+  final source = raw[key];
+  return source is Map<String, dynamic>
+      ? EvidenceSourceMetadata.fromJson(source)
+      : const EvidenceSourceMetadata();
 }
 
 int? _lastRecordedWeek(Iterable<int> weeks) {
@@ -333,6 +427,7 @@ List<RelevantInjury> relevantInjuries({
   required String opponent,
   required String? leadingReceiver,
 }) {
+  if (!context.injuriesMatchSeason) return const [];
   final team = boxScoreTeam(playerTeam);
   final defense = boxScoreTeam(opponent);
   final week = _latestWeek(context.injuries, {team, defense});

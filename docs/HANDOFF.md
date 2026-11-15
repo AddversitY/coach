@@ -104,7 +104,7 @@ From `assets/nfl-model.json`, generated 2026-11-13, scored through 2026-11-09. V
 
 Break-even at -110 is about 52.4%. Average miss is 9.8 points, the same as the close. The 2.5-point slice is 16 decided games (11–5, +31%). That is under the 200-game bar, so the games do not say "Differs from books." Totals in the same test hit 53.0% and returned +1.1%. That is not an edge either. Version 1 totals were 49.3% and -5.8%.
 
-Props, from the walk-forward on the bundled box scores (PR #17, 17,097 paired player-games, fair 50% line, no sportsbook prop price):
+Earlier props result before daily evidence refreshes (PR #17, box scores through 2026-11-09, 17,097 paired player-games, fair 50% line, no sportsbook prop price). These historical scores are not the current report; the app recomputes the comparison from the current bundled records:
 
 | | Brier | Log loss |
 | --- | ---: | ---: |
@@ -141,7 +141,7 @@ Implemented in this milestone:
 - The builder shows joint versus product, a Wilson Monte Carlo interval (excluding model uncertainty), lowest individual chance, the most common complete losing pattern, and a higher-chance alternate replacement when available. Book quote entry is optional decimal odds for the exact ticket. Changed ticket/model inputs invalidate the old result and quote; clock ticks and identical quote refreshes preserve them. No wager or outcome is recorded.
 - Primary-builder same-game probabilities no longer fall back to fixed correlation coefficients. Unsupported spread/total joint estimates in legacy game-ticket comparisons are blank. The old math helpers remain for compatibility. Same-game illustrative payouts disclose their assumed 4.5% hold and product cap; they are not scored as an available edge without a user-entered quote. Cross-game payout comparisons use a common book's actual leg-price product when available.
 - `model/parlay_simulation.py` evaluates the dependence layer with prior-season QB/leading-target-receiver pairs and median half-lines, on identical cases for joint and product. It uses analytical two-leg copula integration to avoid Monte Carlo noise in scores. Live usage marginals, availability selection and sportsbook profitability are **not** validated by this exercise.
-- Committed report: 903 cases / 575 unique games. Joint Brier 0.19955 vs product 0.19960; log loss 0.58894 vs 0.58908. Below the 1,000-unique-game gate: adopted false, hasEdge false. Season splits, bins, cutoff and source hashes are reproducible in `assets/parlay-calibration.json`, shown on the report card and beneath simulator methodology. CI regenerates it after data refreshes. Zero odds credits.
+- Latest refreshed dependence report (15 November): 993 cases / 628 unique games. Joint Brier 0.20296 vs product 0.20339; log loss 0.59632 vs 0.59747. Below the 1,000-unique-game gate: adopted false, hasEdge false. Season splits, bins, cutoff and source hashes are reproducible in `assets/parlay-calibration.json`, shown on the report card and beneath simulator methodology. CI regenerates it after data refreshes. Zero odds credits.
 - Phone checks cover 390×844, text scaling to 1.8, reduced motion, labeled semantic tap targets and keyboard activation. Large-text price headers, summary rows and section headings now wrap. Optional screenshot checks include simulation and validation views. These are automated checks, not a human assistive-technology usability study or a guarantee of performance on every device.
 - Personal bet tracking remains intentionally absent. Legacy data compatibility is preserved.
 
@@ -165,9 +165,32 @@ Verification: 277 Flutter tests and 43 Python tests passed; Flutter analyzer cle
 
 Verification: 296 standard Flutter tests, 43 model tests and 4 schedule-export tests passed; analyzer clean; web and Windows release builds passed. Current phone screenshot checks use `test/screen_shots_test.dart`. Earlier `phase_a_shots_test.dart` and `phase_b_shots_test.dart` visual harnesses reference retired navigation; leave `SCREENSHOT` unset for the standard full suite.
 
+## Daily evidence and content milestone
+
+`Refresh research evidence` runs daily at 10:00 UTC. The coordinator stages
+all four research assets, imports current public records, regenerates the
+dependence report and validates its input hashes before replacing the previous
+batch. Checks and a web build must pass before the workflow commits. A
+successful trusted main-branch workflow completion publishes current `main`,
+including bot-created data commits. The Tuesday trainer now handles model
+reports only; data jobs share a queue to avoid simultaneous pushes.
+
+Prop details include up to two dated **What changed** comparisons: last three
+versus previous three recorded games, with workload/production and expandable
+date ranges. They require complete, contiguous same-team/season evidence and
+expire after 21 days. No feed commentary, probability formula or bet log was
+added. Independent per-source provenance shows known coverage, unknown report
+dates, retained records and failed injury-refresh attempts. Old-season
+retained injuries cannot become current-season context.
+
+Verification: 314 Flutter tests, 43 model tests and 52 exporter/coordinator
+tests pass; analyzer clean; hosted web and Windows builds pass. See
+[CONTENT_REFRESH.md](CONTENT_REFRESH.md) for commands, sources and failure
+behavior. The older scores above describe their dated historical runs.
+
 ## Next
 
-The public prototype is in place. Prioritize repeatable historical/matchup exporters with explicit coverage and retrieval metadata, followed by concise dated "what changed" insights based on those refreshed records. The [content roadmap](DESIGN_REVIEW_2026-11-15.md) explains the sequence. A provider credential and the real-price pipeline remain required before public quote comparisons can use actual prices. The proposed ensemble below is separate future work, not part of this milestone. Do not add bet journals or outcome-based engagement.
+Daily evidence refreshes and dated "what changed" comparisons are implemented; operating and failure behavior are in [CONTENT_REFRESH.md](CONTENT_REFRESH.md). The first refresh covers player, score and snap records through 2026-11-12, while injury report dates remain unknown. The main feed stays compact; comparisons live in prop details. A provider credential and the real-price pipeline remain required before public quote comparisons can use actual prices. The proposed ensemble below is separate future work, not part of this milestone. Do not add bet journals or outcome-based engagement.
 
 2. **Elo plus a gradient-boosted ensemble** (XGBoost or LightGBM) for the game residual, with the anti-overfit rules fixed before any run: week-based walk-forward, shallow trees, regularization, early stopping, a stable feature set, permutation importance and a noise-feature check, monotone constraints where the direction is known, and one locked holdout season that is not used to pick anything. Same adoption rule as version 2: both Brier and log loss strictly better on at least 1,000 games, and no "edge" unless the -110 test clears the existing profit bar. Keep `coach_line_v2.dart` matched to whatever the trainer ships. Do not search the ridge, the caps, or the tree depth after seeing the holdout.
 3. **Production data and optional alerts.** The public research prototype is hosted. Connect an approved provider credential through a quota-controlled production integration before adding opt-in price alerts. The loopback development server must remain private. New accounts or paid tiers still need the owner's approval.

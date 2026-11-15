@@ -6,6 +6,7 @@ marginals. It validates dependence, not live usage forecasts or profitability.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
@@ -172,14 +173,18 @@ def build_report(players, games):
 
 
 def main():
-    player_path, game_path = ROOT/"assets/nfl-player-stats.json", ROOT/"assets/nfl-history.json"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--asset-dir", type=Path, default=ROOT / "assets",
+                        help="Read both evidence files and write the report in this directory.")
+    args = parser.parse_args()
+    player_path, game_path = args.asset_dir/"nfl-player-stats.json", args.asset_dir/"nfl-history.json"
     raw = json.loads(player_path.read_text(encoding="utf-8-sig"))
     players = [dict(r, stats=dict(zip(raw["statKeys"], r["stats"]))) for r in raw["rows"]]
     games = json.loads(game_path.read_text(encoding="utf-8-sig"))["games"]
     report = build_report(players, games)
     report["dataCutoff"] = raw.get("cutoff")
     report["sourceHashes"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in [player_path, game_path]}
-    (ROOT/"assets/parlay-calibration.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n", encoding="utf-8")
+    (args.asset_dir/"parlay-calibration.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n", encoding="utf-8")
     print(json.dumps({k:report[k] for k in ["correlated","independent","uniqueGames","adopted"]}))
 
 

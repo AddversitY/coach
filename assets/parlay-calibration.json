@@ -4,19 +4,19 @@
   "method": "Rank-normal Gaussian copula; n/(n+40) shrink, 0.65 cap, 12-pair minimum, PSD repair. Two-leg validation integrates the fitted copula analytically; live simulation uses 10,000 seeded draws.",
   "scope": "Dependence-layer test only, conditional on participants with recorded box scores. Not validation of live usage marginals or sportsbook profitability.",
   "correlated": {
-    "count": 903,
-    "brier": 0.19954962532316567,
-    "logLoss": 0.588936858633712
+    "count": 993,
+    "brier": 0.20296161080846195,
+    "logLoss": 0.5963239032966796
   },
   "independent": {
-    "count": 903,
-    "brier": 0.19959631814759218,
-    "logLoss": 0.5890796913757859
+    "count": 993,
+    "brier": 0.20339417886406372,
+    "logLoss": 0.597465920622032
   },
-  "uniqueGames": 575,
+  "uniqueGames": 628,
   "adopted": false,
   "hasEdge": false,
-  "omitted": 1433,
+  "omitted": 1455,
   "minimumEarlierPairedGames": 0,
   "seasons": [
     {
@@ -29,7 +29,7 @@
       },
       "independent": {
         "count": 369,
-        "brier": 0.2024896781492757,
+        "brier": 0.20248967814927574,
         "logLoss": 0.5954749192743108
       }
     },
@@ -38,27 +38,27 @@
       "trainedThrough": 2024,
       "correlated": {
         "count": 401,
-        "brier": 0.18439647084001098,
-        "logLoss": 0.5558691615765909
+        "brier": 0.18439647084001096,
+        "logLoss": 0.555869161576591
       },
       "independent": {
         "count": 401,
-        "brier": 0.18330434519402092,
-        "logLoss": 0.5530555585406669
+        "brier": 0.1833043451940209,
+        "logLoss": 0.5530555585406668
       }
     },
     {
       "season": 2026,
       "trainedThrough": 2025,
       "correlated": {
-        "count": 133,
-        "brier": 0.23753958323932153,
-        "logLoss": 0.6716656301591285
+        "count": 223,
+        "brier": 0.2374005938870577,
+        "logLoss": 0.6711712172131159
       },
       "independent": {
-        "count": 133,
-        "brier": 0.24068978667210997,
-        "logLoss": 0.6799506550774927
+        "count": 223,
+        "brier": 0.24101652893331893,
+        "logLoss": 0.6806194394199534
       }
     }
   ],
@@ -80,9 +80,9 @@
     {
       "from": 0.2,
       "to": 0.30000000000000004,
-      "count": 903,
-      "meanChance": 0.25783991350776175,
-      "observed": 0.27353266888150607
+      "count": 993,
+      "meanChance": 0.2581908384633965,
+      "observed": 0.2809667673716012
     },
     {
       "from": 0.3,
@@ -139,9 +139,9 @@
     "nflverse bundled final scores"
   ],
   "creditsUsed": 0,
-  "dataCutoff": "2026-11-09",
+  "dataCutoff": "2026-11-12",
   "sourceHashes": {
-    "nfl-player-stats.json": "4dc1157704d2fc39d6f3614eebf6cbb2ae8d9359eb6515e3b16f100bdc1d08a4",
-    "nfl-history.json": "045eaf44492e0980b879f2fad05ed745181da62c3bed3406fd433144003cf08f"
+    "nfl-player-stats.json": "1c6bbc9e967bc213dbed7a2b399d00e7d06ed52100c340da991fbe1bc1ac0194",
+    "nfl-history.json": "7cb0974ec38730c236727e2e382024a8e9d4efc9063ea3f48340121cd93a5a9c"
   }
 }

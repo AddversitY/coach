@@ -10,10 +10,12 @@ import '../domain/matchup.dart';
 import '../domain/odds.dart';
 import '../domain/parlay_slip.dart';
 import '../domain/prop_history.dart';
+import '../domain/research_changes.dart';
 import '../domain/why_brief.dart';
 import '../theme/edge_theme.dart';
 import '../ui/prop_breakdown.dart';
 import '../ui/evidence_data_note.dart';
+import '../ui/research_changes.dart';
 import '../ui/value_check.dart';
 import '../ui/wordmark.dart';
 import 'coach_widgets.dart';
@@ -121,6 +123,23 @@ class _PropDetailScreenState extends State<PropDetailScreen> {
       dataWarning: face.dataWarning,
     );
     final held = widget.slip?.slip.contains(card.id) ?? false;
+    final changes =
+        widget.directory == null ||
+            windows?.playerId == null ||
+            windows?.team == null ||
+            face.dataWarning != null
+        ? const <ResearchChange>[]
+        : recentResearchChanges(
+            data: widget.directory!.data,
+            playerId: windows!.playerId!,
+            market: card.market,
+            team: windows.team!,
+            now: widget.now,
+            eventAt: card.event?.startsAt,
+            eventTeams: card.event == null
+                ? const {}
+                : {card.event!.home, card.event!.away},
+          );
     return Scaffold(
       key: const Key('prop-detail'),
       backgroundColor: EdgeColors.background,
@@ -240,6 +259,10 @@ class _PropDetailScreenState extends State<PropDetailScreen> {
             observed: stats.count,
             evidence: evidence,
           ),
+          if (changes.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ResearchChangesCard(changes: changes),
+          ],
           const SizedBox(height: 12),
           _ResearchSection(
             title: 'Performance',

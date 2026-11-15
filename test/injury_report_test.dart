@@ -8,6 +8,40 @@ import 'package:odds_edge/domain/matchup.dart';
 void main() {
   final now = DateTime.utc(2026, 11, 12, 18);
 
+  test(
+    'retained injuries from another season do not become current context',
+    () {
+      final context = MatchupContext.fromJson({
+        'season': 2027,
+        'snaps': <Object>[],
+        'injuries': [
+          {
+            'week': 18,
+            'team': 'BUF',
+            'player': 'Stored Receiver',
+            'position': 'WR',
+            'status': 'Out',
+          },
+        ],
+        'provenance': {
+          'injuries': {'season': 2026, 'status': 'retained'},
+        },
+      });
+      expect(InjuryReport.fromMatchup(context, now: now).entries, isEmpty);
+      expect(
+        relevantInjuries(
+          context: context,
+          market: 'player_pass_yds',
+          playerTeam: 'BUF',
+          opponent: 'KC',
+          leadingReceiver: 'Stored Receiver',
+        ),
+        isEmpty,
+      );
+      expect(context.injuryEvidence.season, 2026);
+    },
+  );
+
   InjuryEntry player({
     required String name,
     required String team,

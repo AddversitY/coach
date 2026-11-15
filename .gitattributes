@@ -1,0 +1,5 @@
+# These files are hashed as raw bytes by the reproducible research report.
+assets/nfl-player-stats.json text eol=lf
+assets/nfl-history.json text eol=lf
+assets/nfl-matchup.json text eol=lf
+assets/parlay-calibration.json text eol=lf

@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Refresh research evidence", "Coach's Line"]
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '20 10,22 * * *'
 
@@ -16,6 +20,11 @@ concurrency:
 
 jobs:
   build:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,6 +32,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -34,15 +45,15 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
-      - name: Test schedule normalization
-        run: python -m unittest discover -s tools -p 'test_publish_snapshot.py'
+      - name: Test schedule and evidence normalization
+        run: python -m unittest discover -s tools -p 'test_*.py'
       - name: Build hosted preview
         run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
       - name: Fetch attributed public NFL schedule
         run: python tools/publish_snapshot.py --output build/web/data/snapshot.json
       - name: Record the deployed source version
         run: |
-          python -c "import json,os,pathlib; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']}))"
+          python -c "import hashlib,json,os,pathlib,subprocess; names=['nfl-player-stats.json','nfl-history.json','nfl-matchup.json','parlay-calibration.json']; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'run':os.environ['GITHUB_RUN_ID'],'evidenceHashes':{name:hashlib.sha256((pathlib.Path('assets')/name).read_bytes()).hexdigest() for name in names}}))"
           touch build/web/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
