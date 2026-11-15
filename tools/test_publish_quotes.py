@@ -83,6 +83,21 @@ class QuotePublicationTests(unittest.TestCase):
         self.assertIn('ledger', message)
         self.assertEqual(self.provider.calls, [])
 
+    def test_pregame_window_skips_distant_games_without_provider_requests(self):
+        result, message = self.publish(refresh_window=timedelta(hours=6))
+        self.assertEqual(result['schemaVersion'], 1)
+        self.assertIn('pregame refresh window', message)
+        self.assertEqual(self.provider.calls, [])
+
+    def test_pregame_window_allows_nearby_game_with_existing_limits(self):
+        now = NOW + timedelta(hours=29)
+        self.provider.raw['bookmakers'][0]['markets'][0]['last_update'] = iso(now - timedelta(minutes=1))
+        result, _ = run(schedule(now), dataset(), now, enabled=True, key='PRIVATE_KEY',
+                        state_dir=self.state, provider=self.provider, initialize_state=True,
+                        refresh_window=timedelta(hours=6))
+        self.assertEqual(result['schemaVersion'], 2)
+        self.assertEqual(self.provider.calls, [None, EVENT_ID])
+
     def test_rolled_back_ledger_blocks_paid_request_using_provider_counter(self):
         original = self.provider.request
         def changed_usage(event_id=None):

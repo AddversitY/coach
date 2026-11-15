@@ -14,12 +14,14 @@ class ScheduleBrowser extends StatefulWidget {
     required this.now,
     this.onOpenGame,
     this.sourceReady = true,
+    this.priceEventIds = const {},
   });
 
   final List<SportEvent> events;
   final DateTime now;
   final ValueChanged<String>? onOpenGame;
   final bool sourceReady;
+  final Set<String> priceEventIds;
 
   @override
   State<ScheduleBrowser> createState() => _ScheduleBrowserState();
@@ -130,6 +132,7 @@ class _ScheduleBrowserState extends State<ScheduleBrowser> {
                       child: _ScheduleGameRow(
                         key: ValueKey('schedule-game-${event.id}'),
                         event: event,
+                        hasPrices: widget.priceEventIds.contains(event.id),
                         onOpen: widget.onOpenGame == null
                             ? null
                             : () => widget.onOpenGame!(event.id),
@@ -262,9 +265,15 @@ class _DayHeading extends StatelessWidget {
 }
 
 class _ScheduleGameRow extends StatelessWidget {
-  const _ScheduleGameRow({super.key, required this.event, this.onOpen});
+  const _ScheduleGameRow({
+    super.key,
+    required this.event,
+    this.onOpen,
+    this.hasPrices = false,
+  });
   final SportEvent event;
   final VoidCallback? onOpen;
+  final bool hasPrices;
 
   @override
   Widget build(BuildContext context) {
@@ -296,7 +305,7 @@ class _ScheduleGameRow extends StatelessWidget {
       button: onOpen != null,
       onTap: onOpen,
       label:
-          '${event.away} at ${event.home}. ${formatEastern(event.startsAt, year: true)}${onOpen == null ? '' : '. Open game research'}',
+          '${event.away} at ${event.home}. ${formatEastern(event.startsAt, year: true)}. ${hasPrices ? 'Saved prices available' : 'Research only; prices unavailable'}${onOpen == null ? '' : '. Open game research'}',
       child: ExcludeSemantics(
         child: Material(
           color: Colors.transparent,
@@ -315,6 +324,18 @@ class _ScheduleGameRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      hasPrices ? 'Saved prices available' : 'Research only',
+                      style: EdgeType.label.copyWith(
+                        fontSize: 11,
+                        color: hasPrices
+                            ? EdgeColors.accent
+                            : EdgeColors.textTertiary,
+                      ),
+                    ),
+                  ),
                   if (largeText) ...[
                     Row(
                       children: [

@@ -309,7 +309,7 @@ def cached_quotes(cache, directory, fetched):
 
 
 def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixture_dir=None,
-        provider=None, initialize_state=False):
+        provider=None, initialize_state=False, refresh_window=None):
     validate_schedule(schedule, now)
     if not enabled or (not key and fixture_dir is None):
         return copy.deepcopy(schedule), 'Schedule only; price pilot disabled or no server key; zero odds credits.'
@@ -361,6 +361,8 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
             return copy.deepcopy(schedule), 'Schedule only; pilot credit cap reached.'
         if not any(at(e['startsAt']) > now for e in schedule['board']['events']):
             return copy.deepcopy(schedule), 'Schedule only; no upcoming pilot game.'
+        if refresh_window is not None and min(at(e['startsAt']) for e in upcoming) - now > refresh_window:
+            return copy.deepcopy(schedule), 'Schedule only; next game is outside the pregame refresh window; zero odds credits.'
         source = provider or Provider(key, fixture_dir)
         upstream, headers = source.request()
         if not isinstance(upstream, list) or credits(headers, 'x-requests-last') != 0:
@@ -425,7 +427,7 @@ def main():
     try:
         result, message = run(schedule, dataset, now, enabled=enabled, key=key,
                               state_dir=args.state_dir, fixture_dir=args.fixture_dir,
-                              initialize_state=args.initialize_state)
+                              initialize_state=args.initialize_state, refresh_window=timedelta(hours=6))
     except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError):
         # Provider/network/cache failure should retain a valid current schedule.
         validate_schedule(schedule, now)

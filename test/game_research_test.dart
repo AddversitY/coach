@@ -541,6 +541,13 @@ void main() {
       await tester.pump(const Duration(minutes: 3));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('research-prices')), findsOneWidget);
+      expect(find.textContaining('Highest saved price'), findsOneWidget);
+      expect(find.textContaining('Older snapshot'), findsOneWidget);
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Over 245.5')),
+        alignment: .5,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Over 245.5'));
       await tester.pumpAndSettle();
       expect(find.textContaining('outdated snapshot'), findsOneWidget);
@@ -548,6 +555,16 @@ void main() {
       await tester.pump(const Duration(hours: 19));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('research-prices')), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('Prices unavailable'),
+        -250,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('player-research')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       expect(find.text('Prices unavailable'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
@@ -613,6 +630,16 @@ void main() {
           )
           .first,
     );
+    expect(
+      find.textContaining('Highest saved price · checked 5m ago'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Older snapshot'), findsOneWidget);
+    await Scrollable.ensureVisible(
+      tester.element(find.text('Over 245.5')),
+      alignment: .5,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Over 245.5'));
     await tester.pumpAndSettle();
     expect(find.textContaining('outdated snapshot'), findsOneWidget);
@@ -620,6 +647,16 @@ void main() {
     await tester.pump(const Duration(minutes: 1));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('research-prices')), findsNothing);
+    await tester.scrollUntilVisible(
+      find.text('Prices unavailable'),
+      -250,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('player-research')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     expect(find.text('Prices unavailable'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });

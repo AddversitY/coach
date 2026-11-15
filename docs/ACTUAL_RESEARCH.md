@@ -37,3 +37,18 @@ When connected, player research labels observations as Saved prices. Old prices
 are identified as outdated and may have changed; they are not current offers.
 Observations expire at kickoff or after 18 hours. Core current-price eligibility
 and model probability formulas remain unchanged.
+
+## Comparison and coverage
+
+Each exact side/line/market group now leads with its highest saved sportsbook
+price and collection age, with a visible older-snapshot warning when needed.
+Expand the group for every book's source and collection timestamps. Prices
+with different selections or settlement rules are never ranked together.
+The Today slate marks games with saved price coverage; other games say
+Research only and still open recorded player research.
+
+The publisher checks at 10:20, 16:20, 20:20 and 22:20 UTC. Paid collection is
+considered only within six hours of the next kickoff. Existing cached snapshots
+are reused without calls, preserving timestamps. The four-credit daily and
+sixty-credit monthly caps still apply: four checks do not mean four paid pulls,
+and this pilot does not offer continuous or all-game coverage.

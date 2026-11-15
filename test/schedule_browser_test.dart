@@ -39,6 +39,7 @@ void main() {
     bool ready = true,
     double scale = 1,
     ValueChanged<String>? onOpen,
+    Set<String> priceEventIds = const {},
   }) => MaterialApp(
     theme: edgeTheme(),
     home: MediaQuery(
@@ -52,6 +53,7 @@ void main() {
               now: now,
               sourceReady: ready,
               onOpenGame: onOpen,
+              priceEventIds: priceEventIds,
             ),
           ),
         ),
@@ -85,6 +87,24 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('coverage belongs only to its matching upcoming fixture', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1000, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(frame(priceEventIds: {'early', 'past'}));
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('schedule-game-early')),
+        matching: find.text('Saved prices available'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Saved prices available'), findsOneWidget);
+    expect(find.text('Research only'), findsNWidgets(2));
+    expect(find.byKey(const ValueKey('schedule-game-past')), findsNothing);
+  });
 
   testWidgets('schedule uses two columns on desktop and one on a phone', (
     tester,

@@ -898,6 +898,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
 
   Widget coachPage(int destination) => switch (destination) {
     0 => HomeScreen(
+      prices: published ? propSource : null,
       board: published ? board : propSource,
       sourceReady: !published || publishedSnapshot != null,
       showSourceContext: !hosted,

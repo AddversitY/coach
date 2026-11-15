@@ -345,6 +345,59 @@ class _Prices extends StatelessWidget {
         ),
         for (final quotes in selections) ...[
           const SizedBox(height: 12),
+          Builder(
+            builder: (_) {
+              final ranked = [...quotes]
+                ..sort((a, b) => b.decimal.compareTo(a.decimal));
+              final best = ranked.first;
+              final age = now.difference(best.collectedAt);
+              final ageLabel = age.inMinutes < 1
+                  ? 'just now'
+                  : age.inHours < 1
+                  ? '${age.inMinutes}m ago'
+                  : '${age.inHours}h ago';
+              return Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      metric.label,
+                      style: EdgeType.label.copyWith(fontSize: 12),
+                    ),
+                    const SizedBox(height: 5),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 4,
+                      children: [
+                        Text(
+                          '${americanLabel(best.decimal)} at ${best.book}',
+                          style: EdgeType.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Highest saved price · checked $ageLabel',
+                          style: EdgeType.label.copyWith(fontSize: 11),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      quotes.every((q) => q.eligible(now))
+                          ? 'Recent snapshot · may have changed'
+                          : 'Older snapshot · compare timestamps before use',
+                      style: EdgeType.label.copyWith(
+                        fontSize: 11,
+                        color: quotes.every((q) => q.eligible(now))
+                            ? EdgeColors.textTertiary
+                            : EdgeColors.warn,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             childrenPadding: const EdgeInsets.only(bottom: 8),

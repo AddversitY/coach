@@ -14,7 +14,7 @@ on:
     types: [completed]
     branches: [main]
   schedule:
-    - cron: '20 10,22 * * *'
+    - cron: '20 10,16,20,22 * * *'
 
 permissions:
   contents: read
