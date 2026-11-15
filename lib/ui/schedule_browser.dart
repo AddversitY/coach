@@ -442,3 +442,25 @@ class _ScheduleEmpty extends StatelessWidget {
     ),
   );
 }
+
+/// Coverage is saved pregame data, never a claim of continuous live prices.
+Set<String> savedPriceEventIds(OddsBoard? board, DateTime now) {
+  if (board == null || board.demo || board.fetchedAt.isAfter(now)) return {};
+  return {
+    for (final quote in board.quotes)
+      if (!quote.demo &&
+          quote.status == 'open' &&
+          !quote.sourceAt.isAfter(now) &&
+          !quote.collectedAt.isAfter(now) &&
+          !quote.collectedAt.isBefore(quote.sourceAt) &&
+          !quote.collectedAt.isAfter(board.fetchedAt) &&
+          now.difference(quote.sourceAt) <= const Duration(hours: 18) &&
+          now.difference(quote.collectedAt) <= const Duration(hours: 18) &&
+          board.events.any(
+            (event) =>
+                event.id == quote.selection.eventId &&
+                event.startsAt.isAfter(now),
+          ))
+        quote.selection.eventId,
+  };
+}

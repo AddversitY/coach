@@ -15,6 +15,7 @@ import '../domain/why_brief.dart';
 import '../explained_number.dart';
 import '../theme/edge_theme.dart';
 import '../theme/reveal.dart';
+import '../ui/schedule_browser.dart';
 import 'coach_line_view.dart';
 import 'coach_widgets.dart';
 import 'sharp_view.dart';
@@ -151,6 +152,33 @@ class _GamesScreenState extends State<GamesScreen> {
       widget.now,
       books: widget.enabledBooks,
     );
+    if (!widget.board.demo) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1120),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+            children: [
+              Text('Games', style: EdgeType.display.copyWith(fontSize: 28)),
+              const SizedBox(height: 8),
+              Text(
+                'Choose a game to explore players and compare saved prop prices.',
+                style: EdgeType.label,
+              ),
+              const SizedBox(height: 20),
+              ScheduleBrowser(
+                events: widget.board.events,
+                now: widget.now,
+                priceEventIds: savedPriceEventIds(widget.props, widget.now),
+                onOpenGame: (id) =>
+                    _open(slate.games.firstWhere((g) => g.event.id == id)),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     final today = calendarDay(widget.now);
     final games = [
       for (final game in slate.games)

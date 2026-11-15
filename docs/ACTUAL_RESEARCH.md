@@ -52,3 +52,15 @@ considered only within six hours of the next kickoff. Existing cached snapshots
 are reused without calls, preserving timestamps. The four-credit daily and
 sixty-credit monthly caps still apply: four checks do not mean four paid pulls,
 and this pilot does not offer continuous or all-game coverage.
+
+## Research polish
+
+Actual Research → Games shares Today's date strip and compact fixture rows,
+including saved-price coverage. It opens player research directly; empty game
+spread cards and unavailable model comparisons are kept out of this flow.
+Player pages lead with the selected stat and saved prices. When multiple lines
+exist, a line selector keeps exact over/under comparisons together, with the
+highest saved book price and age visible before expanding book timestamps.
+Performance charts follow prices; recorded appearances expand on request.
+Missing prices explain that recorded performance remains available. Snapshot
+expiry, player identity, provenance and settlement safeguards are unchanged.

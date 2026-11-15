@@ -247,6 +247,8 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(find.text('Research only'), findsOneWidget);
+    expect(find.text('No spread'), findsNothing);
     await tester.tap(find.text('Buffalo Bills'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('game-research')), findsOneWidget);
@@ -551,7 +553,7 @@ void main() {
       await tester.tap(find.text('Over 245.5'));
       await tester.pumpAndSettle();
       expect(find.textContaining('outdated snapshot'), findsOneWidget);
-      expect(find.textContaining('may have changed'), findsOneWidget);
+      expect(find.textContaining('may have changed'), findsNWidgets(2));
       await tester.pump(const Duration(hours: 19));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('research-prices')), findsNothing);
@@ -643,7 +645,7 @@ void main() {
     await tester.tap(find.text('Over 245.5'));
     await tester.pumpAndSettle();
     expect(find.textContaining('outdated snapshot'), findsOneWidget);
-    expect(find.textContaining('may have changed'), findsOneWidget);
+    expect(find.textContaining('may have changed'), findsNWidgets(2));
     await tester.pump(const Duration(minutes: 1));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('research-prices')), findsNothing);
@@ -660,4 +662,94 @@ void main() {
     expect(find.text('Prices unavailable'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
+  testWidgets(
+    'phone comparison leads with the chosen line and keeps history expandable',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final data = fixtureData();
+      final player = buildGameResearch(
+        data: data,
+        event: event,
+        now: now,
+      ).players.first;
+      OddsQuote price(String book, double point, double decimal) => OddsQuote(
+        selection: Selection(
+          eventId: event.id,
+          market: 'player_pass_yds',
+          participant: player.name,
+          outcome: 'Over',
+          point: point,
+        ),
+        bookId: book,
+        book: book,
+        provider: 'fixture',
+        decimal: decimal,
+        sourceAt: now,
+        collectedAt: now,
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: edgeTheme(),
+          home: PlayerResearchScreen(
+            event: event,
+            now: now,
+            data: data,
+            player: player,
+            priceBoard: OddsBoard(
+              events: [event],
+              quotes: [
+                price('Book A', 245.5, 1.91),
+                price('Book B', 245.5, 2.1),
+                price('Book C', 255.5, 2.2),
+              ],
+              fetchedAt: now,
+            ),
+            quotePlayerIds: {player.name: player.id},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final scroll = find
+          .descendant(
+            of: find.byKey(const Key('player-research')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(
+        find.text('Over 245.5'),
+        150,
+        scrollable: scroll,
+      );
+      expect(find.text('+110 at Book B'), findsOneWidget);
+      expect(find.text('Over 255.5'), findsNothing);
+      expect(find.text('Recent production'), findsNothing);
+      final picker = find.byType(DropdownButtonFormField<double>);
+      await Scrollable.ensureVisible(tester.element(picker), alignment: .3);
+      await tester.pumpAndSettle();
+      await tester.tap(picker);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('255.5').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Over 255.5'), findsOneWidget);
+      expect(find.text('Over 245.5'), findsNothing);
+      expect(find.text('+120 at Book C'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('recorded-games-disclosure')),
+        250,
+        scrollable: scroll,
+      );
+      expect(find.text('vs KC'), findsNothing);
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Recorded games')),
+        alignment: .4,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Recorded games'));
+      await tester.pumpAndSettle();
+      expect(find.text('vs KC'), findsWidgets);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 }

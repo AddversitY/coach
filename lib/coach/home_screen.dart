@@ -259,19 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             if (!widget.board.demo && widget.board.quotes.isEmpty)
               ScheduleBrowser(
-                priceEventIds: {
-                  for (final quote
-                      in widget.prices?.quotes ?? const <OddsQuote>[])
-                    if (!quote.demo &&
-                        quote.status == 'open' &&
-                        !quote.sourceAt.isAfter(widget.now) &&
-                        !quote.collectedAt.isAfter(widget.now) &&
-                        widget.now.difference(quote.sourceAt) <=
-                            const Duration(hours: 18) &&
-                        widget.now.difference(quote.collectedAt) <=
-                            const Duration(hours: 18))
-                      quote.selection.eventId,
-                },
+                priceEventIds: savedPriceEventIds(widget.prices, widget.now),
                 events: gamesBoard.events,
                 now: widget.now,
                 onOpenGame: widget.onOpenGame,

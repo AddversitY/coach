@@ -185,11 +185,8 @@ class _PlayerResearchScreenState extends State<PlayerResearchScreen> {
               const SizedBox(height: 28),
               Text(metric.label, style: EdgeType.title),
               const SizedBox(height: 22),
-              _Averages(games: games, recent: recent, metric: metric),
-              const SizedBox(height: 28),
-              _ProductionChart(games: games.take(10).toList(), metric: metric),
-              const SizedBox(height: 28),
               _Prices(
+                key: ValueKey(metric.market),
                 event: widget.event,
                 now: displayNow,
                 observedAt: widget.now,
@@ -198,58 +195,63 @@ class _PlayerResearchScreenState extends State<PlayerResearchScreen> {
                 board: widget.priceBoard,
                 quotePlayerIds: widget.quotePlayerIds,
               ),
+              const SizedBox(height: 28),
+              Text('Performance', style: EdgeType.title.copyWith(fontSize: 20)),
+              const SizedBox(height: 20),
+              _Averages(games: games, recent: recent, metric: metric),
+              const SizedBox(height: 28),
+              _ProductionChart(games: games.take(10).toList(), metric: metric),
               if (changes.isNotEmpty) ...[
                 const SizedBox(height: 28),
                 ResearchChangesCard(changes: changes),
               ],
               const SizedBox(height: 32),
-              Row(
+              ExpansionTile(
+                key: const Key('recorded-games-disclosure'),
+                tilePadding: EdgeInsets.zero,
+                title: Text(
+                  'Recorded games',
+                  style: EdgeType.title.copyWith(fontSize: 20),
+                ),
+                subtitle: Text(
+                  '${player.latest.season} ${player.latest.seasonType} · ${games.take(20).length} appearances',
+                  style: EdgeType.label,
+                ),
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Recorded games',
-                      style: EdgeType.title.copyWith(fontSize: 20),
+                  for (final game in games.take(20)) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'vs ${game.opponent}',
+                                  style: EdgeType.body.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${_date(game.date)} · Week ${game.week}',
+                                  style: EdgeType.label.copyWith(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            _value(game.stats[metric.key]),
+                            style: EdgeType.number.copyWith(fontSize: 22),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(
-                    '${player.latest.season} ${player.latest.seasonType}',
-                    style: EdgeType.label.copyWith(fontSize: 12),
-                  ),
+                    Divider(color: EdgeColors.border.withValues(alpha: .4)),
+                  ],
                 ],
               ),
-              const SizedBox(height: 12),
-              for (final game in games.take(20)) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'vs ${game.opponent}',
-                              style: EdgeType.body.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${_date(game.date)} · Week ${game.week}',
-                              style: EdgeType.label.copyWith(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        _value(game.stats[metric.key]),
-                        style: EdgeType.number.copyWith(fontSize: 22),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(color: EdgeColors.border.withValues(alpha: .4)),
-              ],
               const SizedBox(height: 24),
               Text(
                 'Box-score appearances are not a complete participation or DNP record. These averages describe recorded games; no price or forecast is assumed.',
@@ -270,8 +272,9 @@ class _PlayerResearchScreenState extends State<PlayerResearchScreen> {
   }
 }
 
-class _Prices extends StatelessWidget {
+class _Prices extends StatefulWidget {
   const _Prices({
+    super.key,
     required this.event,
     required this.now,
     required this.observedAt,
@@ -286,6 +289,20 @@ class _Prices extends StatelessWidget {
   final ResearchMetric metric;
   final OddsBoard? board;
   final Map<String, String> quotePlayerIds;
+
+  @override
+  State<_Prices> createState() => _PricesState();
+}
+
+class _PricesState extends State<_Prices> {
+  double? selectedLine;
+  SportEvent get event => widget.event;
+  DateTime get now => widget.now;
+  DateTime get observedAt => widget.observedAt;
+  GameResearchPlayer get player => widget.player;
+  ResearchMetric get metric => widget.metric;
+  OddsBoard? get board => widget.board;
+  Map<String, String> get quotePlayerIds => widget.quotePlayerIds;
 
   @override
   Widget build(BuildContext context) {
@@ -318,21 +335,44 @@ class _Prices extends StatelessWidget {
       (groups[selection.key] ??= []).add(quote);
     }
     if (groups.isEmpty) {
-      return Text(
-        'Prices unavailable',
+      return Column(
         key: const Key('research-prices-unavailable'),
-        style: EdgeType.label.copyWith(fontSize: 12),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Prices unavailable',
+            style: EdgeType.title.copyWith(fontSize: 20),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No saved pregame prices for this player and stat. Explore recorded performance below.',
+            style: EdgeType.label.copyWith(fontSize: 12),
+          ),
+        ],
       );
     }
-    final selections = groups.values.toList()
-      ..sort((a, b) {
-        final point = a.first.selection.point!.compareTo(
-          b.first.selection.point!,
-        );
-        return point == 0
-            ? a.first.selection.outcome.compareTo(b.first.selection.outcome)
-            : point;
-      });
+    for (final quotes in groups.values) {
+      quotes.sort((a, b) => b.decimal.compareTo(a.decimal));
+    }
+    final lines =
+        groups.values
+            .map((quotes) => quotes.first.selection.point!)
+            .toSet()
+            .toList()
+          ..sort();
+    final line = lines.contains(selectedLine) ? selectedLine! : lines.first;
+    final selections =
+        groups.values
+            .where((quotes) => quotes.first.selection.point == line)
+            .toList()
+          ..sort((a, b) {
+            final point = a.first.selection.point!.compareTo(
+              b.first.selection.point!,
+            );
+            return point == 0
+                ? a.first.selection.outcome.compareTo(b.first.selection.outcome)
+                : point;
+          });
     return Column(
       key: const Key('research-prices'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,61 +383,22 @@ class _Prices extends StatelessWidget {
           'Pregame snapshots · settlement rules unverified',
           style: EdgeType.label.copyWith(fontSize: 12),
         ),
+        if (lines.length > 1) ...[
+          const SizedBox(height: 16),
+          DropdownButtonFormField<double>(
+            key: ValueKey('price-line-${metric.market}-$line'),
+            initialValue: line,
+            decoration: const InputDecoration(labelText: 'Prop line'),
+            items: [
+              for (final value in lines)
+                DropdownMenuItem(value: value, child: Text(_value(value))),
+            ],
+            onChanged: (value) => setState(() => selectedLine = value),
+          ),
+        ],
         for (final quotes in selections) ...[
           const SizedBox(height: 12),
-          Builder(
-            builder: (_) {
-              final ranked = [...quotes]
-                ..sort((a, b) => b.decimal.compareTo(a.decimal));
-              final best = ranked.first;
-              final age = now.difference(best.collectedAt);
-              final ageLabel = age.inMinutes < 1
-                  ? 'just now'
-                  : age.inHours < 1
-                  ? '${age.inMinutes}m ago'
-                  : '${age.inHours}h ago';
-              return Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      metric.label,
-                      style: EdgeType.label.copyWith(fontSize: 12),
-                    ),
-                    const SizedBox(height: 5),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 4,
-                      children: [
-                        Text(
-                          '${americanLabel(best.decimal)} at ${best.book}',
-                          style: EdgeType.body.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Highest saved price · checked $ageLabel',
-                          style: EdgeType.label.copyWith(fontSize: 11),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      quotes.every((q) => q.eligible(now))
-                          ? 'Recent snapshot · may have changed'
-                          : 'Older snapshot · compare timestamps before use',
-                      style: EdgeType.label.copyWith(
-                        fontSize: 11,
-                        color: quotes.every((q) => q.eligible(now))
-                            ? EdgeColors.textTertiary
-                            : EdgeColors.warn,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          // Compare only the exact selection; timestamps remain visible before expansion.
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             childrenPadding: const EdgeInsets.only(bottom: 8),
@@ -405,13 +406,41 @@ class _Prices extends StatelessWidget {
               '${quotes.first.selection.outcome} ${_value(quotes.first.selection.point)}',
               style: EdgeType.body.copyWith(fontWeight: FontWeight.w500),
             ),
-            subtitle: Text(
-              '${quotes.length} ${quotes.length == 1 ? 'book' : 'books'} · source timestamps below',
-              style: EdgeType.label.copyWith(fontSize: 12),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${americanLabel(quotes.first.decimal)} at ${quotes.first.book}',
+                    style: EdgeType.number.copyWith(fontSize: 22),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Highest saved price · checked ${_age(now.difference(quotes.first.collectedAt))}',
+                    style: EdgeType.label.copyWith(fontSize: 11),
+                  ),
+                  Text(
+                    quotes.every((q) => q.eligible(now))
+                        ? 'Recent snapshot · may have changed'
+                        : 'Older snapshot · may have changed',
+                    style: EdgeType.label.copyWith(
+                      fontSize: 11,
+                      color: quotes.every((q) => q.eligible(now))
+                          ? EdgeColors.textTertiary
+                          : EdgeColors.warn,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${quotes.length} ${quotes.length == 1 ? 'book' : 'books'} · source timestamps below',
+                    style: EdgeType.label.copyWith(fontSize: 12),
+                  ),
+                ],
+              ),
             ),
             children: [
-              for (final quote
-                  in quotes..sort((a, b) => b.decimal.compareTo(a.decimal)))
+              for (final quote in quotes)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Column(
@@ -648,3 +677,9 @@ String _value(num? value) => value == null
     : value == value.roundToDouble()
     ? value.toInt().toString()
     : value.toStringAsFixed(1);
+
+String _age(Duration age) => age.inMinutes < 1
+    ? 'just now'
+    : age.inHours < 1
+    ? '${age.inMinutes}m ago'
+    : '${age.inHours}h ago';
