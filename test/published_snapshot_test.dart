@@ -25,6 +25,48 @@ Map<String, dynamic> snapshotJson(DateTime at) {
   };
 }
 
+Map<String, dynamic> priceSnapshotJson(DateTime at) {
+  final raw = snapshotJson(at);
+  raw['schemaVersion'] = 2;
+  raw['odds'] = {
+    'status': 'limited',
+    'provider': 'the-odds-api',
+    'fetchedAt': at.toIso8601String(),
+    'coverage': {
+      'eventId': 'nflverse:2026_11_BUF_KC',
+      'markets': publishedPropMarkets.toList(),
+      'outsideCoverage': 'unavailable',
+      'players': [
+        {
+          'playerId': '00-0033873',
+          'name': 'Josh Allen',
+          'team': 'Buffalo Bills',
+          'asOf': '2026-11-08',
+        },
+      ],
+    },
+  };
+  raw['props']['quotes'] = [
+    OddsQuote(
+      selection: const Selection(
+        eventId: 'nflverse:2026_11_BUF_KC',
+        market: 'player_pass_yds',
+        outcome: 'Over',
+        participant: 'Josh Allen',
+        point: 234.5,
+        rules: 'player_prop_unverified',
+      ),
+      bookId: 'draftkings',
+      book: 'DraftKings',
+      provider: 'the-odds-api',
+      decimal: 1.91,
+      sourceAt: at.subtract(const Duration(minutes: 1)),
+      collectedAt: at,
+    ).toJson(),
+  ];
+  return raw;
+}
+
 void main() {
   final now = DateTime.utc(2026, 11, 14);
   test('published games preserve source dates and become stale', () {
@@ -37,7 +79,7 @@ void main() {
   });
   test('examples, prices, unknown schema and mismatched games cannot enter a schedule snapshot', () {
     for (final change in <void Function(Map<String, dynamic>)>[
-      (r) => r['schemaVersion'] = 2,
+      (r) => r['schemaVersion'] = 3,
       (r) => r['board']['demo'] = true,
       (r) => r['board']['quotes'] = [demoBoard(now).quotes.first.toJson()],
       (r) => r['props']['events'] = [],
@@ -48,6 +90,76 @@ void main() {
           r['generatedAt'] = now.add(const Duration(days: 1)).toIso8601String(),
     ]) {
       final raw = snapshotJson(now);
+      change(raw);
+      expect(() => PublishedSnapshot.parse(raw, now), throwsFormatException);
+    }
+  });
+  test(
+    'limited real prices preserve exact player event line book and source time',
+    () {
+      final value = PublishedSnapshot.parse(priceSnapshotJson(now), now);
+      expect(value.board.quotes, isEmpty);
+      expect(value.hasPrices, isTrue);
+      expect(value.coveredEventId, 'nflverse:2026_11_BUF_KC');
+      expect(value.playerIdsByName, {'Josh Allen': '00-0033873'});
+      expect(value.quoteAt, now);
+      final quote = value.props.quotes.single;
+      expect(quote.selection.participant, 'Josh Allen');
+      expect(quote.selection.point, 234.5);
+      expect(quote.bookId, 'draftkings');
+      expect(quote.sourceAt, now.subtract(const Duration(minutes: 1)));
+      expect(quote.freshness(now.add(const Duration(minutes: 3))), 'stale');
+    },
+  );
+  test('expired price snapshots keep schedule and stop exposing prices', () {
+    final value = PublishedSnapshot.parse(
+      priceSnapshotJson(now),
+      now.add(const Duration(hours: 19)),
+    );
+    expect(value.board.events, hasLength(1));
+    expect(value.hasPrices, isFalse);
+    expect(value.oddsMessage, contains('outdated'));
+    final afterKickoff = PublishedSnapshot.parse(
+      priceSnapshotJson(now),
+      now.add(const Duration(days: 1)),
+    );
+    expect(afterKickoff.props.quotes, isEmpty);
+  });
+  test('price pilot rejects private fields examples identity ambiguity stale and mismatched quotes', () {
+    for (final change in <void Function(Map<String, dynamic>)>[
+      (r) => r['odds']['testFixture'] = true,
+      (r) => r['odds']['apiKey'] = 'secret',
+      (r) => r['props']['quotes'][0]['rawResponse'] = {},
+      (r) => r['props']['quotes'][0]['demo'] = true,
+      (r) => r['props']['quotes'][0]['provider'] = 'unknown',
+      (r) => r['props']['quotes'][0]['book'] = 'Other title',
+      (r) => r['props']['quotes'][0]['selection']['eventId'] = 'nflverse:other',
+      (r) =>
+          r['props']['quotes'][0]['selection']['market'] = 'player_anytime_td',
+      (r) => r['props']['quotes'][0]['selection']['participant'] = 'J. Allen',
+      (r) => r['props']['quotes'][0]['selection']['point'] = 234.25,
+      (r) => r['props']['quotes'][0]['selection']['rules'] = 'verified',
+      (r) => r['props']['quotes'][0]['sourceAt'] = now
+          .subtract(const Duration(hours: 19))
+          .toIso8601String(),
+      (r) => r['props']['quotes'][0]['sourceAt'] = now
+          .add(const Duration(minutes: 1))
+          .toIso8601String(),
+      (r) => r['props']['quotes'][0]['collectedAt'] = now
+          .subtract(const Duration(minutes: 1))
+          .toIso8601String(),
+      (r) => r['props']['quotes'].add(r['props']['quotes'][0]),
+      (r) => r['odds']['coverage']['eventId'] = 'nflverse:other',
+      (r) => r['odds']['coverage']['outsideCoverage'] = 'covered',
+      (r) => r['odds']['coverage']['markets'].removeLast(),
+      (r) => r['odds']['coverage']['players'][0]['playerId'] = 'unknown',
+      (r) => r['odds']['coverage']['players'][0]['team'] = 'New York Jets',
+      (r) => r['odds']['coverage']['players'][0]['asOf'] = '2026-11-14',
+      (r) => r['odds']['coverage']['players'].add(
+        r['odds']['coverage']['players'][0],
+      ),
+    ]) {
+      final raw = priceSnapshotJson(now);
       change(raw);
       expect(() => PublishedSnapshot.parse(raw, now), throwsFormatException);
     }

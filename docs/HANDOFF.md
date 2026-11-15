@@ -190,6 +190,12 @@ behavior. The older scores above describe their dated historical runs.
 
 ## Next
 
+Actual-game player research and the Inter/charcoal redesign are implemented.
+See [ACTUAL_RESEARCH.md](ACTUAL_RESEARCH.md) for the current flow and price-pilot
+limitations. Research works without prices. The v2 quote adapter is fixture-tested
+but real publication stays disabled until a private provider connection and
+durable quota storage are configured. Do not activate with cache-only ledgers.
+
 Daily evidence refreshes and dated "what changed" comparisons are implemented; operating and failure behavior are in [CONTENT_REFRESH.md](CONTENT_REFRESH.md). The first refresh covers player, score and snap records through 2026-11-12, while injury report dates remain unknown. The main feed stays compact; comparisons live in prop details. A provider credential and the real-price pipeline remain required before public quote comparisons can use actual prices. The proposed ensemble below is separate future work, not part of this milestone. Do not add bet journals or outcome-based engagement.
 
 2. **Elo plus a gradient-boosted ensemble** (XGBoost or LightGBM) for the game residual, with the anti-overfit rules fixed before any run: week-based walk-forward, shallow trees, regularization, early stopping, a stable feature set, permutation importance and a noise-feature check, monotone constraints where the direction is known, and one locked holdout season that is not used to pick anything. Same adoption rule as version 2: both Brier and log loss strictly better on at least 1,000 games, and no "edge" unless the -110 test clears the existing profit bar. Keep `coach_line_v2.dart` matched to whatever the trainer ships. Do not search the ridge, the caps, or the tree depth after seeing the holdout.

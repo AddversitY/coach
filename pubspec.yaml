@@ -58,6 +58,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/fonts/Inter-LICENSE.txt
     - assets/nfl-field.png
     - assets/nfl-history.json
     - assets/nfl-player-stats.json
@@ -77,6 +78,16 @@ flutter:
   # https://flutter.dev/to/asset-from-package
 
   fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
     - family: Outfit
       fonts:
         - asset: assets/fonts/Outfit-Regular.ttf

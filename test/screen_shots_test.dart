@@ -12,11 +12,11 @@ import 'memory_research_store.dart';
 
 /// Widget tests draw Ahem squares unless a family is loaded explicitly.
 Future<void> _loadType() async {
-  final outfit = FontLoader('Outfit')
-    ..addFont(rootBundle.load('assets/fonts/Outfit-Regular.ttf'))
-    ..addFont(rootBundle.load('assets/fonts/Outfit-Medium.ttf'))
-    ..addFont(rootBundle.load('assets/fonts/Outfit-SemiBold.ttf'))
-    ..addFont(rootBundle.load('assets/fonts/Outfit-Bold.ttf'));
+  final outfit = FontLoader('Inter')
+    ..addFont(rootBundle.load('assets/fonts/Inter-Regular.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/Inter-Medium.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/Inter-SemiBold.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/Inter-Bold.ttf'));
   final fraunces = FontLoader('Fraunces')
     ..addFont(rootBundle.load('assets/fonts/Fraunces-SemiBold.ttf'))
     ..addFont(rootBundle.load('assets/fonts/Fraunces-SemiBoldItalic.ttf'));

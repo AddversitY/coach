@@ -455,6 +455,8 @@ void main() {
     await tester.tap(find.text('Games', skipOffstage: false));
     await tester.pumpAndSettle();
     expect(find.text('GAMES'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Buffalo Bills'), 200,
+      scrollable: find.byType(Scrollable).last);
     expect(find.text('Buffalo Bills'), findsWidgets);
     expect(tester.takeException(), isNull);
     await tester.tap(find.text('Buffalo Bills').first);

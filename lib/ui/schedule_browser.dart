@@ -73,28 +73,28 @@ class _ScheduleBrowserState extends State<ScheduleBrowser> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            ChoiceChip(
-              key: const Key('schedule-day-all'),
-              label: const Text('All'),
-              selected: selectedDay == null,
-              showCheckmark: false,
-              onSelected: (_) => setState(() => selectedDay = null),
-            ),
-            for (final day in days)
-              ChoiceChip(
-                key: ValueKey('schedule-day-$day'),
-                label: Text(_shortDay(_wallDay(groups[day]!.first.startsAt))),
-                selected: selectedDay == day,
-                showCheckmark: false,
-                onSelected: (_) => setState(() => selectedDay = day),
+        SingleChildScrollView(
+          key: const Key('schedule-date-strip'),
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _DateButton(
+                key: const Key('schedule-day-all'),
+                label: 'All',
+                selected: selectedDay == null,
+                onTap: () => setState(() => selectedDay = null),
               ),
-          ],
+              for (final day in days)
+                _DateButton(
+                  key: ValueKey('schedule-day-$day'),
+                  label: _shortDay(_wallDay(groups[day]!.first.startsAt)),
+                  selected: selectedDay == day,
+                  onTap: () => setState(() => selectedDay = day),
+                ),
+            ],
+          ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         Text(
           selectedDay == null
               ? '${events.length} upcoming ${events.length == 1 ? 'game' : 'games'} · all times ET'
@@ -106,25 +106,28 @@ class _ScheduleBrowserState extends State<ScheduleBrowser> {
           ),
         ),
         for (final day in visibleDays) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
           _DayHeading(
             day: _wallDay(groups[day]!.first.startsAt),
             count: groups[day]!.length,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           LayoutBuilder(
             builder: (context, constraints) {
-              final columns = constraints.maxWidth >= 700 ? 2 : 1;
+              final columns =
+                  constraints.maxWidth >= 820 &&
+                      MediaQuery.textScalerOf(context).scale(1) <= 1.3
+                  ? 2
+                  : 1;
               final width =
-                  (constraints.maxWidth - 12 * (columns - 1)) / columns;
+                  (constraints.maxWidth - 32 * (columns - 1)) / columns;
               return Wrap(
-                spacing: 12,
-                runSpacing: 12,
+                spacing: 32,
                 children: [
                   for (final event in groups[day]!)
                     SizedBox(
                       width: width,
-                      child: _ScheduleGameCard(
+                      child: _ScheduleGameRow(
                         key: ValueKey('schedule-game-${event.id}'),
                         event: event,
                         onOpen: widget.onOpenGame == null
@@ -140,6 +143,57 @@ class _ScheduleBrowserState extends State<ScheduleBrowser> {
       ],
     );
   }
+}
+
+class _DateButton extends StatelessWidget {
+  const _DateButton({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    label: label,
+    onTap: onTap,
+    excludeSemantics: true,
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        excludeFromSemantics: true,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 58),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: selected
+                    ? EdgeColors.accent
+                    : EdgeColors.border.withValues(alpha: .5),
+                width: selected ? 2 : 1,
+              ),
+            ),
+          ),
+          child: Text(
+            label,
+            style: EdgeType.label.copyWith(
+              fontSize: 13,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              color: selected ? EdgeColors.text : EdgeColors.textTertiary,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 DateTime _wallDay(DateTime instant) {
@@ -191,7 +245,7 @@ class _DayHeading extends StatelessWidget {
           header: true,
           child: Text(
             '${_weekdays[day.weekday - 1]}, ${_months[day.month - 1]} ${day.day}',
-            style: EdgeType.title.copyWith(fontSize: 19, letterSpacing: -.3),
+            style: EdgeType.title.copyWith(fontSize: 17, letterSpacing: -.3),
           ),
         ),
       ),
@@ -207,14 +261,36 @@ class _DayHeading extends StatelessWidget {
   );
 }
 
-class _ScheduleGameCard extends StatelessWidget {
-  const _ScheduleGameCard({super.key, required this.event, this.onOpen});
+class _ScheduleGameRow extends StatelessWidget {
+  const _ScheduleGameRow({super.key, required this.event, this.onOpen});
   final SportEvent event;
   final VoidCallback? onOpen;
 
   @override
   Widget build(BuildContext context) {
     final kickoff = formatEastern(event.startsAt).split(' · ').last;
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    final teams = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _TeamRow(name: event.away),
+        const SizedBox(height: 10),
+        _TeamRow(name: event.home),
+      ],
+    );
+    final time = Text(
+      kickoff,
+      style: EdgeType.label.copyWith(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        color: EdgeColors.textTertiary,
+      ),
+    );
+    const arrow = Icon(
+      Icons.chevron_right_rounded,
+      size: 18,
+      color: EdgeColors.textTertiary,
+    );
     return Semantics(
       container: true,
       button: onOpen != null,
@@ -223,58 +299,43 @@ class _ScheduleGameCard extends StatelessWidget {
           '${event.away} at ${event.home}. ${formatEastern(event.startsAt, year: true)}${onOpen == null ? '' : '. Open game research'}',
       child: ExcludeSemantics(
         child: Material(
-          color: EdgeColors.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: EdgeColors.border.withValues(alpha: .7)),
-          ),
-          clipBehavior: Clip.antiAlias,
+          color: Colors.transparent,
           child: InkWell(
             onTap: onOpen,
-            child: Ink(
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 104),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    EdgeColors.surfaceHigh.withValues(alpha: .35),
-                    EdgeColors.surface,
-                  ],
+                border: Border(
+                  bottom: BorderSide(
+                    color: EdgeColors.border.withValues(alpha: .5),
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.symmetric(vertical: 17),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.schedule_outlined,
-                        size: 15,
-                        color: EdgeColors.textTertiary,
-                      ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: Text(
-                          kickoff,
-                          style: EdgeType.label.copyWith(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      if (onOpen != null)
-                        const Icon(
-                          Icons.arrow_outward_rounded,
-                          size: 17,
-                          color: EdgeColors.textSecondary,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  _TeamRow(name: event.away, home: false),
-                  const SizedBox(height: 14),
-                  _TeamRow(name: event.home, home: true),
+                  if (largeText) ...[
+                    Row(
+                      children: [
+                        Expanded(child: time),
+                        if (onOpen != null) arrow,
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    teams,
+                  ] else
+                    Row(
+                      children: [
+                        Expanded(child: teams),
+                        const SizedBox(width: 12),
+                        time,
+                        if (onOpen != null) ...[
+                          const SizedBox(width: 8),
+                          arrow,
+                        ],
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -286,22 +347,20 @@ class _ScheduleGameCard extends StatelessWidget {
 }
 
 class _TeamRow extends StatelessWidget {
-  const _TeamRow({required this.name, required this.home});
+  const _TeamRow({required this.name});
   final String name;
-  final bool home;
 
   @override
   Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Container(
-        width: 40,
-        height: 40,
-        padding: const EdgeInsets.all(6),
+        width: 27,
+        height: 27,
+        padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: EdgeColors.accent.withValues(alpha: .08),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: EdgeColors.accent.withValues(alpha: .15)),
+          color: EdgeColors.surfaceHigh,
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Center(
           child: FittedBox(
@@ -309,37 +368,25 @@ class _TeamRow extends StatelessWidget {
             child: Text(
               canonicalTeam(name) ?? 'NFL',
               style: EdgeType.number.copyWith(
-                fontSize: 11,
-                letterSpacing: .2,
-                color: EdgeColors.accent,
+                fontSize: 9,
+                letterSpacing: 0,
+                color: EdgeColors.textSecondary,
               ),
             ),
           ),
         ),
       ),
-      const SizedBox(width: 12),
+      const SizedBox(width: 10),
       Expanded(
         child: Text(
           name,
           style: EdgeType.body.copyWith(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
             height: 1.25,
           ),
         ),
       ),
-      if (home) ...[
-        const SizedBox(width: 8),
-        Text(
-          'HOME',
-          style: EdgeType.label.copyWith(
-            fontSize: 9,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w500,
-            color: EdgeColors.textTertiary,
-          ),
-        ),
-      ],
     ],
   );
 }
@@ -351,12 +398,7 @@ class _ScheduleEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      color: EdgeColors.surface,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: EdgeColors.border.withValues(alpha: .7)),
-    ),
+    padding: const EdgeInsets.symmetric(vertical: 28),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

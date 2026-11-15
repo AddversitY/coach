@@ -51,6 +51,12 @@ jobs:
         run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
       - name: Fetch attributed public NFL schedule
         run: python tools/publish_snapshot.py --output build/web/data/snapshot.json
+      - name: Validate schedule-only price publication
+        env:
+          # Activation requires a private provider connection and durable quota
+          # state. Disposable Actions caches cannot safely enforce this budget.
+          ODDS_PUBLISH_ENABLED: '0'
+        run: python tools/publish_quotes.py --schedule build/web/data/snapshot.json --output build/web/data/snapshot.json
       - name: Record the deployed source version
         run: |
           python -c "import hashlib,json,os,pathlib,subprocess; names=['nfl-player-stats.json','nfl-history.json','nfl-matchup.json','parlay-calibration.json']; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'run':os.environ['GITHUB_RUN_ID'],'evidenceHashes':{name:hashlib.sha256((pathlib.Path('assets')/name).read_bytes()).hexdigest() for name in names}}))"

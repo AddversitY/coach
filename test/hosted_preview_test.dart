@@ -44,6 +44,12 @@ void main() {
       await tester.scrollUntilVisible(
         find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
         150,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('home-feed')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       expect(
         find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
@@ -81,6 +87,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
       200,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('home-feed')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());

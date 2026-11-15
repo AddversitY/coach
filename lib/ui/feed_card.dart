@@ -5,7 +5,6 @@ import '../coach/prop_pricing.dart';
 import '../domain/hit_rate.dart';
 import '../domain/prop_history.dart';
 import '../domain/odds.dart';
-import '../domain/value_check.dart';
 import '../theme/edge_theme.dart';
 import 'value_check.dart';
 
@@ -29,26 +28,19 @@ class FeedPropCard extends StatelessWidget {
     final samples = _sparkSamples(shown.windows);
     return Material(
       color: EdgeColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-        side: const BorderSide(color: EdgeColors.border),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onOpen,
         child: Padding(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Avatar(
-                    initials: playerInitials(card.player),
-                    word: verdict.word,
-                    overpriced: verdict.overpriced,
-                  ),
+                  _Avatar(initials: playerInitials(card.player)),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(
@@ -63,8 +55,9 @@ class FeedPropCard extends StatelessWidget {
                               card.player,
                               style: EdgeType.title.copyWith(
                                 fontFamily: EdgeFont.display,
-                                fontSize: 17,
-                                letterSpacing: -0.4,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: -0.3,
                               ),
                             ),
                             WordPill(
@@ -83,8 +76,9 @@ class FeedPropCard extends StatelessWidget {
                           Text(
                             propMeta(shown),
                             style: EdgeType.label.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              color: EdgeColors.textTertiary,
                             ),
                           ),
                         ],
@@ -100,8 +94,7 @@ class FeedPropCard extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
-              const Divider(height: 1),
+              const SizedBox(height: 14),
               if (shown.dataWarning != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -114,37 +107,52 @@ class FeedPropCard extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 10),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      shortPropLine(card),
-                      style: EdgeType.body.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        letterSpacing: -0.3,
-                      ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final line = Text(
+                    shortPropLine(card),
+                    style: EdgeType.body.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      letterSpacing: -0.3,
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
+                  );
+                  final prices = Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         quote == null ? '—' : americanLabel(quote.decimal),
-                        style: EdgeType.number.copyWith(fontSize: 18),
-                      ),
-                      Text(
-                        priceBlurb(card),
-                        style: EdgeType.label.copyWith(
-                          fontSize: 11,
+                        style: EdgeType.number.copyWith(
+                          fontSize: 19,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      Text(
+                        priceBlurb(card),
+                        textAlign: TextAlign.right,
+                        style: EdgeType.label.copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          color: EdgeColors.textTertiary,
+                        ),
+                      ),
                     ],
-                  ),
-                ],
+                  );
+                  if (MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [line, const SizedBox(height: 8), prices],
+                    );
+                  }
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 5, child: line),
+                      const SizedBox(width: 12),
+                      Flexible(flex: 4, child: prices),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 10),
               ValueCheck(
@@ -182,35 +190,27 @@ class FeedPropCard extends StatelessWidget {
 }
 
 class _Avatar extends StatelessWidget {
-  const _Avatar({
-    required this.initials,
-    required this.word,
-    required this.overpriced,
-  });
+  const _Avatar({required this.initials});
 
   final String initials;
-  final ValueWord word;
-  final bool overpriced;
 
   @override
   Widget build(BuildContext context) {
-    final color = wordColor(word, overpriced: overpriced);
     return Container(
-      width: 36,
-      height: 36,
+      width: 34,
+      height: 34,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color.withValues(alpha: .16),
-        border: Border.all(color: color.withValues(alpha: .7)),
+        borderRadius: BorderRadius.circular(6),
+        color: EdgeColors.surfaceHigh,
       ),
       child: Text(
         initials,
         style: EdgeType.label.copyWith(
           fontFamily: EdgeFont.display,
           color: EdgeColors.text,
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -224,12 +224,11 @@ class _Hit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final clear = rate?.clearRate;
     return Text.rich(
       TextSpan(
         style: EdgeType.label.copyWith(
           fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w400,
         ),
         children: [
           TextSpan(text: '$label '),
@@ -238,7 +237,7 @@ class _Hit extends StatelessWidget {
             style: TextStyle(
               color: rate == null || rate!.observed == 0
                   ? EdgeColors.textTertiary
-                  : hitRateColor(clear),
+                  : EdgeColors.textSecondary,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),

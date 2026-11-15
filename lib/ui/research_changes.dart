@@ -15,17 +15,20 @@ class ResearchChangesCard extends StatelessWidget {
     return Material(
       key: const Key('research-changes'),
       color: EdgeColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-        side: const BorderSide(color: EdgeColors.border),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('What changed', style: EdgeType.title),
+            Text(
+              'What changed',
+              style: EdgeType.body.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 6),
             Text(
               'Through ${_date(first.latestGame)} · recorded games',
@@ -33,7 +36,7 @@ class ResearchChangesCard extends StatelessWidget {
             ),
             for (final change in changes.take(2)) ...[
               const SizedBox(height: 14),
-              Text(change.summary, style: EdgeType.body),
+              Text(change.summary, style: EdgeType.body.copyWith(fontSize: 14)),
             ],
             const SizedBox(height: 8),
             ExpansionTile(

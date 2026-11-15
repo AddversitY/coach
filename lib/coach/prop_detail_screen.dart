@@ -157,326 +157,343 @@ class _PropDetailScreenState extends State<PropDetailScreen> {
         ],
       ),
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: quote == null
-              ? const EmptyNote(
-                  'No open price in this snapshot, so this prop cannot be added.',
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (blockNote != null) ...[
-                      Text(
-                        blockNote!,
-                        style: EdgeType.label.copyWith(color: EdgeColors.warn),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                    FilledButton(
-                      key: const Key('add-to-parlay'),
-                      onPressed: () => _toggleSlip(held),
-                      child: Text(
-                        held ? 'Remove from parlay' : 'Add to parlay',
-                      ),
+        child: Align(
+          heightFactor: 1,
+          child: SizedBox(
+            width: 760,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              child: quote == null
+                  ? const EmptyNote(
+                      'No open price in this snapshot, so this prop cannot be added.',
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (blockNote != null) ...[
+                          Text(
+                            blockNote!,
+                            style: EdgeType.label.copyWith(
+                              color: EdgeColors.warn,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                        FilledButton(
+                          key: const Key('add-to-parlay'),
+                          onPressed: () => _toggleSlip(held),
+                          child: Text(
+                            held ? 'Remove from parlay' : 'Add to parlay',
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+            ),
+          ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-        children: [
-          if (propMeta(face).isNotEmpty)
-            Text(propMeta(face), style: EdgeType.label),
-          EvidenceDataNote(
-            now: widget.now,
-            boxScores: widget.directory?.data.metadata,
-            matchup: widget.context,
-            injuries: widget.injuries,
-          ),
-          if (face.dataWarning != null)
-            Text(
-              face.dataWarning!,
-              style: EdgeType.label.copyWith(color: EdgeColors.warn),
-            ),
-          if (card.otherSide != null) ...[
-            const SizedBox(height: 10),
-            _SideSwitch(
-              over: card.lineSide == LineSide.over,
-              onChanged: _toggle,
-            ),
-          ],
-          if (face.badge != null) ...[
-            const SizedBox(height: 8),
-            InjuryBadgePill(
-              label: face.badge!.label,
-              severe: face.badge!.severe,
-            ),
-          ],
-          const SizedBox(height: 12),
-          _PriceHero(card: card, quote: quote, now: widget.now),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: EdgeColors.surface,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: EdgeColors.border),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text('Price check', style: EdgeType.label),
+      body: Center(
+        child: SizedBox(
+          width: 760,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+            children: [
+              if (propMeta(face).isNotEmpty)
+                Text(propMeta(face), style: EdgeType.label),
+              EvidenceDataNote(
+                now: widget.now,
+                boxScores: widget.directory?.data.metadata,
+                matchup: widget.context,
+                injuries: widget.injuries,
+              ),
+              if (face.dataWarning != null)
+                Text(
+                  face.dataWarning!,
+                  style: EdgeType.label.copyWith(color: EdgeColors.warn),
+                ),
+              if (card.otherSide != null) ...[
+                const SizedBox(height: 10),
+                _SideSwitch(
+                  over: card.lineSide == LineSide.over,
+                  onChanged: _toggle,
+                ),
+              ],
+              if (face.badge != null) ...[
+                const SizedBox(height: 8),
+                InjuryBadgePill(
+                  label: face.badge!.label,
+                  severe: face.badge!.severe,
+                ),
+              ],
+              const SizedBox(height: 12),
+              _PriceHero(card: card, quote: quote, now: widget.now),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: EdgeColors.border.withValues(alpha: .6),
                     ),
-                    WordPill(
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Price check', style: EdgeType.label),
+                        ),
+                        WordPill(
+                          word: verdict.word,
+                          overpriced: verdict.overpriced,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    ValueCheck(
                       word: verdict.word,
                       overpriced: verdict.overpriced,
+                      ourChance: verdict.ourChance,
+                      bookChance: verdict.breakEven,
+                      ourLabel: 'Model estimate',
+                      bookLabel: 'Price requires',
+                      compact: true,
+                      note: 'Model estimate; no demonstrated betting edge.',
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                ValueCheck(
-                  word: verdict.word,
-                  overpriced: verdict.overpriced,
-                  ourChance: verdict.ourChance,
-                  bookChance: verdict.breakEven,
-                  ourLabel: 'Model estimate',
-                  bookLabel: 'Price requires',
-                  compact: true,
-                  note: 'Model estimate; no demonstrated betting edge.',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _EvidenceSummary(
-            face: face,
-            average: stats.average,
-            observed: stats.count,
-            evidence: evidence,
-          ),
-          if (changes.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            ResearchChangesCard(changes: changes),
-          ],
-          const SizedBox(height: 12),
-          _ResearchSection(
-            title: 'Performance',
-            initiallyExpanded: true,
-            children: [
-              const SizedBox(height: 18),
-              _SectionHead(
-                title: 'Hit rate',
-                trailing: windows?.seasonYear == null
-                    ? null
-                    : '${windows!.seasonYear}',
-              ),
-              const SizedBox(height: 8),
-              EdgeSegments(
-                labels: const ['L5', 'L10', 'H2H', 'Season'],
-                index: window,
-                onChanged: (index) => setState(() => window = index),
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 16,
-                runSpacing: 8,
-                crossAxisAlignment: WrapCrossAlignment.end,
-                children: [
-                  _StatReadout('Avg', stats.average),
-                  _StatReadout('Median', stats.median),
-                  Text(
-                    stats.count == 0
-                        ? 'No games'
-                        : '${stats.count} ${stats.count == 1 ? 'game' : 'games'}',
-                    style: EdgeType.label,
-                  ),
-                ],
+              _EvidenceSummary(
+                face: face,
+                average: stats.average,
+                observed: stats.count,
+                evidence: evidence,
               ),
-              const SizedBox(height: 8),
-              _HitBoard(
-                samples: selected?.samples ?? const [],
-                line: card.line,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Green cleared the line. Red missed.',
-                      style: EdgeType.label,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'How these windows are counted',
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => _countNote(windows?.note),
-                    icon: const Icon(Icons.info_outline, size: 20),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _ResearchSection(
-            title: 'Matchup and availability',
-            children: [
-              for (final input in evidence.context) ...[
-                Text(input, style: EdgeType.body),
-                const SizedBox(height: 8),
-              ],
-              for (final caution in evidence.cautions)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(caution, style: EdgeType.label),
-                ),
-              const SizedBox(height: 18),
-              const _SectionHead(title: 'Matchup'),
-              const SizedBox(height: 8),
-              _MatchupMeter(
-                defense: face.value.matchup?.defense,
-                note: face.note,
-              ),
-              const SizedBox(height: 18),
-              _SectionHead(
-                title: 'Injuries',
-                trailing: widget.injuries?.freshness(widget.now),
-              ),
-              const SizedBox(height: 8),
-              if (widget.injuries == null)
-                const EmptyNote(
-                  'No injury report is loaded. Nothing was filled in.',
-                )
-              else if (injuries.isEmpty)
-                const EmptyNote(
-                  'No Out or Questionable player in this report is tied to this prop.',
-                )
-              else
-                for (final entry in injuries) ...[
-                  _InjuryRow(entry: entry),
-                  const SizedBox(height: 8),
-                ],
-            ],
-          ),
-          const SizedBox(height: 12),
-          _ResearchSection(
-            title: 'Price comparison',
-            children: [
-              Text(
-                'Same player, stat, side and line: ${card.player} · ${shortPropLine(card)}. Alternate lines are separate selections.',
-                style: EdgeType.body,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                verdict.fairChance == null
-                    ? "Market no-vig chance unavailable."
-                    : "Market no-vig chance: ${(verdict.fairChance! * 100).toStringAsFixed(1)}%",
-                style: EdgeType.label,
-              ),
-              const SizedBox(height: 10),
-              const _SectionHead(title: 'Prices'),
-              const SizedBox(height: 8),
-              if (card.bookRows.isEmpty)
-                const EmptyNote('No open price for this side.')
-              else
-                for (var i = 0; i < card.bookRows.length; i++)
-                  _BookRow(
-                    row: card.bookRows[i],
-                    best: i == 0,
-                    now: widget.now,
-                    bestDecimal: card.best!.decimal,
-                    chance: verdict.ourChance,
-                  ),
-              const SizedBox(height: 16),
-              const _SectionHead(title: 'Odds over time'),
-              const SizedBox(height: 8),
-              if (widget.history == null)
-                const EmptyNote(
-                  'Price history is collected by the local backend. Nothing is drawn in its place.',
-                )
-              else
-                FutureBuilder<List<OddsQuote>>(
-                  future: widget.history!(card.side),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return const LinearProgressIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return const EmptyNote(
-                        'Saved price history could not be read.',
-                      );
-                    }
-                    return OddsHistoryChart(quotes: snapshot.data ?? const []);
-                  },
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _ResearchSection(
-            title: 'Model and math',
-            children: [
-              if (face.projection != null) ...[
+              if (changes.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                PropBreakdown(projection: face.projection!),
+                ResearchChangesCard(changes: changes),
               ],
-              const SizedBox(height: 4),
-              ValueView(
-                headline: false,
-                verdict: verdict,
-                whyBody: WhyBriefView(
-                  brief: buildPropBrief(
-                    verdict: verdict,
-                    line: card.line,
-                    side: card.lineSide,
-                    market: card.market,
-                    player: card.player,
-                    windows: windows,
-                    matchup: face.value.matchup,
-                    teamName: clubNickname(windows?.team),
-                    teamSpread: face.teamSpread,
-                    total: face.total,
-                    injuries: widget.injuries,
-                    playerTeam: windows?.team,
-                    opponent: face.opponent,
+              const SizedBox(height: 12),
+              _ResearchSection(
+                title: 'Performance',
+                initiallyExpanded: true,
+                children: [
+                  const SizedBox(height: 18),
+                  _SectionHead(
+                    title: 'Hit rate',
+                    trailing: windows?.seasonYear == null
+                        ? null
+                        : '${windows!.seasonYear}',
                   ),
-                ),
-                extraMath: face.value.matchup == null
-                    ? null
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              face.value.matchup!.snapLine,
-                              style: EdgeType.body,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              face.value.matchup!.credit,
-                              style: EdgeType.label,
-                            ),
-                          ],
+                  const SizedBox(height: 8),
+                  EdgeSegments(
+                    labels: const ['L5', 'L10', 'H2H', 'Season'],
+                    index: window,
+                    onChanged: (index) => setState(() => window = index),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    children: [
+                      _StatReadout('Avg', stats.average),
+                      _StatReadout('Median', stats.median),
+                      Text(
+                        stats.count == 0
+                            ? 'No games'
+                            : '${stats.count} ${stats.count == 1 ? 'game' : 'games'}',
+                        style: EdgeType.label,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _HitBoard(
+                    samples: selected?.samples ?? const [],
+                    line: card.line,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Green cleared the line. Red missed.',
+                          style: EdgeType.label,
                         ),
                       ),
+                      IconButton(
+                        tooltip: 'How these windows are counted',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () => _countNote(windows?.note),
+                        icon: const Icon(Icons.info_outline, size: 20),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _ResearchSection(
+                title: 'Matchup and availability',
+                children: [
+                  for (final input in evidence.context) ...[
+                    Text(input, style: EdgeType.body),
+                    const SizedBox(height: 8),
+                  ],
+                  for (final caution in evidence.cautions)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(caution, style: EdgeType.label),
+                    ),
+                  const SizedBox(height: 18),
+                  const _SectionHead(title: 'Matchup'),
+                  const SizedBox(height: 8),
+                  _MatchupMeter(
+                    defense: face.value.matchup?.defense,
+                    note: face.note,
+                  ),
+                  const SizedBox(height: 18),
+                  _SectionHead(
+                    title: 'Injuries',
+                    trailing: widget.injuries?.freshness(widget.now),
+                  ),
+                  const SizedBox(height: 8),
+                  if (widget.injuries == null)
+                    const EmptyNote(
+                      'No injury report is loaded. Nothing was filled in.',
+                    )
+                  else if (injuries.isEmpty)
+                    const EmptyNote(
+                      'No Out or Questionable player in this report is tied to this prop.',
+                    )
+                  else
+                    for (final entry in injuries) ...[
+                      _InjuryRow(entry: entry),
+                      const SizedBox(height: 8),
+                    ],
+                ],
+              ),
+              const SizedBox(height: 12),
+              _ResearchSection(
+                title: 'Price comparison',
+                children: [
+                  Text(
+                    'Same player, stat, side and line: ${card.player} · ${shortPropLine(card)}. Alternate lines are separate selections.',
+                    style: EdgeType.body,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    verdict.fairChance == null
+                        ? "Market no-vig chance unavailable."
+                        : "Market no-vig chance: ${(verdict.fairChance! * 100).toStringAsFixed(1)}%",
+                    style: EdgeType.label,
+                  ),
+                  const SizedBox(height: 10),
+                  const _SectionHead(title: 'Prices'),
+                  const SizedBox(height: 8),
+                  if (card.bookRows.isEmpty)
+                    const EmptyNote('No open price for this side.')
+                  else
+                    for (var i = 0; i < card.bookRows.length; i++)
+                      _BookRow(
+                        row: card.bookRows[i],
+                        best: i == 0,
+                        now: widget.now,
+                        bestDecimal: card.best!.decimal,
+                        chance: verdict.ourChance,
+                      ),
+                  const SizedBox(height: 16),
+                  const _SectionHead(title: 'Odds over time'),
+                  const SizedBox(height: 8),
+                  if (widget.history == null)
+                    const EmptyNote(
+                      'Price history is collected by the local backend. Nothing is drawn in its place.',
+                    )
+                  else
+                    FutureBuilder<List<OddsQuote>>(
+                      future: widget.history!(card.side),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done) {
+                          return const LinearProgressIndicator();
+                        }
+                        if (snapshot.hasError) {
+                          return const EmptyNote(
+                            'Saved price history could not be read.',
+                          );
+                        }
+                        return OddsHistoryChart(
+                          quotes: snapshot.data ?? const [],
+                        );
+                      },
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _ResearchSection(
+                title: 'Model and math',
+                children: [
+                  if (face.projection != null) ...[
+                    const SizedBox(height: 12),
+                    PropBreakdown(projection: face.projection!),
+                  ],
+                  const SizedBox(height: 4),
+                  ValueView(
+                    headline: false,
+                    verdict: verdict,
+                    whyBody: WhyBriefView(
+                      brief: buildPropBrief(
+                        verdict: verdict,
+                        line: card.line,
+                        side: card.lineSide,
+                        market: card.market,
+                        player: card.player,
+                        windows: windows,
+                        matchup: face.value.matchup,
+                        teamName: clubNickname(windows?.team),
+                        teamSpread: face.teamSpread,
+                        total: face.total,
+                        injuries: widget.injuries,
+                        playerTeam: windows?.team,
+                        opponent: face.opponent,
+                      ),
+                    ),
+                    extraMath: face.value.matchup == null
+                        ? null
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  face.value.matchup!.snapLine,
+                                  style: EdgeType.body,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  face.value.matchup!.credit,
+                                  style: EdgeType.label,
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Comparison, not a pick.',
+                textAlign: TextAlign.center,
+                style: EdgeType.label.copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: EdgeColors.textTertiary,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            'Comparison, not a pick.',
-            textAlign: TextAlign.center,
-            style: EdgeType.label.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: EdgeColors.textTertiary,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -563,31 +580,16 @@ class _SideSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _chip('Over', over, over ? null : onChanged),
-        const SizedBox(width: 8),
-        _chip('Under', !over, over ? onChanged : null),
-      ],
-    );
-  }
-
-  Widget _chip(String label, bool selected, VoidCallback? onTap) {
-    return Material(
-      color: selected ? EdgeColors.accent : EdgeColors.surfaceHigh,
-      borderRadius: BorderRadius.circular(999),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(999),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          child: Text(
-            label,
-            style: EdgeType.label.copyWith(
-              color: selected ? EdgeColors.onAccent : EdgeColors.text,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        width: 260,
+        child: EdgeSegments(
+          labels: const ['Over', 'Under'],
+          index: over ? 0 : 1,
+          onChanged: (index) {
+            if ((index == 0) != over) onChanged();
+          },
         ),
       ),
     );
@@ -610,8 +612,7 @@ class _PriceHero extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: EdgeColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: EdgeColors.border),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
@@ -620,7 +621,8 @@ class _PriceHero extends StatelessWidget {
               shortPropLine(card),
               style: EdgeType.title.copyWith(
                 fontFamily: EdgeFont.display,
-                fontSize: 18,
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -630,7 +632,10 @@ class _PriceHero extends StatelessWidget {
               children: [
                 Text(
                   quote == null ? '—' : americanLabel(quote!.decimal),
-                  style: EdgeType.number.copyWith(fontSize: 22),
+                  style: EdgeType.number.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Text(
                   priceBlurb(card),
@@ -663,18 +668,25 @@ class _ResearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
-      color: EdgeColors.surface,
-      border: Border.all(color: EdgeColors.border),
-      borderRadius: BorderRadius.circular(18),
+      border: Border(
+        bottom: BorderSide(color: EdgeColors.border.withValues(alpha: .6)),
+      ),
     ),
     child: ExpansionTile(
       key: PageStorageKey('prop-section-$title'),
-      title: Text(title, style: EdgeType.title.copyWith(fontSize: 18)),
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        title,
+        style: EdgeType.title.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       initiallyExpanded: initiallyExpanded,
       maintainState: true,
       shape: const Border(),
       collapsedShape: const Border(),
-      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      childrenPadding: const EdgeInsets.only(bottom: 20),
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -712,13 +724,22 @@ class _EvidenceSummary extends StatelessWidget {
               : mean < face.card.line
               ? 'below'
               : 'on'} this line.';
-    return CoachCard(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: EdgeColors.border.withValues(alpha: .6)),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Evidence at a glance',
-            style: EdgeType.title.copyWith(fontSize: 18),
+            style: EdgeType.title.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
@@ -781,7 +802,8 @@ class _SectionHead extends StatelessWidget {
             title,
             style: EdgeType.title.copyWith(
               fontFamily: EdgeFont.display,
-              fontSize: 20,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -813,10 +835,9 @@ class _StatReadout extends StatelessWidget {
           style: EdgeType.number.copyWith(fontSize: 18),
         ),
         Text(
-          label.toUpperCase(),
+          label,
           style: EdgeType.label.copyWith(
-            fontSize: 10,
-            letterSpacing: 0.6,
+            fontSize: 11,
             color: EdgeColors.textTertiary,
           ),
         ),
@@ -873,12 +894,7 @@ class _MatchupMeter extends StatelessWidget {
     final place = ((defense!.rank - 1) / span).clamp(0.0, 1.0);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: EdgeColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: EdgeColors.border),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -963,17 +979,22 @@ class _InjuryRow extends StatelessWidget {
     final severe = entry.outLike;
     final color = severe ? EdgeColors.bad : EdgeColors.warn;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: EdgeColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: EdgeColors.border),
+        border: Border(
+          bottom: BorderSide(color: EdgeColors.border.withValues(alpha: .5)),
+        ),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: color.withValues(alpha: .16),
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: EdgeColors.surfaceHigh,
+              borderRadius: BorderRadius.circular(6),
+            ),
             child: Text(
               playerInitials(entry.player),
               style: EdgeType.label.copyWith(
@@ -990,7 +1011,7 @@ class _InjuryRow extends StatelessWidget {
                 Text(
                   entry.player,
                   style: EdgeType.body.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     fontSize: 15,
                   ),
                 ),
@@ -1049,7 +1070,7 @@ class _BookRow extends StatelessWidget {
                       child: Text(
                         row.quote.book,
                         style: EdgeType.body.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15,
                         ),
                       ),

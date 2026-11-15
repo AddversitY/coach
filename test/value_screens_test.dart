@@ -160,6 +160,10 @@ void main() {
       expect(find.text('Pass'), findsWidgets);
       await tester.scrollUntilVisible(find.text('SAME GAME'), 400);
       expect(find.text('SAME GAME'), findsOneWidget);
+      for (var step = 0; step < 12 && find.textContaining('Estimated payout').evaluate().isEmpty; step++) {
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
+        await tester.pumpAndSettle();
+      }
       expect(find.textContaining('Estimated payout'), findsWidgets);
       await tester.scrollUntilVisible(
         find.widgetWithText(TextButton, 'Why').first,

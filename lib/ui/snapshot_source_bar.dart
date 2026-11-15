@@ -53,20 +53,20 @@ class SnapshotSourceBar extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
           onTap: () => _showDetails(context),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
               children: [
                 Icon(
                   published
                       ? Icons.calendar_month_outlined
                       : Icons.science_outlined,
-                  size: 18,
-                  color: EdgeColors.accent,
+                  size: 14,
+                  color: EdgeColors.textTertiary,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Semantics(
                     liveRegion: true,
@@ -76,11 +76,14 @@ class SnapshotSourceBar extends StatelessWidget {
                       children: [
                         Text(
                           published
-                              ? 'NFL schedule · prices unavailable'
+                              ? snapshot?.hasPrices == true
+                                    ? 'NFL · limited price coverage'
+                                    : 'NFL schedule · prices unavailable'
                               : 'Sample props',
                           style: EdgeType.label.copyWith(
                             fontSize: 12,
-                            color: EdgeColors.text,
+                            color: EdgeColors.textSecondary,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         Text(
@@ -116,17 +119,17 @@ class SnapshotSourceBar extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1152),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: EdgeColors.surface.withValues(alpha: .65),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: EdgeColors.border.withValues(alpha: .6),
+              border: Border(
+                bottom: BorderSide(
+                  color: EdgeColors.border.withValues(alpha: .4),
+                ),
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              padding: const EdgeInsets.symmetric(vertical: 2),
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final controls = <Widget>[
@@ -184,10 +187,19 @@ class SnapshotSourceBar extends StatelessWidget {
               children: [
                 Text('About this preview', style: EdgeType.title),
                 const SizedBox(height: 12),
-                const Text(
-                  'Actual games use a published NFL schedule snapshot. Sportsbook prices are not connected. The separate sample mode contains invented matchups and prices for exploring the interface.',
+                Text(
+                  snapshot?.hasPrices == true
+                      ? 'Actual games use a published NFL schedule. Prices cover one limited NFL pilot and are timestamped snapshots, with prices unavailable outside that coverage. The separate sample mode contains invented matchups and prices.'
+                      : 'Actual games use a published NFL schedule. Player research uses dated historical records. Sportsbook prices are not connected. The separate sample mode contains invented matchups and prices.',
                   style: EdgeType.body,
                 ),
+                if (snapshot?.quoteAt != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Price snapshot ${formatEastern(snapshot!.quoteAt!, year: true)}',
+                    style: EdgeType.label,
+                  ),
+                ],
                 const SizedBox(height: 12),
                 const Text(
                   'Historical player box scores and model reports have their own cutoffs. They are not live roster or injury confirmations. The simulator is experimental and has no demonstrated betting edge.',

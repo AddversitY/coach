@@ -139,4 +139,59 @@ void main() {
     expect(find.byKey(const ValueKey('schedule-game-early')), findsOneWidget);
     expect(find.text('2 upcoming games · all times ET'), findsOneWidget);
   });
+
+  testWidgets('many game days stay in one accessible horizontal date strip', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final semantics = tester.ensureSemantics();
+    try {
+      final rows = [
+        for (var day = 15; day <= 27; day++)
+          SportEvent(
+            'game-$day',
+            'Buffalo Bills',
+            'Kansas City Chiefs',
+            DateTime.utc(2026, 11, day, 18),
+          ),
+      ];
+      await tester.pumpWidget(frame(rows: rows));
+      final strip = find.byKey(const Key('schedule-date-strip'));
+      expect(tester.getSize(strip).height, lessThanOrEqualTo(52));
+      final all = find.byKey(const Key('schedule-day-all'));
+      expect(tester.getSize(all).height, greaterThanOrEqualTo(48));
+      expect(
+        tester
+            .getSemantics(all)
+            .getSemanticsData()
+            .flagsCollection
+            .isSelected
+            .toBoolOrNull(),
+        isTrue,
+      );
+      await tester.drag(strip, const Offset(-1800, 0));
+      await tester.pumpAndSettle();
+      final last = find.byKey(const ValueKey('schedule-day-2026-11-27'));
+      await tester.tap(last);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('schedule-game-game-27')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('schedule-game-game-15')), findsNothing);
+      expect(
+        tester
+            .getSemantics(last)
+            .getSemanticsData()
+            .flagsCollection
+            .isSelected
+            .toBoolOrNull(),
+        isTrue,
+      );
+      expect(tester.takeException(), isNull);
+    } finally {
+      semantics.dispose();
+    }
+  });
 }

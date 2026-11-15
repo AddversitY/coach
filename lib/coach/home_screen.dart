@@ -149,35 +149,15 @@ class _HomeScreenState extends State<HomeScreen> {
         constraints: const BoxConstraints(maxWidth: 1120),
         child: ListView(
           key: const Key('home-feed'),
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
           children: [
-            if (widget.board.demo || widget.board.quotes.isNotEmpty)
-              EdgeSegments(
-                labels: const ['Value', 'Recent', 'Pass'],
-                index: segment,
-                onChanged: (index) => setState(() => segment = index),
-              ),
-            const SizedBox(height: 16),
-            Text(
-              widget.board.demo
-                  ? 'NFL / SAMPLE RESEARCH'
-                  : widget.board.quotes.isEmpty
-                  ? 'NFL / SCHEDULE'
-                  : 'NFL / RESEARCH',
-              style: EdgeType.label.copyWith(
-                fontSize: 10,
-                letterSpacing: 1.8,
-                color: EdgeColors.accent,
-              ),
-            ),
-            const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: Text(
                     !widget.board.demo && widget.board.quotes.isEmpty
-                        ? 'The NFL slate'
+                        ? 'NFL slate'
                         : segment == 2
                         ? 'Pass on price'
                         : segment == 1
@@ -187,14 +167,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         : slateTitle(kickoffs),
                     style: EdgeType.title.copyWith(
                       fontFamily: EdgeFont.display,
-                      fontSize: 30,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -.7,
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  slateDate(kickoffs),
-                  style: EdgeType.label.copyWith(fontSize: 12),
                 ),
                 if (widget.board.demo || widget.board.quotes.isNotEmpty)
                   IconButton(
@@ -214,6 +191,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
               ],
             ),
+            if (widget.board.demo || widget.board.quotes.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              EdgeSegments(
+                labels: const ['Value', 'Recent', 'Pass'],
+                index: segment,
+                onChanged: (index) => setState(() => segment = index),
+              ),
+              const SizedBox(height: 12),
+            ],
             if (widget.board.demo) ...[
               const SizedBox(height: 6),
               const ExamplePill(),
@@ -297,8 +283,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   : segment == 2
                   ? 'Comparison, not a pick.'
                   : widget.board.demo
-                  ? 'Example data · model estimate versus the book\'s fee-free chance · not a pick'
-                  : 'Model estimate versus the book\'s fee-free chance · not a pick',
+                  ? 'Example prices · Comparison, not a pick.'
+                  : 'Comparison, not a pick.',
               textAlign: TextAlign.center,
               style: EdgeType.label.copyWith(
                 fontSize: 11,

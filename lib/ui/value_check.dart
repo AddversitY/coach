@@ -66,7 +66,7 @@ class ValueCheck extends StatelessWidget {
             style: EdgeType.display.copyWith(
               fontSize: 32,
               color: color,
-              fontStyle: FontStyle.italic,
+              fontStyle: FontStyle.normal,
             ),
           ),
           const SizedBox(height: 12),
@@ -78,7 +78,9 @@ class ValueCheck extends StatelessWidget {
               child: _Chance(
                 value: chanceLabel(ourChance),
                 label: ourLabel,
-                color: ourChance == null ? EdgeColors.textSecondary : color,
+                color: ourChance == null
+                    ? EdgeColors.textSecondary
+                    : EdgeColors.text,
                 size: numberSize,
               ),
             ),
@@ -99,13 +101,13 @@ class ValueCheck extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: compact ? 8 : 10,
+          height: compact ? 4 : 6,
           width: double.infinity,
           child: CustomPaint(
             painter: _RailPainter(
               our: ourChance,
               book: bookChance,
-              color: color,
+              color: EdgeColors.accent.withValues(alpha: .7),
             ),
           ),
         ),
@@ -141,17 +143,17 @@ class WordPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = wordColor(word, overpriced: overpriced);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: .14),
-        borderRadius: BorderRadius.circular(999),
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         ValueCheck._word(word),
         style: EdgeType.label.copyWith(
           color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -167,17 +169,17 @@ class _GapChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: .14),
-        borderRadius: BorderRadius.circular(8),
+        color: color.withValues(alpha: .07),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         label,
         style: EdgeType.number.copyWith(
           fontFamily: EdgeFont.sans,
           fontSize: 12,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w500,
           color: color,
           letterSpacing: -0.2,
         ),
@@ -288,11 +290,10 @@ class EdgeSegments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: EdgeColors.surface.withValues(alpha: .7),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: EdgeColors.border),
+        border: Border(
+          bottom: BorderSide(color: EdgeColors.border.withValues(alpha: .5)),
+        ),
       ),
       child: Row(
         children: [
@@ -301,10 +302,7 @@ class EdgeSegments extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Material(
-                  color: i == index
-                      ? EdgeColors.accent.withValues(alpha: .16)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.transparent,
                   child: Semantics(
                     key: ValueKey('edge-segment-${labels[i]}'),
                     container: true,
@@ -317,9 +315,19 @@ class EdgeSegments extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       excludeFromSemantics: true,
                       onTap: () => onChanged(i),
-                      child: ConstrainedBox(
+                      child: Container(
                         constraints: const BoxConstraints(
                           minHeight: EdgeSpace.tap,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: i == index
+                                  ? EdgeColors.accent
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -333,10 +341,12 @@ class EdgeSegments extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: EdgeType.label.copyWith(
                                 color: i == index
-                                    ? EdgeColors.accent
+                                    ? EdgeColors.text
                                     : EdgeColors.textSecondary,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
+                                fontWeight: i == index
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                fontSize: 13,
                               ),
                             ),
                           ),
@@ -364,9 +374,7 @@ class EmptyNote extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: EdgeColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: EdgeColors.border),
+        border: Border(left: BorderSide(color: EdgeColors.border, width: 2)),
       ),
       child: Text(text, style: EdgeType.body),
     );

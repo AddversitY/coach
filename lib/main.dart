@@ -13,6 +13,7 @@ import 'coach/report_card_screen.dart';
 import 'coach/stale_board_screen.dart';
 import 'coach/parlays_screen.dart';
 import 'coach/props_screen.dart';
+import 'coach/slate_research_screen.dart';
 import 'data/demo.dart';
 import 'data/demo_lines.dart';
 import 'data/repository.dart';
@@ -181,11 +182,13 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
   Widget marketResearchTabs() => Align(
     alignment: Alignment.topCenter,
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 560),
+      constraints: const BoxConstraints(maxWidth: 1120),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
         child: EdgeSegments(
-          labels: const ['Props', 'Games'],
+          labels: board.demo
+              ? const ['Props', 'Games']
+              : const ['Players', 'Games'],
           index: shell == 2 ? 1 : 0,
           onChanged: (index) {
             FocusManager.instance.primaryFocus?.unfocus();
@@ -580,7 +583,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
   }
 
   OddsBoard get propSource {
-    if (!backend || board.demo) return board;
+    if (board.demo || (!backend && !published)) return board;
     final props = propBoard;
     if (props == null) {
       return OddsBoard(
@@ -730,9 +733,9 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
             children: [
               if (wide)
                 Material(
-                  color: EdgeColors.surface.withValues(alpha: .6),
+                  color: EdgeColors.background,
                   child: SizedBox(
-                    width: 220,
+                    width: 208,
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
@@ -745,10 +748,10 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'NFL RESEARCH',
+                            'NFL Research',
                             style: EdgeType.label.copyWith(
-                              fontSize: 10,
-                              letterSpacing: 2,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
                               color: EdgeColors.textTertiary,
                             ),
                           ),
@@ -761,15 +764,26 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                                   horizontal: 12,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 selected: !inMore && navIndex == i,
-                                selectedColor: EdgeColors.accent,
-                                selectedTileColor: EdgeColors.accent.withValues(
-                                  alpha: .12,
+                                selectedColor: EdgeColors.text,
+                                selectedTileColor: EdgeColors.surfaceHigh
+                                    .withValues(alpha: .7),
+                                leading: Icon(
+                                  navIcons[i],
+                                  size: 20,
+                                  color: !inMore && navIndex == i
+                                      ? EdgeColors.accent
+                                      : EdgeColors.textTertiary,
                                 ),
-                                leading: Icon(navIcons[i]),
-                                title: Text(navLabels[i]),
+                                title: Text(
+                                  navLabels[i],
+                                  style: EdgeType.body.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                                 onTap: () => openShell(navShells[i]),
                               ),
                             ),
@@ -795,7 +809,9 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                                     screenTitle,
                                     overflow: TextOverflow.ellipsis,
                                     style: EdgeType.body.copyWith(
-                                      fontWeight: FontWeight.w700,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                      color: EdgeColors.textSecondary,
                                     ),
                                   )
                                 : const Align(
@@ -821,7 +837,10 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                         ],
                       ),
                     ),
-                    const Divider(height: 1),
+                    Divider(
+                      height: 1,
+                      color: EdgeColors.border.withValues(alpha: .45),
+                    ),
                     if (hosted)
                       SnapshotSourceBar(
                         published: published,
@@ -879,7 +898,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
 
   Widget coachPage(int destination) => switch (destination) {
     0 => HomeScreen(
-      board: propSource,
+      board: published ? board : propSource,
       sourceReady: !published || publishedSnapshot != null,
       showSourceContext: !hosted,
       games: pricedBoard,
@@ -899,20 +918,31 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
         researchContext = null;
       }),
     ),
-    1 => PropsScreen(
-      board: propSource,
-      now: now,
-      store: researchStore,
-      enabledBooks: enabledBooks,
-      history: backend && error == null
-          ? (selection) => repository.history(selection)
-          : null,
-      injuries: injuryReport,
-      focusMarket: focusPropMarket,
-      slip: slip,
-    ),
+    1 =>
+      !board.demo
+          ? SlateResearchScreen(
+              board: pricedBoard,
+              prices: propSource,
+              quotePlayerIds: publishedSnapshot?.playerIdsByName ?? const {},
+              now: now,
+              injuries: injuryReport,
+            )
+          : PropsScreen(
+              board: propSource,
+              now: now,
+              store: researchStore,
+              enabledBooks: enabledBooks,
+              history: backend && error == null
+                  ? (selection) => repository.history(selection)
+                  : null,
+              injuries: injuryReport,
+              focusMarket: focusPropMarket,
+              slip: slip,
+            ),
     2 => GamesScreen(
       board: pricedBoard,
+      props: propSource,
+      quotePlayerIds: publishedSnapshot?.playerIdsByName ?? const {},
       now: now,
       enabledBooks: enabledBooks,
       model: coachModel,

@@ -8,6 +8,7 @@ import '../domain/market_math.dart';
 import '../domain/matchup.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/odds.dart';
+import '../domain/player_stats.dart';
 import '../domain/public_sharp.dart' hide clubNickname;
 import '../domain/value_check.dart';
 import '../domain/why_brief.dart';
@@ -19,6 +20,7 @@ import 'coach_widgets.dart';
 import 'sharp_view.dart';
 import 'value_view.dart';
 import 'why_view.dart';
+import 'game_research_screen.dart';
 
 enum _When { all, today, upcoming }
 
@@ -40,6 +42,10 @@ class GamesScreen extends StatefulWidget {
     this.injuries,
     this.openEventId,
     this.onEventOpened,
+    this.loadResearchPlayers,
+    this.loadResearchMatchup,
+    this.props,
+    this.quotePlayerIds = const {},
   });
 
   final OddsBoard board;
@@ -55,6 +61,10 @@ class GamesScreen extends StatefulWidget {
   /// Opens this game once, then [onEventOpened] clears the request.
   final String? openEventId;
   final VoidCallback? onEventOpened;
+  final Future<PlayerStatsDataset> Function()? loadResearchPlayers;
+  final Future<MatchupContext> Function()? loadResearchMatchup;
+  final OddsBoard? props;
+  final Map<String, String> quotePlayerIds;
 
   @override
   State<GamesScreen> createState() => _GamesScreenState();
@@ -97,6 +107,22 @@ class _GamesScreenState extends State<GamesScreen> {
   }
 
   void _open(GameSummary game) {
+    if (!widget.board.demo) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => GameResearchScreen(
+            event: game.event,
+            now: widget.now,
+            injuries: widget.injuries,
+            loadPlayers: widget.loadResearchPlayers,
+            loadMatchup: widget.loadResearchMatchup,
+            priceBoard: widget.props,
+            quotePlayerIds: widget.quotePlayerIds,
+          ),
+        ),
+      );
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => _GameDetail(

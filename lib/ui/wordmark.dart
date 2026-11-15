@@ -51,7 +51,7 @@ class OddsWordmark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(
-      fontFamily: EdgeFont.brand,
+      fontFamily: EdgeFont.sans,
       fontSize: height,
       fontWeight: FontWeight.w600,
       letterSpacing: -0.6,
@@ -63,17 +63,7 @@ class OddsWordmark extends StatelessWidget {
       children: [
         OddsMark(size: height * 0.92),
         SizedBox(width: height * 0.28),
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: 'Odds', style: style),
-              TextSpan(
-                text: ' Edge',
-                style: style.copyWith(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ),
-        ),
+        Text('Odds Edge', style: style),
       ],
     );
   }
@@ -92,7 +82,7 @@ class ExamplePill extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
         decoration: BoxDecoration(
           color: EdgeColors.warn.withValues(alpha: .14),
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Text(
           'EXAMPLE',
@@ -100,7 +90,7 @@ class ExamplePill extends StatelessWidget {
             color: EdgeColors.warn,
             fontSize: 10,
             letterSpacing: 0.7,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),

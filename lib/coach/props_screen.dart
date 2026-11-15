@@ -156,60 +156,79 @@ class _PropsScreenState extends State<PropsScreen> {
         constraints: const BoxConstraints(maxWidth: 1120),
         child: ListView(
           key: const Key('props-list'),
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
           children: [
-            const SectionLabel('RESEARCH / NFL'),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Player props',
+                    style: EdgeType.title.copyWith(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (widget.board.demo) const ExamplePill(),
+              ],
+            ),
             const SizedBox(height: 8),
-            Text('Player props', style: EdgeType.title.copyWith(fontSize: 28)),
-            const SizedBox(height: 6),
-            if (widget.board.demo) ...[
-              const ExamplePill(),
-              const SizedBox(height: 8),
-            ],
             Text(
               widget.board.demo
                   ? 'Sample prices · historical box scores.'
                   : 'Prices are a saved snapshot.',
-              style: EdgeType.label,
-            ),
-            const SizedBox(height: 12),
-            Material(
-              color: Colors.transparent,
-              child: TextField(
-                key: const Key('prop-search'),
-                controller: search,
-                decoration: InputDecoration(
-                  hintText: 'Search player, team, or stat',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: query.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear search',
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            search.clear();
-                            setState(() => query = '');
-                          },
-                        ),
-                ),
-                onChanged: (value) => setState(() => query = value),
+              style: EdgeType.label.copyWith(
+                fontSize: 12,
+                color: EdgeColors.textTertiary,
               ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: TextField(
+                      key: const Key('prop-search'),
+                      controller: search,
+                      style: EdgeType.body.copyWith(fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: 'Search player, team, or stat',
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 14,
+                        ),
+                        prefixIcon: const Icon(Icons.search, size: 19),
+                        suffixIcon: query.isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: 'Clear search',
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  search.clear();
+                                  setState(() => query = '');
+                                },
+                              ),
+                      ),
+                      onChanged: (value) => setState(() => query = value),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  tooltip: 'Filter and sort',
+                  onPressed: _openFilters,
+                  icon: const Icon(Icons.tune, size: 20),
+                ),
+              ],
             ),
             if (preferenceNote != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(preferenceNote!, style: EdgeType.label),
               ),
-            const SizedBox(height: 12),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: OutlinedButton.icon(
-                onPressed: _openFilters,
-                icon: const Icon(Icons.tune),
-                label: const Text('Filter and sort'),
-              ),
-            ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             if (cards.isEmpty &&
                 (query.isNotEmpty ||
                     filter.market != null ||

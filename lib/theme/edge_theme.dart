@@ -1,58 +1,58 @@
 import 'package:flutter/material.dart';
 
-/// Ink surfaces and a soft iris accent. Value colors
+/// Neutral charcoal surfaces and a restrained blue accent. Value colors
 /// remain separate from navigation and always accompany a text label.
 class EdgeColors {
-  static const background = Color(0xFF0A0E16);
-  static const surface = Color(0xFF131B28);
-  static const surfaceHigh = Color(0xFF1D2839);
-  static const border = Color(0xFF2B394E);
-  static const text = Color(0xFFF2F5FC);
-  static const textSecondary = Color(0xFFBBC6D8);
-  static const textTertiary = Color(0xFF9CAEC6);
-  static const accent = Color(0xFFBAB8FF);
+  static const background = Color(0xFF0B0D10);
+  static const surface = Color(0xFF14171C);
+  static const surfaceHigh = Color(0xFF1C2027);
+  static const border = Color(0xFF2A3039);
+  static const text = Color(0xFFF4F6FA);
+  static const textSecondary = Color(0xFFB5BECC);
+  static const textTertiary = Color(0xFF9BA8BA);
+  static const accent = Color(0xFF9BC9FF);
   static const good = Color(0xFF69D7B0);
   static const warn = Color(0xFFF1C27A);
   static const bad = Color(0xFFFF918A);
-  static const onAccent = Color(0xFF1B193A);
+  static const onAccent = Color(0xFF10243A);
 }
 
 class EdgeFont {
-  static const sans = 'Outfit';
+  static const sans = 'Inter';
   static const display = sans;
   static const brand = 'Fraunces';
 }
 
-/// Four sizes, used everywhere: 34, 22, 17, 15.
+/// A quiet type hierarchy with tabular figures for comparisons.
 class EdgeType {
   static const display = TextStyle(
     fontFamily: EdgeFont.display,
     fontSize: 34,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.8,
-    height: 1.05,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -1.1,
+    height: 1.15,
     color: EdgeColors.text,
   );
   static const title = TextStyle(
     fontFamily: EdgeFont.sans,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.4,
+    letterSpacing: -0.7,
     height: 1.2,
     color: EdgeColors.text,
   );
   static const body = TextStyle(
     fontFamily: EdgeFont.sans,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.5,
     color: EdgeColors.text,
   );
   static const label = TextStyle(
     fontFamily: EdgeFont.sans,
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: FontWeight.w500,
-    height: 1.3,
+    height: 1.4,
     color: EdgeColors.textSecondary,
   );
   static const number = TextStyle(
@@ -130,12 +130,11 @@ ThemeData edgeTheme() {
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(22)),
-        side: BorderSide(color: EdgeColors.border),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
     ),
     listTileTheme: const ListTileThemeData(
-      iconColor: EdgeColors.accent,
+      iconColor: EdgeColors.textSecondary,
       textColor: EdgeColors.text,
       titleTextStyle: EdgeType.body,
       subtitleTextStyle: EdgeType.label,
@@ -146,17 +145,17 @@ ThemeData edgeTheme() {
       fillColor: EdgeColors.surface,
       labelStyle: EdgeType.label,
       hintStyle: EdgeType.label,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        borderSide: BorderSide(color: EdgeColors.border),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        borderSide: BorderSide(color: EdgeColors.border),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
         borderSide: BorderSide(color: EdgeColors.accent, width: 1.5),
       ),
     ),
@@ -167,7 +166,7 @@ ThemeData edgeTheme() {
         minimumSize: const Size(48, EdgeSpace.tap),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         textStyle: EdgeType.body.copyWith(fontWeight: FontWeight.w600),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -177,7 +176,7 @@ ThemeData edgeTheme() {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         textStyle: EdgeType.body.copyWith(fontWeight: FontWeight.w600),
         side: const BorderSide(color: EdgeColors.border),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -188,13 +187,13 @@ ThemeData edgeTheme() {
       ),
     ),
     chipTheme: ChipThemeData(
-      backgroundColor: EdgeColors.surfaceHigh,
-      selectedColor: EdgeColors.accent.withValues(alpha: .22),
+      backgroundColor: Colors.transparent,
+      selectedColor: EdgeColors.surfaceHigh,
       labelStyle: EdgeType.label.copyWith(color: EdgeColors.text),
       secondaryLabelStyle: EdgeType.label.copyWith(color: EdgeColors.accent),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      side: const BorderSide(color: EdgeColors.border),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
     sliderTheme: const SliderThemeData(
       activeTrackColor: EdgeColors.accent,
@@ -206,14 +205,14 @@ ThemeData edgeTheme() {
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: EdgeColors.background,
       elevation: 0,
-      height: 72,
-      indicatorColor: EdgeColors.accent.withValues(alpha: .14),
+      height: 68,
+      indicatorColor: Colors.transparent,
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return EdgeType.label.copyWith(
-          fontSize: 13,
+          fontSize: 11,
           color: selected ? EdgeColors.accent : EdgeColors.textSecondary,
-          fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
         );
       }),
       iconTheme: WidgetStateProperty.resolveWith((states) {
