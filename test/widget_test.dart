@@ -437,7 +437,7 @@ void main() {
     await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
     await tester.pump();
     expect(find.text('Value'), findsOneWidget);
-    expect(find.textContaining('best prices'), findsOneWidget);
+    expect(find.text('Explore props'), findsOneWidget);
     await tester.tap(find.byKey(const Key('more-menu')));
     await tester.pumpAndSettle();
     expect(find.widgetWithText(ListTile, 'Ask Coach'), findsOneWidget);
@@ -448,7 +448,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Props', skipOffstage: false));
     await tester.pump();
-    expect(find.text('PLAYER PROPS'), findsOneWidget);
+    expect(find.text('Player props'), findsOneWidget);
     expect(find.text('Josh Allen'), findsWidgets);
     expect(tester.takeException(), isNull);
 

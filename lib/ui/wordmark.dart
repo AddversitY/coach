@@ -84,19 +84,24 @@ class ExamplePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: EdgeColors.warn.withValues(alpha: .14),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        'EXAMPLE',
-        style: EdgeType.label.copyWith(
-          color: EdgeColors.warn,
-          fontSize: 10,
-          letterSpacing: 0.7,
-          fontWeight: FontWeight.w700,
+    return Align(
+      alignment: Alignment.centerLeft,
+      widthFactor: 1,
+      heightFactor: 1,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+        decoration: BoxDecoration(
+          color: EdgeColors.warn.withValues(alpha: .14),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          'EXAMPLE',
+          style: EdgeType.label.copyWith(
+            color: EdgeColors.warn,
+            fontSize: 10,
+            letterSpacing: 0.7,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

@@ -27,7 +27,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('NFL schedule · prices unavailable'), findsOneWidget);
-      expect(find.text('Buffalo Bills at Kansas City Chiefs'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
+        findsOneWidget,
+      );
       expect(find.text('EXAMPLE'), findsNothing);
       expect(find.textContaining('1970'), findsNothing);
       await tester.tap(find.byKey(const Key('switch-snapshot-mode')));
@@ -39,10 +42,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.textContaining('Update failed'), findsOneWidget);
       await tester.scrollUntilVisible(
-        find.text('Buffalo Bills at Kansas City Chiefs'),
+        find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
         150,
       );
-      expect(find.text('Buffalo Bills at Kansas City Chiefs'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
+        findsOneWidget,
+      );
       expect(find.text('EXAMPLE'), findsNothing);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
@@ -73,7 +79,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Buffalo Bills at Kansas City Chiefs'),
+      find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
       200,
     );
     expect(tester.takeException(), isNull);
@@ -97,7 +103,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Invented prices and matchups'), findsOneWidget);
       expect(find.text('EXAMPLE'), findsOneWidget);
-      expect(find.text('Buffalo Bills at Kansas City Chiefs'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('schedule-game-nflverse:2026_11_BUF_KC')),
+        findsNothing,
+      );
       await tester.pumpWidget(const SizedBox());
     },
   );

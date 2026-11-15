@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../data/nfl_assets.dart';
 import '../domain/coach_board.dart';
 import '../domain/history.dart';
-import '../domain/eastern.dart';
 import '../domain/injury_report.dart';
 import '../domain/matchup.dart';
 import '../domain/odds.dart';
@@ -12,6 +11,8 @@ import '../domain/player_stats.dart';
 import '../domain/prop_history.dart';
 import '../domain/skip_list.dart';
 import '../ui/scan_card.dart';
+import '../ui/research_grid.dart';
+import '../ui/schedule_browser.dart';
 import '../domain/value_check.dart';
 import '../theme/edge_theme.dart';
 import '../ui/feed_card.dart';
@@ -38,11 +39,12 @@ class HomeScreen extends StatefulWidget {
     this.onOpenReport,
     this.onOpenStale,
     this.sourceReady = true,
+    this.showSourceContext = true,
   });
 
   /// Prices for the prop feed. In sample mode this is the same board as the games.
   final OddsBoard board;
-  final bool sourceReady;
+  final bool sourceReady, showSourceContext;
   final DateTime now;
   final String Function(DateTime time) stamp;
 
@@ -138,36 +140,54 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
     final filtered = _filter(shown);
-    final kickoffs = gamesBoard.events.map((event) => event.startsAt);
+    final kickoffs = gamesBoard.events
+        .where((event) => event.startsAt.isAfter(widget.now))
+        .map((event) => event.startsAt);
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
+        constraints: const BoxConstraints(maxWidth: 1120),
         child: ListView(
           key: const Key('home-feed'),
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
           children: [
-            if (widget.board.demo || widget.board.quotes.isNotEmpty) EdgeSegments(
-              labels: const ['Value', 'Recent', 'Pass'],
-              index: segment,
-              onChanged: (index) => setState(() => segment = index),
-            ),
+            if (widget.board.demo || widget.board.quotes.isNotEmpty)
+              EdgeSegments(
+                labels: const ['Value', 'Recent', 'Pass'],
+                index: segment,
+                onChanged: (index) => setState(() => segment = index),
+              ),
             const SizedBox(height: 16),
+            Text(
+              widget.board.demo
+                  ? 'NFL / SAMPLE RESEARCH'
+                  : widget.board.quotes.isEmpty
+                  ? 'NFL / SCHEDULE'
+                  : 'NFL / RESEARCH',
+              style: EdgeType.label.copyWith(
+                fontSize: 10,
+                letterSpacing: 1.8,
+                color: EdgeColors.accent,
+              ),
+            ),
+            const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: Text(
                     !widget.board.demo && widget.board.quotes.isEmpty
-                        ? 'Upcoming NFL games'
+                        ? 'The NFL slate'
                         : segment == 2
                         ? 'Pass on price'
                         : segment == 1
                         ? 'Recent clear rates'
+                        : widget.board.demo
+                        ? 'Explore props'
                         : slateTitle(kickoffs),
                     style: EdgeType.title.copyWith(
                       fontFamily: EdgeFont.display,
-                      fontSize: 22,
+                      fontSize: 30,
                     ),
                   ),
                 ),
@@ -176,25 +196,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   slateDate(kickoffs),
                   style: EdgeType.label.copyWith(fontSize: 12),
                 ),
-                if (widget.board.demo || widget.board.quotes.isNotEmpty) IconButton(
-                  tooltip: 'Search',
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => setState(() {
-                    searching = !searching;
-                    if (!searching) {
-                      query = '';
-                      search.clear();
-                    }
-                  }),
-                  icon: Icon(searching ? Icons.close : Icons.search, size: 20),
-                ),
+                if (widget.board.demo || widget.board.quotes.isNotEmpty)
+                  IconButton(
+                    tooltip: 'Search',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => setState(() {
+                      searching = !searching;
+                      if (!searching) {
+                        query = '';
+                        search.clear();
+                      }
+                    }),
+                    icon: Icon(
+                      searching ? Icons.close : Icons.search,
+                      size: 20,
+                    ),
+                  ),
               ],
             ),
             if (widget.board.demo) ...[
               const SizedBox(height: 6),
               const ExamplePill(),
             ],
-            if (widget.sourceReady)
+            if (widget.sourceReady && widget.showSourceContext)
               Text(
                 'Snapshot as of ${widget.stamp(widget.board.fetchedAt)}',
                 style: EdgeType.label.copyWith(
@@ -230,12 +254,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
             const SizedBox(height: 12),
-            if (widget.board.demo)
+            if (widget.board.demo && widget.showSourceContext)
               const Text(
                 'Invented prices and matchups · historical box scores',
                 style: EdgeType.label,
               ),
-            if ((widget.board.demo || widget.board.quotes.isNotEmpty) && directory?.data.metadata['cutoff'] != null)
+            if ((widget.board.demo || widget.board.quotes.isNotEmpty) &&
+                directory?.data.metadata['cutoff'] != null)
               Text(
                 'Box scores through ${directory!.data.metadata['cutoff']} · not live',
                 style: EdgeType.label.copyWith(fontSize: 12),
@@ -245,7 +270,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
             ],
             if (!widget.board.demo && widget.board.quotes.isEmpty)
-              ..._scheduledGames()
+              ScheduleBrowser(
+                events: gamesBoard.events,
+                now: widget.now,
+                onOpenGame: widget.onOpenGame,
+                sourceReady: widget.sourceReady,
+              )
             else if (statsLoading)
               const CoachCard(
                 child: Row(
@@ -263,12 +293,12 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             Text(
               !widget.board.demo && widget.board.quotes.isEmpty
-                  ? 'Schedule: nflverse · CC BY 4.0 · prices unavailable'
+                  ? 'Schedule: nflverse · CC BY 4.0'
                   : segment == 2
                   ? 'Comparison, not a pick.'
                   : widget.board.demo
-                  ? 'Example data · our chance versus the book\'s fee-free chance · not a pick'
-                  : 'Our chance versus the book\'s fee-free chance · not a pick',
+                  ? 'Example data · model estimate versus the book\'s fee-free chance · not a pick'
+                  : 'Model estimate versus the book\'s fee-free chance · not a pick',
               textAlign: TextAlign.center,
               style: EdgeType.label.copyWith(
                 fontSize: 11,
@@ -288,53 +318,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       for (final prop in shown)
         if (_haystack(prop).contains(q)) prop,
-    ];
-  }
-
-  List<Widget> _scheduledGames() {
-    final upcoming =
-        gamesBoard.events.where((e) => e.startsAt.isAfter(widget.now)).toList()
-          ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
-    return [
-      const EmptyNote(
-        'Sportsbook prices are not connected. Browse the schedule or use Sample props to explore the research tools.',
-      ),
-      const SizedBox(height: 12),
-      if (widget.sourceReady && upcoming.isEmpty)
-        const EmptyNote(
-          'No upcoming games in the published 14-day window. Check the schedule timestamp above.',
-        ),
-      for (final event in upcoming)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Material(
-            color: EdgeColors.surface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-              side: const BorderSide(color: EdgeColors.border),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
-              title: Text(
-                '${event.away} at ${event.home}',
-                style: EdgeType.body,
-              ),
-              subtitle: Text(
-                '${formatEastern(event.startsAt)}\nPrices unavailable',
-                style: EdgeType.label,
-              ),
-              isThreeLine: true,
-              trailing: const Icon(Icons.chevron_right),
-              onTap: widget.onOpenGame == null
-                  ? null
-                  : () => widget.onOpenGame!(event.id),
-            ),
-          ),
-        ),
     ];
   }
 
@@ -388,17 +371,19 @@ class _HomeScreenState extends State<HomeScreen> {
       return const [EmptyNote('Nothing in this snapshot matches that search.')];
     }
     return [
-      for (final prop in ranked) ...[
-        FeedPropCard(
-          key: ValueKey(prop.card.id),
-          shown: prop,
-          onOpen: () => _open(prop),
-          onSave: widget.onSave == null
-              ? null
-              : () => widget.onSave!(prop.card),
-        ),
-        const SizedBox(height: 8),
-      ],
+      ResearchGrid(
+        children: [
+          for (final prop in ranked)
+            FeedPropCard(
+              key: ValueKey(prop.card.id),
+              shown: prop,
+              onOpen: () => _open(prop),
+              onSave: widget.onSave == null
+                  ? null
+                  : () => widget.onSave!(prop.card),
+            ),
+        ],
+      ),
     ];
   }
 

@@ -30,14 +30,14 @@ class FeedPropCard extends StatelessWidget {
     return Material(
       color: EdgeColors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(22),
         side: const BorderSide(color: EdgeColors.border),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onOpen,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -103,7 +103,16 @@ class FeedPropCard extends StatelessWidget {
               const SizedBox(height: 10),
               const Divider(height: 1),
               if (shown.dataWarning != null)
-                Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(shown.dataWarning!, style: EdgeType.label.copyWith(color: EdgeColors.warn, fontSize: 12))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    shown.dataWarning!,
+                    style: EdgeType.label.copyWith(
+                      color: EdgeColors.warn,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,6 +153,7 @@ class FeedPropCard extends StatelessWidget {
                 overpriced: verdict.overpriced,
                 ourChance: verdict.ourChance,
                 bookChance: verdict.fairChance,
+                ourLabel: 'Model estimate',
                 bookLabel: shown.bookChanceLabel,
               ),
               const SizedBox(height: 10),
@@ -217,7 +227,10 @@ class _Hit extends StatelessWidget {
     final clear = rate?.clearRate;
     return Text.rich(
       TextSpan(
-        style: EdgeType.label.copyWith(fontSize: 12, fontWeight: FontWeight.w600),
+        style: EdgeType.label.copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
         children: [
           TextSpan(text: '$label '),
           TextSpan(
@@ -238,7 +251,9 @@ class _Hit extends StatelessWidget {
 List<HitSample> _sparkSamples(PropWindows? windows) {
   final rate = windows?.last10 ?? windows?.last5;
   if (rate == null) return const [];
-  final recorded = rate.samples.where((sample) => sample.value != null).toList();
+  final recorded = rate.samples
+      .where((sample) => sample.value != null)
+      .toList();
   if (recorded.isEmpty) return const [];
   final chronological = recorded.reversed.toList();
   if (chronological.length <= 10) return chronological;

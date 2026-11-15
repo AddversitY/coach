@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-/// Cool graphite surfaces with a pale-blue interaction accent. Value colors
+/// Ink surfaces and a soft iris accent. Value colors
 /// remain separate from navigation and always accompany a text label.
 class EdgeColors {
-  static const background = Color(0xFF0C1017);
-  static const surface = Color(0xFF151C25);
-  static const surfaceHigh = Color(0xFF202A37);
-  static const border = Color(0xFF303D4D);
-  static const text = Color(0xFFF3F6FA);
-  static const textSecondary = Color(0xFFBAC6D6);
-  static const textTertiary = Color(0xFF9BAABE);
-  static const accent = Color(0xFFA8C7FA);
+  static const background = Color(0xFF0A0E16);
+  static const surface = Color(0xFF131B28);
+  static const surfaceHigh = Color(0xFF1D2839);
+  static const border = Color(0xFF2B394E);
+  static const text = Color(0xFFF2F5FC);
+  static const textSecondary = Color(0xFFBBC6D8);
+  static const textTertiary = Color(0xFF9CAEC6);
+  static const accent = Color(0xFFBAB8FF);
   static const good = Color(0xFF69D7B0);
   static const warn = Color(0xFFF1C27A);
   static const bad = Color(0xFFFF918A);
-  static const onAccent = Color(0xFF102542);
+  static const onAccent = Color(0xFF1B193A);
 }
 
 class EdgeFont {
@@ -28,7 +28,7 @@ class EdgeType {
   static const display = TextStyle(
     fontFamily: EdgeFont.display,
     fontSize: 34,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.8,
     height: 1.05,
     color: EdgeColors.text,
@@ -51,7 +51,7 @@ class EdgeType {
   static const label = TextStyle(
     fontFamily: EdgeFont.sans,
     fontSize: 15,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
     height: 1.3,
     color: EdgeColors.textSecondary,
   );
@@ -130,7 +130,7 @@ ThemeData edgeTheme() {
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(18)),
+        borderRadius: BorderRadius.all(Radius.circular(22)),
         side: BorderSide(color: EdgeColors.border),
       ),
     ),
@@ -143,20 +143,20 @@ ThemeData edgeTheme() {
     ),
     inputDecorationTheme: const InputDecorationTheme(
       filled: true,
-      fillColor: EdgeColors.surfaceHigh,
+      fillColor: EdgeColors.surface,
       labelStyle: EdgeType.label,
       hintStyle: EdgeType.label,
       contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(color: EdgeColors.border),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(color: EdgeColors.border),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(color: EdgeColors.accent, width: 1.5),
       ),
     ),
@@ -206,8 +206,8 @@ ThemeData edgeTheme() {
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: EdgeColors.background,
       elevation: 0,
-      height: 68,
-      indicatorColor: EdgeColors.accent.withValues(alpha: .18),
+      height: 72,
+      indicatorColor: EdgeColors.accent.withValues(alpha: .14),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return EdgeType.label.copyWith(

@@ -13,6 +13,7 @@ import '../domain/prop_history.dart';
 import '../domain/why_brief.dart';
 import '../theme/edge_theme.dart';
 import '../ui/prop_breakdown.dart';
+import '../ui/evidence_data_note.dart';
 import '../ui/value_check.dart';
 import '../ui/wordmark.dart';
 import 'coach_widgets.dart';
@@ -169,11 +170,12 @@ class _PropDetailScreenState extends State<PropDetailScreen> {
         children: [
           if (propMeta(face).isNotEmpty)
             Text(propMeta(face), style: EdgeType.label),
-          if (widget.directory != null)
-            Text(
-              'Historical box scores through ${widget.directory!.data.metadata['cutoff'] ?? 'the bundled file cutoff'} · not live stats',
-              style: EdgeType.label.copyWith(fontSize: 12),
-            ),
+          EvidenceDataNote(
+            now: widget.now,
+            boxScores: widget.directory?.data.metadata,
+            matchup: widget.context,
+            injuries: widget.injuries,
+          ),
           if (face.dataWarning != null)
             Text(
               face.dataWarning!,

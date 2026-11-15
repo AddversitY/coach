@@ -13,6 +13,7 @@ import '../domain/prop_history.dart';
 import '../explained_number.dart';
 import '../theme/edge_theme.dart';
 import '../ui/feed_card.dart';
+import '../ui/research_grid.dart';
 import '../ui/wordmark.dart';
 import 'coach_widgets.dart';
 import 'prop_detail_screen.dart';
@@ -149,125 +150,131 @@ class _PropsScreenState extends State<PropsScreen> {
                       .contains(query.trim().toLowerCase()),
             )
             .toList();
-    return ListView(
-      key: const Key('props-list'),
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-      children: [
-        const SectionLabel('PLAYER PROPS'),
-        const SizedBox(height: 6),
-        if (widget.board.demo) ...[
-          const ExamplePill(),
-          const SizedBox(height: 8),
-        ],
-        Text(
-          widget.board.demo
-              ? 'Example prices. Hit rates are real box scores.'
-              : 'Prices are a saved snapshot.',
-          style: EdgeType.label,
-        ),
-        const SizedBox(height: 12),
-        Material(
-          color: Colors.transparent,
-          child: TextField(
-            key: const Key('prop-search'),
-            controller: search,
-            decoration: InputDecoration(
-              hintText: 'Search player, team, or stat',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: query.isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: 'Clear search',
-                      icon: const Icon(Icons.close),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1120),
+        child: ListView(
+          key: const Key('props-list'),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            const SectionLabel('RESEARCH / NFL'),
+            const SizedBox(height: 8),
+            Text('Player props', style: EdgeType.title.copyWith(fontSize: 28)),
+            const SizedBox(height: 6),
+            if (widget.board.demo) ...[
+              const ExamplePill(),
+              const SizedBox(height: 8),
+            ],
+            Text(
+              widget.board.demo
+                  ? 'Sample prices · historical box scores.'
+                  : 'Prices are a saved snapshot.',
+              style: EdgeType.label,
+            ),
+            const SizedBox(height: 12),
+            Material(
+              color: Colors.transparent,
+              child: TextField(
+                key: const Key('prop-search'),
+                controller: search,
+                decoration: InputDecoration(
+                  hintText: 'Search player, team, or stat',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Clear search',
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            search.clear();
+                            setState(() => query = '');
+                          },
+                        ),
+                ),
+                onChanged: (value) => setState(() => query = value),
+              ),
+            ),
+            if (preferenceNote != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(preferenceNote!, style: EdgeType.label),
+              ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: _openFilters,
+                icon: const Icon(Icons.tune),
+                label: const Text('Filter and sort'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (cards.isEmpty &&
+                (query.isNotEmpty ||
+                    filter.market != null ||
+                    filter.bookId != null ||
+                    filter.minAmerican != null ||
+                    filter.maxAmerican != null ||
+                    filter.onlyLongerThanTheBooks))
+              CoachCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('No matches for this search and these filters.'),
+                    TextButton(
                       onPressed: () {
                         search.clear();
                         setState(() => query = '');
+                        _applyFilter(const PropFilter());
                       },
+                      child: const Text('Clear search and filters'),
                     ),
-            ),
-            onChanged: (value) => setState(() => query = value),
-          ),
-        ),
-        if (preferenceNote != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(preferenceNote!, style: EdgeType.label),
-          ),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
-            onPressed: _openFilters,
-            icon: const Icon(Icons.tune),
-            label: const Text('Filter and sort'),
-          ),
-        ),
-        const SizedBox(height: 12),
-        if (cards.isEmpty &&
-            (query.isNotEmpty ||
-                filter.market != null ||
-                filter.bookId != null ||
-                filter.minAmerican != null ||
-                filter.maxAmerican != null ||
-                filter.onlyLongerThanTheBooks))
-          CoachCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('No matches for this search and these filters.'),
-                TextButton(
-                  onPressed: () {
-                    search.clear();
-                    setState(() => query = '');
-                    _applyFilter(const PropFilter());
-                  },
-                  child: const Text('Clear search and filters'),
-                ),
-              ],
-            ),
-          )
-        else if (cards.isEmpty)
-          const CoachCard(
-            child: Text(
-              'Player-prop prices are unavailable in this snapshot. No lines or probabilities are filled in. In the public preview, use Sample props to explore the research tools.',
-              style: TextStyle(height: 1.4),
-            ),
-          )
-        else
-          FutureBuilder<_PropFacts>(
-            future: facts,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Text(
-                  'The NFL box scores could not be read, so hit rates are left blank.',
-                );
-              }
-              final facts = snapshot.data;
-              final shown = preferredPropSides(
-                showProps(
-                  cards: cards,
-                  directory: facts?.players,
-                  context: facts?.matchup,
-                  board: widget.board,
-                  now: widget.now,
-                  injuries: widget.injuries,
-                  scores: scores,
-                ),
-              );
-              return Column(
-                children: [
-                  for (final face in shown) ...[
-                    FeedPropCard(
-                      shown: face,
-                      onOpen: () => _open(face.card, facts, cards),
-                    ),
-                    const SizedBox(height: 8),
                   ],
-                ],
-              );
-            },
-          ),
-      ],
+                ),
+              )
+            else if (cards.isEmpty)
+              const CoachCard(
+                child: Text(
+                  'No prop prices connected yet. Choose Sample props above to explore the research experience.',
+                  style: TextStyle(height: 1.4),
+                ),
+              )
+            else
+              FutureBuilder<_PropFacts>(
+                future: facts,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text(
+                      'The NFL box scores could not be read, so hit rates are left blank.',
+                    );
+                  }
+                  final facts = snapshot.data;
+                  final shown = preferredPropSides(
+                    showProps(
+                      cards: cards,
+                      directory: facts?.players,
+                      context: facts?.matchup,
+                      board: widget.board,
+                      now: widget.now,
+                      injuries: widget.injuries,
+                      scores: scores,
+                    ),
+                  );
+                  return ResearchGrid(
+                    children: [
+                      for (final face in shown)
+                        FeedPropCard(
+                          shown: face,
+                          onOpen: () => _open(face.card, facts, cards),
+                        ),
+                    ],
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
     );
   }
 

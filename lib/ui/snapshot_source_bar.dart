@@ -21,87 +21,151 @@ class SnapshotSourceBar extends StatelessWidget {
   final DateTime now;
   final VoidCallback onSwitch, onRefresh;
 
+  String _checkedLabel() {
+    final at = snapshot?.scheduleAt;
+    if (at == null) return 'Schedule unavailable';
+    final age = now.difference(at);
+    if (age.inMinutes < 1) return 'Checked just now';
+    if (age.inMinutes < 60) return 'Checked ${age.inMinutes}m ago';
+    if (age.inHours < 24) return 'Checked ${age.inHours}h ago';
+    return 'Checked ${formatEastern(at)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final stale = snapshot?.stale(now) ?? false;
     final status = !published
         ? 'Invented prices and matchups'
         : loading
-        ? 'Updating schedule…'
+        ? 'Checking schedule…'
         : error != null
         ? 'Update failed${snapshot == null
               ? ''
               : stale
               ? ' · outdated schedule'
               : ' · saved schedule'}'
-        : snapshot == null
-        ? 'Schedule unavailable'
         : stale
-        ? 'Schedule snapshot is outdated'
-        : 'Updated ${formatEastern(snapshot!.scheduleAt)}';
-    final details = Semantics(
-      liveRegion: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            published ? 'NFL schedule · prices unavailable' : 'Sample props',
-            style: EdgeType.label.copyWith(color: EdgeColors.accent),
-          ),
-          Text(
-            status,
-            style: EdgeType.label.copyWith(
-              fontSize: 11,
-              color: error != null || stale
-                  ? EdgeColors.warn
-                  : EdgeColors.textSecondary,
+        ? 'Schedule is outdated · ${_checkedLabel()}'
+        : _checkedLabel();
+    final sourceContent = Tooltip(
+      message: 'About this data',
+      excludeFromSemantics: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => _showDetails(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            child: Row(
+              children: [
+                Icon(
+                  published
+                      ? Icons.calendar_month_outlined
+                      : Icons.science_outlined,
+                  size: 18,
+                  color: EdgeColors.accent,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          published
+                              ? 'NFL schedule · prices unavailable'
+                              : 'Sample props',
+                          style: EdgeType.label.copyWith(
+                            fontSize: 12,
+                            color: EdgeColors.text,
+                          ),
+                        ),
+                        Text(
+                          status,
+                          style: EdgeType.label.copyWith(
+                            fontSize: 11,
+                            color: error != null || stale
+                                ? EdgeColors.warn
+                                : EdgeColors.textTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
-    final controls = <Widget>[
-      TextButton(
-        key: const Key('switch-snapshot-mode'),
-        onPressed: onSwitch,
-        child: Text(published ? 'Sample props' : 'Actual games'),
+    final source = Semantics(
+      key: const Key('snapshot-source-details'),
+      button: true,
+      label: 'About this data',
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: EdgeSpace.tap),
+        child: sourceContent,
       ),
-      if (published && error != null)
-        IconButton(
-          tooltip: 'Reload published schedule',
-          onPressed: loading ? null : onRefresh,
-          icon: const Icon(Icons.refresh, size: 20),
-        ),
-      IconButton(
-        tooltip: 'About this data',
-        icon: const Icon(Icons.info_outline, size: 20),
-        onPressed: () => _showDetails(context),
-      ),
-    ];
-    return Material(
-      color: EdgeColors.surface,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < 600 &&
-                MediaQuery.textScalerOf(context).scale(1) > 1.2) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  details,
-                  Wrap(alignment: WrapAlignment.end, children: controls),
-                ],
-              );
-            }
-            return Row(
-              children: [
-                Expanded(child: details),
-                ...controls,
-              ],
-            );
-          },
+    );
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1152),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: EdgeColors.surface.withValues(alpha: .65),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: EdgeColors.border.withValues(alpha: .6),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final controls = <Widget>[
+                    TextButton(
+                      key: const Key('switch-snapshot-mode'),
+                      onPressed: onSwitch,
+                      style: TextButton.styleFrom(
+                        textStyle: EdgeType.label.copyWith(fontSize: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      child: Text(published ? 'Sample props' : 'Actual games'),
+                    ),
+                    if (published && error != null)
+                      IconButton(
+                        tooltip: 'Reload published schedule',
+                        onPressed: loading ? null : onRefresh,
+                        icon: const Icon(Icons.refresh, size: 18),
+                      ),
+                  ];
+                  if (constraints.maxWidth < 600 &&
+                      MediaQuery.textScalerOf(context).scale(1) > 1.2) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        source,
+                        Wrap(alignment: WrapAlignment.end, children: controls),
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      Expanded(child: source),
+                      ...controls,
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );

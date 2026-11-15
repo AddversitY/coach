@@ -57,12 +57,27 @@ class MatchupContext {
     required this.snaps,
     required this.note,
     this.season = 2026,
+    this.reportedSeason,
+    this.sourceName,
+    this.injurySource,
+    this.snapSource,
+    this.cutoff,
+    this.retrievedAt,
   });
 
   final List<ListedInjury> injuries;
   final List<SnapShare> snaps;
   final String note;
   final int season;
+
+  /// Provenance is independent of the fallback season used by old model code.
+  /// Missing dates remain unknown; a fresh schedule does not date this file.
+  final int? reportedSeason;
+  final String? sourceName, injurySource, snapSource;
+  final DateTime? cutoff, retrievedAt;
+  int? get snapThroughWeek => _lastRecordedWeek(snaps.map((row) => row.week));
+  int? get injuryThroughWeek =>
+      _lastRecordedWeek(injuries.map((row) => row.week));
 
   static const participationNote =
       'nflverse participation, the play-by-play record of who was on the field, is not updated during the season. Snap counts are used instead.';
@@ -75,6 +90,17 @@ class MatchupContext {
     }
     return MatchupContext(
       season: json['season'] is int ? json['season'] as int : 2026,
+      reportedSeason:
+          json['season'] is int &&
+              json['season'] >= 1920 &&
+              json['season'] <= 2200
+          ? json['season'] as int
+          : null,
+      sourceName: _provenanceText(json['sourceName']),
+      injurySource: _provenanceUrl(json['injurySource']),
+      snapSource: _provenanceUrl(json['snapSource']),
+      cutoff: parseEvidenceDay(json['cutoff']),
+      retrievedAt: parseEvidenceTimestamp(json['retrievedAt']),
       note: json['participationNote'] is String
           ? json['participationNote'] as String
           : participationNote,
@@ -105,6 +131,51 @@ class MatchupContext {
       ],
     );
   }
+}
+
+int? _lastRecordedWeek(Iterable<int> weeks) {
+  int? result;
+  for (final week in weeks) {
+    if (week < 1 || week > 23) continue;
+    if (result == null || week > result) {
+      result = week;
+    }
+  }
+  return result;
+}
+
+String? _provenanceText(Object? raw) =>
+    raw is String && raw.trim().isNotEmpty && raw.length <= 240
+    ? raw.trim()
+    : null;
+
+String? _provenanceUrl(Object? raw) {
+  final text = _provenanceText(raw);
+  final uri = text == null ? null : Uri.tryParse(text);
+  return uri?.scheme == 'https' && uri!.host.isNotEmpty && uri.userInfo.isEmpty
+      ? text
+      : null;
+}
+
+/// A game-date cutoff must be a real calendar date, not a normalized overflow.
+DateTime? parseEvidenceDay(Object? raw) {
+  if (raw is! String || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(raw)) {
+    return null;
+  }
+  final date = DateTime.tryParse('${raw}T00:00:00Z');
+  return date != null && date.toIso8601String().startsWith(raw) ? date : null;
+}
+
+/// Retrieval times require an explicit timezone; no local-time guess is made.
+DateTime? parseEvidenceTimestamp(Object? raw) {
+  if (raw is! String ||
+      !RegExp(
+        r'^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,9})?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$',
+      ).hasMatch(raw) ||
+      parseEvidenceDay(raw.substring(0, 10)) == null) {
+    return null;
+  }
+  return DateTime.tryParse(raw)?.toUtc();
 }
 
 int _week(Object? value) {

@@ -115,7 +115,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.textContaining('Sportsbook prices are not connected'), findsOneWidget);
+    expect(find.text('No upcoming games'), findsOneWidget);
     expect(find.textContaining('%'), findsNothing);
     expect(find.text('EXAMPLE'), findsNothing);
   });
@@ -143,7 +143,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('EXAMPLE'), findsOneWidget);
     expect(find.text('Josh Allen'), findsWidgets);
-    expect(find.text('Our chance'.toUpperCase()), findsWidgets);
+    expect(find.text('Model estimate'.toUpperCase()), findsWidgets);
     expect(find.textContaining('NO-VIG'), findsWidgets);
     expect(find.text('Review'), findsWidgets);
     await tester.tap(find.text('Recent'));
@@ -208,7 +208,11 @@ void main() {
     await tester.pump();
     expect(slip.slip.length, 1);
     expect(find.text('Remove from parlay'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Under'), -250);
+    tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position
+        .jumpTo(0);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Under'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Add to parlay'));

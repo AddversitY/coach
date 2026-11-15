@@ -730,7 +730,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
             children: [
               if (wide)
                 Material(
-                  color: EdgeColors.surface,
+                  color: EdgeColors.surface.withValues(alpha: .6),
                   child: SizedBox(
                     width: 220,
                     child: Padding(
@@ -743,7 +743,16 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                             fit: BoxFit.scaleDown,
                             child: OddsWordmark(height: 22),
                           ),
-                          const SizedBox(height: 28),
+                          const SizedBox(height: 12),
+                          Text(
+                            'NFL RESEARCH',
+                            style: EdgeType.label.copyWith(
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: EdgeColors.textTertiary,
+                            ),
+                          ),
+                          const SizedBox(height: 32),
                           for (var i = 0; i < navLabels.length; i++)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 4),
@@ -752,7 +761,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                                   horizontal: 12,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                                 selected: !inMore && navIndex == i,
                                 selectedColor: EdgeColors.accent,
@@ -776,7 +785,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: wide ? 30 : 16,
-                        vertical: 18,
+                        vertical: 14,
                       ),
                       child: Row(
                         children: [
@@ -872,6 +881,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
     0 => HomeScreen(
       board: propSource,
       sourceReady: !published || publishedSnapshot != null,
+      showSourceContext: !hosted,
       games: pricedBoard,
       now: now,
       stamp: stamp,
@@ -1008,15 +1018,6 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
           page = 6;
           researchContext = null;
         }),
-      ),
-      _libraryRow(
-        'Saved predictions',
-        'Predictions you already saved on this device.',
-        () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => PlayerInvestigationLibrary(store: researchStore),
-          ),
-        ),
       ),
     ],
   );
@@ -1315,8 +1316,8 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
       children: [
         heading(
           'YOUR RESEARCH DESK',
-          'Does your betting idea hold up?',
-          'Investigate the evidence, test what could change it, and learn from the outcome.',
+          'What does the evidence show?',
+          'Explore player production, compare prices and test your assumptions.',
         ),
         box(
           Column(
@@ -1328,7 +1329,7 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
               ),
               const SizedBox(height: 10),
               const Text(
-                'Has a player’s recent production changed because of opportunity or efficiency? Compare the evidence, replay scenarios, and save your prediction.',
+                'Explore changes in workload and production. Compare the evidence and test your assumptions.',
               ),
               const SizedBox(height: 16),
               Wrap(
@@ -1339,21 +1340,12 @@ class _EdgeWorkspaceState extends State<EdgeWorkspace> {
                     key: const Key('investigate-bet'),
                     onPressed: () => navigateTo(4),
                     icon: const Icon(Icons.science_outlined),
-                    label: const Text('Investigate a bet'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) =>
-                            PlayerInvestigationLibrary(store: researchStore),
-                      ),
-                    ),
-                    child: const Text('Review saved predictions'),
+                    label: const Text('Research a player'),
                   ),
                   OutlinedButton.icon(
                     onPressed: () => openShell(5),
                     icon: const Icon(Icons.handyman_outlined),
-                    label: const Text('Price, parlays, and bet log'),
+                    label: const Text('Price and parlay tools'),
                   ),
                 ],
               ),

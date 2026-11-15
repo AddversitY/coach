@@ -209,7 +209,7 @@ Run `.venv\Scripts\python.exe model/parlay_simulation.py` to reproduce `assets/p
 
 The simulator supports 2–8 projected player-yard/reception legs and half-point lines. It is an experimental statistical script, not a physical football simulation or a validated profitability model. Whole-number push handling and other prop metrics are excluded explicitly. Report-card scoring is a dependence-layer comparison, not a test of live sportsbook offers.
 
-Phone verification: `.\tools\flutter.ps1 test --no-pub test/simulator_flow_test.dart`. Optional visual checks: set `SCREENSHOT=1` and run `test/screen_shots_test.dart`; review `build/review/simulation-390.png` and `build/review/parlay-validation-390.png` as well as the existing research screenshots. The screenshots are gitignored.
+Phone verification: `.\tools\flutter.ps1 test --no-pub test/simulator_flow_test.dart`. Optional visual checks: set `SCREENSHOT=1` and run `test/screen_shots_test.dart`; review `build/review/simulation-390.png` and `build/review/parlay-validation-390.png` as well as the existing research screenshots. The screenshots are gitignored. Leave `SCREENSHOT` unset for the standard full suite; the older `phase_a_shots_test.dart` and `phase_b_shots_test.dart` harnesses still reference retired navigation and are not the current visual checks.
 
 ## Hosted research prototype
 
@@ -223,4 +223,4 @@ Public mode starts on actual scheduled games with prices explicitly unavailable.
 
 No Odds API credential was found in the supported local environment scopes or GitHub Actions secrets during setup. Real sportsbook quotes are not activated by this release. A provider credential and a separately tested, quota-controlled quote publication/backend integration are still required. Do not add raw keys to commits, chat, browser storage or public data files. The current schedule-only schema deliberately rejects quotes until that integration is implemented.
 
-Checks: 284 Flutter tests, 43 model tests, 4 schedule-export tests; clean analyzer. The public deployment workflow repeats app checks and schedule tests before publishing. Official hosting references: https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically and https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits .
+Checks after the 15 November design pass: 296 Flutter tests, 43 model tests, 4 schedule-export tests; clean analyzer, web and Windows release builds passed. The public deployment workflow repeats app checks and schedule tests before publishing. Design decisions and content refresh priorities are in [the design and content review](docs/DESIGN_REVIEW_2026-11-15.md). Official hosting references: https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically and https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits .

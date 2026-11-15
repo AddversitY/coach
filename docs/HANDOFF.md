@@ -116,7 +116,7 @@ Props, from the walk-forward on the bundled box scores (PR #17, 17,097 paired pl
 
 ## Design
 
-Cool graphite and a pale-blue interaction accent. `lib/theme/edge_theme.dart`: background `#0C1017`, surface `#151C25`, text `#F3F6FA`, accent `#A8C7FA`. Fraunces stays on the wordmark; Outfit is used for interface headings and figures. Mint, amber and coral describe labeled value states, separate from navigation. Full direction: [product review](PRODUCT_REVIEW_2026-11-14.md).
+Deep ink and a soft iris interaction accent. `lib/theme/edge_theme.dart`: background `#0A0E16`, surface `#131B28`, text `#F2F5FC`, accent `#BAB8FF`. Fraunces stays on the wordmark; Outfit is used for interface headings and figures. Mint, amber and coral describe labeled value states, separate from navigation. Full direction: [product review](PRODUCT_REVIEW_2026-11-14.md) and [15 November design and content review](DESIGN_REVIEW_2026-11-15.md).
 
 The value rail is `ValueCheck` (`lib/ui/value_check.dart`): our chance, the book's no-vig, the gap, and one word. Bet is at least 3 cents of expected profit per dollar. Lean is any smaller profit. Skip is zero, a loss, or a missing chance. A likely side can still be Skip when the price is short.
 
@@ -155,9 +155,19 @@ Verification: 277 Flutter tests and 43 Python tests passed; Flutter analyzer cle
 - No supported Odds API key was present locally or in repository secrets. Real odds publication remains blocked on that credential and a separately tested, quota-controlled integration. This release intentionally publishes only the attributed free schedule. Do not claim the quote feed is connected or describe scheduled data as a live stream.
 - Latest local verification: 284 Flutter tests, 43 model tests, 4 schedule tests and a clean analyzer. The deployment workflow repeats relevant checks. Full operating instructions and constraints: DEVELOPMENT.md.
 
+## November 15 design and content review
+
+- Responsive two-column research cards on wide screens, with a single column on phones and at larger text sizes. Cleaner headings, a compact example pill, quieter navigation and source controls. Keep matchup commentary off feed cards.
+- The actual NFL schedule has Eastern-day filters, grouped fixture cards and upcoming-only headings. A selected date resets safely when its final kickoff passes.
+- The public source bar uses "Checked" for schedule retrieval and retains explicit sample mode, stale and failed-update states. Prop details disclose evidence dates independently: box-score coverage, stored snap/injury context and current availability checks do not share a freshness timestamp.
+- At review time, box scores cover through 2026-11-09; stored snaps through 2026 W9 and injury context through W10. The matchup file has no recorded calendar cutoff or retrieval time. These dates are disclosed, not inferred or claimed refreshed. Probability calculations are unchanged.
+- Legacy saved-prediction entry points were removed from the main library and overview. Existing storage and compatibility code remain intact.
+
+Verification: 296 standard Flutter tests, 43 model tests and 4 schedule-export tests passed; analyzer clean; web and Windows release builds passed. Current phone screenshot checks use `test/screen_shots_test.dart`. Earlier `phase_a_shots_test.dart` and `phase_b_shots_test.dart` visual harnesses reference retired navigation; leave `SCREENSHOT` unset for the standard full suite.
+
 ## Next
 
-Collect owner feedback on the research flow and data freshness. The public prototype is in place. A provider credential and the real-price pipeline are the next product priorities. The proposed ensemble below is separate future work, not part of this milestone. Do not add bet journals or outcome-based engagement.
+The public prototype is in place. Prioritize repeatable historical/matchup exporters with explicit coverage and retrieval metadata, followed by concise dated "what changed" insights based on those refreshed records. The [content roadmap](DESIGN_REVIEW_2026-11-15.md) explains the sequence. A provider credential and the real-price pipeline remain required before public quote comparisons can use actual prices. The proposed ensemble below is separate future work, not part of this milestone. Do not add bet journals or outcome-based engagement.
 
 2. **Elo plus a gradient-boosted ensemble** (XGBoost or LightGBM) for the game residual, with the anti-overfit rules fixed before any run: week-based walk-forward, shallow trees, regularization, early stopping, a stable feature set, permutation importance and a noise-feature check, monotone constraints where the direction is known, and one locked holdout season that is not used to pick anything. Same adoption rule as version 2: both Brier and log loss strictly better on at least 1,000 games, and no "edge" unless the -110 test clears the existing profit bar. Keep `coach_line_v2.dart` matched to whatever the trainer ships. Do not search the ridge, the caps, or the tree depth after seeing the holdout.
 3. **Production data and optional alerts.** The public research prototype is hosted. Connect an approved provider credential through a quota-controlled production integration before adding opt-in price alerts. The loopback development server must remain private. New accounts or paid tiers still need the owner's approval.

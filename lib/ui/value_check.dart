@@ -290,8 +290,8 @@ class EdgeSegments extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: EdgeColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: EdgeColors.surface.withValues(alpha: .7),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: EdgeColors.border),
       ),
       child: Row(
@@ -301,23 +301,39 @@ class EdgeSegments extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Material(
-                  color: i == index ? EdgeColors.accent : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
+                  color: i == index
+                      ? EdgeColors.accent.withValues(alpha: .16)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Semantics(
+                    key: ValueKey('edge-segment-${labels[i]}'),
+                    container: true,
+                    button: true,
+                    selected: i == index,
+                    label: labels[i],
+                    excludeSemantics: true,
                     onTap: () => onChanged(i),
-                    child: SizedBox(
-                      height: 36,
-                      child: Center(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      excludeFromSemantics: true,
+                      onTap: () => onChanged(i),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: EdgeSpace.tap,
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 10,
+                          ),
+                          child: Center(
+                            heightFactor: 1,
                             child: Text(
                               labels[i],
+                              textAlign: TextAlign.center,
                               style: EdgeType.label.copyWith(
                                 color: i == index
-                                    ? EdgeColors.onAccent
+                                    ? EdgeColors.accent
                                     : EdgeColors.textSecondary,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 14,
