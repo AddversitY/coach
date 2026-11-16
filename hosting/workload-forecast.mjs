@@ -9,6 +9,12 @@ const gameDay=event=>{const parts=Object.fromEntries(new Intl.DateTimeFormat('en
 const clip=(n,cap)=>Math.max(0,Math.min(cap,n));
 const quantile=(a,q)=>{const p=(a.length-1)*q,i=Math.floor(p);return a[i]+(a[Math.min(i+1,a.length-1)]-a[i])*(p-i);};
 
+export function trialHistory(player){
+  const keys=['attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions'];
+  const prior=(player.priorTrialGames||[]).map(r=>Array.isArray(r)?{date:r[0],week:r[1],position:r[2],stats:Object.fromEntries(keys.map((key,i)=>[key,r[i+3]]))}:r);
+  return [...player.games,...prior];
+}
+
 export function workloadFeatures(history,teamGames,opponentGames,day,group,home){
   const spec=GROUPS[group];if(!spec)return null;
   const [position,metric,scale,teamScale,cap]=spec;
@@ -39,7 +45,7 @@ export function workloadForecasts(source,event,{now=Date.now(),context=null}={})
   const teamGames=(data.teamGames||[]).filter(g=>g.date<=data.cutoff&&g.date<day);
   for(const p of source.index.players.filter(p=>p.events.includes(event.id))){
     const team=code(p.team),other=team===event.homeCode?event.awayCode:team===event.awayCode?event.homeCode:null;if(!other)continue;
-    const history=[];for(const row of p.games.filter(g=>g.date<=data.cutoff&&g.date<=source.index.cutoff).sort((a,b)=>b.date.localeCompare(a.date))){if(row.position&&row.position!==p.position)break;history.push(row);}
+    const history=[];for(const row of trialHistory(p).filter(g=>g.date<=data.cutoff&&g.date<=source.index.cutoff).sort((a,b)=>b.date.localeCompare(a.date))){if(row.position&&row.position!==p.position)break;history.push(row);}
     for(const [group,[position]] of Object.entries(GROUPS)){
       const candidate=model.models?.[group];if(position!==p.position||!candidate||!Array.isArray(candidate.coefficients)||candidate.coefficients.length!==17||!candidate.coefficients.every(finite)||candidate.trainingRows<200)continue;
       const pack=workloadFeatures(history,teamGames.filter(g=>g.team===team),teamGames.filter(g=>g.team===other),day,group,team===event.homeCode);if(!pack)continue;

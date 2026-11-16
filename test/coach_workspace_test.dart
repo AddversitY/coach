@@ -287,6 +287,20 @@ void main() {
                 },
               },
             },
+            'productionResearch': {
+              'cutoff': '2026-11-12',
+              'validation': {
+                'QB_passing_yards': {
+                  'recorded': 624,
+                  'unresolved': 208,
+                  'mae': 61.64,
+                  'baselineMae': 64.66,
+                  'referenceBrier': .236,
+                  'baselineReferenceBrier': .250,
+                  'interval80Coverage': .81,
+                },
+              },
+            },
             'workloadResearch': {
               'cutoff': '2026-11-12',
               'validation': {
@@ -331,6 +345,13 @@ void main() {
       await tester.tap(find.text('Workload trial'));
       await tester.pumpAndSettle();
       expect(find.text('Recorded Quarterback · 28.1 attempts'), findsOneWidget);
+      await tester.ensureVisible(find.text('Prop forecast trial'));
+      await tester.tap(find.text('Prop forecast trial'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Recorded Quarterback · 241.5 QB passing yards'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
       await tester.ensureVisible(find.text('DraftKings'));
       await tester.tap(find.text('DraftKings'));
@@ -357,6 +378,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.textContaining('Candidate 7.28 / Weighted baseline 7.84'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Yards & receptions research'));
+      await tester.tap(find.text('Yards & receptions research'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Candidate 61.64 / Baseline 64.66'),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);

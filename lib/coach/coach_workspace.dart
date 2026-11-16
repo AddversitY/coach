@@ -1293,6 +1293,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           _workloadTrialView(
             Map<String, dynamic>.from(game.raw['workloadTrial']),
           ),
+        if (game.raw['productionTrial'] is Map &&
+            game.raw['productionTrial']['available'] == true)
+          _productionTrialView(
+            Map<String, dynamic>.from(game.raw['productionTrial']),
+            turn.question,
+          ),
         Wrap(
           spacing: 8,
           runSpacing: 6,
@@ -1716,6 +1722,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           _workloadResearchView(
             Map<String, dynamic>.from(report['workloadResearch']),
           ),
+        if (report['productionResearch'] is Map)
+          _productionResearchView(
+            Map<String, dynamic>.from(report['productionResearch']),
+          ),
         for (final model in report['models'] as List? ?? [])
           if (model['role'] == 'shadow')
             Padding(
@@ -1724,7 +1734,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${(model['modelVersion'] as String? ?? '').startsWith('workload-') ? 'Workload trial' : 'Background challenger'}: ${model['gradedGames'] ?? 0} games with results · ${model['pendingGames'] ?? 0} awaiting results · ${model['unresolved'] ?? 0} unresolved observations. Separate from the serving model.',
+                    '${(model['modelVersion'] as String? ?? '').startsWith('production-')
+                        ? 'Yards/receptions trial'
+                        : (model['modelVersion'] as String? ?? '').startsWith('workload-')
+                        ? 'Workload trial'
+                        : 'Background challenger'}: ${model['gradedGames'] ?? 0} games with results · ${model['pendingGames'] ?? 0} awaiting results · ${model['unresolved'] ?? 0} unresolved observations. Separate from the serving model.',
                     style: CoachType.label,
                   ),
                   for (final row in model['workloads'] as List? ?? [])
@@ -1732,6 +1746,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                       '${_workloadLabel(row['group'])} · ${row['observations']} recorded forecasts across ${row['games']} games. Mean error: candidate ${value(row['mae'])}, weighted baseline ${value(row['incumbentMae'])}.',
                       style: CoachType.label,
                     ),
+                  for (final row in model['markets'] as List? ?? [])
+                    if ((row['servingGames'] as num? ?? 0) > 0)
+                      Text(
+                        'Exact-line probability error · Candidate ${value(row['servingPairedBrier'])} / Serving estimate ${value(row['servingBrier'])} across ${row['servingGames']} matched games. Lower is better; saved prices do not establish obtainable returns.',
+                        style: CoachType.label,
+                      ),
                 ],
               ),
             ),
@@ -1752,8 +1772,236 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         'RB_targets': 'RB targets',
         'WR_targets': 'WR targets',
         'TE_targets': 'TE targets',
+        'QB_passing_yards': 'QB passing yards',
+        'QB_rushing_yards': 'QB rushing yards',
+        'RB_rushing_yards': 'RB rushing yards',
+        'RB_receiving_yards': 'RB receiving yards',
+        'WR_receiving_yards': 'WR receiving yards',
+        'TE_receiving_yards': 'TE receiving yards',
+        'RB_receptions': 'RB receptions',
+        'WR_receptions': 'WR receptions',
+        'TE_receptions': 'TE receptions',
       }[group] ??
       '$group';
+
+  Widget _productionTrialView(Map<String, dynamic> trial, String question) {
+    String number(dynamic n) => n is num ? n.toStringAsFixed(1) : '—';
+    final rows = trial['forecasts'] as List? ?? [];
+    final named = rows
+        .where(
+          (r) => question.toLowerCase().contains(
+            (r['name'] as String).toLowerCase(),
+          ),
+        )
+        .toList();
+    final visible = named.isEmpty ? rows : named;
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Prop forecast trial',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text(
+        'Joint workload and efficiency · experimental',
+        style: CoachType.label,
+      ),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${trial['notice']}', style: CoachType.label),
+              for (final metric in [
+                'passing_yards',
+                'rushing_yards',
+                'receiving_yards',
+                'receptions',
+              ])
+                for (final row
+                    in visible.where((r) => r['metric'] == metric).take(3))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${row['name']} · ${number(row['prediction'])} ${_workloadLabel(row['group'])}',
+                          style: CoachType.body,
+                        ),
+                        Text(
+                          'Same-input baseline ${number(row['incumbent'])} · Central 80% research range ${number(row['interval'][0])}–${number(row['interval'][1])}',
+                          style: CoachType.label,
+                        ),
+                        if (row['historicalCoverage'] is num)
+                          Text(
+                            'Historical coverage for this 80% range: ${((row['historicalCoverage'] as num) * 100).toStringAsFixed(0)}%. Future calibration is unproven.',
+                            style: CoachType.label,
+                          ),
+                        for (final reason
+                            in (row['reviewReasons'] as List? ?? []).take(1))
+                          Text(
+                            '$reason',
+                            style: CoachType.label.copyWith(
+                              color: CoachColors.warn,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              if ((trial['rows'] as List? ?? []).isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: Text(
+                    'No exact saved prop prices are available for this trial comparison.',
+                    style: CoachType.label,
+                  ),
+                ),
+              for (final row in (trial['rows'] as List? ?? []).take(6))
+                Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${Selection.fromJson(Map<String, dynamic>.from(row['selection'])).label} · ${americanLabel((row['decimal'] as num).toDouble())} at ${row['book']}',
+                        style: CoachType.body,
+                      ),
+                      Text(
+                        'Trial win ${number(100 * (row['win'] as num))}% · Push ${number(100 * (row['push'] as num))}% · Serving estimate ${number(100 * (row['servingWin'] as num))}%. Experimental probabilities, not recommendations.',
+                        style: CoachType.label,
+                      ),
+                      Text(
+                        'Observed ${_reportTime(row['sourceAt'])}; offers and settlement rules remain unverified.',
+                        style: CoachType.label,
+                      ),
+                      if (row['blocked'] == true)
+                        Text(
+                          '${row['reason'] ?? 'Role or availability requires review.'}',
+                          style: CoachType.label.copyWith(
+                            color: CoachColors.warn,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 14),
+              Text(
+                'Training through ${trial['cutoff']} · Inputs through ${trial['inputCutoff']}. Showing up to three players per stat; ask about a named player for a focused answer.',
+                style: CoachType.label,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _productionResearchView(Map<String, dynamic> report) {
+    final validation = report['validation'] as Map? ?? {};
+    String value(dynamic n) => n is num ? n.toStringAsFixed(2) : '—';
+    return Padding(
+      padding: const EdgeInsets.only(top: 18),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        title: Text(
+          'Yards & receptions research',
+          style: CoachType.title.copyWith(fontSize: 20),
+        ),
+        subtitle: Text(
+          'End-to-end tests and quarterback signal checks',
+          style: CoachType.label,
+        ),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Retrospective evaluation on seasons from 2025; settings selected earlier. Evidence through ${report['cutoff']}. Lower point error is better. All candidates remain unadopted.',
+                  style: CoachType.label,
+                ),
+                for (final entry in validation.entries)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_workloadLabel(entry.key)} · ${entry.value['recorded']} recorded results',
+                          style: CoachType.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Mean absolute error · Candidate ${value(entry.value['mae'])} / Baseline ${value(entry.value['baselineMae'])} · ${entry.value['unresolved']} unresolved appearances',
+                          style: CoachType.label,
+                        ),
+                        if (entry.value['interval80Coverage'] is num)
+                          Text(
+                            'Central 80% range covered ${((entry.value['interval80Coverage'] as num) * 100).toStringAsFixed(0)}% of recorded outcomes; some ranges are too wide.',
+                            style: CoachType.label,
+                          ),
+                        Text(
+                          'Probability error at synthetic reference cutoffs: ${value(entry.value['referenceBrier'])} / Baseline ${value(entry.value['baselineReferenceBrier'])}. These were not sportsbook lines.',
+                          style: CoachType.label,
+                        ),
+                      ],
+                    ),
+                  ),
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(
+                    'Quarterback signal check',
+                    style: CoachType.body,
+                  ),
+                  children: [
+                    Text(
+                      'Effects were mixed. These are ablations of explicit earlier-game signals, not causal QB or injury penalties. Actual game passing-leader changes below are evaluated afterward, never used as forecast inputs.',
+                      style: CoachType.label,
+                    ),
+                    for (final entry in validation.entries)
+                      if (entry.value['quarterbackAblation'] is Map)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _workloadLabel(entry.key),
+                                  style: CoachType.body,
+                                ),
+                                for (final slice in [
+                                  'observedChange',
+                                  'actualChangeOutcomeOnly',
+                                ])
+                                  Text(
+                                    '${slice == 'observedChange' ? 'Earlier observed change' : 'Game passing-leader change'} · ${entry.value['quarterbackAblation'][slice]['recorded']} appearances · Full ${value(entry.value['quarterbackAblation'][slice]['fullMae'])} / Without explicit signals ${value(entry.value['quarterbackAblation'][slice]['withoutExplicitQbSignalsMae'])}',
+                                    style: CoachType.label,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Joint error replay retains workload/efficiency dependence. Historical reference-cutoff scores do not prove profitability or accuracy at sportsbook prices. Upcoming exact-line comparisons are tracked separately.',
+                  style: CoachType.label,
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _workloadTrialView(Map<String, dynamic> trial) {
     String value(dynamic n) => n is num ? n.toStringAsFixed(1) : '—';

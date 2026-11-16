@@ -53,12 +53,15 @@ jobs:
       - name: Evaluate conditional workload forecasts
         run: python model/workload_forecast.py --schedule model/.cache/games.csv
 
+      - name: Evaluate joint workload and efficiency production forecasts
+        run: python model/production_forecast.py --schedule model/.cache/games.csv
+
       - name: Commit a refreshed model report
         if: github.event_name != 'pull_request'
         run: |
           git config user.name "odds-edge-model"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/workload-model.json
+          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/workload-model.json assets/production-model.json
           if git diff --cached --quiet; then
             echo "Model reports unchanged."
           else

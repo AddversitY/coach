@@ -5,7 +5,7 @@ from pathlib import Path
 from publish_snapshot import SOURCE, TEAMS, ALIASES, build_snapshot, iso
 from build_game_context import build_context
 
-def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None, forecast_lab=None, matchup=None, workload_model=None):
+def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None, forecast_lab=None, matchup=None, workload_model=None, production_model=None):
     metadata=dataset.get('metadata',dataset)
     cutoff=datetime.fromisoformat(metadata['cutoff']).date()
     retrieved=datetime.fromisoformat(metadata['retrievedAt'].replace('Z','+00:00'))
@@ -32,6 +32,11 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
             role_records.append(row)
             if row['position'] in ['QB','RB','WR','TE']:permitted.append(row)
     context=build_context(events,dataset,role_records,matchup,now)
+    trial_history={}
+    for record in dataset['rows']:
+        day=datetime.fromisoformat(record['date']).date()
+        if record['seasonType']=='REG' and day<=cutoff and day<now.date() and (now.date()-day).days<=730 and record['position'] in ['QB','RB','WR','TE']:
+            trial_history.setdefault(record['playerId'],[]).append(record)
     grouped={}
     for row in permitted:grouped.setdefault(row['playerId'],[]).append(row)
     players=[]
@@ -53,7 +58,17 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
             segment.append(record)
         keys={'passing_yards','rushing_yards','receiving_yards','receptions','attempts','carries','targets'}
         compact=[{'date':g['date'],'week':g['week'],'position':g['position'],'stats':{k:v for k,v in g['stats'].items() if k in keys}} for g in segment[:10]]
-        players.append({'id':player_id,'name':latest['name'],'team':latest['team'],
+        prior=[];compact_keys={(g['date'],g['week']) for g in compact}
+        for record in sorted(trial_history.get(player_id,[]),key=lambda r:r['date'],reverse=True):
+            if ALIASES.get(record['team'],record['team'])!=ALIASES.get(latest['team'],latest['team']) or record['position']!=latest['position']:break
+            if (record['date'],record['week']) in compact_keys:continue
+            stats=record['stats'];stats=dict(zip(dataset['statKeys'],stats)) if isinstance(stats,list) else stats
+            trial_keys=['attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions']
+            if not all(key in stats for key in trial_keys):raise ValueError('Incomplete prior trial history')
+            prior.append([record['date'],record['week'],record['position'],*[stats[key] for key in trial_keys]])
+            if len(prior)>=max(0,10-len(compact)):break
+        prior=prior[:max(0,10-len(compact))]
+        players.append({'priorTrialGames':prior,'id':player_id,'name':latest['name'],'team':latest['team'],
             'position':latest['position'],'events':event_ids,'games':compact})
     model=None
     if forecast_model:
@@ -102,8 +117,16 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
             or len(workload_model.get('featureNames',[]))!=17 or not 1<=len(workload_model.get('models',{}))<=6
             or any(len(m['coefficients'])!=17 or len(m['residuals'])>1000 or m['trainingRows']<200 for m in workload_model['models'].values())):
             raise ValueError('Invalid workload research model')
+    if production_model:
+        trained=datetime.fromisoformat(production_model['trainedAt'].replace('Z','+00:00'))
+        if (production_model.get('schemaVersion')!=1 or production_model.get('version')!='production-joint-v1' or production_model.get('adopted') is not False or production_model.get('hasEdge') is not False
+            or trained.tzinfo is None or trained>now or production_model['cutoff']>str(cutoff) or (now.date()-datetime.fromisoformat(production_model['cutoff']).date()).days>21
+            or not workload_model or production_model.get('volumeModelHash')!=hashlib.sha256(json.dumps(workload_model,sort_keys=True).encode()).hexdigest()
+            or len(production_model.get('featureNames',[]))!=24 or not 1<=len(production_model.get('models',{}))<=9
+            or any(len(m['coefficients'])!=24 or not 120<=len(m['residualPairs'])<=512 or m['trainingRows']<200 for m in production_model['models'].values())):
+            raise ValueError('Invalid joint production research model')
     context_players=context.pop('contextPlayers')
-    return {'workloadModel':workload_model,'roleContext':context,'contextPlayers':context_players,'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
+    return {'priorTrialFields':['date','week','position','attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions'],'productionModel':production_model,'workloadModel':workload_model,'roleContext':context,'contextPlayers':context_players,'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
         'retrievedAt':iso(retrieved),'evidenceHash':hashlib.sha256(json.dumps(dataset,sort_keys=True).encode()).hexdigest(),
         'events':events,'players':players,'notice':'Recorded participants, not confirmed rosters. Marginal probabilities are not validated live forecasts.'}
 
@@ -114,7 +137,7 @@ def main():
     with urllib.request.urlopen(SOURCE,timeout=30) as r:rows=list(csv.DictReader(io.StringIO(r.read().decode('utf-8-sig'))))
     tree=ast.parse(Path('model/weather.py').read_text(encoding='utf-8'))
     stadiums=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.AnnAssign) and getattr(node.target,'id',None)=='STADIUMS')
-    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')))
+    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')))
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,allow_nan=False,separators=(',',':')),encoding='utf-8')
     print(f'Coach index: {len(result["players"])} recorded players; zero odds credits.')
 if __name__=='__main__':main()

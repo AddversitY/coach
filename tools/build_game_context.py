@@ -32,11 +32,11 @@ def build_context(events, dataset, records, matchup, now):
         row = games.setdefault(key, dict(team=code, date=raw['date'], week=raw['week'],
                                         opponent=ALIASES.get(raw.get('opponent'),raw.get('opponent')),
                                         attempts=0, carries=0, targets=0, passYards=0,
-                                        rushYards=0, passers=[]))
+                                        rushYards=0, receivingYards=0, receptions=0, passers=[]))
         for stat, destination in [('attempts', 'attempts'), ('carries', 'carries'), ('targets', 'targets'),
-                                  ('passing_yards', 'passYards'), ('rushing_yards', 'rushYards')]:
+                                  ('passing_yards', 'passYards'), ('rushing_yards', 'rushYards'), ('receiving_yards','receivingYards'), ('receptions','receptions')]:
             value = stats.get(stat, 0)
-            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or (stat in ['attempts','carries','targets'] and value < 0):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or (stat in ['attempts','carries','targets','receptions'] and value < 0):
                 raise ValueError('Invalid recorded workload')
             row[destination] += value
         if raw['position'] == 'QB' and stats.get('attempts', 0) > 0:
@@ -46,6 +46,8 @@ def build_context(events, dataset, records, matchup, now):
         other=games.get((g['opponent'],g['date'],g['week']))
         for metric in ['attempts','carries','targets']:
             g['allowed_'+metric]=other[metric] if other else None
+        for stat,key in [('passing_yards','passYards'),('rushing_yards','rushYards'),('receiving_yards','receivingYards'),('receptions','receptions')]:
+            g['allowed_'+stat]=other[key] if other else None
         g['passingYardsAllowed']=other['passYards'] if other else None
         g['rushingYardsAllowed']=other['rushYards'] if other else None
         g['passers'].sort(key=lambda p: (-p['attempts'], p['id']))

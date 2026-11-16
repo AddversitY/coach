@@ -59,6 +59,12 @@ attempts, carries and targets, compares earlier-game errors with three baselines
 and records upcoming forecasts for automatic grading. Its means and ranges are
 visible in **Workload trial**, while the existing prop estimates remain unchanged.
 
+The [joint production trial](PRODUCTION_FORECASTS.md) converts those opportunities
+into yardage/reception distributions, evaluates explicit QB-signal ablations and
+records future exact-line comparisons. **Prop forecast trial** and **Yards &
+receptions research** disclose its mixed results and interval-calibration gaps;
+none of these candidates is automatically promoted to recommendations.
+
 ## Quarterbacks, availability and workload context
 
 The server now combines independently dated box scores, PFR snap counts through

@@ -85,6 +85,59 @@ class GameOutlook {
       }
     }
     final score = raw['score'] as Map;
+    final production = raw['productionTrial'];
+    if (production != null) {
+      if (production is! Map ||
+          production['hasEdge'] != false ||
+          production['forecasts'] is! List ||
+          production['forecasts'].length > 80 ||
+          production['rows'] is! List ||
+          production['rows'].length > 150 ||
+          (production['available'] == true &&
+              (production['adopted'] != false ||
+                  production['status'] != 'shadow_only'))) {
+        throw const FormatException('Invalid production trial');
+      }
+      for (final row in production['forecasts']) {
+        if (row is! Map ||
+            !{
+              'passing_yards',
+              'rushing_yards',
+              'receiving_yards',
+              'receptions',
+            }.contains(row['metric']) ||
+            !finite(row['prediction']) ||
+            row['prediction'] < -999 ||
+            row['prediction'] > 999 ||
+            row['interval'] is! List ||
+            row['interval'].length != 2 ||
+            !row['interval'].every(finite) ||
+            row['interval'][0] < -999 ||
+            row['interval'][1] > 999 ||
+            row['interval'][1] < row['interval'][0]) {
+          throw const FormatException('Invalid production forecast');
+        }
+      }
+      for (final row in production['rows']) {
+        if (row is! Map ||
+            row['selection'] is! Map ||
+            row['selection']['eventId'] != event.id ||
+            row['hasEdge'] != false ||
+            row['modelValidated'] != false ||
+            !finite(row['decimal']) ||
+            row['decimal'] <= 1 ||
+            row['decimal'] > 1001 ||
+            !finite(row['servingWin']) ||
+            row['servingWin'] < 0 ||
+            row['servingWin'] > 1 ||
+            !['win', 'push', 'loss'].every(
+              (key) => finite(row[key]) && row[key] >= 0 && row[key] <= 1,
+            ) ||
+            (row['win'] + row['push'] + row['loss'] - 1).abs() > .0001) {
+          throw const FormatException('Invalid production price comparison');
+        }
+      }
+    }
     for (final key in [
       'home',
       'away',

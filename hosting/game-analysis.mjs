@@ -1,3 +1,4 @@
+import {productionForecasts} from './production-forecast.mjs';
 import {workloadForecasts} from './workload-forecast.mjs';
 import {gameContext,projectionWarnings,decisionBrief} from './game-context.mjs';
 /* Deterministic pregame analysis. The score candidate failed the historical
@@ -129,7 +130,7 @@ function propChance(projection,selection){
 }
 function percentile(samples,key,p){const rows=samples.map(r=>[key(r),r[2]]).sort((a,b)=>a[0]-b[0]);let total=0;for(const row of rows){total+=row[1];if(total>=p)return row[0];}return rows.at(-1)[0];}
 
-export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null,anchorMarket=true,question=''}={}){
+export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null,anchorMarket=true,question='',includeProduction=true}={}){
   if(!event||Date.parse(event.startsAt)<=now)throw new Error('Upcoming game required');
   const model=source.index.scoreModel;
   if(!model||!fresh(model.trainedAt,now,22*86400000)||!fresh(model.cutoff+'T00:00:00Z',now,22*86400000))throw new Error('Forecast model unavailable');
@@ -167,5 +168,6 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
     limits:['The score-only candidate did not beat historical market baselines; pricing stays market-anchored when two-sided quotes exist.','All displayed prices are observations, not guaranteed obtainable offers. Settlement rules are unverified.','Player projections condition on recorded appearances and do not establish availability. Opponent/role-change adjustments are not validated.','The score model is not a possession simulator; key-number and tail calibration remain unproven.'],
     sourceFingerprint:JSON.stringify([model.version,model.cutoff,event.id,...quotes.map(q=>[quoteId(q),q.sourceAt,q.decimal])])};
   report.workloadTrial=workloadForecasts(source,event,{now,context});
+  report.productionTrial=includeProduction?productionForecasts(source,event,{now,workloadTrial:report.workloadTrial,observations:rows}):{available:false,forecasts:[],rows:[],hasEdge:false};
   report.context=context;report.decision=decisionBrief(report,context,{question});return report;
 }

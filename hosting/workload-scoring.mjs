@@ -1,14 +1,15 @@
 const mean=a=>a.length?a.reduce((a,b)=>a+b,0)/a.length:null;
-const GROUPS={QB_attempts:'attempts',QB_carries:'carries',RB_carries:'carries',RB_targets:'targets',WR_targets:'targets',TE_targets:'targets'};
+const GROUPS={QB_attempts:'attempts',QB_carries:'carries',RB_carries:'carries',RB_targets:'targets',WR_targets:'targets',TE_targets:'targets',QB_passing_yards:'passing_yards',QB_rushing_yards:'rushing_yards',RB_rushing_yards:'rushing_yards',RB_receiving_yards:'receiving_yards',WR_receiving_yards:'receiving_yards',TE_receiving_yards:'receiving_yards',RB_receptions:'receptions',WR_receptions:'receptions',TE_receptions:'receptions'};
 
 export function gradeWorkloads(snapshot,result){
   const groups={};let unresolved=0;
   for(const row of snapshot.workloads||[]){
+    const minimum=row.metric?.endsWith('_yards')?-999:0;
     const actual=result.playerStats?.[row.playerId]?.[row.metric];
-    if(GROUPS[row.group]!==row.metric||result.playerTeams?.[row.playerId]!==row.team||!Number.isInteger(actual)||actual<0){unresolved++;continue;}
-    if(!['prediction','incumbent','last3','last6'].every(k=>Number.isFinite(row[k])&&row[k]>=0)){unresolved++;continue;}
+    if(GROUPS[row.group]!==row.metric||result.playerTeams?.[row.playerId]!==row.team||!Number.isInteger(actual)||actual<minimum){unresolved++;continue;}
+    if(!['prediction','incumbent','last3','last6'].every(k=>Number.isFinite(row[k])&&row[k]>=minimum)){unresolved++;continue;}
     (groups[row.group]??=[]).push({candidateAbsolute:Math.abs(row.prediction-actual),incumbentAbsolute:Math.abs(row.incumbent-actual),last3Absolute:Math.abs(row.last3-actual),last6Absolute:Math.abs(row.last6-actual),squaredError:(row.prediction-actual)**2,incumbentSquaredError:(row.incumbent-actual)**2,
-      intervalCoverage:Array.isArray(row.interval)&&row.interval.length===2&&row.interval.every(Number.isFinite)&&row.interval[0]>=0&&row.interval[1]>=row.interval[0]?Number(row.interval[0]<=actual&&actual<=row.interval[1]):null});
+      intervalCoverage:Array.isArray(row.interval)&&row.interval.length===2&&row.interval.every(Number.isFinite)&&row.interval[0]>=minimum&&row.interval[1]>=row.interval[0]?Number(row.interval[0]<=actual&&actual<=row.interval[1]):null});
   }
   return {unresolved,groups:Object.fromEntries(Object.entries(groups).map(([group,rows])=>[group,{observations:rows.length,...Object.fromEntries(['candidateAbsolute','incumbentAbsolute','last3Absolute','last6Absolute','squaredError','incumbentSquaredError'].map(k=>[k,mean(rows.map(r=>r[k]))])),intervalObservations:rows.filter(r=>r.intervalCoverage!=null).length,intervalCoverage:mean(rows.filter(r=>r.intervalCoverage!=null).map(r=>r.intervalCoverage))}]))};
 }

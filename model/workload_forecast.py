@@ -81,7 +81,7 @@ def feature_pack(history, team_games, opponent_games, day, group, home):
                 position=position, cap=cap)
 
 
-def examples(dataset, history, schedule):
+def examples(dataset, history, schedule, *, extra_stats=(), augment=None):
     metadata = dataset.get('metadata', dataset)
     cutoff = min(metadata['cutoff'], history['cutoff'])
     closing = {r['game_id']: r for r in schedule}
@@ -102,9 +102,13 @@ def examples(dataset, history, schedule):
         stats = dict(zip(dataset.get('statKeys', []), raw['stats'])) if isinstance(raw['stats'], list) else raw['stats']
         if not all(k in stats for k in ['attempts','carries','targets']):
             raise ValueError('Missing workload source field')
-        stats = {k: stats[k] for k in ['attempts', 'carries', 'targets']}
-        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 for v in stats.values()):
+        if not all(k in stats for k in extra_stats):
+            raise ValueError('Missing production source field')
+        stats = {k: stats[k] for k in ['attempts', 'carries', 'targets', *extra_stats]}
+        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 for k,v in stats.items() if k in ['attempts','carries','targets','receptions']):
             raise ValueError('Invalid workload label')
+        if any(isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) for v in stats.values()):
+            raise ValueError('Invalid production label')
         records[(raw['season'], raw['week'])].append(dict(raw, team=code(raw['team']), stats=stats))
     states, team_states, all_examples = {}, defaultdict(list), []
     for season, week in weeks:
@@ -125,11 +129,20 @@ def examples(dataset, history, schedule):
                                     date.fromisoformat(game['date']), group, latest['team'] == game['home'])
                 if not pack:
                     continue
+                if augment is not None:
+                    extra=augment(segment,team_states[(season,latest['team'])],team_states[(season,opponent)],date.fromisoformat(game['date']),group)
+                    if extra is None:continue
+                    pack.update(extra)
                 result = actual.get((player_id, latest['team'], game['date']))
                 all_examples.append(dict(pack, playerId=player_id, team=latest['team'],
                                          eventId='nflverse:'+game['id'], season=season, week=week,
                                          date=game['date'], group=group,
+                                         actualStats=result['stats'] if result else None,
                                          y=result['stats'][pack['metric']] if result else None))
+        for example in [r for r in all_examples if (r['season'],r['week'])==(season,week)]:
+            candidates=[r for r in records[(season,week)] if r['team']==example['team'] and r['position']=='QB' and r['stats']['attempts']>0]
+            candidates.sort(key=lambda r:(-r['stats']['attempts'],r['playerId']))
+            example['actualLeader']=candidates[0]['playerId'] if candidates else None
         # Every forecast in this whole week is fixed before any labels enter.
         totals = {}
         for raw in records[(season, week)]:
@@ -138,7 +151,8 @@ def examples(dataset, history, schedule):
                 continue
             row = totals.setdefault(raw['team'], dict(team=raw['team'], date=raw['date'], week=week,
                                                       attempts=0., carries=0., targets=0., leader=None, leaderAttempts=-1))
-            for metric in ['attempts', 'carries', 'targets']:
+            for metric in ['attempts', 'carries', 'targets', *extra_stats]:
+                row.setdefault(metric,0.)
                 row[metric] += raw['stats'][metric]
             if raw['position'] == 'QB' and raw['stats']['attempts'] > 0 and (raw['stats']['attempts'] > row['leaderAttempts'] or raw['stats']['attempts'] == row['leaderAttempts'] and raw['playerId'] < row['leader']):
                 row['leader'], row['leaderAttempts'] = raw['playerId'], raw['stats']['attempts']
@@ -149,7 +163,7 @@ def examples(dataset, history, schedule):
         for team, row in totals.items():
             game = by_team[team]
             other = totals.get(game['away'] if team == game['home'] else game['home'])
-            for metric in ['attempts', 'carries', 'targets']:
+            for metric in ['attempts', 'carries', 'targets', *extra_stats]:
                 row['allowed_'+metric] = other[metric] if other else None
             team_states[(season, team)] = (team_states[(season, team)]+[row])[-6:]
     return all_examples, cutoff

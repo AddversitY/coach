@@ -85,6 +85,31 @@ Map<String, dynamic> gameOutlookFixture(
       'records': 8,
     },
   ],
+  'productionTrial': {
+    'available': true,
+    'version': 'production-joint-v1',
+    'hasEdge': false,
+    'adopted': false,
+    'status': 'shadow_only',
+    'cutoff': '2026-11-12',
+    'inputCutoff': '2026-11-12',
+    'notice':
+        'Joint empirical production research; no validated betting advantage.',
+    'rows': [],
+    'forecasts': [
+      {
+        'playerId': 'p',
+        'name': 'Recorded Quarterback',
+        'group': 'QB_passing_yards',
+        'metric': 'passing_yards',
+        'prediction': 241.5,
+        'incumbent': 250.2,
+        'interval': [130.0, 350.0],
+        'historicalCoverage': .81,
+        'reviewReasons': [],
+      },
+    ],
+  },
   'workloadTrial': {
     'available': true,
     'version': 'workload-ridge-v1',
@@ -177,6 +202,14 @@ void main() {
         'Kansas City Chiefs',
         DateTime.utc(2026, 11, 16, 20),
       );
+  test('production trial cannot claim adoption or display reversed ranges', () {
+    final raw = gameOutlookFixture(event, now);
+    raw['productionTrial']['adopted'] = true;
+    expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+    raw['productionTrial']['adopted'] = false;
+    raw['productionTrial']['forecasts'][0]['interval'] = [350.0, 130.0];
+    expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+  });
   test('workload trial rejects adoption and inverted ranges', () {
     final raw = gameOutlookFixture(event, now);
     raw['workloadTrial']['adopted'] = true;

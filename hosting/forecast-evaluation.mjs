@@ -21,23 +21,25 @@ export function gradeForecast(snapshot,result){
     const metric={player_pass_yds:'passing_yards',player_rush_yds:'rushing_yards',player_reception_yds:'receiving_yards',player_receptions:'receptions'}[s.market];
     // No recorded appearance is not a zero and is not an invented void.
     const value=metric?result.playerStats?.[row.playerId]?.[metric]:null;
-    if(metric&&!Number.isFinite(value)){unresolved++;continue;}
+    if(metric&&(!Number.isFinite(value)||row.team&&result.playerTeams?.[row.playerId]!==row.team)){unresolved++;continue;}
     const grade=outcome({...s,homeTeam:snapshot.event.home},result.homeScore,result.awayScore,value,row.threeWay);
     if(grade===null){unresolved++;continue;}
     const market=metric?'props':s.market;
     if(grade===0){results.push({market,push:true,priced:!!row.decimal});continue;}
     const y=grade===1?1:0,p=row.win/Math.max(1e-9,1-row.push),baseline=row.baseline;
+    const servingP=Number.isFinite(row.servingWin)&&Number.isFinite(row.servingPush)?row.servingWin/Math.max(1e-9,1-row.servingPush):null;
     const ai=snapshot.benchmark?.find(item=>item.id===row.id),aiP=ai?ai.win/Math.max(1e-9,1-ai.push):null;
     results.push({market,push:false,priced:!!row.decimal,brier:(p-y)**2,logLoss:logLoss(p,y),
+      servingBrier:Number.isFinite(servingP)?(servingP-y)**2:null,servingLogLoss:Number.isFinite(servingP)?logLoss(servingP,y):null,
       baselineBrier:Number.isFinite(baseline)?(baseline-y)**2:null,baselineLogLoss:Number.isFinite(baseline)?logLoss(baseline,y):null,
       aiBrier:Number.isFinite(aiP)?(aiP-y)**2:null,aiLogLoss:Number.isFinite(aiP)?logLoss(aiP,y):null,
       hypotheticalReturn:row.decimal?(y?row.decimal-1:-1):null});
   }
   const markets={};
   for(const market of ['h2h','spreads','totals','props']){
-    const all=results.filter(r=>r.market===market),decided=all.filter(r=>!r.push),paired=decided.filter(r=>r.baselineBrier!=null),ai=decided.filter(r=>r.aiBrier!=null);
+    const all=results.filter(r=>r.market===market),decided=all.filter(r=>!r.push),paired=decided.filter(r=>r.baselineBrier!=null),ai=decided.filter(r=>r.aiBrier!=null),serving=decided.filter(r=>r.servingBrier!=null);
     if(!all.length)continue;
-    markets[market]={observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
+    markets[market]={servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
       baselinePairs:paired.length,pairedBrier:mean(paired.map(r=>r.brier)),baselineBrier:mean(paired.map(r=>r.baselineBrier)),pairedLogLoss:mean(paired.map(r=>r.logLoss)),baselineLogLoss:mean(paired.map(r=>r.baselineLogLoss)),
       aiPairs:ai.length,aiPairedBrier:mean(ai.map(r=>r.brier)),aiBrier:mean(ai.map(r=>r.aiBrier)),aiPairedLogLoss:mean(ai.map(r=>r.logLoss)),aiLogLoss:mean(ai.map(r=>r.aiLogLoss)),
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
@@ -52,6 +54,7 @@ export function addGrade(aggregate,grade,direction=1){
     current.games+=direction;current.observations+=direction*row.observations;current.pushes+=direction*row.pushes;
     if(row.brier!=null){current.probabilityGames+=direction;for(const k of ['brier','logLoss'])current[k]=(current[k]||0)+direction*row[k];}
     if(row.baselinePairs){current.baselineGames+=direction;for(const k of ['pairedBrier','baselineBrier','pairedLogLoss','baselineLogLoss'])current[k]=(current[k]||0)+direction*row[k];}
+    if(row.servingPairs){current.servingGames=(current.servingGames||0)+direction;for(const k of ['servingPairedBrier','servingBrier','servingPairedLogLoss','servingLogLoss'])current[k]=(current[k]||0)+direction*row[k];}
     if(row.aiPairs){current.aiGames+=direction;for(const k of ['aiPairedBrier','aiBrier','aiPairedLogLoss','aiLogLoss'])current[k]=(current[k]||0)+direction*row[k];}
     aggregate[market]=current;
   }
@@ -61,6 +64,7 @@ export function addGrade(aggregate,grade,direction=1){
 
 export function evaluationReport(aggregate,counts){
   return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,workloads:workloadReport(aggregate),markets:Object.entries(aggregate).filter(([,row])=>row.kind!=='workload').map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
+    servingGames:row.servingGames||0,servingPairedBrier:row.servingGames?row.servingPairedBrier/row.servingGames:null,servingBrier:row.servingGames?row.servingBrier/row.servingGames:null,
     brier:row.probabilityGames?row.brier/row.probabilityGames:null,logLoss:row.probabilityGames?row.logLoss/row.probabilityGames:null,
     baselineGames:row.baselineGames,pairedBrier:row.baselineGames?row.pairedBrier/row.baselineGames:null,baselineBrier:row.baselineGames?row.baselineBrier/row.baselineGames:null,
     pairedLogLoss:row.baselineGames?row.pairedLogLoss/row.baselineGames:null,baselineLogLoss:row.baselineGames?row.baselineLogLoss/row.baselineGames:null,

@@ -4,6 +4,21 @@ from build_coach_index import build_index
 from publish_snapshot import build_snapshot
 
 class CoachIndexTests(unittest.TestCase):
+    def test_trial_history_can_reach_prior_seasons_without_crossing_a_trade(self):
+        now=datetime(2026,11,15,12,tzinfo=timezone.utc)
+        rows=[dict(game_id='2026_11_BUF_KC',gameday='2026-11-16',gametime='13:00',away_team='BUF',home_team='KC',home_score='',away_score='',stadium='Known',roof='outdoors')]
+        stats={'attempts':30,'carries':4,'targets':0,'passing_yards':220,'rushing_yards':20,'receiving_yards':0,'receptions':0}
+        current=[dict(playerId='p',name='QB',position='QB',team='BUF',season=2026,seasonType='REG',date=f'2026-11-0{i}',week=i,stats=stats) for i in range(1,7)]
+        older=[dict(current[0],season=2025,date=f'2025-12-0{i}') for i in range(1,5)]
+        data={'currentSeason':2026,'cutoff':'2026-11-12','retrievedAt':'2026-11-15T10:00:00Z','rows':current+older}
+        result=build_index(build_snapshot(rows,now),data,rows,now,{})
+        self.assertEqual(len(result['players'][0]['games']),6)
+        self.assertEqual(len(result['players'][0]['priorTrialGames']),4)
+        self.assertEqual(result['players'][0]['priorTrialGames'][0][:3],['2025-12-04',1,'QB'])
+        data['rows'].append(dict(current[0],season=2025,team='DAL',date='2025-12-05'))
+        traded=build_index(build_snapshot(rows,now),data,rows,now,{})
+        self.assertEqual(traded['players'][0]['priorTrialGames'],[])
+
     def test_exact_venue_and_packed_stats_are_published_without_future_or_traded_rows(self):
         now=datetime(2026,11,15,12,tzinfo=timezone.utc)
         rows=[dict(game_id='2026_11_BUF_KC',gameday='2026-11-16',gametime='13:00',away_team='BUF',home_team='KC',home_score='',away_score='',stadium='Known',roof='outdoors')]
@@ -50,6 +65,13 @@ class CoachIndexTests(unittest.TestCase):
         self.assertEqual(updated['results'][0]['playerStats']['p']['attempts'],30)
         self.assertEqual(updated['results'][0]['playerTeams']['p'],'BUF')
         self.assertEqual(updated['players'][0]['games'][0]['position'],'QB')
+        production={'schemaVersion':1,'version':'production-joint-v1','trainedAt':'2026-11-15T10:00:00Z','cutoff':'2026-11-12','adopted':False,'hasEdge':False,'featureNames':list(range(24)),
+            'volumeModelHash':hashlib.sha256(json.dumps(workload,sort_keys=True).encode()).hexdigest(),
+            'models':{'QB_passing_yards':{'coefficients':[0]*24,'residualPairs':[[0,0]]*120,'trainingRows':200}}}
+        joint=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload,production_model=production)
+        self.assertEqual(joint['productionModel']['version'],'production-joint-v1')
+        production['volumeModelHash']='wrong'
+        with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload,production_model=production)
         workload['trainedAt']='2026-11-20T00:00:00Z'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload)
         model['trainedAt']='2026-11-20T00:00:00Z'
