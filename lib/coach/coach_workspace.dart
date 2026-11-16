@@ -198,6 +198,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     for (final turn in turns) {
       final analysis = turn.analysis;
       if (analysis == null) continue;
+      if (analysis.legs.any(
+        (leg) => !snapshot!.board.events.any(
+          (event) =>
+              event.id == leg.event.id &&
+              event.startsAt == leg.event.startsAt &&
+              event.home == leg.event.home &&
+              event.away == leg.event.away,
+        ),
+      )) {
+        turn.generated = null;
+        turn.invalidation = 'The game schedule changed. Provide fresh selections before using this analysis.';
+        continue;
+      }
       final change = checkAnalysis(
         analysis: analysis,
         prices: snapshot!.props,

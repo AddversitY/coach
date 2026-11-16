@@ -198,7 +198,12 @@ String analysisFingerprint(
                 g.season == l.player.latest.season &&
                 g.date.isBefore(l.event.startsAt),
           ))
-            [g.identity, g.date.toIso8601String(), g.stats[l.metric.key]],
+            [
+              g.identity,
+              g.date.toIso8601String(),
+              g.stats[l.metric.key],
+              g.stats[l.workloadMetric],
+            ],
         ],
       },
   ],
