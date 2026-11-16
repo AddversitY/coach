@@ -33,6 +33,7 @@ class _Turn {
   final String question;
   final CoachAnswer answer;
   final DateTime at;
+  final anchor = GlobalKey();
   AssistantReply? generated;
   bool aiFailed = false;
 }
@@ -154,9 +155,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   }
 
   void _toEnd() => WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (mounted && scroll.hasClients) {
-      scroll.animateTo(
-        scroll.position.maxScrollExtent,
+    final target = turns.lastOrNull?.anchor.currentContext;
+    if (mounted && target != null) {
+      Scrollable.ensureVisible(
+        target,
+        alignment: 0,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOut,
       );
@@ -275,12 +278,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 constraints: const BoxConstraints(maxWidth: 840),
                 child: turns.isEmpty
                     ? _welcome()
-                    : ListView.builder(
+                    : SingleChildScrollView(
                         key: const Key('coach-conversation'),
                         controller: scroll,
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                        itemCount: turns.length,
-                        itemBuilder: (context, index) => _turn(turns[index]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [for (final turn in turns) _turn(turn)],
+                        ),
                       ),
               ),
             ),
@@ -431,6 +436,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Widget _turn(_Turn turn) {
     final a = turn.answer;
     return Padding(
+      key: turn.anchor,
       padding: const EdgeInsets.only(bottom: 36),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

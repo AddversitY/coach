@@ -7,7 +7,8 @@ import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/edge_theme.dart';
 import 'package:odds_edge/main.dart' as app;
 
-import 'game_research_test.dart' show event, now, fixtureData;
+import 'game_research_test.dart'
+    show event, now, fixtureData, dataWith, recorded;
 
 void main() {
   testWidgets('public app entry point opens Coach without the legacy shell', (
@@ -72,6 +73,35 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     },
   );
+  testWidgets(
+    'a long response opens at its beginning instead of the last player',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: edgeTheme(),
+          home: CoachWorkspace(
+            snapshotLoader: () async => snapshot(),
+            clock: () => now,
+            playerLoader: () async => dataWith([
+              for (var i = 0; i < 14; i++)
+                recorded(id: 'qb-$i', name: 'Quarterback $i'),
+            ]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Explore Buffalo Bills at Kansas City Chiefs');
+      expect(find.text('Quarterback 0').hitTestable(), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Buffalo Bills at Kansas City Chiefs')).dy,
+        lessThan(400),
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets('AI uses retrieved evidence and fails back truthfully', (
     tester,
   ) async {
