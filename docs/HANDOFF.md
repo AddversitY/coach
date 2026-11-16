@@ -261,3 +261,27 @@ comparisons, no new odds calls. A separately authenticated provider adapter can
 accept licensed bet/money shares; it remains off without provider credentials.
 Verified sharp-money flow is still unavailable and is labeled provider needed.
 See LIVE_FEEDS.md for cadence, attribution, scope and the integration contract.
+
+
+## Whole-game forecasting and pricing milestone
+
+Implemented the server-calculated NFL game outlook across spreads, totals,
+moneylines and supported props. `model/game_forecast.py` produces a versioned
+opponent-adjusted score candidate with strictly earlier-week error distributions.
+Its first historical calibration test lost to market/reference baselines, so it
+remains unadopted; live pricing anchors to available paired market probabilities.
+The UI exposes those limits and never claims a validated edge. Player workload
+and efficiency projections are experimental, with no invented role, opponent,
+or injury adjustment. Exact dates, handicap signs, pushes and book identities
+are validated. API evidence is recalculated server-side before AI explanation.
+
+The bounded price publisher has an explicit balanced profile (3 game markets
+plus a rotating prop market), enabled by the public workflow with the SAME
+four-credit daily/60 monthly caps, protected reserve and private ledger. Existing
+valid old caches remain readable; no extra paid request or reset is authorized.
+
+Automatic internal forecasts capture within 24 hours of kickoff and are graded
+from published final outcomes. No personal bet tracking is added. Optional
+source-only AI benchmarks share existing usage caps; paired calibration metrics
+are reported by market and game. See GAME_ANALYSIS.md for cohort definitions,
+price limitations, benchmarks, adoption policy and reproducibility instructions.

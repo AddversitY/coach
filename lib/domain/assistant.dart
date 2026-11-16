@@ -4,6 +4,7 @@ const assistantModes = {'explain', 'challenge'};
 const assistantInputLabels = {
   'frozen_quote': 'Frozen quote and selection',
   'team_evidence': 'Team evidence',
+  'analysis_evidence': 'Server game analysis',
   'player_evidence': 'Player evidence',
   'assumptions': 'Your assumptions',
   'question': 'Your question',

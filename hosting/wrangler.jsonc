@@ -11,6 +11,7 @@
     "ALLOWED_ORIGIN": "https://addversity.github.io",
     "PUBLIC_BASE": "https://addversity.github.io/coach/",
     "MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "ENABLE_AI_BENCHMARK": "true",
     "MAX_MODEL_CALLS_PER_DAY": "60",
     "MAX_MODEL_CALLS_PER_IP_HOUR": "8"
   },

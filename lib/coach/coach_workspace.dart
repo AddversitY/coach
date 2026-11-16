@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import '../domain/coach_analysis.dart';
+import '../domain/game_outlook.dart';
 import '../domain/coach_telemetry.dart';
 import '../domain/game_research.dart';
 import '../domain/history.dart';
@@ -29,6 +30,8 @@ class CoachWorkspace extends StatefulWidget {
     this.analysisHistoryLoader,
     this.validationLoader,
     this.telemetryLoader,
+    this.gameAnalysisLoader,
+    this.evaluationLoader,
     this.ask,
     this.clock,
   });
@@ -37,6 +40,9 @@ class CoachWorkspace extends StatefulWidget {
   final Future<List<HistoricalGame>> Function()? analysisHistoryLoader;
   final Future<Map<String, dynamic>> Function()? validationLoader;
   final Future<CoachTelemetry> Function()? telemetryLoader;
+  final Future<Map<String, dynamic>> Function(Map<String, dynamic>)?
+  gameAnalysisLoader;
+  final Future<Map<String, dynamic>> Function()? evaluationLoader;
   final Future<AssistantReply> Function(Map<String, dynamic>)? ask;
   final DateTime Function()? clock;
   @override
@@ -53,6 +59,8 @@ class _Turn {
   bool aiFailed = false;
   CoachAnalysis? analysis;
   String? invalidation;
+  GameOutlook? game;
+  Map<String, dynamic>? evaluation;
   LiveResearch? live;
   String? liveNotice;
 }
@@ -81,6 +89,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Map<String, dynamic>? analysisValidation;
   bool pollingTelemetry = false;
   Map<String, String> playerNames = {};
+  String? selectedBookId;
   DateTime? lastSnapshotRefresh;
   final analysisEngine = const CoachAnalysisEngine();
   DateTime get now => widget.clock?.call().toUtc() ?? DateTime.now().toUtc();
@@ -163,6 +172,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     for (final turn in turns) {
       if (turn.live?.rows.any((row) => !currentObservation(row, now)) == true) {
         turn.liveNotice = 'This report snapshot has expired. Check the latest updates before using it.';
+        turn.generated = null;
+      }
+      if (turn.game != null && !turn.game!.event.startsAt.isAfter(now)) {
+        turn.invalidation =
+            'Kickoff has passed. This pregame outlook is withdrawn.';
         turn.generated = null;
       }
       if (turn.analysis?.legs.any((l) => !l.event.startsAt.isAfter(now)) ==
@@ -351,20 +365,51 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     }
     if (!mounted) return;
     CoachAnalysis? result;
+    GameOutlook? game;
+    Map<String, dynamic>? evaluation;
     LiveResearch? live;
     late CoachAnswer answer;
     final lower = resolved.toLowerCase();
     final wantsLive =
-        planned == 'market_status' ||
-        RegExp(
-          r'injur|availab|inactive|scratch|news|reporter|beat writer|headline|weather|forecast|market|sharp|money|steam|movement|latest updates',
-        ).hasMatch(lower);
+        planned != 'analyze_game' &&
+        (planned == 'market_status' ||
+            RegExp(
+              r'injur|availab|inactive|scratch|news|reporter|beat writer|headline|weather|market|sharp|\bmoney\b|steam|movement|latest updates',
+            ).hasMatch(lower));
     final wantsAnalysis =
         RegExp(
           r'\b(simulate|simulation|parlay|joint|stress|robust|rank|optimize)\b',
         ).hasMatch(lower) ||
         {'joint_probability', 'stress_test', 'robust_rank'}.contains(planned);
-    if (wantsAnalysis) {
+    final wantsEvaluation = RegExp(
+      r'coach.*perform|forecast results|model results|evaluation|benchmark',
+    ).hasMatch(lower);
+    final wantsGame =
+        (api != null || widget.gameAnalysisLoader != null) &&
+        !wantsLive &&
+        (planned == 'analyze_game' ||
+            RegExp(
+              r'\b(spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|forecast|projection|predict|wins?|winner|bet|bets)\b',
+            ).hasMatch(lower));
+    if (wantsEvaluation && (api != null || widget.evaluationLoader != null)) {
+      try {
+        evaluation =
+            await (widget.evaluationLoader?.call() ??
+                api!.forecastEvaluation());
+        answer = CoachAnswer(
+          title: 'Coach’s forecast record',
+          text:
+              '${evaluation['capturedGames'] ?? 0} games captured before kickoff; ${evaluation['gradedGames'] ?? 0} graded. This is automatic model evaluation, with no personal bet log. No proven edge or superiority is claimed.',
+          intent: CoachIntent.evaluation,
+        );
+      } catch (_) {
+        answer = const CoachAnswer(
+          title: 'Evaluation unavailable',
+          text: 'Forecast results could not be loaded. No performance figures are filled in.',
+          intent: CoachIntent.clarify,
+        );
+      }
+    } else if (wantsAnalysis) {
       try {
         await _analysisSources();
         final stress =
@@ -507,6 +552,58 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         playerIds: snapshot!.playerIdsByName,
         now: at,
       );
+      if (wantsGame && answer.intent != CoachIntent.clarify) {
+        try {
+          final payload = <String, dynamic>{
+            'question': resolved,
+            'context': {
+              'eventId': answer.event?.id ?? session.eventId,
+              'bookId': selectedBookId,
+            },
+          };
+          final raw =
+              await (widget.gameAnalysisLoader?.call(payload) ??
+                  api!.gameAnalysis(payload));
+          if (!mounted) return;
+          if (raw['available'] == true) {
+            game = GameOutlook.fromJson(raw);
+            answer = CoachAnswer(
+              title: '${game.event.away} at ${game.event.home}',
+              text: game.summary,
+              intent: CoachIntent.gameAnalysis,
+              event: game.event,
+            );
+            session.eventId = game.event.id;
+            session.playerId = null;
+          } else if (raw['reason'] == 'choose_game') {
+            answer = CoachAnswer(
+              title: 'Choose a matching game',
+              text: 'I could not resolve an upcoming game for that request. Choose the exact matchup and date below.',
+              intent: CoachIntent.clarify,
+              games: [
+                for (final item in raw['games'] as List? ?? [])
+                  SportEvent.fromJson(Map<String, dynamic>.from(item)),
+              ],
+            );
+          } else {
+            answer = CoachAnswer(
+              title: 'Game outlook unavailable',
+              text: 'The full forecast could not be verified. Try again shortly; no probabilities or prices are filled in.',
+              intent: CoachIntent.clarify,
+            );
+          }
+        } catch (_) {
+          answer = CoachAnswer(
+            title: answer.title,
+            text: 'The full game outlook could not load. Available source evidence remains below; no forecasts or prices are filled in.',
+            intent: answer.intent,
+            event: answer.event,
+            player: answer.player,
+            games: answer.games,
+            players: answer.players,
+          );
+        }
+      }
       if (wantsLive && answer.intent != CoachIntent.clarify) {
         await _pollTelemetry();
         if (!mounted) return;
@@ -530,6 +627,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     }
     final turn = _Turn(question, answer, at)
       ..analysis = result
+      ..game = game
+      ..evaluation = evaluation
       ..live = live;
     if (result != null) {
       final issue = checkAnalysis(
@@ -559,6 +658,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           'playerId': answer.player?.id,
           'eventId': answer.event?.id,
           'metric': answer.metric.key,
+          'analysisOverview': answer.intent == CoachIntent.gameAnalysis,
+          'bookId': selectedBookId,
         };
         if (result != null) payload['toolEvidence'] = result.toEvidence();
         final reply = await (widget.ask?.call(payload) ?? api!.coach(payload))
@@ -818,7 +919,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     builder: (context, box) {
       final wide = box.maxWidth >= 680;
       final headlineSize = wide ? 72.0 : 44.0;
-      final prompts = ['Brief me', 'Find a player', 'Compare prices'];
+      final prompts = ['Analyze a game', 'Find a player', 'Compare prices'];
       Widget prompt(int index) => Material(
         color: Colors.transparent,
         child: InkWell(
@@ -997,11 +1098,23 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           SelectableText(
             turn.invalidation ??
                 turn.liveNotice ??
-                turn.generated?.answer ??
-                turn.analysis?.summary ??
-                a.text,
+                (turn.game != null
+                    ? a.text
+                    : turn.generated?.answer ??
+                          turn.analysis?.summary ??
+                          a.text),
             style: CoachType.body,
           ),
+          if (turn.game != null &&
+              turn.generated != null &&
+              turn.invalidation == null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: SelectableText(
+                turn.generated!.answer,
+                style: CoachType.body,
+              ),
+            ),
           if (turn.aiFailed)
             Padding(
               padding: const EdgeInsets.only(top: 10),
@@ -1038,6 +1151,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
           if (turn.analysis != null && turn.invalidation == null)
             _analysisView(turn.analysis!),
+          if (turn.game != null && turn.invalidation == null) _gameView(turn),
+          if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
           if (a.player != null &&
               turn.invalidation == null &&
@@ -1102,6 +1217,283 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _gameView(_Turn turn) {
+    final game = turn.game!, score = game.score;
+    final books = (game.raw['books'] as List? ?? []).whereType<Map>();
+    String number(dynamic value) =>
+        value is num ? value.toStringAsFixed(1) : '—';
+    String percentage(dynamic value) =>
+        value is num ? '${(100 * value).toStringAsFixed(1)}%' : '—';
+    Widget caption(String text) =>
+        Text(text, style: CoachType.label.copyWith(fontSize: 11));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 18),
+        caption(
+          '${formatEastern(game.event.startsAt, year: true)} · Evidence through ${game.raw['cutoff']}',
+        ),
+        const SizedBox(height: 12),
+        Text(
+          '${game.event.away} ${number(score['away'])}  /  ${game.event.home} ${number(score['home'])}',
+          style: CoachType.title.copyWith(fontSize: 21),
+        ),
+        const SizedBox(height: 6),
+        caption(
+          game.basis == 'market_anchored'
+              ? 'Market-anchored score outlook. This is not an independent prediction of an edge.'
+              : 'Experimental score outlook. The score-only candidate did not beat the historical market baseline.',
+        ),
+        const SizedBox(height: 8),
+        if (game.raw['marketAsOf'] != null)
+          caption(
+            'Market observations from ${_reportTime(game.raw['marketAsOf'])}; offers may have changed.',
+          ),
+        caption(
+          'Median home margin: ${number(score['marginMedian'])}. Median total: ${number(score['totalMedian'])}.',
+        ),
+        caption(
+          'Central 80% research ranges · Margin ${score['marginRange']?.join(' to ')} · Total ${score['totalRange']?.join(' to ')}',
+        ),
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            ChoiceChip(
+              label: const Text('All books'),
+              selected: game.raw['bookId'] == null,
+              onSelected: busy
+                  ? null
+                  : (_) {
+                      selectedBookId = null;
+                      session.eventId = game.event.id;
+                      _send(turn.question);
+                    },
+            ),
+            for (final book in books)
+              ChoiceChip(
+                label: Text('${book['name']}'),
+                selected: game.raw['bookId'] == book['id'],
+                onSelected: busy
+                    ? null
+                    : (_) {
+                        selectedBookId = book['id'] as String;
+                        session.eventId = game.event.id;
+                        _send(turn.question);
+                      },
+              ),
+          ],
+        ),
+        for (final category in game.categories)
+          Container(
+            margin: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 16),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: CoachColors.border)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${category['label']}',
+                  style: CoachType.title.copyWith(fontSize: 19),
+                ),
+                if (category['market'] == 'spreads')
+                  caption(
+                    'Research median margin: ${number(score['marginMedian'])} for the home team.',
+                  ),
+                if (category['market'] == 'totals')
+                  caption(
+                    'Research median total: ${number(score['totalMedian'])} points.',
+                  ),
+                if (category['market'] == 'h2h')
+                  caption(
+                    'Home win ${percentage(score['homeWin'])} · Away win ${percentage(1 - (score['homeWin'] as num) - (score['tie'] as num))} · Tie ${percentage(score['tie'])}',
+                  ),
+                if ((category['rows'] as List).isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: caption(
+                      game.raw['bookId'] == null
+                          ? 'No saved price for this market.'
+                          : 'No saved price at the selected book.',
+                    ),
+                  ),
+                for (final row in (category['rows'] as List).take(2))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Builder(
+                      builder: (context) {
+                        final selection = Selection.fromJson(
+                          Map<String, dynamic>.from(row['selection']),
+                        );
+                        final minimum = row['minimumDecimal'];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${selection.label} · ${americanLabel((row['decimal'] as num).toDouble())} at ${row['book']}',
+                              style: CoachType.body.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            caption(
+                              'Research chance ${percentage(row['win'])} · Push ${percentage(row['push'])}',
+                            ),
+                            if (minimum is num &&
+                                minimum > 1 &&
+                                minimum.isFinite)
+                              caption(
+                                'Model-fair price ${americanLabel(minimum.toDouble())}. Conditional return ${number(100 * (row['conditionalEv'] as num))}% per unit; assumptions unvalidated.',
+                              ),
+                            caption(
+                              'Observed ${_reportTime(row['sourceAt'])}. Price may have changed; settlement rules unverified.',
+                            ),
+                            if (row['blocked'] == true)
+                              Text(
+                                '${row['reason']}',
+                                style: CoachType.label.copyWith(
+                                  color: CoachColors.warn,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                if ((category['totalRows'] as num? ?? 0) > 2)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: caption(
+                      'Showing two of ${category['totalRows']} exact price observations.',
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        if (game.projections.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Text(
+            'Player workload outlook',
+            style: CoachType.title.copyWith(fontSize: 19),
+          ),
+          caption(
+            'Conditional on the recorded role and participation. Opponent and role-change adjustments are not validated.',
+          ),
+          for (final projection in game.projections.take(6))
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${projection['name']} · ${projection['label']}: ${number(projection['mean'])}',
+                    style: CoachType.body,
+                  ),
+                  caption(
+                    '${number(projection['expectedWorkload'])} ${projection['workload']} · ${projection['records']} recorded appearances',
+                  ),
+                ],
+              ),
+            ),
+        ],
+        const SizedBox(height: 12),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(
+            'Validation & what could change this',
+            style: CoachType.label,
+          ),
+          children: [
+            for (final limit in game.raw['limits'] as List)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: caption('$limit'),
+                ),
+              ),
+            caption(
+              'A new injury report, role change, different line or price, or kickoff can make this outlook unsuitable. Refresh before relying on saved observations.',
+            ),
+          ],
+        ),
+        Wrap(
+          spacing: 14,
+          children: [
+            _DeskLink(
+              label: const Text('Refresh game analysis'),
+              onPressed: busy
+                  ? null
+                  : () {
+                      session.eventId = game.event.id;
+                      _send(turn.question);
+                    },
+            ),
+            _DeskLink(
+              label: const Text('How is Coach performing?'),
+              onPressed: busy ? null : () => _send('Coach performance'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _evaluationView(Map<String, dynamic> report) {
+    const labels = {
+      'h2h': 'Moneyline',
+      'spreads': 'Spread',
+      'totals': 'Game total',
+      'props': 'Player props',
+    };
+    String value(dynamic number) =>
+        number is num ? number.toStringAsFixed(3) : '—';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        Text(
+          '${report['pendingGames'] ?? 0} games awaiting results · ${report['unresolved'] ?? 0} selections awaiting participation data',
+          style: CoachType.label,
+        ),
+        for (final row in report['markets'] as List? ?? [])
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${labels[row['market']] ?? row['market']} · ${row['games']} graded games',
+                  style: CoachType.body.copyWith(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  'Forecast error: ${value(row['brier'])}. Lower is better.',
+                  style: CoachType.label,
+                ),
+                if ((row['baselineGames'] as num? ?? 0) > 0)
+                  Text(
+                    'Same-observation comparison on ${row['baselineGames']} games: Coach ${value(row['pairedBrier'])}, market/reference ${value(row['baselineBrier'])}.',
+                    style: CoachType.label,
+                  ),
+                if ((row['aiGames'] as num? ?? 0) > 0)
+                  Text(
+                    'Paired generic-model baseline on ${row['aiGames']} games: Coach ${value(row['aiPairedBrier'])}, AI ${value(row['aiBrier'])}.',
+                    style: CoachType.label,
+                  ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 14),
+        Text(
+          '${report['notice'] ?? 'No settled forecasts yet. No profits or predictive advantage are claimed.'}',
+          style: CoachType.label,
+        ),
+      ],
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
 
+import 'game_outlook_test.dart' show gameOutlookFixture;
 import 'game_research_test.dart'
     show event, now, fixtureData, dataWith, recorded;
 
@@ -33,6 +34,8 @@ void main() {
     Future<AssistantReply> Function(Map<String, dynamic>)? ask,
     Future<PublishedSnapshot> Function()? loader,
     Future<CoachTelemetry> Function()? telemetryLoader,
+    Future<Map<String, dynamic>> Function(Map<String, dynamic>)? gameLoader,
+    Future<Map<String, dynamic>> Function()? evaluationLoader,
   }) => MaterialApp(
     theme: coachTheme(),
     home: CoachWorkspace(
@@ -41,6 +44,8 @@ void main() {
       clock: () => now,
       ask: ask,
       telemetryLoader: telemetryLoader,
+      gameAnalysisLoader: gameLoader,
+      evaluationLoader: evaluationLoader,
     ),
   );
   Future<void> send(WidgetTester tester, String q) async {
@@ -248,6 +253,53 @@ void main() {
       expect(find.text('Read source'), findsOneWidget);
       expect(request!['question'], 'Latest reporter news');
       expect((request!['context'] as Map)['eventId'], isNull);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
+    'phone analyzes the whole game across markets and retains the selected book',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      String? requestedBook;
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            requestedBook = (payload['context'] as Map)['bookId'] as String?;
+            return gameOutlookFixture(event, now, bookId: requestedBook);
+          },
+          evaluationLoader: () async => {
+            'capturedGames': 0,
+            'gradedGames': 0,
+            'pendingGames': 0,
+            'unresolved': 0,
+            'markets': [],
+            'notice': 'No settled forecasts yet.',
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills');
+      for (final label in [
+        'Spread',
+        'Game total',
+        'Moneyline',
+        'Player props',
+      ]) {
+        expect(find.text(label), findsOneWidget);
+      }
+      expect(find.text('Player workload outlook'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.text('DraftKings'));
+      await tester.tap(find.text('DraftKings'));
+      await tester.pumpAndSettle();
+      expect(requestedBook, 'draftkings');
+      await send(tester, 'Bills moneyline');
+      expect(find.text('Player workload outlook'), findsNWidgets(3));
+      await send(tester, 'Coach performance');
+      expect(find.text('Coach’s forecast record'), findsOneWidget);
+      expect(find.text('No settled forecasts yet.'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },

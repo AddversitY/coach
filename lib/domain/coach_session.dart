@@ -15,6 +15,8 @@ enum CoachIntent {
   history,
   clarify,
   live,
+  gameAnalysis,
+  evaluation,
 }
 
 class CoachAnswer {

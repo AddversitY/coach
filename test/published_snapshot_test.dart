@@ -69,6 +69,15 @@ Map<String, dynamic> priceSnapshotJson(DateTime at) {
 
 void main() {
   final now = DateTime.utc(2026, 11, 14);
+  test('balanced published coverage accepts exact game markets without inventing player identities',(){
+    final raw=priceSnapshotJson(now);
+    raw['odds']['coverage']['markets']=['h2h','spreads','totals','player_pass_yds'];
+    raw['odds']['coverage']['players']=[];
+    raw['props']['quotes']=[OddsQuote(selection:const Selection(eventId:'nflverse:2026_11_BUF_KC',market:'spreads',outcome:'Buffalo Bills',point:3.5,rules:'game_market_unverified'),bookId:'draftkings',book:'DraftKings',provider:'the-odds-api',decimal:1.91,sourceAt:now,collectedAt:now).toJson()];
+    final value=PublishedSnapshot.parse(raw,now);expect(value.props.quotes.single.selection.market,'spreads');expect(value.playerIdsByName,isEmpty);
+    raw['props']['quotes'][0]['selection']['outcome']='Dallas Cowboys';
+    expect(()=>PublishedSnapshot.parse(raw,now),throwsFormatException);
+  });
   test('published games preserve source dates and become stale', () {
     final value = PublishedSnapshot.parse(snapshotJson(now), now);
     expect(value.board.demo, isFalse);

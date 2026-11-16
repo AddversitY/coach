@@ -126,6 +126,22 @@ class BackendRepository {
     return AssistantReply.fromJson(Map<String, dynamic>.from(decoded));
   }
 
+  Future<Map<String, dynamic>> gameAnalysis(
+    Map<String, dynamic> request,
+  ) async {
+    final raw = await _post('/v1/game-analysis', request);
+    if (raw is! Map) throw const FormatException('Game analysis unavailable');
+    return Map<String, dynamic>.from(raw);
+  }
+
+  Future<Map<String, dynamic>> forecastEvaluation() async {
+    final raw = await _get('/v1/evaluation');
+    if (raw is! Map) {
+      throw const FormatException('Forecast evaluation unavailable');
+    }
+    return Map<String, dynamic>.from(raw);
+  }
+
   Future<Map<String, dynamic>> coachPlan(Map<String, dynamic> request) async {
     final decoded = await _post('/v1/plan', request);
     if (decoded is! Map ||

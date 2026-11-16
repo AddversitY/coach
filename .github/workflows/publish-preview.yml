@@ -79,7 +79,7 @@ jobs:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           INITIALIZE: ${{ github.event_name == 'workflow_dispatch' && inputs.initialize_price_state || false }}
         run: |
-          args=(--schedule build/web/data/snapshot.json --output build/web/data/snapshot.json)
+          args=(--schedule build/web/data/snapshot.json --output build/web/data/snapshot.json --market-profile balanced)
           if [ "$INITIALIZE" = "true" ]; then args+=(--initialize-state); fi
           python tools/publish_quotes.py "${args[@]}"
       - name: Save quota reservations even after failure

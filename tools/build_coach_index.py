@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from publish_snapshot import SOURCE, TEAMS, ALIASES, build_snapshot, iso
 
-def build_index(schedule, dataset, rows, now, stadiums):
+def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None):
     metadata=dataset.get('metadata',dataset)
     cutoff=datetime.fromisoformat(metadata['cutoff']).date()
     retrieved=datetime.fromisoformat(metadata['retrievedAt'].replace('Z','+00:00'))
@@ -19,8 +19,8 @@ def build_index(schedule, dataset, rows, now, stadiums):
     for event in expected.values():
         row=by_schedule[event['id']]
         venue=row.get('stadium','').strip();point=stadiums.get(venue)
-        events.append(dict(event,venue=venue,roof=row.get('roof','unknown'),
-            latitude=point[0] if point else None,longitude=point[1] if point else None))
+        events.append(dict(event,homeCode=ALIASES.get(row['home_team'],row['home_team']),awayCode=ALIASES.get(row['away_team'],row['away_team']),venue=venue,roof=row.get('roof','unknown'),
+            latitude=point[0] if point else None,longitude=point[1] if point else None,neutral=row.get('location')=='Neutral'))
     permitted=[]
     for row in dataset['rows']:
         day=datetime.fromisoformat(row['date']).date()
@@ -49,7 +49,32 @@ def build_index(schedule, dataset, rows, now, stadiums):
         compact=[{'date':g['date'],'week':g['week'],'stats':{k:v for k,v in g['stats'].items() if k in keys}} for g in segment[:10]]
         players.append({'id':player_id,'name':latest['name'],'team':latest['team'],
             'position':latest['position'],'events':event_ids,'games':compact})
-    return {'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
+    model=None
+    if forecast_model:
+        model_cutoff=datetime.fromisoformat(forecast_model['cutoff']).date()
+        trained=datetime.fromisoformat(forecast_model['trainedAt'].replace('Z','+00:00'))
+        if forecast_model.get('schemaVersion')!=1 or trained.tzinfo is None or trained>now or model_cutoff>now.date() or (now.date()-model_cutoff).days>21 or len(forecast_model['coefficients'])!=66 or not 120<=len(forecast_model['residuals'])<=1000:
+            raise ValueError('Forecast model provenance is invalid or stale')
+        model=forecast_model
+        codes={value:key for key,value in TEAMS.items()}
+        for event in events:
+            h,a=[model['teams'].index(codes[event[key]]) for key in ['home','away']]
+            c=model['coefficients'];event['forecast']={'homeMean':max(0,min(65,c[0]+(0 if event['neutral'] else c[1])+c[2+h]+c[34+a])),
+                'awayMean':max(0,min(65,c[0]+c[2+a]+c[34+h])),'modelVersion':model['version'],'cutoff':model['cutoff']}
+    results=[]
+    if game_history:
+        history_cutoff=datetime.fromisoformat(game_history['cutoff']).date()
+        fetched=datetime.fromisoformat(game_history['retrievedAt'].replace('Z','+00:00'))
+        if fetched.tzinfo is None or fetched>now or history_cutoff>now.date():raise ValueError('Invalid result provenance')
+        current_games=[g for g in game_history['games'] if g['season']==metadata['currentSeason'] and now.date()-timedelta(days=50)<=datetime.fromisoformat(g['date']).date()<=min(history_cutoff,now.date()-timedelta(days=1))]
+        for game in current_games:
+            stats={}
+            for record in permitted:
+                if record['season']==game['season'] and record['week']==game['week'] and record['date']==game['date'] and ALIASES.get(record['team'],record['team']) in [ALIASES.get(game['home'],game['home']),ALIASES.get(game['away'],game['away'])]:
+                    values=record['stats'];values=dict(zip(dataset['statKeys'],values)) if isinstance(values,list) else values
+                    stats[record['playerId']]={key:values[key] for key in ['passing_yards','rushing_yards','receiving_yards','receptions'] if key in values}
+            results.append({'eventId':'nflverse:'+game['id'],'homeScore':game['homeScore'],'awayScore':game['awayScore'],'date':game['date'],'home':TEAMS[ALIASES.get(game['home'],game['home'])],'away':TEAMS[ALIASES.get(game['away'],game['away'])],'playerStats':stats})
+    return {'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
         'retrievedAt':iso(retrieved),'evidenceHash':hashlib.sha256(json.dumps(dataset,sort_keys=True).encode()).hexdigest(),
         'events':events,'players':players,'notice':'Recorded participants, not confirmed rosters. Marginal probabilities are not validated live forecasts.'}
 
@@ -60,7 +85,7 @@ def main():
     with urllib.request.urlopen(SOURCE,timeout=30) as r:rows=list(csv.DictReader(io.StringIO(r.read().decode('utf-8-sig'))))
     tree=ast.parse(Path('model/weather.py').read_text(encoding='utf-8'))
     stadiums=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.AnnAssign) and getattr(node.target,'id',None)=='STADIUMS')
-    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums)
+    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')))
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,allow_nan=False,separators=(',',':')),encoding='utf-8')
     print(f'Coach index: {len(result["players"])} recorded players; zero odds credits.')
 if __name__=='__main__':main()

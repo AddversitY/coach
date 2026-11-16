@@ -331,3 +331,21 @@ class QuotePublicationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class BalancedMarketTests(unittest.TestCase):
+    def test_balanced_profile_keeps_exact_four_credit_budget_and_normalizes_all_core_markets(self):
+        from publish_quotes import requested_markets,COST,DAILY_CAP,MONTHLY_CAP,RESERVE,normalize_quotes,cached_quotes
+        markets=requested_markets('balanced',NOW)
+        self.assertEqual(len(markets),4);self.assertEqual(markets[:3],('h2h','spreads','totals'))
+        self.assertEqual((COST,DAILY_CAP,MONTHLY_CAP,RESERVE),(4,4,60,50))
+        event=schedule()['board']['events'][0]
+        raw=provider_event();raw['bookmakers']=[{'key':'draftkings','markets':[
+            {'key':'h2h','last_update':iso(NOW),'outcomes':[{'name':event['home'],'price':1.8},{'name':event['away'],'price':2.1}]},
+            {'key':'spreads','last_update':iso(NOW),'outcomes':[{'name':event['home'],'point':-3.5,'price':1.91},{'name':event['away'],'point':3.5,'price':1.91}]},
+            {'key':'totals','last_update':iso(NOW),'outcomes':[{'name':'Over','point':45.5,'price':1.91},{'name':'Under','point':45.5,'price':1.91}]},
+        ]}]
+        quotes,players=normalize_quotes(raw,event,provider_event(),{},NOW,markets)
+        self.assertEqual(len(quotes),6);self.assertEqual(players,[])
+        self.assertEqual(cached_quotes({'event':event,'quotes':quotes,'players':players,'markets':list(markets)}, {}, NOW),quotes)
+        raw['bookmakers'][0]['markets'][1]['outcomes'][0]['name']='Dallas Cowboys'
+        self.assertEqual(len(normalize_quotes(raw,event,provider_event(),{},NOW,markets)[0]),5)

@@ -1,0 +1,85 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {analyzeGame,outcome,resolveGame,validQuotes,playerProjection} from './game-analysis.mjs';
+import {forecastSnapshot,gradeForecast,addGrade,evaluationReport,validateBenchmark} from './forecast-evaluation.mjs';
+import {evaluationState} from './evaluation-state.mjs';
+
+const now=Date.UTC(2026,10,16,12),at=new Date(now).toISOString();
+const event={id:'nflverse:2026_11_BUF_KC',home:'Kansas City Chiefs',away:'Buffalo Bills',startsAt:new Date(now+3600000).toISOString()};
+const player={id:'p',name:'Recorded Receiver',team:'BUF',events:[event.id],games:Array.from({length:8},(_,i)=>({date:`2026-11-${String(12-i).padStart(2,'0')}`,stats:{receptions:4+i%5,receiving_yards:40+i*3,targets:7+i%4}}))};
+const quote=(market,outcome,point=null,decimal=1.91)=>({selection:{eventId:event.id,market,outcome,point,participant:market.startsWith('player_')?player.name:'',period:'full_game',rules:market.startsWith('player_')?'player_prop_unverified':'game_market_unverified'},bookId:'draftkings',book:'DraftKings',provider:'the-odds-api',sourceAt:at,collectedAt:at,decimal,status:'open',demo:false});
+function source(quotes=[]){return {index:{events:[{...event,forecast:{homeMean:24,awayMean:20,modelVersion:'test',cutoff:'2026-11-12'}}],players:[player],scoreModel:{version:'test',trainedAt:at,cutoff:'2026-11-12',residuals:Array.from({length:180},(_,i)=>[i%17-8,i*7%19-9]),validation:{adopted:false,hasEdge:false,markets:{}},baselineHomeWin:.55}},snapshot:{odds:{coverage:{players:[{playerId:'p',name:player.name}]}},props:{quotes,fetchedAt:at,demo:false}}};}
+const gameQuotes=()=>[quote('spreads',event.home,-3.5),quote('spreads',event.away,3.5),quote('totals','Over',47.5),quote('totals','Under',47.5),quote('h2h',event.home,null,1.67),quote('h2h',event.away,null,2.3),quote('player_receptions','Over',5.5),quote('player_receptions','Under',5.5)];
+function report(quotes=gameQuotes()){const data=source(quotes);return analyzeGame(data,data.index.events[0],{now});}
+
+test('analyze a game supports four market categories and coherent win/push/loss arithmetic',()=>{
+  const result=report();assert.equal(result.basis,'market_anchored');assert.equal(result.categories.length,4);
+  for(const category of result.categories){assert.ok(category.rows.length);for(const row of category.rows){
+    assert.ok(Math.abs(row.win+row.push+row.loss-1)<1e-8);assert.ok(row.win>=0&&row.push>=0&&row.loss>=0);
+    assert.ok(Math.abs(row.win*row.minimumDecimal-(1-row.push))<1e-8);assert.equal(row.hasEdge,false);
+  }}
+  assert.equal(result.recommendationsReady,false);assert.equal(result.hasEdge,false);
+  assert.ok(Math.abs(result.score.home-result.score.away-result.score.marginMedian)<20);
+});
+test('unpriced score outlook never invents a sportsbook opportunity',()=>{
+  const result=report([]);assert.equal(result.basis,'experimental_score_candidate');assert.equal(result.ranked.length,0);
+  assert.ok(result.categories.every(c=>c.status==='prices_unavailable'));assert.ok(result.projections.length);
+  assert.match(result.summary,/prices are missing/);assert.equal(result.score.homeWin+result.score.tie<=1,true);
+});
+test('event, book, freshness and identity boundaries exclude invalid prices',()=>{
+  const rows=gameQuotes();const data=source(rows);
+  for(const bad of [{...rows[0],demo:true},{...rows[0],book:'Wrong book'},{...rows[0],sourceAt:new Date(now+1).toISOString()},{...rows[0],selection:{...rows[0].selection,outcome:'Dallas Cowboys'}}]){
+    assert.equal(validQuotes({...data,snapshot:{...data.snapshot,props:{...data.snapshot.props,quotes:[bad]}}},event,now).length,0);
+  }
+  assert.equal(analyzeGame(data,data.index.events[0],{now,bookId:'fanduel'}).ranked.length,0);
+  assert.equal(resolveGame(data.index,'Analyze Bills',{},now).id,event.id);
+  assert.equal(resolveGame(data.index,'Analyze Cowboys',{},now),null);
+  assert.throws(()=>analyzeGame(data,{...event,startsAt:at},{now}),/Upcoming/);
+});
+test('spread signs, whole-number pushes, totals and moneyline ties settle consistently',()=>{
+  assert.equal(outcome({market:'spreads',outcome:event.home,homeTeam:event.home,point:-3},24,21),0);
+  assert.equal(outcome({market:'spreads',outcome:event.away,homeTeam:event.home,point:3.5},24,21),1);
+  assert.equal(outcome({market:'totals',outcome:'Under',point:45},24,21),0);
+  assert.equal(outcome({market:'h2h',outcome:event.home,homeTeam:event.home},24,24,null,true),-1);
+  assert.equal(outcome({market:'h2h',outcome:'Draw',homeTeam:event.home},24,24),1);
+});
+test('workload projections require records and an affected scratch blocks ranked prop candidates',()=>{
+  assert.equal(playerProjection({...player,games:player.games.slice(0,3)},'player_receptions'),null);
+  const data=source(gameQuotes());const result=analyzeGame(data,data.index.events[0],{now,telemetry:{checkedAt:at,observations:[{kind:'injury',eventId:event.id,playerId:'p',observedAt:at,value:{status:'Out'}}]}});
+  assert.ok(result.categories.find(c=>c.market==='props').rows.every(r=>r.blocked));assert.ok(result.ranked.every(r=>r.selection.participant!==player.name));
+});
+test('automatic research capture excludes early/late requests and does not store user bets',()=>{
+  const r=report();assert.ok(forecastSnapshot(r));assert.equal(forecastSnapshot({...r,createdAt:event.startsAt}),null);
+  assert.equal(forecastSnapshot({...r,createdAt:new Date(now-2*86400000).toISOString()}),null);
+  const snapshot=forecastSnapshot(r);assert.equal(snapshot.question,undefined);assert.equal(snapshot.stake,undefined);
+});
+test('grading leaves absent appearances unresolved and compares only paired baselines by game',()=>{
+  const snapshot=forecastSnapshot(report());
+  snapshot.benchmark=validateBenchmark({probabilities:[{key:0,win:.55,push:0}]},snapshot);
+  const grade=gradeForecast(snapshot,{eventId:event.id,homeScore:24,awayScore:21,playerStats:{}});
+  assert.equal(grade.unresolved,2);assert.equal(grade.markets.props,undefined);assert.equal(grade.markets.spreads.observations,2);
+  const aggregate=addGrade({},grade),result=evaluationReport(aggregate,{});
+  assert.equal(result.markets.find(m=>m.market==='spreads').games,1);assert.equal(result.hasEdge,false);
+  assert.throws(()=>validateBenchmark({probabilities:[{key:0,win:.9,push:.2}]},snapshot));
+});
+
+test('stored forecasts freeze first capture and score corrections replace prior grades',async()=>{
+  const values=new Map();let queue=Promise.resolve();const storage={get:async key=>structuredClone(values.get(key)),put:async(key,value)=>values.set(key,structuredClone(value)),transaction(fn){const next=queue.then(()=>fn(storage));queue=next.catch(()=>{});return next;}};
+  const state={storage};const request=(path,body)=>evaluationState(state,path,new Request('https://internal'+path,{method:'POST',body:JSON.stringify(body)}));
+  const snapshot=forecastSnapshot(report());
+  await Promise.all([request('/forecast-capture',snapshot),request('/forecast-capture',snapshot)]);
+  const graded={eventId:event.id,homeScore:24,awayScore:21,playerStats:{p:{receptions:6}}};
+  await request('/grade-batch',{hash:'one',results:[graded]});
+  await request('/grade-batch',{hash:'one',results:[graded]});
+  await request('/grade-batch',{hash:'corrected',results:[{...graded,awayScore:28}]});
+  const result=await (await evaluationState(state,'/evaluation',new Request('https://internal/evaluation'))).json();
+  assert.equal(result.snapshots,1);assert.equal(result.gradedGames,1);assert.equal(result.pendingGames,0);assert.equal(result.markets.find(m=>m.market==='h2h').games,1);
+});
+
+test('explicit dates and next week cannot silently select a different matchup',()=>{
+  const data=source();data.index.events[0].homeCode='KC';data.index.events[0].awayCode='BUF';
+  data.index.events.push({...data.index.events[0],id:'later',startsAt:new Date(now+8*86400000).toISOString()});
+  assert.equal(resolveGame(data.index,'Analyze BUF next week',{},now).id,'later');
+  assert.equal(resolveGame(data.index,'Analyze Bills on 2026-11-16',{},now).id,event.id);
+  assert.equal(resolveGame(data.index,'Analyze Bills on 2026-11-19',{eventId:event.id},now),null);
+});

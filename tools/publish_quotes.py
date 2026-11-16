@@ -22,6 +22,13 @@ from zoneinfo import ZoneInfo
 from publish_snapshot import TEAMS, ALIASES, SOURCE, iso
 
 MARKETS = ('player_pass_yds', 'player_receptions', 'player_rush_yds', 'player_reception_yds')
+GAME_MARKETS = ('h2h', 'spreads', 'totals')
+ALL_MARKETS = MARKETS + GAME_MARKETS
+
+def requested_markets(profile, now):
+    if profile == 'props': return MARKETS
+    if profile != 'balanced': raise ValueError('Unknown market profile')
+    return GAME_MARKETS + (MARKETS[now.date().toordinal() % len(MARKETS)],)
 BOOKS = {'draftkings': 'DraftKings', 'fanduel': 'FanDuel', 'betmgm': 'BetMGM',
          'williamhill_us': 'Caesars', 'espnbet': 'ESPN BET', 'fanatics': 'Fanatics',
          'betrivers': 'BetRivers', 'hardrockbet': 'Hard Rock Bet',
@@ -163,53 +170,46 @@ def match_event(upstream, schedule_events, now):
     return min(pairs, key=lambda pair: (pair[0]['startsAt'], pair[0]['id'])) if pairs else None
 
 
-def normalize_quotes(raw, event, provider_event, directory, now):
-    # Repeat the event match against the actual odds response, not just the free
-    # index. A crossed cache/response must never attach prices to another game.
+def valid_selection(selection, event, directory, markets):
+    market,side,name,point=[selection.get(k) for k in ('market','outcome','participant','point')]
+    if market not in markets or selection.get('eventId')!=event['id'] or selection.get('period')!='full_game': return False
+    if market=='h2h': return name=='' and side in (event['home'],event['away'],'Draw') and point is None and selection.get('rules')=='game_market_unverified'
+    if isinstance(point,bool) or not isinstance(point,(int,float)) or not math.isfinite(point) or abs(point)>1000 or point*2!=int(point*2): return False
+    if market=='spreads':return name=='' and side in (event['home'],event['away']) and selection.get('rules')=='game_market_unverified'
+    if market=='totals':return name=='' and side in ('Over','Under') and point>=0 and selection.get('rules')=='game_market_unverified'
+    return name in directory and side in ('Over','Under') and point>=0 and selection.get('rules')=='player_prop_unverified'
+
+
+def normalize_quotes(raw, event, provider_event, directory, now, markets=MARKETS):
     if (raw.get('id') != provider_event['id'] or raw.get('sport_key') != 'americanfootball_nfl' or
             canonical(raw.get('home_team')) != event['home'] or canonical(raw.get('away_team')) != event['away'] or
             abs(at(raw.get('commence_time')) - at(event['startsAt'])) > timedelta(minutes=5)):
         raise ValueError('Odds response disagrees with the scheduled event.')
-    quotes, identities, seen = [], {}, set()
-    if not isinstance(raw.get('bookmakers'), list):
-        raise ValueError('No bookmaker observations.')
+    quotes,identities,seen=[],{},set()
+    if not isinstance(raw.get('bookmakers'),list):raise ValueError('No bookmaker observations.')
     for book in raw['bookmakers']:
-        if not isinstance(book, dict) or book.get('key') not in BOOKS:
-            continue
-        book_id = book['key']
-        for market in book.get('markets', []):
-            if not isinstance(market, dict) or market.get('key') not in MARKETS:
-                continue
-            source = at(market.get('last_update'))
-            if source > now + timedelta(seconds=5) or now - source > TTL:
-                continue
-            for outcome in market.get('outcomes', []):
-                if not isinstance(outcome, dict):
-                    continue
-                name, side, point, price = [outcome.get(k) for k in ('description', 'name', 'point', 'price')]
-                if (name not in directory or side not in ('Over', 'Under') or
-                        isinstance(point, bool) or not isinstance(point, (int, float)) or
-                        not math.isfinite(point) or not 0 <= point <= 1000 or point * 2 != int(point * 2) or
-                        isinstance(price, bool) or not isinstance(price, (int, float)) or
-                        not math.isfinite(price) or not 1 < price <= 1001):
-                    continue
-                key = (book_id, market['key'], name, side, point)
-                if key in seen:
-                    # Conflicting or duplicated observations fail closed.
-                    raise ValueError('Duplicate exact quote identity.')
-                seen.add(key)
-                identities[name] = directory[name]
-                quotes.append(dict(selection=dict(eventId=event['id'], market=market['key'], outcome=side,
-                    participant=name, point=float(point), period='full_game', rules='player_prop_unverified'),
-                    bookId=book_id, book=BOOKS[book_id], provider=PROVIDER, decimal=float(price),
-                    sourceAt=iso(source), collectedAt=iso(now), status='open', demo=False))
-    quotes.sort(key=lambda q: (q['selection']['participant'], q['selection']['market'], q['selection']['point'], q['selection']['outcome'], q['bookId']))
-    if len(quotes) > 2000:
-        raise ValueError('Unexpected pilot observation count.')
-    return quotes, [identities[name] for name in sorted(identities)]
+        if not isinstance(book,dict) or book.get('key') not in BOOKS:continue
+        book_id=book['key']
+        for market in book.get('markets',[]):
+            if not isinstance(market,dict) or market.get('key') not in markets:continue
+            source=at(market.get('last_update'))
+            if source>now+timedelta(seconds=5) or now-source>TTL:continue
+            for outcome in market.get('outcomes',[]):
+                if not isinstance(outcome,dict):continue
+                kind=market['key'];price=outcome.get('price')
+                selection=dict(eventId=event['id'],market=kind,outcome=outcome.get('name'),participant=outcome.get('description') if kind in MARKETS else '',point=outcome.get('point'),period='full_game',rules='player_prop_unverified' if kind in MARKETS else 'game_market_unverified')
+                if not valid_selection(selection,event,directory,markets) or isinstance(price,bool) or not isinstance(price,(int,float)) or not math.isfinite(price) or not 1<price<=1001:continue
+                identity=(book_id,json.dumps(selection,sort_keys=True))
+                if identity in seen:raise ValueError('Duplicate exact quote identity.')
+                seen.add(identity)
+                if selection['participant']:identities[selection['participant']]=directory[selection['participant']]
+                quotes.append(dict(selection=selection,bookId=book_id,book=BOOKS[book_id],provider=PROVIDER,decimal=float(price),sourceAt=iso(source),collectedAt=iso(now),status='open',demo=False))
+    quotes.sort(key=lambda q:(q['selection']['participant'],q['selection']['market'],q['selection']['point'] or 0,q['selection']['outcome'],q['bookId']))
+    if len(quotes)>2000:raise ValueError('Unexpected pilot observation count.')
+    return quotes,[identities[name] for name in sorted(identities)]
 
 
-def publish_observations(schedule, event, quotes, players, fetched_at, now, fixture=False):
+def publish_observations(schedule, event, quotes, players, fetched_at, now, fixture=False, markets=MARKETS):
     # Construct a public allowlist instead of copying arbitrary input fields.
     events = [{key: e[key] for key in ('id', 'away', 'home', 'startsAt', 'sport', 'league')}
               for e in schedule['board']['events']]
@@ -220,7 +220,7 @@ def publish_observations(schedule, event, quotes, players, fetched_at, now, fixt
         board=dict(events=events, quotes=[], fetchedAt=schedule['schedule']['fetchedAt'],
             demo=False, notices=['Actual NFL schedule from nflverse.']))
     result['odds'] = dict(status='limited', provider=PROVIDER, fetchedAt=iso(fetched_at),
-        coverage=dict(eventId=event['id'], markets=list(MARKETS), players=players, outsideCoverage='unavailable'))
+        coverage=dict(eventId=event['id'], markets=list(markets), players=players, outsideCoverage='unavailable'))
     if fixture:
         # The app explicitly rejects this marker: offline test prices cannot be
         # accidentally deployed as real observations.
@@ -232,8 +232,8 @@ def publish_observations(schedule, event, quotes, players, fetched_at, now, fixt
 
 
 class Provider:
-    def __init__(self, key, fixture_dir=None):
-        self.key, self.fixture_dir = key, fixture_dir
+    def __init__(self, key, fixture_dir=None, markets=MARKETS):
+        self.key, self.fixture_dir, self.markets = key, fixture_dir, markets
 
     def request(self, event_id=None):
         if self.fixture_dir:
@@ -247,7 +247,7 @@ class Provider:
             if not re.fullmatch(r'[a-f0-9]{32}', event_id):
                 raise ValueError('Invalid provider event id.')
             path += '/' + event_id + '/odds'
-            params.update(bookmakers=','.join(BOOKS), markets=','.join(MARKETS), oddsFormat='decimal')
+            params.update(bookmakers=','.join(BOOKS), markets=','.join(self.markets), oddsFormat='decimal')
         url = 'https://api.the-odds-api.com' + path + '?' + urllib.parse.urlencode(params)
         request = urllib.request.Request(url, headers={'x-api-key': self.key, 'User-Agent': 'OddsEdge publication pilot'})
         class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -285,31 +285,30 @@ def cached_quotes(cache, directory, fetched):
     allowed = {'selection', 'bookId', 'book', 'provider', 'decimal', 'sourceAt', 'collectedAt', 'status', 'demo'}
     selection_keys = {'eventId', 'market', 'outcome', 'participant', 'point', 'period', 'rules'}
     seen, names = set(), set()
+    markets=cache.get('markets',MARKETS)
+    if not isinstance(markets,(list,tuple)) or len(markets)!=4 or len(set(markets))!=4 or any(m not in ALL_MARKETS for m in markets):raise ValueError('Invalid cached market coverage')
     for q in cache['quotes']:
         s = q['selection']
         point, price = s['point'], q['decimal']
         if (set(q) != allowed or set(s) != selection_keys or s['eventId'] != cache['event']['id'] or
-                s['market'] not in MARKETS or s['outcome'] not in ('Over', 'Under') or
-                s['participant'] not in directory or s['period'] != 'full_game' or s['rules'] != 'player_prop_unverified' or
+                not valid_selection(s,cache['event'],directory,cache.get('markets',MARKETS)) or
                 q['bookId'] not in BOOKS or q['book'] != BOOKS[q['bookId']] or q['provider'] != PROVIDER or
                 q['demo'] is not False or q['status'] != 'open' or at(q['collectedAt']) != fetched or
                 at(q['sourceAt']) > fetched + timedelta(seconds=5) or fetched - at(q['sourceAt']) > TTL or
-                isinstance(point, bool) or not isinstance(point, (int, float)) or not math.isfinite(point) or
-                not 0 <= point <= 1000 or point * 2 != int(point * 2) or
                 isinstance(price, bool) or not isinstance(price, (int, float)) or not math.isfinite(price) or not 1 < price <= 1001):
             raise ValueError('Invalid saved exact quote identity.')
         identity = (q['bookId'], json.dumps(s, sort_keys=True))
         if identity in seen:
             raise ValueError('Duplicate saved quote identity.')
         seen.add(identity)
-        names.add(s['participant'])
+        if s['participant']:names.add(s['participant'])
     if names != {p['name'] for p in cache['players']} or len(names) != len(cache['players']):
         raise ValueError('Invalid saved player coverage.')
     return cache['quotes']
 
 
 def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixture_dir=None,
-        provider=None, initialize_state=False, refresh_window=None):
+        provider=None, initialize_state=False, refresh_window=None, profile='props'):
     validate_schedule(schedule, now)
     if not enabled or (not key and fixture_dir is None):
         return copy.deepcopy(schedule), 'Schedule only; price pilot disabled or no server key; zero odds credits.'
@@ -354,7 +353,7 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
                 directory = player_directory(dataset, events[0], now)
                 if all(directory.get(p['name']) == p for p in cache['players']):
                     quotes = cached_quotes(cache, directory, fetched)
-                    return publish_observations(schedule, events[0], quotes, cache['players'], fetched, now, fixture_dir is not None), 'Reused saved price observations; zero odds credits.'
+                    return publish_observations(schedule, events[0], quotes, cache['players'], fetched, now, fixture_dir is not None, cache.get('markets',MARKETS)), 'Reused saved price observations; zero odds credits.'
         spent_day = sum(e['credits'] for e in ledger['reservations'] if at(e['at']).date() == now.date())
         spent_month = sum(e['credits'] for e in ledger['reservations'] if at(e['at']).strftime('%Y-%m') == now.strftime('%Y-%m'))
         if spent_day + COST > DAILY_CAP or spent_month + COST > MONTHLY_CAP:
@@ -363,7 +362,8 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
             return copy.deepcopy(schedule), 'Schedule only; no upcoming pilot game.'
         if refresh_window is not None and min(at(e['startsAt']) for e in upcoming) - now > refresh_window:
             return copy.deepcopy(schedule), 'Schedule only; next game is outside the pregame refresh window; zero odds credits.'
-        source = provider or Provider(key, fixture_dir)
+        markets=requested_markets(profile,now)
+        source = provider or Provider(key, fixture_dir, markets)
         upstream, headers = source.request()
         if not isinstance(upstream, list) or credits(headers, 'x-requests-last') != 0:
             raise ValueError('Free event index or credit accounting is invalid.')
@@ -398,11 +398,11 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
             raise ValueError('Provider credit accounting exceeded the pilot budget.')
         ledger['providerUsed'] = observed_used
         write_json(ledger_path, ledger)
-        quotes, players = normalize_quotes(raw, event, provider_event, directory, now)
+        quotes, players = normalize_quotes(raw, event, provider_event, directory, now, markets)
         if not quotes:
             return copy.deepcopy(schedule), 'Schedule only; no validated exact price observations.'
-        write_json(cache_path, dict(event=event, quotes=quotes, players=players, fetchedAt=iso(now)))
-        return publish_observations(schedule, event, quotes, players, now, now, fixture_dir is not None), 'Published limited NFL price observations; at most four odds credits.'
+        write_json(cache_path, dict(event=event, quotes=quotes, players=players, fetchedAt=iso(now), markets=list(markets)))
+        return publish_observations(schedule, event, quotes, players, now, now, fixture_dir is not None, markets), 'Published limited NFL price observations; at most four odds credits.'
     finally:
         lock.unlink(missing_ok=True)
 
@@ -413,6 +413,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--state-dir', type=Path, default=ROOT / '.tools' / 'odds-publish-state')
     parser.add_argument('--fixture-dir', type=Path)
+    parser.add_argument('--market-profile',choices=['props','balanced'],default='props')
     parser.add_argument('--initialize-state', action='store_true',
                         help='Explicit one-time approved creation of the private credit ledger. Never enable routinely.')
     args = parser.parse_args()
@@ -427,7 +428,7 @@ def main():
     try:
         result, message = run(schedule, dataset, now, enabled=enabled, key=key,
                               state_dir=args.state_dir, fixture_dir=args.fixture_dir,
-                              initialize_state=args.initialize_state, refresh_window=timedelta(hours=6))
+                              initialize_state=args.initialize_state, refresh_window=timedelta(hours=6), profile=args.market_profile)
     except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError):
         # Provider/network/cache failure should retain a valid current schedule.
         validate_schedule(schedule, now)

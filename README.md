@@ -1,12 +1,15 @@
 # Coach
 
-Sports research in one conversation. Ask about an NFL game, player, or prop line;
-Coach brings recorded evidence, charts and saved-price comparisons into the answer.
+NFL game analysis in one conversation. Ask about a matchup, spread, total,
+moneyline or player prop; Coach brings score/workload forecasts, source evidence
+and exact saved-price comparisons into the answer. Forecasts remain experimental;
+no validated betting edge or AI superiority is claimed.
 Hosted Coach AI is connected through Cloudflare Workers AI. Guided evidence tools remain available if interpretation is unavailable.
 
 - [Open Coach](https://addversity.github.io/coach/)
 - [GitHub repository](https://github.com/AddversitY/coach)
 - [Current architecture and hosting next step](docs/COACH_WORKSPACE.md)
+- [Game analysis and automatic evaluation](docs/GAME_ANALYSIS.md)
 - [Handoff](docs/HANDOFF.md)
 
 Windows setup: `.\tools\setup.ps1`, then `.\tools\flutter.ps1 run -d windows`.

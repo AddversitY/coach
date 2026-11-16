@@ -52,6 +52,14 @@ manual ticket quotes are discarded. Hosted interpretation uses server-retrieved
 records and explicitly labels device calculation output as unverified research.
 No personal bet history is recorded.
 
+## Whole-game analysis
+
+Coach now supports a shared score outlook, spread/total/moneyline pricing,
+player workload projections and automatic internal evaluation. See
+[game analysis](GAME_ANALYSIS.md) for the failed score-candidate adoption test,
+market anchoring, free-budget price coverage and forward benchmark protocol.
+No predictive superiority or betting edge is claimed.
+
 ## Migration and checks
 
 `lib/main.dart` is the new application entry point. `lib/legacy_workspace.dart`

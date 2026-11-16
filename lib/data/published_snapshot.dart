@@ -12,6 +12,11 @@ const publishedPropMarkets = <String>{
   'player_rush_yds',
   'player_reception_yds',
 };
+const publishedGameMarkets = <String>{'h2h', 'spreads', 'totals'};
+const publishedMarkets = <String>{
+  ...publishedPropMarkets,
+  ...publishedGameMarkets,
+};
 const _publishedBooks = <String, String>{
   'draftkings': 'DraftKings',
   'fanduel': 'FanDuel',
@@ -204,7 +209,7 @@ class PublishedSnapshot {
         coverage['outsideCoverage'] != 'unavailable' ||
         markets.length != publishedPropMarkets.length ||
         markets.toSet().length != markets.length ||
-        !publishedPropMarkets.containsAll(markets)) {
+        !publishedMarkets.containsAll(markets)) {
       throw const FormatException('Invalid limited price coverage.');
     }
     final event = events.single;
@@ -273,6 +278,39 @@ class PublishedSnapshot {
       _publishedTime(q['collectedAt']);
       final selection = quote.selection;
       final point = selection.point;
+      final gameMarket = publishedGameMarkets.contains(selection.market);
+      final validPoint =
+          point != null &&
+          point.isFinite &&
+          point.abs() <= 1000 &&
+          point * 2 == (point * 2).truncateToDouble();
+      final validIdentity = gameMarket
+          ? selection.participant.isEmpty &&
+                selection.rules == 'game_market_unverified' &&
+                (selection.market == 'h2h'
+                    ? point == null &&
+                          [
+                            event.home,
+                            event.away,
+                            'Draw',
+                          ].contains(selection.outcome)
+                    : validPoint &&
+                          (selection.market == 'spreads'
+                              ? [
+                                  event.home,
+                                  event.away,
+                                ].contains(selection.outcome)
+                              : point >= 0 &&
+                                    [
+                                      'Over',
+                                      'Under',
+                                    ].contains(selection.outcome)))
+          : publishedPropMarkets.contains(selection.market) &&
+                ['Over', 'Under'].contains(selection.outcome) &&
+                playerIds.containsKey(selection.participant) &&
+                validPoint &&
+                point >= 0 &&
+                selection.rules == 'player_prop_unverified';
       if (quote.demo ||
           quote.status != 'open' ||
           quote.provider != 'the-odds-api' ||
@@ -284,19 +322,15 @@ class PublishedSnapshot {
           fetched.difference(quote.sourceAt) > ttl ||
           generated.difference(quote.sourceAt) > ttl ||
           selection.eventId != eventId ||
-          !publishedPropMarkets.contains(selection.market) ||
-          !const ['Over', 'Under'].contains(selection.outcome) ||
-          !playerIds.containsKey(selection.participant) ||
-          point == null ||
-          point < 0 ||
-          point > 1000 ||
-          point * 2 != (point * 2).truncateToDouble() ||
+          !markets.contains(selection.market) ||
+          !validIdentity ||
           selection.period != 'full_game' ||
-          selection.rules != 'player_prop_unverified' ||
           !seen.add(jsonEncode([quote.bookId, selection.key]))) {
         throw const FormatException('Invalid exact public quote identity.');
       }
-      quotedNames.add(selection.participant);
+      if (selection.participant.isNotEmpty) {
+        quotedNames.add(selection.participant);
+      }
     }
     if (quotedNames.length != playerIds.length) {
       throw const FormatException('Unmatched public player coverage.');
