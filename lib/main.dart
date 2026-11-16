@@ -11,7 +11,7 @@ class OddsEdgeApp extends StatelessWidget {
   final Future<PublishedSnapshot> Function()? snapshotLoader;
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Coach · Odds Edge',
+    title: 'Coach',
     debugShowCheckedModeBanner: false,
     theme: edgeTheme(),
     home: CoachWorkspace(snapshotLoader: snapshotLoader),

@@ -46,7 +46,7 @@ jobs:
       - run: flutter analyze
       - run: flutter test
       - name: Check the refreshed app builds
-        run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
+        run: flutter build web --release --base-href /coach/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
       - name: Save only validated research assets
         run: |
           git config user.name "odds-edge-evidence"

@@ -1,11 +1,11 @@
 {
-    "name": "Odds Edge",
-    "short_name": "Odds Edge",
+    "name": "Coach",
+    "short_name": "Coach",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0C111A",
-    "theme_color": "#0C111A",
-    "description": "A plain-English parlay coach for everyday bettors.",
+    "background_color": "#0B0D10",
+    "theme_color": "#0B0D10",
+    "description": "Sports research in one conversation.",
     "orientation": "any",
     "prefer_related_applications": false,
     "icons": [

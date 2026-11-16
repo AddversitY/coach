@@ -1,19 +1,18 @@
-# Odds Edge
+# Coach
 
-NFL odds intelligence for Windows and iOS, built with Flutter.
+Sports research in one conversation. Ask about an NFL game, player, or prop line;
+Coach brings recorded evidence, charts and saved-price comparisons into the answer.
+The public app uses guided data responses until its hosted AI service is connected.
 
-Current continuation notes: [handoff](docs/HANDOFF.md),
-[14 November product review](docs/PRODUCT_REVIEW_2026-11-14.md). For project-local Windows
-setup, run `.\tools\setup.ps1`, then `.\tools\flutter.ps1 run -d windows`.
-Older feature descriptions below refer to earlier development stages.
+- [Open Coach](https://addversity.github.io/coach/)
+- [GitHub repository](https://github.com/AddversitY/coach)
+- [Current architecture and hosting next step](docs/COACH_WORKSPACE.md)
+- [Handoff](docs/HANDOFF.md)
 
-The first development version includes a responsive dashboard, matchup explorer,
-exact-selection multi-sportsbook comparisons, best-price calculations, a
-probability/EV calculator, explicit quote freshness and source times, and a
-backend with interchangeable odds providers and persistent collected snapshots.
-
-It starts with clearly labeled synthetic data. It does not contain a validated
-prediction model or claim a profitable betting strategy.
+Windows setup: `.\tools\setup.ps1`, then `.\tools\flutter.ps1 run -d windows`.
+The existing internal Dart package name and application identifiers are retained
+for compatibility. Older development instructions below describe the preserved
+legacy components; they are not the current public navigation.
 
 ## Try it
 

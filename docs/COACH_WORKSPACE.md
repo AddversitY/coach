@@ -15,6 +15,10 @@ existing date, season and identity boundaries. Prices retain source/collection
 times and expire at kickoff or 18 hours. Quote cards recheck expiry while open.
 Conversation state is held in memory only; no bet tracking was added.
 
+Repository: https://github.com/AddversitY/coach
+
+Public app: https://addversity.github.io/coach/
+
 ## Real AI connection
 
 `POST /v1/coach` accepts a bounded question, explain/challenge mode and bounded

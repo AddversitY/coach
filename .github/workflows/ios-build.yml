@@ -1,4 +1,4 @@
-# Builds Odds Edge without an Apple Developer account or a local Mac.
+# Builds Coach without an Apple Developer account or a local Mac.
 # The iOS app is unsigned. It proves the project compiles; it cannot be
 # installed on a phone or sent to TestFlight from this workflow.
 name: iOS and Windows builds
@@ -57,22 +57,22 @@ jobs:
       - name: Zip iOS app bundles
         run: |
           mkdir -p artifacts
-          ditto -c -k --keepParent build/ios/iphoneos/Runner.app artifacts/odds-edge-ios-iphoneos-unsigned.zip
-          ditto -c -k --keepParent build/ios/iphonesimulator/Runner.app artifacts/odds-edge-ios-simulator.zip
+          ditto -c -k --keepParent build/ios/iphoneos/Runner.app artifacts/coach-ios-iphoneos-unsigned.zip
+          ditto -c -k --keepParent build/ios/iphonesimulator/Runner.app artifacts/coach-ios-simulator.zip
 
       - name: Upload unsigned iPhone build
         uses: actions/upload-artifact@v5
         with:
-          name: odds-edge-ios-unsigned
-          path: artifacts/odds-edge-ios-iphoneos-unsigned.zip
+          name: coach-ios-unsigned
+          path: artifacts/coach-ios-iphoneos-unsigned.zip
           if-no-files-found: error
           retention-days: 14
 
       - name: Upload iOS simulator build
         uses: actions/upload-artifact@v5
         with:
-          name: odds-edge-ios-simulator
-          path: artifacts/odds-edge-ios-simulator.zip
+          name: coach-ios-simulator
+          path: artifacts/coach-ios-simulator.zip
           if-no-files-found: error
           retention-days: 14
 
@@ -122,7 +122,7 @@ jobs:
       - name: Upload Windows build
         uses: actions/upload-artifact@v5
         with:
-          name: odds-edge-windows
+          name: coach-windows
           path: build/windows/x64/runner/Release/
           if-no-files-found: error
           retention-days: 14

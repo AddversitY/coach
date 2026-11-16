@@ -228,7 +228,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                         style: EdgeType.title.copyWith(fontSize: 21),
                       ),
                       Text(
-                        'ODDS EDGE',
+                        'SPORTS RESEARCH',
                         style: EdgeType.label.copyWith(
                           fontSize: 9,
                           letterSpacing: 1.8,
