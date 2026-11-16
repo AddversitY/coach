@@ -349,3 +349,72 @@ class BalancedMarketTests(unittest.TestCase):
         self.assertEqual(cached_quotes({'event':event,'quotes':quotes,'players':players,'markets':list(markets)}, {}, NOW),quotes)
         raw['bookmakers'][0]['markets'][1]['outcomes'][0]['name']='Dallas Cowboys'
         self.assertEqual(len(normalize_quotes(raw,event,provider_event(),{},NOW,markets)[0]),5)
+
+
+class SlateProvider:
+    def __init__(self, fail_prop=False, overcharge=False):
+        self.calls=[];self.used=0;self.fail_prop=fail_prop;self.overcharge=overcharge
+    def request(self, event_id=None, *, slate=False):
+        self.calls.append('slate' if slate else event_id)
+        charged=3 if slate else 1 if event_id else 0
+        if slate and self.overcharge:charged=4
+        self.used+=charged
+        if event_id and self.fail_prop:raise ValueError('Unavailable')
+        headers={'x-requests-last':str(charged),'x-requests-used':str(self.used),'x-requests-remaining':str(100-self.used)}
+        if slate:
+            raw=[]
+            for ident,home,away,kick in [('a'*32,'Kansas City Chiefs','Buffalo Bills','2026-11-16T01:20:00Z'),('b'*32,'Dallas Cowboys','Philadelphia Eagles','2026-11-16T18:00:00Z')]:
+                raw.append(dict(id=ident,sport_key='americanfootball_nfl',home_team=home,away_team=away,commence_time=kick,bookmakers=[dict(key='draftkings',markets=[dict(key='h2h',last_update=iso(NOW),outcomes=[dict(name=home,price=1.8),dict(name=away,price=2.1)])])]))
+            return raw,headers
+        if event_id:
+            from publish_quotes import requested_markets
+            raw=response();raw['bookmakers'][0]['markets'][0]['key']=requested_markets('slate',NOW)[-1]
+            return raw,headers
+        return [provider_event()],headers
+
+
+class SlatePublicationTests(unittest.TestCase):
+    def schedule(self):
+        raw=schedule();extra=dict(raw['board']['events'][0],id='nflverse:2026_11_PHI_DAL',home='Dallas Cowboys',away='Philadelphia Eagles',startsAt='2026-11-16T18:00:00Z')
+        raw['board']['events'].append(extra);raw['props']=copy.deepcopy(raw['board']);return raw
+    def publish(self,state,provider,now=NOW):
+        raw=self.schedule();raw['generatedAt']=iso(now);raw['schedule']['fetchedAt']=iso(now)
+        raw['board']['fetchedAt']=raw['props']['fetchedAt']=iso(now)
+        return run(raw,dataset(),now,enabled=True,key='PRIVATE_KEY',state_dir=state,provider=provider,initialize_state=not state.exists(),profile='slate')
+    def test_full_slate_plus_prop_uses_one_unchanged_four_credit_reservation(self):
+        with tempfile.TemporaryDirectory() as root:
+            state=Path(root)/'state';provider=SlateProvider();result,_=self.publish(state,provider)
+            self.assertEqual(provider.calls,[None,'slate',EVENT_ID]);self.assertEqual(provider.used,4)
+            self.assertEqual(len(result['odds']['coverage']['eventIds']),2)
+            self.assertEqual(len(result['props']['quotes']),6)
+            ledger=json.loads((state/'ledger.json').read_text());self.assertEqual(ledger['reservations'],[{'at':iso(NOW),'credits':4}])
+            self.assertEqual(ledger['providerUsed'],4)
+            provider.calls.clear();cached,_=self.publish(state,provider,NOW+timedelta(hours=1))
+            self.assertEqual(provider.calls,[]);self.assertEqual(cached['props']['fetchedAt'],iso(NOW))
+            self.assertEqual(len(cached['props']['quotes']),6)
+    def test_prop_timeout_keeps_valid_slate_and_never_retries(self):
+        with tempfile.TemporaryDirectory() as root:
+            state=Path(root)/'state';provider=SlateProvider(fail_prop=True);result,_=self.publish(state,provider)
+            self.assertEqual(len(result['props']['quotes']),4)
+            self.assertEqual(result['odds']['coverage']['players'],[])
+            provider.calls.clear();self.publish(state,provider,NOW+timedelta(hours=1));self.assertEqual(provider.calls,[])
+    def test_bulk_overcharge_blocks_further_charging(self):
+        with tempfile.TemporaryDirectory() as root:
+            state=Path(root)/'state';provider=SlateProvider(overcharge=True)
+            with self.assertRaises(ValueError):self.publish(state,provider)
+            self.assertEqual(provider.calls,[None,'slate'])
+            provider.calls.clear()
+            with self.assertRaises(ValueError):self.publish(state,provider)
+            self.assertEqual(provider.calls,[])
+    def test_started_game_drops_from_cache_without_losing_other_game(self):
+        from publish_quotes import slate_cache
+        with tempfile.TemporaryDirectory() as root:
+            state=Path(root)/'state';result,_=self.publish(state,SlateProvider())
+            cache=json.loads((state/'quotes.json').read_text())
+            # Shift both game times to keep the sample within its 18-hour TTL.
+            cache['events'][0]['startsAt']=iso(NOW+timedelta(hours=1));cache['event']=cache['events'][0]
+            cache['events'][1]['startsAt']=iso(NOW+timedelta(hours=3))
+            raw=self.schedule();raw['board']['events']=copy.deepcopy(cache['events']);raw['props']['events']=copy.deepcopy(cache['events'])
+            result=slate_cache(raw,dataset(),cache,NOW+timedelta(hours=2),False)
+            self.assertEqual(len(result['odds']['coverage']['eventIds']),1)
+            self.assertTrue(all(q['selection']['eventId']=='nflverse:2026_11_PHI_DAL' for q in result['props']['quotes']))

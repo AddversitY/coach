@@ -1299,6 +1299,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             Map<String, dynamic>.from(game.raw['productionTrial']),
             turn.question,
           ),
+        if (game.raw['priceCoverage'] is Map)
+          _priceCoverageView(
+            Map<String, dynamic>.from(game.raw['priceCoverage']),
+          ),
         Wrap(
           spacing: 8,
           runSpacing: 6,
@@ -1490,6 +1494,43 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _priceCoverageView(Map<String, dynamic> coverage) {
+    const labels = {
+      'h2h': 'Moneyline',
+      'spreads': 'Spread',
+      'totals': 'Game total',
+      'props': 'Player props',
+    };
+    final rows = coverage['markets'] as List? ?? [];
+    final count = rows.where((r) => (r['quotes'] as num? ?? 0) > 0).length;
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Price coverage',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text(
+        '$count of 4 market groups have saved prices',
+        style: CoachType.label,
+      ),
+      children: [
+        for (final row in rows)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${labels[row['market']] ?? row['market']} · ${(row['quotes'] as num? ?? 0) == 0 ? 'No matching saved prices' : '${row['quotes']} quotes · ${(row['books'] as List? ?? []).join(', ')} · Latest ${_reportTime(row['newestAt'])}'}',
+                style: CoachType.label,
+              ),
+            ),
+          ),
+        Text('${coverage['notice']}', style: CoachType.label),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
   Widget _decisionView(Map<String, dynamic> brief) {
     final lean = brief['lean'] as Map?;
     final price = brief['price'] as Map?;
@@ -1514,6 +1555,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               style: CoachType.body,
             ),
           const SizedBox(height: 8),
+          if (price?['observedDecimal'] is num && price?['selection'] is Map)
+            Text(
+              'Saved price · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} ${americanLabel((price['observedDecimal'] as num).toDouble())} at ${price['book']} · ${_reportTime(price['sourceAt'])}',
+              style: CoachType.body,
+            ),
           if (minimum is num &&
               minimum.isFinite &&
               minimum > 1 &&
@@ -1672,6 +1718,33 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _priceComparisonView(Map<String, dynamic> comparison) {
+    final games = comparison['games'] as num? ?? 0;
+    String difference(dynamic entry) => entry is Map && entry['mean'] is num
+        ? (entry['mean'] as num).toStringAsFixed(3)
+        : '—';
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Market comparison · $games matched priced games',
+        style: CoachType.label,
+      ),
+      children: [
+        Text(
+          'Coach minus market error · Brier ${difference(comparison['brierDifference'])} / Log loss ${difference(comparison['logLossDifference'])}. Below zero favors Coach.',
+          style: CoachType.label,
+        ),
+        for (final key in ['brierDifference', 'logLossDifference'])
+          if (comparison[key] is Map && comparison[key]['interval95'] is List)
+            Text(
+              '${key == 'brierDifference' ? 'Brier' : 'Log loss'} approximate 95% interval: ${(comparison[key]['interval95'] as List).map((v) => (v as num).toStringAsFixed(3)).join(' to ')}',
+              style: CoachType.label,
+            ),
+        Text('${comparison['notice']}', style: CoachType.label),
+      ],
+    );
+  }
+
   Widget _evaluationView(Map<String, dynamic> report) {
     const labels = {
       'h2h': 'Moneyline',
@@ -1703,6 +1776,29 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   'Forecast error: ${value(row['brier'])}. Lower is better.',
                   style: CoachType.label,
                 ),
+                if (row['priceComparison'] is Map)
+                  _priceComparisonView(
+                    Map<String, dynamic>.from(row['priceComparison']),
+                  ),
+                if ((row['calibration'] as List? ?? []).isNotEmpty)
+                  ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    title: Text(
+                      'Probability calibration',
+                      style: CoachType.label,
+                    ),
+                    children: [
+                      const Text(
+                        'Game-weighted predicted versus observed outcomes. Small samples are descriptive.',
+                        style: CoachType.label,
+                      ),
+                      for (final bin in row['calibration'] as List)
+                        Text(
+                          '${((bin['lower'] as num) * 100).round()}–${((bin['upper'] as num) * 100).round()}% band · Predicted ${((bin['predicted'] as num) * 100).toStringAsFixed(0)}% / Observed ${((bin['observed'] as num) * 100).toStringAsFixed(0)}% · ${bin['games']} games',
+                          style: CoachType.label,
+                        ),
+                    ],
+                  ),
                 if ((row['baselineGames'] as num? ?? 0) > 0)
                   Text(
                     'Same-observation comparison on ${row['baselineGames']} games: Coach ${value(row['pairedBrier'])}, market/reference ${value(row['baselineBrier'])}.',

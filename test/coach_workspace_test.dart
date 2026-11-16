@@ -267,14 +267,51 @@ void main() {
         frame(
           gameLoader: (payload) async {
             requestedBook = (payload['context'] as Map)['bookId'] as String?;
-            return gameOutlookFixture(event, now, bookId: requestedBook);
+            final result = gameOutlookFixture(
+              event,
+              now,
+              bookId: requestedBook,
+            );
+            result['priceCoverage'] = {
+              'markets': [
+                {
+                  'market': 'spreads',
+                  'quotes': 0,
+                  'books': [],
+                  'newestAt': null,
+                },
+              ],
+              'notice': 'Saved observations only.',
+            };
+            return result;
           },
           evaluationLoader: () async => {
             'capturedGames': 0,
             'gradedGames': 0,
             'pendingGames': 0,
             'unresolved': 0,
-            'markets': [],
+            'markets': [
+              {
+                'market': 'spreads',
+                'games': 1,
+                'brier': 0.2,
+                'priceComparison': {
+                  'games': 1,
+                  'brierDifference': {'mean': -0.01},
+                  'logLossDifference': {'mean': -0.02},
+                  'notice': 'Research only.',
+                },
+                'calibration': [
+                  {
+                    'lower': 0.6,
+                    'upper': 0.8,
+                    'predicted': 0.7,
+                    'observed': 1.0,
+                    'games': 1,
+                  },
+                ],
+              },
+            ],
             'notice': 'No settled forecasts yet.',
             'historical': {
               'evaluationGames': 409,
@@ -332,6 +369,10 @@ void main() {
         expect(find.text(label), findsOneWidget);
       }
       expect(find.text('Player workload outlook'), findsOneWidget);
+      await tester.ensureVisible(find.text('Price coverage'));
+      await tester.tap(find.text('Price coverage'));
+      await tester.pumpAndSettle();
+      expect(find.text('Spread · No matching saved prices'), findsOneWidget);
       expect(find.text('Resolve the lineup questions first'), findsOneWidget);
       await tester.ensureVisible(find.text('Lineup & workload'));
       await tester.tap(find.text('Lineup & workload'));
@@ -362,6 +403,22 @@ void main() {
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
+      await tester.ensureVisible(
+        find.text('Market comparison · 1 matched priced games'),
+      );
+      await tester.tap(find.text('Market comparison · 1 matched priced games'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Brier -0.010 / Log loss -0.020'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Probability calibration'));
+      await tester.tap(find.text('Probability calibration'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Predicted 70% / Observed 100%'),
+        findsOneWidget,
+      );
       expect(
         find.textContaining('Background challenger: 0 games with results'),
         findsOneWidget,

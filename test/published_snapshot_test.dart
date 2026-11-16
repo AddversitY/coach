@@ -68,15 +68,92 @@ Map<String, dynamic> priceSnapshotJson(DateTime at) {
 }
 
 void main() {
+  test(
+    'slate prices validate each game and expire started games independently',
+    () {
+      final at = DateTime.utc(2026, 11, 14, 15);
+      final raw = priceSnapshotJson(at);
+      final first = raw['board']['events'][0];
+      first['startsAt'] = at.add(const Duration(hours: 1)).toIso8601String();
+      final extra = Map<String, dynamic>.from(first)
+        ..addAll({
+          'id': 'nflverse:2026_11_PHI_DAL',
+          'away': 'Philadelphia Eagles',
+          'home': 'Dallas Cowboys',
+          'startsAt': at.add(const Duration(hours: 3)).toIso8601String(),
+        });
+      raw['board']['events'].add(extra);
+      raw['props']['events'] = jsonDecode(jsonEncode(raw['board']['events']));
+      raw['odds']['coverage']['eventIds'] = [first['id'], extra['id']];
+      raw['odds']['coverage']['markets'] = [
+        'h2h',
+        'spreads',
+        'totals',
+        'player_pass_yds',
+      ];
+      final quote = jsonDecode(
+        jsonEncode(raw['props']['quotes'][0]),
+      ) as Map<String, dynamic>;
+      quote['selection'] = {
+        'eventId': extra['id'],
+        'market': 'h2h',
+        'outcome': 'Dallas Cowboys',
+        'participant': '',
+        'point': null,
+        'period': 'full_game',
+        'rules': 'game_market_unverified',
+      };
+      raw['props']['quotes'].add(quote);
+      final result = PublishedSnapshot.parse(
+        raw,
+        at.add(const Duration(hours: 2)),
+      );
+      expect(result.props.quotes.length, 1);
+      expect(result.props.quotes.single.selection.eventId, extra['id']);
+      final invalid = jsonDecode(jsonEncode(raw));
+      invalid['props']['quotes'].last['selection']['outcome'] = 'Buffalo Bills';
+      expect(() => PublishedSnapshot.parse(invalid, at), throwsFormatException);
+      final wrongProp = jsonDecode(jsonEncode(raw));
+      wrongProp['props']['quotes'][0]['selection']['eventId'] = extra['id'];
+      expect(
+        () => PublishedSnapshot.parse(wrongProp, at),
+        throwsFormatException,
+      );
+    },
+  );
+
   final now = DateTime.utc(2026, 11, 14);
-  test('balanced published coverage accepts exact game markets without inventing player identities',(){
-    final raw=priceSnapshotJson(now);
-    raw['odds']['coverage']['markets']=['h2h','spreads','totals','player_pass_yds'];
-    raw['odds']['coverage']['players']=[];
-    raw['props']['quotes']=[OddsQuote(selection:const Selection(eventId:'nflverse:2026_11_BUF_KC',market:'spreads',outcome:'Buffalo Bills',point:3.5,rules:'game_market_unverified'),bookId:'draftkings',book:'DraftKings',provider:'the-odds-api',decimal:1.91,sourceAt:now,collectedAt:now).toJson()];
-    final value=PublishedSnapshot.parse(raw,now);expect(value.props.quotes.single.selection.market,'spreads');expect(value.playerIdsByName,isEmpty);
-    raw['props']['quotes'][0]['selection']['outcome']='Dallas Cowboys';
-    expect(()=>PublishedSnapshot.parse(raw,now),throwsFormatException);
+  test('balanced published coverage accepts exact game markets without inventing player identities', () {
+    final raw = priceSnapshotJson(now);
+    raw['odds']['coverage']['markets'] = [
+      'h2h',
+      'spreads',
+      'totals',
+      'player_pass_yds',
+    ];
+    raw['odds']['coverage']['players'] = [];
+    raw['props']['quotes'] = [
+      OddsQuote(
+        selection: const Selection(
+          eventId: 'nflverse:2026_11_BUF_KC',
+          market: 'spreads',
+          outcome: 'Buffalo Bills',
+          point: 3.5,
+          rules: 'game_market_unverified',
+        ),
+        bookId: 'draftkings',
+        book: 'DraftKings',
+        provider: 'the-odds-api',
+        decimal: 1.91,
+        sourceAt: now,
+        collectedAt: now,
+      ).toJson(),
+    ];
+    final value = PublishedSnapshot.parse(raw, now);
+    expect(value.props.quotes.single.selection.market, 'spreads');
+    expect(value.playerIdsByName, isEmpty);
+    raw['props']['quotes'][0]['selection']['outcome'] = 'Dallas Cowboys';
+    expect(() => PublishedSnapshot.parse(raw, now), throwsFormatException);
   });
   test('published games preserve source dates and become stale', () {
     final value = PublishedSnapshot.parse(snapshotJson(now), now);

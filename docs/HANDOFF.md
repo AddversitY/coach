@@ -289,3 +289,8 @@ from published final outcomes. No personal bet tracking is added. Optional
 source-only AI benchmarks share existing usage caps; paired calibration metrics
 are reported by market and game. See GAME_ANALYSIS.md for cohort definitions,
 price limitations, benchmarks, adoption policy and reproducibility instructions.
+
+
+## Slate prices and forward validation (2026-11-16)
+
+The public publisher now uses bulk game prices plus one rotating prop market within the unchanged four-credit daily reservation, 60-credit monthly cap and protected reserve. Optional multi-game v2 coverage is validated per event; old caches remain supported. Coach now keeps decision briefs on the requested selection, exposes saved-price coverage, and reports game-weighted calibration and paired priced-market error differences. No adoption or edge is inferred. See [PRICE_VALIDATION.md](PRICE_VALIDATION.md) for accounting, migration and statistical limitations.

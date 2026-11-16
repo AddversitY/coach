@@ -62,3 +62,16 @@ test('the requested market, side and line cannot inherit an unrelated price',()=
   assert.equal(frozen.cutoff,'2026-11-12');assert.equal(frozen.adjustmentsApplied,false);
   assert.equal(context.teams[1].usage[0].observations.length,6);
 });
+
+
+test('decision stays on the requested team and does not substitute a winner for a prop or total',()=>{
+  const context=gameContext(source(),event,{now});
+  const row={blocked:false,selection:{market:'spreads',participant:'',outcome:event.home,point:-3.5},book:'Test',minimumDecimal:2,decimal:2.1};
+  const report={event,ranked:[row],categories:[{rows:[row]}],score:{homeWin:.6,tie:.02},basis:'experimental_score_candidate'};
+  assert.equal(decisionBrief(report,context,{question:'Dolphins spread'}).price,null);
+  assert.equal(decisionBrief(report,context,{question:'Receiver receiving yards over 65.5'}).lean,null);
+  assert.equal(decisionBrief(report,context,{question:'Game total over 45.5'}).lean,null);
+  const emptyContext={...context,alerts:[]};
+  const brief=decisionBrief(report,emptyContext,{question:'Game total over 45.5'});
+  assert.equal(brief.reason,'matching_price_missing');assert.equal(brief.action,'pass');assert.match(brief.priceNotice,/matches this question/);
+});

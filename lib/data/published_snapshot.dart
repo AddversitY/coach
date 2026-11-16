@@ -201,7 +201,13 @@ class PublishedSnapshot {
       throw const FormatException('Invalid price observation time.');
     }
     final coverage = odds['coverage'] as Map<String, dynamic>;
-    keys(coverage, {'eventId', 'markets', 'players', 'outsideCoverage'});
+    keys(coverage, {
+      'eventId',
+      'eventIds',
+      'markets',
+      'players',
+      'outsideCoverage',
+    });
     final eventId = coverage['eventId'] as String;
     final events = board.events.where((event) => event.id == eventId).toList();
     final markets = List<String>.from(coverage['markets'] as List);
@@ -211,6 +217,20 @@ class PublishedSnapshot {
         markets.toSet().length != markets.length ||
         !publishedMarkets.containsAll(markets)) {
       throw const FormatException('Invalid limited price coverage.');
+    }
+    final coveredIds = coverage['eventIds'] == null
+        ? [eventId]
+        : List<String>.from(coverage['eventIds'] as List);
+    if (coveredIds.isEmpty ||
+        coveredIds.length > 32 ||
+        coveredIds.toSet().length != coveredIds.length ||
+        !coveredIds.contains(eventId) ||
+        coveredIds.any(
+          (id) => !board.events.any(
+            (e) => e.id == id && e.startsAt.isAfter(fetched),
+          ),
+        )) {
+      throw const FormatException('Invalid slate event coverage.');
     }
     final event = events.single;
     if (!event.startsAt.isAfter(fetched)) {
@@ -278,6 +298,13 @@ class PublishedSnapshot {
       _publishedTime(q['collectedAt']);
       final selection = quote.selection;
       final point = selection.point;
+      final quoteEvents = board.events
+          .where((e) => e.id == selection.eventId && coveredIds.contains(e.id))
+          .toList();
+      if (quoteEvents.length != 1) {
+        throw const FormatException('Quote outside declared slate.');
+      }
+      final quoteEvent = quoteEvents.single;
       final gameMarket = publishedGameMarkets.contains(selection.market);
       final validPoint =
           point != null &&
@@ -290,22 +317,23 @@ class PublishedSnapshot {
                 (selection.market == 'h2h'
                     ? point == null &&
                           [
-                            event.home,
-                            event.away,
+                            quoteEvent.home,
+                            quoteEvent.away,
                             'Draw',
                           ].contains(selection.outcome)
                     : validPoint &&
                           (selection.market == 'spreads'
                               ? [
-                                  event.home,
-                                  event.away,
+                                  quoteEvent.home,
+                                  quoteEvent.away,
                                 ].contains(selection.outcome)
                               : point >= 0 &&
                                     [
                                       'Over',
                                       'Under',
                                     ].contains(selection.outcome)))
-          : publishedPropMarkets.contains(selection.market) &&
+          : selection.eventId == eventId &&
+                publishedPropMarkets.contains(selection.market) &&
                 ['Over', 'Under'].contains(selection.outcome) &&
                 playerIds.containsKey(selection.participant) &&
                 validPoint &&
@@ -321,7 +349,7 @@ class PublishedSnapshot {
           quote.sourceAt.isAfter(now.add(const Duration(seconds: 5))) ||
           fetched.difference(quote.sourceAt) > ttl ||
           generated.difference(quote.sourceAt) > ttl ||
-          selection.eventId != eventId ||
+          !coveredIds.contains(selection.eventId) ||
           !markets.contains(selection.market) ||
           !validIdentity ||
           selection.period != 'full_game' ||
@@ -335,24 +363,30 @@ class PublishedSnapshot {
     if (quotedNames.length != playerIds.length) {
       throw const FormatException('Unmatched public player coverage.');
     }
-    final expired =
-        now.difference(fetched) > ttl ||
-        props.quotes.any((quote) => now.difference(quote.sourceAt) > ttl) ||
-        !event.startsAt.isAfter(now);
+    final currentQuotes = props.quotes
+        .where(
+          (quote) =>
+              now.difference(fetched) <= ttl &&
+              now.difference(quote.sourceAt) <= ttl &&
+              board.events.any(
+                (e) =>
+                    e.id == quote.selection.eventId && e.startsAt.isAfter(now),
+              ),
+        )
+        .toList();
+    final expired = currentQuotes.isEmpty;
     return PublishedSnapshot(
       board: board,
-      props: expired
-          ? OddsBoard(
-              events: props.events,
-              quotes: const [],
-              fetchedAt: fetched,
-            )
-          : props,
+      props: OddsBoard(
+        events: props.events,
+        quotes: currentQuotes,
+        fetchedAt: fetched,
+      ),
       generatedAt: generated,
       scheduleAt: scheduleAt,
       oddsMessage: expired
           ? 'Saved sportsbook prices are outdated. Prices unavailable.'
-          : 'Limited NFL price snapshot. Other games and markets have no prices.',
+          : 'Saved NFL prices across ${coveredIds.length} games. Only listed markets are covered; prices may have changed.',
       quoteAt: fetched,
       coveredEventId: eventId,
       playerIdsByName: Map.unmodifiable(playerIds),

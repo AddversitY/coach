@@ -29,7 +29,7 @@ export function gradeForecast(snapshot,result){
     const y=grade===1?1:0,p=row.win/Math.max(1e-9,1-row.push),baseline=row.baseline;
     const servingP=Number.isFinite(row.servingWin)&&Number.isFinite(row.servingPush)?row.servingWin/Math.max(1e-9,1-row.servingPush):null;
     const ai=snapshot.benchmark?.find(item=>item.id===row.id),aiP=ai?ai.win/Math.max(1e-9,1-ai.push):null;
-    results.push({market,push:false,priced:!!row.decimal,brier:(p-y)**2,logLoss:logLoss(p,y),
+    results.push({market,push:false,priced:!!row.decimal,probability:p,actual:y,brier:(p-y)**2,logLoss:logLoss(p,y),
       servingBrier:Number.isFinite(servingP)?(servingP-y)**2:null,servingLogLoss:Number.isFinite(servingP)?logLoss(servingP,y):null,
       baselineBrier:Number.isFinite(baseline)?(baseline-y)**2:null,baselineLogLoss:Number.isFinite(baseline)?logLoss(baseline,y):null,
       aiBrier:Number.isFinite(aiP)?(aiP-y)**2:null,aiLogLoss:Number.isFinite(aiP)?logLoss(aiP,y):null,
@@ -39,7 +39,9 @@ export function gradeForecast(snapshot,result){
   for(const market of ['h2h','spreads','totals','props']){
     const all=results.filter(r=>r.market===market),decided=all.filter(r=>!r.push),paired=decided.filter(r=>r.baselineBrier!=null),ai=decided.filter(r=>r.aiBrier!=null),serving=decided.filter(r=>r.servingBrier!=null);
     if(!all.length)continue;
-    markets[market]={servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
+    const matched=paired.filter(r=>r.priced);
+    const calibration=Array.from({length:5},(_,bin)=>{const rows=decided.filter(r=>Math.min(4,Math.floor(r.probability*5))===bin);return {bin,observations:rows.length,predicted:mean(rows.map(r=>r.probability)),observed:mean(rows.map(r=>r.actual))};}).filter(b=>b.observations);
+    markets[market]={calibration,priceMatchedPairs:matched.length,priceMatchedBrierDelta:mean(matched.map(r=>r.brier-r.baselineBrier)),priceMatchedLogDelta:mean(matched.map(r=>r.logLoss-r.baselineLogLoss)),servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
       baselinePairs:paired.length,pairedBrier:mean(paired.map(r=>r.brier)),baselineBrier:mean(paired.map(r=>r.baselineBrier)),pairedLogLoss:mean(paired.map(r=>r.logLoss)),baselineLogLoss:mean(paired.map(r=>r.baselineLogLoss)),
       aiPairs:ai.length,aiPairedBrier:mean(ai.map(r=>r.brier)),aiBrier:mean(ai.map(r=>r.aiBrier)),aiPairedLogLoss:mean(ai.map(r=>r.logLoss)),aiLogLoss:mean(ai.map(r=>r.aiLogLoss)),
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
@@ -51,6 +53,15 @@ export function gradeForecast(snapshot,result){
 export function addGrade(aggregate,grade,direction=1){
   for(const [market,row] of Object.entries(grade.markets)){
     const current=aggregate[market]||{games:0,observations:0,pushes:0,probabilityGames:0,baselineGames:0,aiGames:0};
+    if(row.priceMatchedPairs){
+      current.priceMatchedGames=(current.priceMatchedGames||0)+direction;
+      for(const [key,value] of [['brier',row.priceMatchedBrierDelta],['logLoss',row.priceMatchedLogDelta]]){
+        current[key+'DeltaSum']=(current[key+'DeltaSum']||0)+direction*value;
+        current[key+'DeltaSquared']=(current[key+'DeltaSquared']||0)+direction*value*value;
+      }
+    }
+    current.calibration ||= {};
+    for(const bin of row.calibration||[]){const b=current.calibration[bin.bin]||{games:0,observations:0,predicted:0,observed:0};b.games+=direction;b.observations+=direction*bin.observations;b.predicted+=direction*bin.predicted;b.observed+=direction*bin.observed;current.calibration[bin.bin]=b;}
     current.games+=direction;current.observations+=direction*row.observations;current.pushes+=direction*row.pushes;
     if(row.brier!=null){current.probabilityGames+=direction;for(const k of ['brier','logLoss'])current[k]=(current[k]||0)+direction*row[k];}
     if(row.baselinePairs){current.baselineGames+=direction;for(const k of ['pairedBrier','baselineBrier','pairedLogLoss','baselineLogLoss'])current[k]=(current[k]||0)+direction*row[k];}
@@ -62,8 +73,21 @@ export function addGrade(aggregate,grade,direction=1){
   return aggregate;
 }
 
+function priceComparison(row){
+  const games=row.priceMatchedGames||0;
+  const estimate=key=>{
+    if(!games)return {mean:null,interval95:null};
+    const sum=row[key+'DeltaSum'],average=sum/games;
+    const variance=games>1?Math.max(0,(row[key+'DeltaSquared']-sum*sum/games)/(games-1)):0;
+    const radius=1.96*Math.sqrt(variance/games);
+    return {mean:average,interval95:games>=30?[average-radius,average+radius]:null};
+  };
+  return {games,brierDifference:estimate('brier'),logLossDifference:estimate('logLoss'),status:games<1000?'collecting_evidence':'review_required',adopted:false,hasEdge:false,
+    notice:'Priced, same-selection market baselines only. Differences below zero favor Coach. Approximate intervals use game-level means; fewer than 30 games have no interval. Correlated games, selection bias and unverified settlement rules limit conclusions. No automatic adoption.'};
+}
 export function evaluationReport(aggregate,counts){
   return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,workloads:workloadReport(aggregate),markets:Object.entries(aggregate).filter(([,row])=>row.kind!=='workload').map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
+    priceComparison:priceComparison(row),calibration:Object.entries(row.calibration||{}).filter(([,b])=>b.games>0).map(([bin,b])=>({lower:Number(bin)/5,upper:(Number(bin)+1)/5,games:b.games,observations:b.observations,predicted:b.predicted/b.games,observed:b.observed/b.games})),
     servingGames:row.servingGames||0,servingPairedBrier:row.servingGames?row.servingPairedBrier/row.servingGames:null,servingBrier:row.servingGames?row.servingBrier/row.servingGames:null,
     brier:row.probabilityGames?row.brier/row.probabilityGames:null,logLoss:row.probabilityGames?row.logLoss/row.probabilityGames:null,
     baselineGames:row.baselineGames,pairedBrier:row.baselineGames?row.pairedBrier/row.baselineGames:null,baselineBrier:row.baselineGames?row.baselineBrier/row.baselineGames:null,

@@ -115,3 +115,26 @@ test('serving and shadow evaluation cohorts remain separate through corrections'
   await request('/grade-batch',{hash:'b',results:[{...scores,homeScore:40}]});
   result=await read();assert.equal(result.gradedGames,1);assert.equal(result.pendingGames,0);assert.equal(result.models.find(m=>m.role==='shadow').markets[0].games,1);
 });
+
+
+test('priced comparisons exclude unpriced references and average calibration inside each game',()=>{
+  const snapshot=forecastSnapshot(report([]));
+  snapshot.rows=[
+    {selection:{market:'h2h',outcome:event.home},win:.7,push:0,baseline:.6,decimal:2},
+    {selection:{market:'h2h',outcome:event.home},win:.7,push:0,baseline:.6,decimal:2},
+    {selection:{market:'h2h',outcome:event.home},win:.9,push:0,baseline:.5,decimal:null},
+  ];
+  const result={eventId:event.id,homeScore:24,awayScore:21};
+  const grade=gradeForecast(snapshot,result),aggregate=addGrade({},grade);
+  let row=evaluationReport(aggregate,{}).markets[0];
+  assert.equal(row.priceComparison.games,1);assert.ok(Math.abs(row.priceComparison.brierDifference.mean-(-.07))<1e-10);
+  assert.equal(row.priceComparison.brierDifference.interval95,null);assert.equal(row.calibration.length,2);
+  assert.equal(row.calibration[0].games,1);assert.equal(row.calibration[0].observations,2);
+  assert.equal(row.calibration[0].observed,1);
+  addGrade(aggregate,grade,-1);row=evaluationReport(aggregate,{}).markets[0];
+  assert.equal(row.priceComparison.games,0);assert.deepEqual(row.calibration,[]);
+  for(let i=0;i<30;i++)addGrade(aggregate,grade);
+  row=evaluationReport(aggregate,{}).markets[0];assert.equal(row.priceComparison.games,30);
+  assert.ok(row.priceComparison.brierDifference.interval95.every(n=>Number.isFinite(n)));
+  assert.equal(row.priceComparison.adopted,false);
+});

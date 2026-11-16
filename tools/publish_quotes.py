@@ -27,7 +27,7 @@ ALL_MARKETS = MARKETS + GAME_MARKETS
 
 def requested_markets(profile, now):
     if profile == 'props': return MARKETS
-    if profile != 'balanced': raise ValueError('Unknown market profile')
+    if profile not in ('balanced', 'slate'): raise ValueError('Unknown market profile')
     return GAME_MARKETS + (MARKETS[now.date().toordinal() % len(MARKETS)],)
 BOOKS = {'draftkings': 'DraftKings', 'fanduel': 'FanDuel', 'betmgm': 'BetMGM',
          'williamhill_us': 'Caesars', 'espnbet': 'ESPN BET', 'fanatics': 'Fanatics',
@@ -209,7 +209,7 @@ def normalize_quotes(raw, event, provider_event, directory, now, markets=MARKETS
     return quotes,[identities[name] for name in sorted(identities)]
 
 
-def publish_observations(schedule, event, quotes, players, fetched_at, now, fixture=False, markets=MARKETS):
+def publish_observations(schedule, event, quotes, players, fetched_at, now, fixture=False, markets=MARKETS, covered_events=None):
     # Construct a public allowlist instead of copying arbitrary input fields.
     events = [{key: e[key] for key in ('id', 'away', 'home', 'startsAt', 'sport', 'league')}
               for e in schedule['board']['events']]
@@ -221,13 +221,15 @@ def publish_observations(schedule, event, quotes, players, fetched_at, now, fixt
             demo=False, notices=['Actual NFL schedule from nflverse.']))
     result['odds'] = dict(status='limited', provider=PROVIDER, fetchedAt=iso(fetched_at),
         coverage=dict(eventId=event['id'], markets=list(markets), players=players, outsideCoverage='unavailable'))
+    if covered_events is not None:
+        result['odds']['coverage']['eventIds'] = [e['id'] for e in covered_events]
     if fixture:
         # The app explicitly rejects this marker: offline test prices cannot be
         # accidentally deployed as real observations.
         result['odds']['testFixture'] = True
     result['props'] = dict(events=copy.deepcopy(events), quotes=quotes,
         fetchedAt=iso(fetched_at), demo=False,
-        notices=['Limited NFL price snapshot from The Odds API. Other games and markets have no prices.'])
+        notices=['Limited NFL price snapshot from The Odds API. Only listed game/market observations are covered; prices may have changed.'])
     return result
 
 
@@ -235,15 +237,18 @@ class Provider:
     def __init__(self, key, fixture_dir=None, markets=MARKETS):
         self.key, self.fixture_dir, self.markets = key, fixture_dir, markets
 
-    def request(self, event_id=None):
+    def request(self, event_id=None, *, slate=False):
         if self.fixture_dir:
-            name = 'odds.json' if event_id else 'events.json'
+            name = 'slate.json' if slate else 'odds.json' if event_id else 'events.json'
             raw = json.loads((self.fixture_dir / name).read_text(encoding='utf-8'))
             headers = json.loads((self.fixture_dir / 'headers.json').read_text(encoding='utf-8'))
-            return raw, headers.get('odds' if event_id else 'events', {})
+            return raw, headers.get('slate' if slate else 'odds' if event_id else 'events', {})
         path = '/v4/sports/americanfootball_nfl/events'
         params = {'dateFormat': 'iso'}
-        if event_id:
+        if slate:
+            path = '/v4/sports/americanfootball_nfl/odds'
+            params.update(bookmakers=','.join(BOOKS), markets=','.join(GAME_MARKETS), oddsFormat='decimal')
+        elif event_id:
             if not re.fullmatch(r'[a-f0-9]{32}', event_id):
                 raise ValueError('Invalid provider event id.')
             path += '/' + event_id + '/odds'
@@ -307,6 +312,87 @@ def cached_quotes(cache, directory, fetched):
     return cache['quotes']
 
 
+def slate_cache(schedule, dataset, cache, now, fixture):
+    fetched = at(cache['fetchedAt'])
+    if not timedelta(0) <= now - fetched < TTL:
+        return None
+    current = {e['id']: e for e in schedule['board']['events']}
+    retained, quotes = [], []
+    for event in cache['events']:
+        if current.get(event['id']) != event or at(event['startsAt']) <= now:
+            continue
+        part = [q for q in cache['quotes'] if q['selection']['eventId'] == event['id']]
+        if not part or any(now - at(q['sourceAt']) > TTL for q in part):
+            continue
+        names = {q['selection']['participant'] for q in part if q['selection']['participant']}
+        players = [p for p in cache['players'] if p['name'] in names]
+        directory = player_directory(dataset, event, now)
+        if any(directory.get(p['name']) != p for p in players):
+            continue
+        cached_quotes(dict(event=event, quotes=part, players=players, markets=cache['markets']), directory, fetched)
+        retained.append(event)
+        quotes.extend(part)
+    if not quotes:
+        return None
+    ids = {q['selection']['participant'] for q in quotes if q['selection']['participant']}
+    players = [p for p in cache['players'] if p['name'] in ids]
+    primary = next((e for e in retained if e['id'] == cache['event']['id']), retained[0])
+    return publish_observations(schedule, primary, quotes, players, fetched, now, fixture, cache['markets'], retained)
+
+
+def collect_slate(source, schedule, dataset, event, provider_event, now, ledger, ledger_path, cache_path, provider_used, fixture):
+    # One four-credit reservation covers BOTH requests. No retry after a timeout.
+    def account(headers, previous, maximum):
+        charged = credits(headers, 'x-requests-last')
+        used = credits(headers, 'x-requests-used')
+        if charged > maximum or used != previous + charged or credits(headers, 'x-requests-remaining') < RESERVE:
+            ledger['blocked'] = True
+            write_json(ledger_path, ledger)
+            raise ValueError('Provider credit accounting exceeded the pilot budget.')
+        ledger['providerUsed'] = used
+        write_json(ledger_path, ledger)
+        return used
+    raw, headers = source.request(slate=True)
+    used = account(headers, provider_used, 3)
+    if not isinstance(raw, list) or len(raw) > 32:
+        raise ValueError('Invalid slate response.')
+    quotes, covered, seen = [], [], set()
+    for item in raw:
+        pair = match_event([item], schedule['board']['events'], now)
+        if not pair:
+            continue
+        matched, upstream = pair
+        if matched['id'] in seen:
+            raise ValueError('Duplicate slate event.')
+        seen.add(matched['id'])
+        part, _ = normalize_quotes(item, matched, upstream, {}, now, GAME_MARKETS)
+        if part:
+            quotes.extend(part)
+            covered.append(matched)
+    # Persist the possible one-credit charge BEFORE requesting a prop market.
+    ledger['providerUsed'] = used + 1
+    write_json(ledger_path, ledger)
+    players = []
+    source.markets = (MARKETS[now.date().toordinal() % len(MARKETS)],)
+    try:
+        prop_raw, headers = source.request(provider_event['id'])
+    except ValueError:
+        # Keep validated slate quotes. A counter mismatch blocks later charging.
+        prop_raw = None
+    if prop_raw is not None:
+        account(headers, used, 1)
+        part, players = normalize_quotes(prop_raw, event, provider_event, player_directory(dataset, event, now), now, source.markets)
+        quotes.extend(part)
+        if part and event not in covered:
+            covered.append(event)
+    if not quotes or len(quotes) > 2000:
+        return copy.deepcopy(schedule), 'Schedule only; no validated slate prices.'
+    primary = event if event in covered else covered[0]
+    markets = requested_markets('slate', now)
+    write_json(cache_path, dict(event=primary, events=covered, quotes=quotes, players=players, fetchedAt=iso(now), markets=list(markets)))
+    return publish_observations(schedule, primary, quotes, players, now, now, fixture, markets, covered), 'Published NFL slate and a rotating prop market within the existing four-credit reservation.'
+
+
 def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixture_dir=None,
         provider=None, initialize_state=False, refresh_window=None, profile='props'):
     validate_schedule(schedule, now)
@@ -344,9 +430,13 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
             at(entry['at'])
         if cache_path.exists():
             cache = json.loads(cache_path.read_text(encoding='utf-8'))
+            if 'events' in cache:
+                saved = slate_cache(schedule, dataset, cache, now, fixture_dir is not None)
+                if saved is not None:
+                    return saved, 'Reused saved slate observations; zero odds credits.'
             fetched = at(cache['fetchedAt'])
             events = [e for e in schedule['board']['events'] if e['id'] == cache['event']['id'] and e == cache['event'] and at(e['startsAt']) > now]
-            if (events and timedelta(0) <= now - fetched < TTL and
+            if ('events' not in cache and events and timedelta(0) <= now - fetched < TTL and
                     all(now - at(q['sourceAt']) <= TTL for q in cache['quotes'])):
                 # Revalidate cached raw-independent identities against current
                 # bundled history and current event before reusing observations.
@@ -384,6 +474,8 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         ledger['reservations'].append({'at': iso(now), 'credits': COST})
         ledger['providerUsed'] = provider_used + COST
         write_json(ledger_path, ledger)
+        if profile == 'slate':
+            return collect_slate(source, schedule, dataset, event, provider_event, now, ledger, ledger_path, cache_path, provider_used, fixture_dir is not None)
         raw, headers = source.request(provider_event['id'])
         observed_used = credits(headers, 'x-requests-used')
         if observed_used != provider_used + credits(headers, 'x-requests-last'):
@@ -413,7 +505,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--state-dir', type=Path, default=ROOT / '.tools' / 'odds-publish-state')
     parser.add_argument('--fixture-dir', type=Path)
-    parser.add_argument('--market-profile',choices=['props','balanced'],default='props')
+    parser.add_argument('--market-profile',choices=['props','balanced','slate'],default='props')
     parser.add_argument('--initialize-state', action='store_true',
                         help='Explicit one-time approved creation of the private credit ledger. Never enable routinely.')
     args = parser.parse_args()

@@ -169,5 +169,6 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
     sourceFingerprint:JSON.stringify([model.version,model.cutoff,event.id,...quotes.map(q=>[quoteId(q),q.sourceAt,q.decimal])])};
   report.workloadTrial=workloadForecasts(source,event,{now,context});
   report.productionTrial=includeProduction?productionForecasts(source,event,{now,workloadTrial:report.workloadTrial,observations:rows}):{available:false,forecasts:[],rows:[],hasEdge:false};
+  report.priceCoverage={checkedAt:report.createdAt,provider:'The Odds API',mode:'limited_saved_snapshots',markets:categories.map(c=>({market:c.market,quotes:c.rows.length,books:[...new Set(c.rows.map(r=>r.book))],newestAt:c.rows.map(r=>r.sourceAt).sort().at(-1)||null,oldestAt:c.rows.map(r=>r.sourceAt).sort()[0]||null})),notice:'Only listed exact selections are covered. Saved prices are not live or guaranteed available.'};
   report.context=context;report.decision=decisionBrief(report,context,{question});return report;
 }

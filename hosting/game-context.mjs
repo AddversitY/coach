@@ -94,17 +94,23 @@ export function decisionBrief(report,context,{question=''}={}){
   const spreadText=q.match(/(?:spread|line|cover)\s*(?:at\s*)?([+-]?\d+(?:\.\d+)?)/)?.[1];
   const spreadLine=requested==='spreads'&&spreadText!=null&&Math.abs(Number(spreadText))<100?Number(spreadText):null;
   const rows=requested||names.length||side?report.categories.flatMap(c=>c.rows):report.ranked;
-  const ranked=rows.filter(r=>!r.blocked&&(!requested||r.selection.market===requested)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
+  const mentionedTeams=[report.event.home,report.event.away].filter(team=>(' '+name(q)+' ').includes(' '+name(team)+' ')||(' '+name(q)+' ').includes(' '+name(team.split(' ').at(-1))+' '));
+  const selectedTeam=mentionedTeams.length===1?mentionedTeams[0]:null;
+  const ranked=rows.filter(r=>!r.blocked&&(!requested||r.selection.market===requested)&&(!selectedTeam||!['spreads','h2h'].includes(r.selection.market)||r.selection.outcome===selectedTeam)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
   const home=report.event.home,away=report.event.away;
   const lean=report.score.homeWin>(1-report.score.homeWin-report.score.tie)?home:away;
-  const priced=report.categories.some(c=>c.rows.length);
+  const priced=!!best;
+  const focusedPlayer=names.length>0||requested?.startsWith('player_');
+  const focus=requested||focusedPlayer?'selection':'game';
   const focusTeam=context.teams.find(t=>t.usage.some(p=>names.includes(p.name)))?.code;
-  const risk=(context.alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||context.alerts.find(a=>a.team===focusTeam)||context.alerts.find(a=>a.kind==='quarterback')||context.alerts[0])?.text||'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.';
-  return {status:context.alerts.length?'wait_for_context':priced?'research_only':'wait_for_prices',
-    headline:context.alerts.length?'Resolve the lineup questions first':priced?'A research comparison, not a supported bet':'No priced recommendation yet',
-    lean:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
+  const alerts=focusedPlayer&&focusTeam?context.alerts.filter(a=>a.team===focusTeam):context.alerts;
+  const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.';
+  return {status:alerts.length?'wait_for_context':priced?'research_only':'wait_for_prices',
+    headline:alerts.length?'Wait for lineup clarity':priced?'Compare the price. Keep this in research.':'Pass for now — the matching price is missing',
+    action:'pass',focus,reason:alerts.length?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
+    lean:focusedPlayer||requested==='totals'?null:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
     price:best?{selection:best.selection,book:best.book,observedDecimal:best.decimal,minimumDecimal:best.minimumDecimal,sourceAt:best.sourceAt,notice:'Model break-even price only; a larger price does not establish a real betting edge.'}:null,
-    priceNotice:best?'Compare the exact line and price; the research break-even price is conditional on an unvalidated forecast.':priced?'Available priced rows have unresolved role or availability concerns.':'No saved price is available for a supported comparison; no odds threshold is invented.',
-    counterargument:risk,recheck:context.alerts.length?'Confirm the listed quarterbacks, relevant availability reports and player roles; then refresh the exact line and price.':'Recheck active players, quarterback continuity, weather at kickoff and the exact sportsbook line and price.',
+    priceNotice:best?'Saved observation only. Recheck this exact line at the sportsbook; the model break-even price is unvalidated.':'No usable saved price matches this question. Other games, players or lines cannot supply its price.',
+    counterargument:risk,recheck:alerts.length?'Confirm the listed quarterbacks, relevant availability reports and player roles; then refresh the exact line and price.':'Recheck active players, quarterback continuity, weather at kickoff and the exact sportsbook line and price.',
     hasEdge:false,recommendationsReady:false};
 }
