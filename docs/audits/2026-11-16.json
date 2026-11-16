@@ -1,0 +1,91 @@
+{
+  "observedAt": "2026-11-16T22:38:24.862181+00:00",
+  "source": "https://coach-research.dds-dge.workers.dev/v1/evaluation",
+  "sourceResponseSha256": "4bc3a0c133857fc70a88b34abf55ec2deb8fc453b524e996adb4f916c4174f07",
+  "prospective": {
+    "capturedGames": 1,
+    "gradedGames": 0,
+    "pendingGames": 1,
+    "unresolved": 0
+  },
+  "historicalGameChallenger": {
+    "moneyline": {
+      "games": 407,
+      "brier": 0.2257213089384237,
+      "marketBrier": 0.21331387325353177,
+      "logLoss": 0.6419436854618393,
+      "marketLogLoss": 0.6139968500787163
+    },
+    "spreads": {
+      "games": 402,
+      "brier": 0.26774315368341156,
+      "marketBrier": 0.24979530026645833,
+      "logLoss": 0.7315561510638419,
+      "marketLogLoss": 0.6927379864981766
+    },
+    "totals": {
+      "games": 409,
+      "brier": 0.2595713247234615,
+      "marketBrier": 0.25038296408105293,
+      "logLoss": 0.7133133682030997,
+      "marketLogLoss": 0.6939135827878714
+    }
+  },
+  "historicalPlayerCandidates": {
+    "QB_passing_yards": {
+      "recorded": 624,
+      "mae": 61.63574977546048,
+      "baselineMae": 64.65955995574222,
+      "interval80Coverage": 0.8108974358974359
+    },
+    "QB_rushing_yards": {
+      "recorded": 605,
+      "mae": 11.797416076119148,
+      "baselineMae": 12.34799185191212,
+      "interval80Coverage": 0.824793388429752
+    },
+    "RB_rushing_yards": {
+      "recorded": 1565,
+      "mae": 21.308809654552714,
+      "baselineMae": 21.157180636009542,
+      "interval80Coverage": 0.8587859424920128
+    },
+    "RB_receiving_yards": {
+      "recorded": 1533,
+      "mae": 11.285403416503588,
+      "baselineMae": 11.245962778053705,
+      "interval80Coverage": 0.8427919112850619
+    },
+    "RB_receptions": {
+      "recorded": 1547,
+      "mae": 1.1544357526664513,
+      "baselineMae": 1.1369806389703114,
+      "interval80Coverage": 0.9043309631544926
+    },
+    "WR_receiving_yards": {
+      "recorded": 2390,
+      "mae": 22.64883874869247,
+      "baselineMae": 22.682157802432037,
+      "interval80Coverage": 0.8765690376569037
+    },
+    "WR_receptions": {
+      "recorded": 2398,
+      "mae": 1.4724371546601334,
+      "baselineMae": 1.4568668333825412,
+      "interval80Coverage": 0.9174311926605505
+    },
+    "TE_receiving_yards": {
+      "recorded": 1326,
+      "mae": 16.488989736519606,
+      "baselineMae": 16.647020254010762,
+      "interval80Coverage": 0.8748114630467572
+    },
+    "TE_receptions": {
+      "recorded": 1326,
+      "mae": 1.330857312877074,
+      "baselineMae": 1.361470637334038,
+      "interval80Coverage": 0.9283559577677225
+    }
+  },
+  "hasEdge": false
+}

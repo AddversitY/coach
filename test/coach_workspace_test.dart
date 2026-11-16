@@ -272,6 +272,10 @@ void main() {
               now,
               bookId: requestedBook,
             );
+            result['decision']['whatWouldChange'] = [
+              {'text': 'Confirm official active players before reassessing.'},
+              {'text': 'Better future probability accuracy is still required.'},
+            ];
             result['priceCoverage'] = {
               'markets': [
                 {
@@ -286,6 +290,23 @@ void main() {
             return result;
           },
           evaluationLoader: () async => {
+            'audit': {
+              'gradedGames': 0,
+              'pendingGames': 1,
+              'nextStep': 'Wait for captured games to finish.',
+              'markets': [
+                {
+                  'label': 'Spread',
+                  'matchedPricedGames': 0,
+                  'historical': {
+                    'brierDifference': 0.018,
+                    'logLossDifference': 0.039,
+                    'games': 402,
+                  },
+                },
+              ],
+              'notice': 'No demonstrated edge.',
+            },
             'capturedGames': 0,
             'gradedGames': 0,
             'pendingGames': 0,
@@ -361,6 +382,13 @@ void main() {
       await tester.pumpAndSettle();
       await send(tester, 'Analyze Bills');
       expect(find.text('Player workload outlook'), findsNothing);
+      await tester.ensureVisible(find.text('What would change this answer?'));
+      await tester.tap(find.text('What would change this answer?'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Confirm official active players before reassessing.'),
+        findsOneWidget,
+      );
       await tester.ensureVisible(find.text('Explore the evidence'));
       await tester.tap(find.text('Explore the evidence'));
       await tester.pumpAndSettle();
@@ -407,6 +435,14 @@ void main() {
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
+      await tester.ensureVisible(find.text('Accuracy audit'));
+      await tester.tap(find.text('Accuracy audit'));
+      await tester.pumpAndSettle();
+      expect(find.text('Wait for captured games to finish.'), findsOneWidget);
+      expect(
+        find.textContaining('Brier 0.018 / Log loss 0.039'),
+        findsOneWidget,
+      );
       await tester.ensureVisible(
         find.text('Market comparison · 1 matched priced games'),
       );

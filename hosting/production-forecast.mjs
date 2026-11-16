@@ -1,3 +1,4 @@
+import {attachCalibration} from './calibration-trial.mjs';
 /* Joint empirical workload/efficiency replay. Research only; never ranked as a pick. */
 import {workloadFeatures,trialHistory} from './workload-forecast.mjs';
 export const PRODUCTION_VERSION='production-joint-v1';
@@ -72,5 +73,5 @@ export function productionForecasts(source,event,{now=Date.now(),workloadTrial=n
 export function productionSnapshot(trial,event){
   const captured=Date.parse(trial?.createdAt),kick=Date.parse(event.startsAt);
   if(!trial?.available||trial.eventId!==event.id||trial.startsAt!==event.startsAt||!Number.isFinite(captured)||captured>=kick||kick-captured>24*3600000||!trial.forecasts.length)return null;
-  return {schemaVersion:1,id:`${trial.version}:${event.id}:${trial.rows.length?'priced':'unpriced'}`,modelVersion:trial.version,cutoff:trial.cutoff,event,capturedAt:trial.createdAt,rows:trial.rows.slice(0,54),workloads:trial.forecasts,priced:!!trial.rows.length,benchmarkState:'not_applicable',notice:trial.notice};
+  return attachCalibration({schemaVersion:1,id:`${trial.version}:${event.id}:${trial.rows.length?'priced':'unpriced'}`,modelVersion:trial.version,cutoff:trial.cutoff,event,capturedAt:trial.createdAt,rows:trial.rows.slice(0,54),workloads:trial.forecasts,priced:!!trial.rows.length,benchmarkState:'not_applicable',notice:trial.notice});
 }

@@ -1681,6 +1681,27 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
           const SizedBox(height: 8),
           Text('Before acting · ${brief['recheck']}', style: CoachType.label),
+          if (brief['whatWouldChange'] is List)
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: const Text(
+                'What would change this answer?',
+                style: CoachType.label,
+              ),
+              children: [
+                for (final condition in brief['whatWouldChange'] as List)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${condition['text']}',
+                        style: CoachType.label,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
         ],
       ),
     );
@@ -1702,6 +1723,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         style: CoachType.label,
       ),
       children: [
+        if (context['participation'] is Map)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              '${context['participation']['notice']}',
+              style: CoachType.label,
+            ),
+          ),
         for (final team in context['teams'] as List? ?? [])
           Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 18),
@@ -1849,6 +1878,52 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _accuracyAuditView(Map<String, dynamic> audit) {
+    String error(dynamic value) =>
+        value is num ? value.toStringAsFixed(3) : '—';
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Accuracy audit',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text(
+        '${audit['gradedGames']} games graded · ${audit['pendingGames']} awaiting results',
+        style: CoachType.label,
+      ),
+      children: [
+        Text('${audit['nextStep']}', style: CoachType.body),
+        for (final market in audit['markets'] as List? ?? [])
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${market['label']} · ${market['matchedPricedGames']} matched priced games',
+                    style: CoachType.body,
+                  ),
+                  if (market['historical'] is Map)
+                    Text(
+                      'Historical challenger minus market error: Brier ${error(market['historical']['brierDifference'])} / Log loss ${error(market['historical']['logLossDifference'])}. Below zero favors the challenger. ${market['historical']['games']} games; this is separate from live performance.',
+                      style: CoachType.label,
+                    )
+                  else
+                    const Text(
+                      'No comparable historical market benchmark is supplied here.',
+                      style: CoachType.label,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        Text('${audit['notice']}', style: CoachType.label),
+      ],
+    );
+  }
+
   Widget _evaluationView(Map<String, dynamic> report) {
     const labels = {
       'h2h': 'Moneyline',
@@ -1866,6 +1941,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           '${report['pendingGames'] ?? 0} games awaiting results · ${report['unresolved'] ?? 0} selections awaiting participation data',
           style: CoachType.label,
         ),
+        if (report['audit'] is Map)
+          _accuracyAuditView(Map<String, dynamic>.from(report['audit'])),
         for (final row in report['markets'] as List? ?? [])
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -1880,6 +1957,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   'Forecast error: ${value(row['brier'])}. Lower is better.',
                   style: CoachType.label,
                 ),
+                if (row['calibrationTrial'] is Map)
+                  Text(
+                    'Calibration trial · ${row['calibrationTrial']['games']} matched games · Brier change ${value(row['calibrationTrial']['brierDifference'])} / Log-loss change ${value(row['calibrationTrial']['logLossDifference'])}. Below zero favors the trial; it remains separate from recommendations.',
+                    style: CoachType.label,
+                  ),
                 if (row['priceComparison'] is Map)
                   _priceComparisonView(
                     Map<String, dynamic>.from(row['priceComparison']),

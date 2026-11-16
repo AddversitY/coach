@@ -75,3 +75,14 @@ test('decision stays on the requested team and does not substitute a winner for 
   const brief=decisionBrief(report,emptyContext,{question:'Game total over 45.5'});
   assert.equal(brief.reason,'matching_price_missing');assert.equal(brief.action,'pass');assert.match(brief.priceNotice,/matches this question/);
 });
+
+
+test('participation and reassessment conditions never infer official availability or promise an edge',()=>{
+  const context=gameContext(source(),event,{now});
+  assert.equal(context.participation.officialActiveListAvailable,false);assert.equal(context.participation.confirmedStartersAvailable,false);assert.equal(context.participation.state,'unconfirmed');
+  const report={event,ranked:[],categories:[{rows:[]}],score:{homeWin:.6,tie:.02},basis:'experimental_score_candidate'};
+  const brief=decisionBrief(report,context,{question:'Receiver receiving yards over 65.5'});
+  assert.deepEqual(brief.whatWouldChange.map(c=>c.kind),['price','availability','validation']);
+  assert.equal(brief.whatWouldChange[0].state,'missing_exact_quote');assert.equal(brief.whatWouldChange[0].selection,null);
+  assert.match(brief.whatWouldChange[1].text,/official source/);assert.match(brief.whatWouldChange[2].text,/alone does not establish an edge/);assert.equal(brief.action,'pass');
+});

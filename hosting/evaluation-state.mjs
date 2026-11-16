@@ -62,7 +62,7 @@ export async function evaluationState(state,path,request){
   if(path==='/grade-batch'){
     const body=await request.json();
     if(!Array.isArray(body.results)||body.results.length>400||typeof body.hash!=='string')return response({error:'Invalid result batch'},400);
-    if(await storage.get('evaluation-grading-version')==='priced-calibration-v1'&&await storage.get('evaluation-results-hash')===body.hash)return response({unchanged:true});
+    if(await storage.get('evaluation-grading-version')==='accuracy-audit-calibration-v2'&&await storage.get('evaluation-results-hash')===body.hash)return response({unchanged:true});
     const versions=await storage.get('evaluation-versions')||[];
     for(const result of body.results)for(const version of versions){
       if(typeof result.eventId!=='string'||!Number.isInteger(result.homeScore)||!Number.isInteger(result.awayScore))continue;
@@ -80,7 +80,7 @@ export async function evaluationState(state,path,request){
         await txn.put(key,grade);await txn.put('evaluation-aggregate',aggregate);await txn.put('evaluation-counts',counts);
       });
     }
-    await storage.put('evaluation-results-hash',body.hash);await storage.put('evaluation-grading-version','priced-calibration-v1');return response({ok:true});
+    await storage.put('evaluation-results-hash',body.hash);await storage.put('evaluation-grading-version','accuracy-audit-calibration-v2');return response({ok:true});
   }
   return null;
 }

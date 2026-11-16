@@ -299,3 +299,8 @@ The public publisher now uses bulk game prices plus one rotating prop market wit
 ## Conversation and answer structure (2026-11-16)
 
 Coach now resolves short follow-ups from session-only selection context before AI planning. New player/market resets lines, missing context asks a specific question, and new chat clears context. Explicit new books override old preferences. Server market comparisons rank evidence completeness, never EV or bet strength. Answers lead with the decision; pricing rationale, comparison and full evidence are expandable. See [COACH_CONVERSATION.md](COACH_CONVERSATION.md) for contracts and limitations.
+
+
+## Accuracy audit and reassessment conditions (2026-11-16)
+
+The first prospective audit has 1 captured game per cohort and 0 graded games. Historical game challengers trail the market/reference baseline in all three game markets; player candidates are mixed. A fixed 0.80 log-odds calibration trial is captured for future snapshots only and graded separately without changing serving probabilities or old captures. The performance view exposes the audit; decisions explain exact price, official participation and validation conditions for reassessment. Official active lists and confirmed starters remain unavailable. See [ACCURACY_AUDIT.md](ACCURACY_AUDIT.md) and its dated audit record. No extra provider or AI calls, caps or adoption permissions changed.

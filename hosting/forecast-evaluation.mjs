@@ -1,3 +1,4 @@
+import {attachCalibration,calibrationSummary} from './calibration-trial.mjs';
 import {gradeWorkloads,addWorkloadGrade,workloadReport} from './workload-scoring.mjs';
 import {outcome} from './game-analysis.mjs';
 
@@ -10,7 +11,7 @@ export function forecastSnapshot(report){
   const rows=priced.length?priced.map(r=>({id:r.id,playerId:r.playerId,threeWay:r.threeWay,selection:r.selection,decimal:r.decimal,win:r.win,push:r.push,baseline:r.baseline,sourceAt:r.sourceAt,collectedAt:r.collectedAt,book:r.book,rulesVerified:false,forecastBasis:r.forecastBasis})):[{
     id:'home-moneyline-no-price',selection:{eventId:report.event.id,market:'h2h',outcome:report.event.home,participant:'',point:null,period:'full_game',rules:'unpriced_research'},decimal:null,win:report.score.homeWin,push:report.score.tie,baseline:report.baselineHomeWin??null,forecastBasis:report.basis,rulesVerified:false,
   }];
-  return {schemaVersion:1,id:`${report.modelVersion}:${report.event.id}:${priced.length?'priced':'unpriced'}`,modelVersion:report.modelVersion,cutoff:report.cutoff,event:report.event,capturedAt:report.createdAt,rows,priced:!!priced.length,benchmarkState:'not_requested',notice:'Automatic model research; no user identity, question, stake or personal bet history is stored.'};
+  return attachCalibration({schemaVersion:1,id:`${report.modelVersion}:${report.event.id}:${priced.length?'priced':'unpriced'}`,modelVersion:report.modelVersion,cutoff:report.cutoff,event:report.event,capturedAt:report.createdAt,rows,priced:!!priced.length,benchmarkState:'not_requested',notice:'Automatic model research; no user identity, question, stake or personal bet history is stored.'});
 }
 
 export function gradeForecast(snapshot,result){
@@ -28,8 +29,9 @@ export function gradeForecast(snapshot,result){
     if(grade===0){results.push({market,push:true,priced:!!row.decimal});continue;}
     const y=grade===1?1:0,p=row.win/Math.max(1e-9,1-row.push),baseline=row.baseline;
     const servingP=Number.isFinite(row.servingWin)&&Number.isFinite(row.servingPush)?row.servingWin/Math.max(1e-9,1-row.servingPush):null;
+    const calibrationP=snapshot.calibrationVersion==='temperature-080-v1'&&Number.isFinite(row.calibrationWin)&&row.calibrationPush===row.push?row.calibrationWin/Math.max(1e-9,1-row.calibrationPush):null;
     const ai=snapshot.benchmark?.find(item=>item.id===row.id),aiP=ai?ai.win/Math.max(1e-9,1-ai.push):null;
-    results.push({market,push:false,priced:!!row.decimal,probability:p,actual:y,brier:(p-y)**2,logLoss:logLoss(p,y),
+    results.push({market,push:false,priced:!!row.decimal,probability:p,actual:y,calibrationBrier:Number.isFinite(calibrationP)?(calibrationP-y)**2:null,calibrationLogLoss:Number.isFinite(calibrationP)?logLoss(calibrationP,y):null,brier:(p-y)**2,logLoss:logLoss(p,y),
       servingBrier:Number.isFinite(servingP)?(servingP-y)**2:null,servingLogLoss:Number.isFinite(servingP)?logLoss(servingP,y):null,
       baselineBrier:Number.isFinite(baseline)?(baseline-y)**2:null,baselineLogLoss:Number.isFinite(baseline)?logLoss(baseline,y):null,
       aiBrier:Number.isFinite(aiP)?(aiP-y)**2:null,aiLogLoss:Number.isFinite(aiP)?logLoss(aiP,y):null,
@@ -39,9 +41,9 @@ export function gradeForecast(snapshot,result){
   for(const market of ['h2h','spreads','totals','props']){
     const all=results.filter(r=>r.market===market),decided=all.filter(r=>!r.push),paired=decided.filter(r=>r.baselineBrier!=null),ai=decided.filter(r=>r.aiBrier!=null),serving=decided.filter(r=>r.servingBrier!=null);
     if(!all.length)continue;
-    const matched=paired.filter(r=>r.priced);
+    const matched=paired.filter(r=>r.priced),calibrated=decided.filter(r=>r.calibrationBrier!=null);
     const calibration=Array.from({length:5},(_,bin)=>{const rows=decided.filter(r=>Math.min(4,Math.floor(r.probability*5))===bin);return {bin,observations:rows.length,predicted:mean(rows.map(r=>r.probability)),observed:mean(rows.map(r=>r.actual))};}).filter(b=>b.observations);
-    markets[market]={calibration,priceMatchedPairs:matched.length,priceMatchedBrierDelta:mean(matched.map(r=>r.brier-r.baselineBrier)),priceMatchedLogDelta:mean(matched.map(r=>r.logLoss-r.baselineLogLoss)),servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
+    markets[market]={calibrationPairs:calibrated.length,calibrationBrierDelta:mean(calibrated.map(r=>r.calibrationBrier-r.brier)),calibrationLogDelta:mean(calibrated.map(r=>r.calibrationLogLoss-r.logLoss)),calibration,priceMatchedPairs:matched.length,priceMatchedBrierDelta:mean(matched.map(r=>r.brier-r.baselineBrier)),priceMatchedLogDelta:mean(matched.map(r=>r.logLoss-r.baselineLogLoss)),servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
       baselinePairs:paired.length,pairedBrier:mean(paired.map(r=>r.brier)),baselineBrier:mean(paired.map(r=>r.baselineBrier)),pairedLogLoss:mean(paired.map(r=>r.logLoss)),baselineLogLoss:mean(paired.map(r=>r.baselineLogLoss)),
       aiPairs:ai.length,aiPairedBrier:mean(ai.map(r=>r.brier)),aiBrier:mean(ai.map(r=>r.aiBrier)),aiPairedLogLoss:mean(ai.map(r=>r.logLoss)),aiLogLoss:mean(ai.map(r=>r.aiLogLoss)),
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
@@ -53,6 +55,7 @@ export function gradeForecast(snapshot,result){
 export function addGrade(aggregate,grade,direction=1){
   for(const [market,row] of Object.entries(grade.markets)){
     const current=aggregate[market]||{games:0,observations:0,pushes:0,probabilityGames:0,baselineGames:0,aiGames:0};
+    if(row.calibrationPairs){current.calibrationGames=(current.calibrationGames||0)+direction;current.calibrationBrierDelta=(current.calibrationBrierDelta||0)+direction*row.calibrationBrierDelta;current.calibrationLogDelta=(current.calibrationLogDelta||0)+direction*row.calibrationLogDelta;}
     if(row.priceMatchedPairs){
       current.priceMatchedGames=(current.priceMatchedGames||0)+direction;
       for(const [key,value] of [['brier',row.priceMatchedBrierDelta],['logLoss',row.priceMatchedLogDelta]]){
@@ -87,7 +90,7 @@ function priceComparison(row){
 }
 export function evaluationReport(aggregate,counts){
   return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,workloads:workloadReport(aggregate),markets:Object.entries(aggregate).filter(([,row])=>row.kind!=='workload').map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
-    priceComparison:priceComparison(row),calibration:Object.entries(row.calibration||{}).filter(([,b])=>b.games>0).map(([bin,b])=>({lower:Number(bin)/5,upper:(Number(bin)+1)/5,games:b.games,observations:b.observations,predicted:b.predicted/b.games,observed:b.observed/b.games})),
+    calibrationTrial:calibrationSummary(row),priceComparison:priceComparison(row),calibration:Object.entries(row.calibration||{}).filter(([,b])=>b.games>0).map(([bin,b])=>({lower:Number(bin)/5,upper:(Number(bin)+1)/5,games:b.games,observations:b.observations,predicted:b.predicted/b.games,observed:b.observed/b.games})),
     servingGames:row.servingGames||0,servingPairedBrier:row.servingGames?row.servingPairedBrier/row.servingGames:null,servingBrier:row.servingGames?row.servingBrier/row.servingGames:null,
     brier:row.probabilityGames?row.brier/row.probabilityGames:null,logLoss:row.probabilityGames?row.logLoss/row.probabilityGames:null,
     baselineGames:row.baselineGames,pairedBrier:row.baselineGames?row.pairedBrier/row.baselineGames:null,baselineBrier:row.baselineGames?row.baselineBrier/row.baselineGames:null,

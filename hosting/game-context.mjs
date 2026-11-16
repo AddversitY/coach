@@ -62,6 +62,7 @@ export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
   const sources=[...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...(reports.length?[{id:'availability',source:'ESPN injury feed (unofficial)',url:'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}]:[])];
   return {schemaVersion:1,version:'role-context-v1',eventId:event.id,createdAt:new Date(now).toISOString(),cutoff:usable?data.cutoff:null,teams,alerts,weather,sources,
     readiness:usable?'descriptive_context':'context_unavailable',adjustmentsApplied:false,
+    participation:{state:'unconfirmed',officialActiveListAvailable:false,confirmedStartersAvailable:false,reportedConcerns:reports.filter(o=>CONCERN.has(String(o.value?.status).toLowerCase())).length,checkedAt:injuries.map(o=>o.observedAt).sort().at(-1)||null,notice:'Only unofficial reports and recorded participation are connected. A missing report or Active label does not confirm next-game availability or a starting role.'},
     unknowns:['Confirmed starting quarterbacks, active lists and expected snap counts require a current game-specific source.','Recorded workload and snap share do not measure routes, coaching plans or recovery.','No validated quarterback, injury, offensive-line or weather probability adjustment is applied.']};
 }
 
@@ -107,6 +108,11 @@ export function decisionBrief(report,context,{question=''}={}){
   const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||(focusedPlayer?'Player forecasts are conditional on a recorded appearance; exact-line probabilities and future calibration remain unvalidated.':'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.');
   return {status:alerts.length?'wait_for_context':priced?'research_only':'wait_for_prices',
     headline:alerts.length?'Wait for lineup clarity':priced?'Compare the price. Keep this in research.':'Pass for now — the matching price is missing',
+    whatWouldChange:[
+      {kind:'price',state:best?'recheck_saved_quote':'missing_exact_quote',selection:best?.selection||null,text:best?'Refresh this exact selection at the sportsbook. A saved price may no longer be obtainable; the research break-even price is not an approval to bet.':'Provide a fresh sportsbook price matching the requested game, player, side and line; unrelated prices cannot fill the gap.'},
+      {kind:'availability',state:'official_confirmation_needed',text:focusedPlayer?'Confirm this player is active and verify the expected role using a current game-specific official source. Historical appearances and unofficial reports do not establish participation.':'Confirm the game’s starting quarterbacks and relevant active players using a current official source. Resolve conflicting listings before reassessing.'},
+      {kind:'validation',state:'not_demonstrated',text:'The model needs better probability accuracy than matched market baselines on future games. A lineup update or a more attractive price alone does not establish an edge.'},
+    ],
     action:'pass',focus,reason:alerts.length?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
     lean:focusedPlayer||requested==='totals'?null:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
     price:best?{selection:best.selection,book:best.book,observedDecimal:best.decimal,minimumDecimal:best.minimumDecimal,sourceAt:best.sourceAt,notice:'Model break-even price only; a larger price does not establish a real betting edge.'}:null,
