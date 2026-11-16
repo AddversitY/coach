@@ -104,7 +104,7 @@ export function decisionBrief(report,context,{question=''}={}){
   const focus=requested||focusedPlayer?'selection':'game';
   const focusTeam=context.teams.find(t=>t.usage.some(p=>names.includes(p.name)))?.code;
   const alerts=focusedPlayer&&focusTeam?context.alerts.filter(a=>a.team===focusTeam):context.alerts;
-  const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.';
+  const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||(focusedPlayer?'Player forecasts are conditional on a recorded appearance; exact-line probabilities and future calibration remain unvalidated.':'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.');
   return {status:alerts.length?'wait_for_context':priced?'research_only':'wait_for_prices',
     headline:alerts.length?'Wait for lineup clarity':priced?'Compare the price. Keep this in research.':'Pass for now — the matching price is missing',
     action:'pass',focus,reason:alerts.length?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
