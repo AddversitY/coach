@@ -360,6 +360,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       await send(tester, 'Analyze Bills');
+      expect(find.text('Player workload outlook'), findsNothing);
+      await tester.ensureVisible(find.text('Explore the evidence'));
+      await tester.tap(find.text('Explore the evidence'));
+      await tester.pumpAndSettle();
       for (final label in [
         'Spread',
         'Game total',
@@ -399,7 +403,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(requestedBook, 'draftkings');
       await send(tester, 'Bills moneyline');
-      expect(find.text('Player workload outlook'), findsNWidgets(3));
+      expect(find.text('Player workload outlook'), findsOneWidget);
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
@@ -444,6 +448,40 @@ void main() {
         find.textContaining('Candidate 61.64 / Baseline 64.66'),
         findsOneWidget,
       );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
+    'game conversation restores exact selections without an AI planner and resets on new chat',
+    (tester) async {
+      final questions = <String>[];
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            questions.add(payload['question'] as String);
+            return gameOutlookFixture(event, now);
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills game total over 45.5');
+      await send(tester, 'What about the under?');
+      expect(questions.last, contains('game total under 45.5'));
+      await send(tester, 'At DraftKings?');
+      expect(questions.last, contains('under 45.5'));
+      expect(questions.last, contains('DraftKings'));
+      await send(tester, 'What about the spread?');
+      expect(questions.last, isNot(contains('45.5')));
+      final count = questions.length;
+      await send(tester, 'What about Unknown Person?');
+      expect(questions.length, count);
+      expect(find.text('I need a matching research subject'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('coach-new-chat')));
+      await tester.pumpAndSettle();
+      await send(tester, 'What about the under?');
+      expect(find.text('Let’s make that specific'), findsOneWidget);
+      expect(questions.length, count);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },

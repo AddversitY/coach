@@ -294,3 +294,8 @@ price limitations, benchmarks, adoption policy and reproducibility instructions.
 ## Slate prices and forward validation (2026-11-16)
 
 The public publisher now uses bulk game prices plus one rotating prop market within the unchanged four-credit daily reservation, 60-credit monthly cap and protected reserve. Optional multi-game v2 coverage is validated per event; old caches remain supported. Coach now keeps decision briefs on the requested selection, exposes saved-price coverage, and reports game-weighted calibration and paired priced-market error differences. No adoption or edge is inferred. See [PRICE_VALIDATION.md](PRICE_VALIDATION.md) for accounting, migration and statistical limitations.
+
+
+## Conversation and answer structure (2026-11-16)
+
+Coach now resolves short follow-ups from session-only selection context before AI planning. New player/market resets lines, missing context asks a specific question, and new chat clears context. Explicit new books override old preferences. Server market comparisons rank evidence completeness, never EV or bet strength. Answers lead with the decision; pricing rationale, comparison and full evidence are expandable. See [COACH_CONVERSATION.md](COACH_CONVERSATION.md) for contracts and limitations.

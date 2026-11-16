@@ -1,0 +1,13 @@
+# Coach conversation and market comparison
+
+Implemented 2026-11-16. Coach remains one page.
+
+Session-only conversation state retains the upcoming event, explicit player, market, side, line and selected sportsbook. Recognized short follow-ups are resolved before AI planning, so they also work when the planner is unavailable. The resolved request carries the exact Eastern game date. A market/player change clears the previous line; a missing line or missing/expired game asks for clarification. Unknown named follow-ups cannot be rewritten by the planner into the previous player. New conversation clears context and the sportsbook preference. No conversation state becomes a personal bet journal.
+
+Supported follow-ups include “What about the under?”, “Under 45.5”, “What about the spread?”, “At DraftKings?”, “Why?”, “What argues against it?”, and “Compare the markets”. Restored selections are sent to both the research endpoint and the explanation service. Explicit sportsbook mentions override the previous book. Existing source retrieval, exact identity checks, freshness, kickoff and injury invalidation remain in force; old prose is never reused as new evidence.
+
+Server-side `research-comparison-v1` compares one exact saved selection per market group. Priority uses presence of an opposing same-book market baseline, number of books with the identical selection, and source recency. Model probability, EV and historical winning percentages never enter priority. Equal evidence has no forced winner. Missing or blocked markets remain explicit. Every response remains pass/research-only with hasEdge:false and recommendationsReady:false. This is evidence completeness, not proof that a market is a better bet. The configured models still lack a demonstrated betting edge.
+
+Coach leads with the decision, exact observed price, counterargument and recheck. The generic game summary is suppressed when that brief exists. The market comparison and full supporting evidence are expandable; research break-even pricing and market-anchored lean are behind “Price reasoning”. A comparison selection must match a nonblocked saved quote in the validated game report. The UI rejects invented comparison prices and claims of an edge.
+
+Validation covers player/market/line preservation, missing context, unknown names, expired games, new conversations, sportsbook changes, all-market comparisons, evidence ranking independent of optimistic EV, blocked quotes, ties, quote-integrity checks, and the complete phone conversation flow without AI planning. Existing availability and stale-source tests remain applicable. No extra background AI requests or sportsbook calls were introduced.

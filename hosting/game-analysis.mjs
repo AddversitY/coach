@@ -1,3 +1,4 @@
+import {compareResearch} from './research-comparison.mjs';
 import {productionForecasts} from './production-forecast.mjs';
 import {workloadForecasts} from './workload-forecast.mjs';
 import {gameContext,projectionWarnings,decisionBrief} from './game-context.mjs';
@@ -11,7 +12,7 @@ const BOOKS={draftkings:'DraftKings',fanduel:'FanDuel',betmgm:'BetMGM',williamhi
 const normalize=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
 const fresh=(time,now,age)=>Number.isFinite(Date.parse(time))&&Date.parse(time)<=now&&now-Date.parse(time)<=age;
-export function requestedBook(question,context={}){if(typeof context.bookId==='string')return context.bookId;const matched=Object.entries(BOOKS).filter(([,name])=>normalize(question).includes(normalize(name)));return matched.length===1?matched[0][0]:null;}
+export function requestedBook(question,context={}){const matched=Object.entries(BOOKS).filter(([,name])=>normalize(question).includes(normalize(name)));return matched.length===1?matched[0][0]:typeof context.bookId==='string'?context.bookId:null;}
 export function quoteId(q){return JSON.stringify([q.bookId,q.selection]);}
 
 export function resolveGame(index,question,context={},now=Date.now()){
@@ -170,5 +171,6 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
   report.workloadTrial=workloadForecasts(source,event,{now,context});
   report.productionTrial=includeProduction?productionForecasts(source,event,{now,workloadTrial:report.workloadTrial,observations:rows}):{available:false,forecasts:[],rows:[],hasEdge:false};
   report.priceCoverage={checkedAt:report.createdAt,provider:'The Odds API',mode:'limited_saved_snapshots',markets:categories.map(c=>({market:c.market,quotes:c.rows.length,books:[...new Set(c.rows.map(r=>r.book))],newestAt:c.rows.map(r=>r.sourceAt).sort().at(-1)||null,oldestAt:c.rows.map(r=>r.sourceAt).sort()[0]||null})),notice:'Only listed exact selections are covered. Saved prices are not live or guaranteed available.'};
+  report.comparison=compareResearch(report);
   report.context=context;report.decision=decisionBrief(report,context,{question});return report;
 }

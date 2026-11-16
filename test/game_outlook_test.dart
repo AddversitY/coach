@@ -195,6 +195,43 @@ Map<String, dynamic> gameOutlookFixture(
 };
 
 void main() {
+  test(
+    'research comparison cannot invent a price or promote a betting edge',
+    () {
+      final event = SportEvent(
+        'nflverse:2026_11_BUF_KC',
+        'Buffalo Bills',
+        'Kansas City Chiefs',
+        DateTime.utc(2026, 11, 17),
+      );
+      final raw = gameOutlookFixture(event, DateTime.utc(2026, 11, 16));
+      final row = raw['categories'][0]['rows'][0] as Map;
+      raw['comparison'] = {
+        'basis': 'evidence_completeness',
+        'action': 'pass',
+        'hasEdge': false,
+        'recommendationsReady': false,
+        'options': [
+          {
+            'market': 'spreads',
+            'selection': row['selection'],
+            'book': row['book'],
+            'decimal': row['decimal'],
+            'sourceAt': row['sourceAt'],
+          },
+          for (final market in ['totals', 'h2h', 'props'])
+            {'market': market, 'selection': null},
+        ],
+      };
+      expect(GameOutlook.fromJson(raw).raw['comparison'], isNotNull);
+      raw['comparison']['options'][0]['decimal'] = 99;
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+      raw['comparison']['options'][0]['decimal'] = row['decimal'];
+      raw['comparison']['hasEdge'] = true;
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+    },
+  );
+
   final now = DateTime.utc(2026, 11, 16, 12),
       event = SportEvent(
         'e',

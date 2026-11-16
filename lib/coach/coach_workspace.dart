@@ -17,6 +17,7 @@ import '../data/repository.dart';
 import '../data/source_link.dart';
 import '../domain/assistant.dart';
 import '../domain/coach_session.dart';
+import '../domain/coach_conversation.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
 import '../domain/player_stats.dart';
@@ -74,6 +75,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   final composer = TextEditingController();
   final scroll = ScrollController();
   final session = CoachSession();
+  final conversation = CoachConversation();
   final turns = <_Turn>[];
   late final api = coachUrl.isEmpty ? null : BackendRepository(coachUrl);
   PublishedSnapshot? snapshot;
@@ -354,12 +356,20 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       composer.clear();
     });
     final at = now;
-    String resolved = question;
-    String? planned;
+    final request = conversation.resolve(question, at);
+    String resolved = request.query;
+    String? planned = request.game ? 'analyze_game' : null;
     final directEvaluation = RegExp(
       r'coach.*perform|forecast results|model results|evaluation|benchmark',
     ).hasMatch(question.toLowerCase());
-    if (api != null && !directEvaluation) {
+    if (api != null &&
+        !directEvaluation &&
+        !request.game &&
+        !RegExp(
+          r'^(what|how) about\b',
+          caseSensitive: false,
+        ).hasMatch(question) &&
+        request.clarification == null) {
       try {
         final plan = await api!
             .coachPlan({
@@ -405,11 +415,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final wantsGame =
         (api != null || widget.gameAnalysisLoader != null) &&
         !wantsLive &&
-        (planned == 'analyze_game' ||
+        (request.game ||
+            planned == 'analyze_game' ||
             RegExp(
-              r'\b(spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
+              r'\b(what about|how about|worth|options|recommend|look at|spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
             ).hasMatch(lower));
-    if (wantsEvaluation && (api != null || widget.evaluationLoader != null)) {
+    if (request.clarification != null) {
+      answer = CoachAnswer(
+        title: 'Let’s make that specific',
+        text: request.clarification!,
+        intent: CoachIntent.clarify,
+      );
+    } else if (wantsEvaluation &&
+        (api != null || widget.evaluationLoader != null)) {
       try {
         evaluation =
             await (widget.evaluationLoader?.call() ??
@@ -585,6 +603,21 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           if (!mounted) return;
           if (raw['available'] == true) {
             game = GameOutlook.fromJson(raw);
+            final explicitPlayer =
+                answer.player != null &&
+                    resolved.toLowerCase().contains(
+                      answer.player!.name.toLowerCase(),
+                    )
+                ? answer.player
+                : null;
+            selectedBookId = game.raw['bookId'] as String? ?? selectedBookId;
+            conversation.remember(
+              game.event,
+              resolved,
+              player: explicitPlayer?.name,
+              book: selectedBookId,
+            );
+            final requestedPlayer = explicitPlayer?.id;
             answer = CoachAnswer(
               title: '${game.event.away} at ${game.event.home}',
               text: game.summary,
@@ -592,7 +625,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               event: game.event,
             );
             session.eventId = game.event.id;
-            session.playerId = null;
+            session.playerId = requestedPlayer;
           } else if (raw['reason'] == 'choose_game') {
             answer = CoachAnswer(
               title: 'Choose a matching game',
@@ -671,7 +704,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             answer.event != null ||
             answer.intent == CoachIntent.live)) {
       try {
-        final payload = answer.modelPayload(question, at);
+        final payload = answer.modelPayload(resolved, at);
         payload['context'] = {
           'playerId': answer.player?.id,
           'eventId': answer.event?.id,
@@ -809,6 +842,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                           turns.clear();
                           session.eventId = null;
                           session.playerId = null;
+                          conversation.clear();
+                          selectedBookId = null;
                           session.metric = null;
                           session.line = null;
                         }),
@@ -1113,16 +1148,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           const SizedBox(height: 18),
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
-          SelectableText(
-            turn.invalidation ??
-                turn.liveNotice ??
-                (turn.game != null
-                    ? a.text
-                    : turn.generated?.answer ??
-                          turn.analysis?.summary ??
-                          a.text),
-            style: CoachType.body,
-          ),
+          if (turn.game == null ||
+              turn.invalidation != null ||
+              turn.game!.raw['decision'] is! Map)
+            SelectableText(
+              turn.invalidation ??
+                  turn.liveNotice ??
+                  (turn.game != null
+                      ? a.text
+                      : turn.generated?.answer ??
+                            turn.analysis?.summary ??
+                            a.text),
+              style: CoachType.body,
+            ),
           if (turn.game?.raw['decision'] is Map && turn.invalidation == null)
             _decisionView(
               Map<String, dynamic>.from(turn.game!.raw['decision']),
@@ -1248,6 +1286,66 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   }
 
   Widget _gameView(_Turn turn) {
+    final comparison = turn.game!.raw['comparison'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (comparison is Map)
+          _comparisonView(Map<String, dynamic>.from(comparison)),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(
+            'Explore the evidence',
+            style: CoachType.title.copyWith(fontSize: 20),
+          ),
+          subtitle: const Text(
+            'Forecasts, player context, prices and sources',
+            style: CoachType.label,
+          ),
+          children: [_gameEvidenceView(turn)],
+        ),
+      ],
+    );
+  }
+
+  Widget _comparisonView(Map<String, dynamic> comparison) {
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Compare the markets',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text('${comparison['headline']}', style: CoachType.label),
+      children: [
+        for (final option in comparison['options'] as List? ?? [])
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${option['label']}',
+                    style: CoachType.body.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  if (option['selection'] is Map && option['decimal'] is num)
+                    Text(
+                      '${Selection.fromJson(Map<String, dynamic>.from(option['selection'])).label} · ${americanLabel((option['decimal'] as num).toDouble())} at ${option['book']} · ${_reportTime(option['sourceAt'])}',
+                      style: CoachType.label,
+                    ),
+                  Text('${option['reason']}', style: CoachType.label),
+                ],
+              ),
+            ),
+          ),
+        Text('${comparison['notice']}', style: CoachType.label),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
+  Widget _gameEvidenceView(_Turn turn) {
     final game = turn.game!, score = game.score;
     final books = (game.raw['books'] as List? ?? []).whereType<Map>();
     String number(dynamic value) =>
@@ -1549,27 +1647,32 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             style: CoachType.title.copyWith(fontSize: 21),
           ),
           const SizedBox(height: 10),
-          if (lean != null)
-            Text(
-              'Research lean · ${lean['team']}. ${lean['notice']}',
-              style: CoachType.body,
-            ),
-          const SizedBox(height: 8),
           if (price?['observedDecimal'] is num && price?['selection'] is Map)
             Text(
               'Saved price · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} ${americanLabel((price['observedDecimal'] as num).toDouble())} at ${price['book']} · ${_reportTime(price['sourceAt'])}',
               style: CoachType.body,
             ),
-          if (minimum is num &&
-              minimum.isFinite &&
-              minimum > 1 &&
-              price?['selection'] is Map)
-            Text(
-              'Research break-even · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} at ${americanLabel(minimum.toDouble())}. ${price['notice']}',
-              style: CoachType.label,
-            )
-          else
-            Text('Price · ${brief['priceNotice']}', style: CoachType.label),
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            title: const Text('Price reasoning', style: CoachType.label),
+            children: [
+              if (lean != null)
+                Text(
+                  '${lean['team']} · ${lean['notice']}',
+                  style: CoachType.label,
+                ),
+              if (minimum is num &&
+                  minimum.isFinite &&
+                  minimum > 1 &&
+                  price?['selection'] is Map)
+                Text(
+                  'Research break-even · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} at ${americanLabel(minimum.toDouble())}. ${price['notice']}',
+                  style: CoachType.label,
+                )
+              else
+                Text('Price · ${brief['priceNotice']}', style: CoachType.label),
+            ],
+          ),
           const SizedBox(height: 8),
           Text(
             'Counterargument · ${brief['counterargument']}',

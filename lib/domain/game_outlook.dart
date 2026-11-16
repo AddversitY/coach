@@ -187,6 +187,43 @@ class GameOutlook {
         }
       }
     }
+    final comparison = raw['comparison'];
+    if (comparison != null) {
+      if (comparison is! Map ||
+          comparison['basis'] != 'evidence_completeness' ||
+          comparison['hasEdge'] != false ||
+          comparison['recommendationsReady'] != false ||
+          comparison['action'] != 'pass' ||
+          comparison['options'] is! List ||
+          comparison['options'].length != 4) {
+        throw const FormatException('Invalid research comparison');
+      }
+      final seen = <String>{};
+      for (final option in comparison['options']) {
+        if (option is! Map ||
+            !names.contains(option['market']) ||
+            !seen.add(option['market'])) {
+          throw const FormatException('Invalid comparison market');
+        }
+        if (option['selection'] != null) {
+          final candidates = (raw['categories'] as List)
+              .where((c) => c['market'] == option['market'])
+              .expand((c) => c['rows'] as List);
+          if (!candidates.any(
+            (r) =>
+                r['blocked'] != true &&
+                jsonEncode(r['selection']) == jsonEncode(option['selection']) &&
+                r['book'] == option['book'] &&
+                r['decimal'] == option['decimal'] &&
+                r['sourceAt'] == option['sourceAt'],
+          )) {
+            throw const FormatException(
+              'Comparison must use a matching saved quote',
+            );
+          }
+        }
+      }
+    }
     return GameOutlook._(raw, event, at);
   }
 }
