@@ -172,6 +172,11 @@ Future<void> handleRequest(
       await _writeAssistant(request, assistant);
       return;
     }
+    if (request.method == 'POST' && request.uri.path == '/v1/coach') {
+      final payload = await _readJsonObject(request);
+      _writeJson(request, 200, (await assistant.coach(payload)).toJson());
+      return;
+    }
     if (request.method != 'GET') {
       request.response.statusCode = 405;
       return;

@@ -105,6 +105,52 @@ void main() {
     ],
   };
 
+  test('Coach accepts evidence-only research without inventing a quote or forecast', () async {
+    AssistantHttpCall? seen;
+    final assistant = XaiAssistant(
+      apiKey: secret,
+      post: (call) async {
+        seen = call;
+        return AssistantHttpResult(
+          statusCode: 200,
+          body: jsonEncode(
+            grok(
+              jsonEncode({
+                'answer': 'Recorded production is historical evidence.',
+                'cited': ['player_evidence', 'frozen_quote'],
+              }),
+            ),
+          ),
+        );
+      },
+    );
+    final reply = await assistant.coach({
+      'question': 'What changed?',
+      'mode': 'explain',
+      'teamEvidence': [],
+      'playerEvidence': [
+        {'name': 'Recorded Player', 'recentAverage': 80},
+      ],
+    });
+    expect(reply.available, true);
+    expect(reply.cited, ['player_evidence']);
+    final body = jsonDecode(seen!.body) as Map;
+    final input = jsonDecode(body['input'][0]['content']) as Map;
+    expect((input['providedInputs'] as Map).containsKey('frozen_quote'), false);
+    expect((input['providedInputs'] as Map).containsKey('assumptions'), false);
+    expect(input['notProvided'], contains('frozen_quote'));
+    expect(seen!.body, isNot(contains(secret)));
+    await expectLater(
+      assistant.coach({
+        'question': 'Guess',
+        'mode': 'explain',
+        'teamEvidence': [],
+        'playerEvidence': [],
+      }),
+      throwsFormatException,
+    );
+  });
+
   test('output_text parts are joined and other content is ignored', () {
     expect(
       extractAssistantOutputText({

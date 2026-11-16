@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/data/published_snapshot.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 
 import 'memory_research_store.dart';
 import 'published_snapshot_test.dart' show snapshotJson;
@@ -17,7 +17,7 @@ void main() {
       final now = DateTime.now().toUtc();
       var fail = false;
       await tester.pumpWidget(
-        OddsEdgeApp(
+        LegacyOddsEdgeApp(
           researchStore: MemoryResearchStore(),
           snapshotLoader: () async {
             if (fail) throw StateError('offline');
@@ -102,7 +102,7 @@ void main() {
     (tester) async {
       final pending = Completer<PublishedSnapshot>();
       await tester.pumpWidget(
-        OddsEdgeApp(
+        LegacyOddsEdgeApp(
           researchStore: MemoryResearchStore(),
           snapshotLoader: () => pending.future,
         ),

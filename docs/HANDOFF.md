@@ -1,5 +1,11 @@
 # Handoff
 
+**Current product direction:** Coach is the only public page. Read
+[COACH_WORKSPACE.md](COACH_WORKSPACE.md) first. The older multi-page shell below
+is retained for component regression tests, not the public navigation. Hosted
+open-ended AI still needs a protected service and a server-only provider key;
+the current public release truthfully uses guided data responses until connected.
+
 Odds Edge is an NFL odds app. It compares a price with the app's own chance. It does not tell the user to bet. The footer line is **Comparison, not a pick.**
 
 The empirical parlay research simulator is implemented and explicitly experimental. Owner direction on

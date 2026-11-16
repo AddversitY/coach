@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/ui/feed_card.dart';
 
 import 'memory_research_store.dart';
@@ -38,7 +38,7 @@ void main() {
     await tester.pumpWidget(
       RepaintBoundary(
         key: const Key('shot'),
-        child: OddsEdgeApp(researchStore: MemoryResearchStore()),
+        child: LegacyOddsEdgeApp(researchStore: MemoryResearchStore()),
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 100));

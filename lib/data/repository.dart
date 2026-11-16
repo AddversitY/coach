@@ -119,4 +119,10 @@ class BackendRepository {
     if (decoded is! Map) throw StateError('Backend unavailable.');
     return AssistantReply.fromJson(Map<String, dynamic>.from(decoded));
   }
+
+  Future<AssistantReply> coach(Map<String, dynamic> request) async {
+    final decoded = await _post('/v1/coach', request);
+    if (decoded is! Map) throw StateError('Coach unavailable.');
+    return AssistantReply.fromJson(Map<String, dynamic>.from(decoded));
+  }
 }

@@ -7,7 +7,7 @@ import 'package:odds_edge/data/research_store.dart';
 import 'package:odds_edge/domain/research.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/domain/history.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/research_workspace.dart';
 import 'package:odds_edge/historical_evidence.dart';
 
@@ -197,7 +197,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final store = MemoryResearchStore();
-      await tester.pumpWidget(OddsEdgeApp(researchStore: store));
+      await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: store));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('more-menu')));
       await tester.pumpAndSettle();

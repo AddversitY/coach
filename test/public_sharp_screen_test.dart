@@ -6,7 +6,7 @@ import 'package:odds_edge/data/demo.dart';
 import 'package:odds_edge/data/demo_lines.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/domain/public_sharp.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/theme/edge_theme.dart';
 
 import 'memory_research_store.dart';
@@ -83,7 +83,7 @@ void main() {
   testWidgets('More opens Public vs sharp', (tester) async {
     await tester.binding.setSurfaceSize(const Size(390, 844));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
+    await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: MemoryResearchStore()));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('more-menu')));
     await tester.pumpAndSettle();

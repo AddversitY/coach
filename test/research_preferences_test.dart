@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/data/research_store.dart';
 import 'package:odds_edge/data/text_journal.dart';
 import 'package:odds_edge/domain/coach_board.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/ui/feed_card.dart';
 
 import 'memory_research_store.dart';
@@ -93,7 +93,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(
-        OddsEdgeApp(researchStore: MemoryResearchStore()),
+        LegacyOddsEdgeApp(researchStore: MemoryResearchStore()),
       );
       await tester.pumpAndSettle();
       expect(find.byType(NavigationDestination), findsNWidgets(3));

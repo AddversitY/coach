@@ -10,7 +10,7 @@ import 'package:odds_edge/coach/stale_board_screen.dart';
 import 'package:odds_edge/domain/bets.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/domain/public_sharp.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/theme/edge_theme.dart';
 import 'package:odds_edge/ui/wordmark.dart';
 
@@ -43,7 +43,7 @@ void main() {
     await tester.pumpWidget(
       RepaintBoundary(
         key: const Key('shot'),
-        child: OddsEdgeApp(researchStore: MemoryResearchStore()),
+        child: LegacyOddsEdgeApp(researchStore: MemoryResearchStore()),
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 100));

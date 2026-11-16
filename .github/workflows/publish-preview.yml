@@ -53,7 +53,9 @@ jobs:
       - name: Test schedule and evidence normalization
         run: python -m unittest discover -s tools -p 'test_*.py'
       - name: Build hosted preview
-        run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json
+        env:
+          COACH_API_BASE_URL: ${{ vars.COACH_API_BASE_URL }}
+        run: flutter build web --release --base-href /odds-edge/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json --dart-define=COACH_API_BASE_URL="$COACH_API_BASE_URL"
       - name: Fetch attributed public NFL schedule
         run: python tools/publish_snapshot.py --output build/web/data/snapshot.json
       - name: Restore price quota checkpoint

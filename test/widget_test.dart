@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/domain/player_stats.dart';
-import 'package:odds_edge/main.dart';
+import 'package:odds_edge/legacy_workspace.dart';
 import 'package:odds_edge/player_stats_screen.dart';
 import 'package:odds_edge/tools_page.dart';
 
@@ -14,7 +14,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
+    await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: MemoryResearchStore()));
     expect(find.byType(NavigationDestination), findsNWidgets(3));
     expect(find.textContaining('Snapshot as of'), findsWidgets);
     await tester.tap(find.byKey(const Key('more-menu')));
@@ -53,7 +53,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
+    await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: MemoryResearchStore()));
     expect(find.widgetWithText(ListTile, 'Today'), findsOneWidget);
     expect(find.widgetWithText(ListTile, 'Research'), findsOneWidget);
     expect(find.widgetWithText(ListTile, 'NFL matchups'), findsNothing);
@@ -82,7 +82,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
+    await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: MemoryResearchStore()));
     await tester.tap(find.byKey(const Key('more-menu')));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ListTile, 'More'));
@@ -434,7 +434,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(OddsEdgeApp(researchStore: MemoryResearchStore()));
+    await tester.pumpWidget(LegacyOddsEdgeApp(researchStore: MemoryResearchStore()));
     await tester.pump();
     expect(find.text('Value'), findsOneWidget);
     expect(find.text('Explore props'), findsOneWidget);
