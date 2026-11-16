@@ -125,4 +125,20 @@ class BackendRepository {
     if (decoded is! Map) throw StateError('Coach unavailable.');
     return AssistantReply.fromJson(Map<String, dynamic>.from(decoded));
   }
+
+  Future<Map<String, dynamic>> coachPlan(Map<String, dynamic> request) async {
+    final decoded = await _post('/v1/plan', request);
+    if (decoded is! Map ||
+        decoded['query'] is! String ||
+        (decoded['query'] as String).length > 500) {
+      throw const FormatException('Invalid Coach plan');
+    }
+    return Map<String, dynamic>.from(decoded);
+  }
+
+  Future<Map<String, dynamic>> coachTelemetry() async {
+    final decoded = await _get('/v1/telemetry');
+    if (decoded is! Map) throw const FormatException('Invalid telemetry');
+    return Map<String, dynamic>.from(decoded);
+  }
 }

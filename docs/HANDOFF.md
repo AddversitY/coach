@@ -208,3 +208,22 @@ Daily evidence refreshes and dated "what changed" comparisons are implemented; o
 
 2. **Elo plus a gradient-boosted ensemble** (XGBoost or LightGBM) for the game residual, with the anti-overfit rules fixed before any run: week-based walk-forward, shallow trees, regularization, early stopping, a stable feature set, permutation importance and a noise-feature check, monotone constraints where the direction is known, and one locked holdout season that is not used to pick anything. Same adoption rule as version 2: both Brier and log loss strictly better on at least 1,000 games, and no "edge" unless the -110 test clears the existing profit bar. Keep `coach_line_v2.dart` matched to whatever the trainer ships. Do not search the ridge, the caps, or the tree depth after seeing the holdout.
 3. **Production data and optional alerts.** The public research prototype is hosted. Connect an approved provider credential through a quota-controlled production integration before adding opt-in price alerts. The loopback development server must remain private. New accounts or paid tiers still need the owner's approval.
+
+
+## Coach tools / Cloudflare preparation (2026-11-16)
+
+Added explicit joint-probability, stress and bounded candidate-ranking tools to
+the one-page conversation. Copula simulation uses existing 10k-draw engine;
+workload floors and variation remain descriptive. New invalidation checks
+withdraw stale/kickoff/affected injury analyses before price recomputation.
+
+`hosting/` contains a Cloudflare Workers AI pilot with allowlisted planning,
+server-refetched public evidence, persistent global/per-IP caps and telemetry.
+The deployment workflow publishes a compact dated player/event retrieval index.
+No additional odds credits, bet tracking, paid feed or subscription was added.
+See hosting/README.md for deployment and all remaining source/model limitations.
+
+The owner signed in to Cloudflare. Wrangler deployment authorization is still
+pending; do not claim the hosted AI is connected until OAuth succeeds, the
+Worker is deployed, health/source retrieval checked, and the Actions variable
+COACH_API_BASE_URL is configured for a rebuilt app. CLI credentials stay ignored.

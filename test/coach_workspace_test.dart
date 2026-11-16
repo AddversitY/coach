@@ -152,4 +152,49 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
+  testWidgets(
+    'phone runs explicit stress research and keeps push lines unsupported',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: coachTheme(),
+          home: CoachWorkspace(
+            snapshotLoader: () async => snapshot(),
+            analysisHistoryLoader: () async => [],
+            validationLoader: () async => {'hasEdge': false, 'adopted': false},
+            clock: () => now,
+            playerLoader: () async => dataWith([
+              for (var i = 0; i < 7; i++)
+                recorded(
+                  week: i + 3,
+                  date: '2026-11-${(i + 1).toString().padLeft(2, '0')}',
+                  stats: {'passing_yards': 220 + i * 10, 'attempts': 30 + i},
+                ),
+            ]),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(
+        tester,
+        'Stress test Recorded Quarterback over 245.5 passing yards',
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Stress-test results'), findsOneWidget);
+      expect(
+        find.textContaining('9 assumption scenarios tested'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await send(
+        tester,
+        'Stress test Recorded Quarterback over 245 passing yards',
+      );
+      expect(find.text('Let’s make the inputs explicit'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 }

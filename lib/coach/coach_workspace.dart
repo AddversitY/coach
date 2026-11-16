@@ -1,4 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+
+import '../domain/coach_analysis.dart';
+import '../domain/coach_telemetry.dart';
+import '../domain/game_research.dart';
+import '../domain/history.dart';
 
 import 'package:flutter/material.dart';
 
@@ -17,11 +25,15 @@ class CoachWorkspace extends StatefulWidget {
     super.key,
     this.snapshotLoader,
     this.playerLoader,
+    this.analysisHistoryLoader,
+    this.validationLoader,
     this.ask,
     this.clock,
   });
   final Future<PublishedSnapshot> Function()? snapshotLoader;
   final Future<PlayerStatsDataset> Function()? playerLoader;
+  final Future<List<HistoricalGame>> Function()? analysisHistoryLoader;
+  final Future<Map<String, dynamic>> Function()? validationLoader;
   final Future<AssistantReply> Function(Map<String, dynamic>)? ask;
   final DateTime Function()? clock;
   @override
@@ -36,6 +48,8 @@ class _Turn {
   final anchor = GlobalKey();
   AssistantReply? generated;
   bool aiFailed = false;
+  CoachAnalysis? analysis;
+  String? invalidation;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -54,6 +68,15 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   bool loading = true, busy = false;
   String? loadError;
   Timer? clockTimer;
+  Timer? telemetryTimer;
+  CoachTelemetry? telemetry;
+  String? telemetryError;
+  CoachAnalysis? lastAnalysis;
+  List<HistoricalGame>? analysisScores;
+  Map<String, dynamic>? analysisValidation;
+  bool pollingTelemetry = false;
+  DateTime? lastSnapshotRefresh;
+  final analysisEngine = const CoachAnalysisEngine();
   DateTime get now => widget.clock?.call().toUtc() ?? DateTime.now().toUtc();
   bool get aiConnected => widget.ask != null || api != null;
 
@@ -61,14 +84,22 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   void initState() {
     super.initState();
     _load();
+    telemetryTimer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) => _pollTelemetry(),
+    );
     clockTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      if (mounted) setState(() {});
+      if (mounted) {
+        _expireAnalyses();
+        setState(() {});
+      }
     });
   }
 
   @override
   void dispose() {
     clockTimer?.cancel();
+    telemetryTimer?.cancel();
     composer.dispose();
     scroll.dispose();
     api?.close();
@@ -90,6 +121,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       setState(() {
         snapshot = results[0] as PublishedSnapshot;
         data = results[1] as PlayerStatsDataset;
+        lastSnapshotRefresh = now;
       });
     } catch (_) {
       if (mounted) {
@@ -100,8 +132,132 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         );
       }
     } finally {
-      if (mounted) setState(() => loading = false);
+      if (mounted) {
+        setState(() => loading = false);
+        _reviewAnalyses(telemetry);
+        unawaited(_pollTelemetry());
+      }
     }
+  }
+
+  Future<void> _analysisSources() async {
+    analysisScores ??=
+        await (widget.analysisHistoryLoader ?? loadBundledHistoryGames)();
+    analysisValidation ??= widget.validationLoader != null
+        ? await widget.validationLoader!()
+        : Map<String, dynamic>.from(
+            jsonDecode(
+              await rootBundle.loadString('assets/parlay-calibration.json'),
+            ) as Map,
+          );
+  }
+
+  void _expireAnalyses() {
+    for (final turn in turns) {
+      if (turn.analysis?.legs.any((l) => !l.event.startsAt.isAfter(now)) ==
+          true) {
+        turn.invalidation =
+            'Kickoff has passed. This pregame result is withdrawn.';
+        turn.generated = null;
+      }
+    }
+  }
+
+  Future<void> _pollTelemetry() async {
+    if (api == null || pollingTelemetry || !mounted) return;
+    pollingTelemetry = true;
+    try {
+      final next = CoachTelemetry.fromJson(await api!.coachTelemetry());
+      if (!mounted) return;
+      final previous = telemetry;
+      setState(() {
+        telemetry = next;
+        telemetryError = null;
+      });
+      _reviewAnalyses(previous);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => telemetryError = 'Availability checks are unavailable; saved timestamps have not been advanced.',
+        );
+      }
+    } finally {
+      pollingTelemetry = false;
+    }
+    if (mounted &&
+        !busy &&
+        !loading &&
+        lastSnapshotRefresh != null &&
+        now.difference(lastSnapshotRefresh!) > const Duration(minutes: 5)) {
+      unawaited(_load());
+    }
+  }
+
+  void _reviewAnalyses(CoachTelemetry? previous) {
+    if (snapshot == null || data == null) return;
+    for (final turn in turns) {
+      final analysis = turn.analysis;
+      if (analysis == null) continue;
+      final change = checkAnalysis(
+        analysis: analysis,
+        prices: snapshot!.props,
+        data: data!,
+        now: now,
+        before: previous,
+        after: telemetry,
+      );
+      if (change == null) continue;
+      turn.generated = null;
+      if (change.recompute &&
+          analysis.kind != 'robust_rank' &&
+          identical(analysis, lastAnalysis) &&
+          analysisScores != null &&
+          analysisValidation != null &&
+          !busy) {
+        try {
+          final rebound = <AnalysisLeg>[];
+          for (final leg in analysis.legs) {
+            final event = snapshot!.board.events
+                .where((e) => e.id == leg.event.id && e.startsAt.isAfter(now))
+                .firstOrNull;
+            if (event == null) throw StateError('Game unavailable');
+            final player = buildGameResearch(
+              data: data!,
+              event: event,
+              now: now,
+            ).players.where((p) => p.id == leg.player.id).firstOrNull;
+            if (player == null) throw StateError('Player unavailable');
+            rebound.add(
+              AnalysisLeg(
+                player: player,
+                event: event,
+                metric: leg.metric,
+                line: leg.line,
+                over: leg.over,
+              ),
+            );
+          }
+          final updated = analysisEngine.run(
+            legs: rebound,
+            prices: snapshot!.props,
+            data: data!,
+            scores: analysisScores!,
+            validation: analysisValidation!,
+            now: now,
+            stress: analysis.kind == 'stress_test',
+            ticketPrice: null,
+          );
+          turn.analysis = updated;
+          lastAnalysis = updated;
+          turn.invalidation = null;
+        } catch (_) {
+          turn.invalidation = 'Changed inputs cannot be safely recomputed. Ask for a new analysis.';
+        }
+      } else {
+        turn.invalidation = change.reason;
+      }
+    }
+    if (mounted) setState(() {});
   }
 
   Future<void> _send(String raw) async {
@@ -114,28 +270,215 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         data == null) {
       return;
     }
-    final at = now;
-    final answer = session.respond(
-      question,
-      board: snapshot!.board,
-      prices: snapshot!.props,
-      data: data!,
-      playerIds: snapshot!.playerIdsByName,
-      now: at,
-    );
-    final turn = _Turn(question, answer, at);
     setState(() {
+      busy = true;
       composer.clear();
+    });
+    final at = now;
+    String resolved = question;
+    String? planned;
+    if (api != null) {
+      try {
+        final plan = await api!
+            .coachPlan({
+              'question': question,
+              'context': {
+                'playerId': session.playerId,
+                'eventId': session.eventId,
+                'metric': session.metric?.key,
+              },
+            })
+            .timeout(const Duration(seconds: 20));
+        if (plan['query'] is String) {
+          resolved = plan['query'] as String;
+          planned = plan['tool'] as String?;
+        }
+      } catch (_) {
+        /* A missing planner leaves explicit guided research available. */
+      }
+    }
+    if (!mounted) return;
+    CoachAnalysis? result;
+    late CoachAnswer answer;
+    final lower = resolved.toLowerCase();
+    final wantsAnalysis =
+        RegExp(
+          r'\b(simulate|simulation|parlay|joint|stress|robust|rank|optimize)\b',
+        ).hasMatch(lower) ||
+        {'joint_probability', 'stress_test', 'robust_rank'}.contains(planned);
+    if (wantsAnalysis) {
+      try {
+        await _analysisSources();
+        final stress =
+            lower.contains('stress') ||
+            lower.contains('robust') ||
+            lower.contains('rank') ||
+            planned == 'stress_test' ||
+            planned == 'robust_rank';
+        final reuse =
+            !RegExp(r'\b(over|under)\s+\d').hasMatch(lower) &&
+            lastAnalysis != null;
+        if (reuse &&
+            turns.any(
+              (t) =>
+                  identical(t.analysis, lastAnalysis) && t.invalidation != null,
+            )) {
+          throw ArgumentError(
+            'The previous inputs were withdrawn. Provide fresh explicit selections before running another analysis.',
+          );
+        }
+        final ranking =
+            lower.contains('rank') ||
+            lower.contains('optimize') ||
+            planned == 'robust_rank';
+        final groups = ranking && !reuse
+            ? resolved.split(
+                RegExp(r'\bversus\b|\bvs\.?\s', caseSensitive: false),
+              )
+            : <String>[];
+        final candidates = groups.length > 1
+            ? [
+                for (final group in groups)
+                  analysisEngine.parse(
+                    group,
+                    board: snapshot!.board,
+                    data: data!,
+                    now: at,
+                  ),
+              ]
+            : <List<AnalysisLeg>>[];
+        final legs = reuse
+            ? lastAnalysis!.legs
+            : candidates.isNotEmpty
+            ? candidates.expand((ticket) => ticket).toList()
+            : analysisEngine.parse(
+                resolved,
+                board: snapshot!.board,
+                data: data!,
+                now: at,
+              );
+        if (!stress && legs.length < 2) {
+          throw ArgumentError(
+            'A joint-probability request needs at least two explicit legs. Use “stress test” for a single prop.',
+          );
+        }
+        final quote = RegExp(
+          r'ticket odds\s+(\d+(?:\.\d+)?)',
+          caseSensitive: false,
+        ).firstMatch(resolved);
+        if (!ranking) {
+          result = analysisEngine.run(
+            legs: legs,
+            prices: snapshot!.props,
+            data: data!,
+            scores: analysisScores!,
+            validation: analysisValidation!,
+            now: at,
+            stress: stress,
+            ticketPrice: quote == null ? null : double.parse(quote.group(1)!),
+          );
+        }
+        if (ranking) {
+          final ranked = analysisEngine.rank(
+            candidates: candidates.isNotEmpty
+                ? candidates
+                : [
+                    for (final leg in legs) [leg],
+                  ],
+            prices: snapshot!.props,
+            data: data!,
+            scores: analysisScores!,
+            validation: analysisValidation!,
+            now: at,
+          );
+          result = CoachAnalysis(
+            legs: legs,
+            createdAt: at,
+            fingerprint: analysisFingerprint(legs, snapshot!.props, data!),
+            kind: 'robust_rank',
+            validation: analysisValidation!,
+            summary: 'Research ranking by lowest chance across the SAME fixed stress scenarios. This is not a betting recommendation; high consistency does not imply positive EV.',
+            rows: [
+              for (final candidate in ranked)
+                {
+                  'scenario': candidate.legs
+                      .map((leg) => leg.label)
+                      .join(' + '),
+                  'chance': candidate.rows.first['chance'],
+                  'floor': candidate.rows
+                      .map((r) => (r['chance'] as num).toDouble())
+                      .reduce((a, b) => a < b ? a : b),
+                },
+            ],
+          );
+        }
+        if (result == null) throw StateError('No analysis produced');
+        lastAnalysis = result;
+        answer = CoachAnswer(
+          title: result.kind == 'robust_rank'
+              ? 'Consistency under stress'
+              : stress
+              ? 'Stress-test results'
+              : 'Joint-probability research',
+          text: result.summary,
+          intent: CoachIntent.evidence,
+          event: legs.first.event,
+          player: legs.first.player,
+          metric: legs.first.metric,
+          coverage: DateTime.tryParse('${data!.metadata['cutoff']}'),
+        );
+      } on ArgumentError catch (e) {
+        answer = CoachAnswer(
+          title: 'Let’s make the inputs explicit',
+          text: '${e.message}',
+          intent: CoachIntent.clarify,
+        );
+      } catch (_) {
+        answer = const CoachAnswer(
+          title: 'Analysis unavailable',
+          text: 'The supplied selections or research records could not be safely simulated. Use exact names, supported stats, over/under and half-lines.',
+          intent: CoachIntent.clarify,
+        );
+      }
+    } else {
+      answer = session.respond(
+        resolved,
+        board: snapshot!.board,
+        prices: snapshot!.props,
+        data: data!,
+        playerIds: snapshot!.playerIdsByName,
+        now: at,
+      );
+    }
+    final turn = _Turn(question, answer, at)..analysis = result;
+    if (result != null) {
+      final issue = checkAnalysis(
+        analysis: result,
+        prices: snapshot!.props,
+        data: data!,
+        now: at,
+        before: telemetry,
+        after: telemetry,
+      );
+      turn.invalidation = issue?.reason;
+    }
+    setState(() {
       turns.add(turn);
       if (turns.length > 40) turns.removeAt(0);
-      busy = true;
     });
     _toEnd();
     if (aiConnected &&
         answer.intent != CoachIntent.clarify &&
+        turn.invalidation == null &&
         (answer.player != null || answer.event != null)) {
       try {
         final payload = answer.modelPayload(question, at);
+        payload['context'] = {
+          'playerId': answer.player?.id,
+          'eventId': answer.event?.id,
+          'metric': answer.metric.key,
+        };
+        if (result != null) payload['toolEvidence'] = result.toEvidence();
         final reply = await (widget.ask?.call(payload) ?? api!.coach(payload))
             .timeout(const Duration(seconds: 140));
         if (!mounted) return;
@@ -189,6 +532,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. No verified current injury or weather feed is supplied here.',
               style: CoachType.label,
             ),
+            if (telemetryError != null)
+              Text(
+                telemetryError!,
+                style: CoachType.label.copyWith(color: CoachColors.warn),
+              ),
+            if (telemetry != null) ...[
+              const SizedBox(height: 12),
+              for (final source in telemetry!.sources)
+                Text(
+                  '${source['id']}: ${source['state']}',
+                  style: CoachType.label,
+                ),
+            ],
             const SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: loading
@@ -557,7 +913,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
           SelectableText(
-            turn.generated?.answer ?? a.text,
+            turn.invalidation ??
+                turn.generated?.answer ??
+                turn.analysis?.summary ??
+                a.text,
             style: CoachType.body,
           ),
           if (turn.aiFailed)
@@ -594,9 +953,13 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               '${p.position} · ${p.team} · recorded participant',
               () => _send('Show evidence for ${p.name}'),
             ),
-          if (a.player != null) ...[
+          if (turn.analysis != null && turn.invalidation == null)
+            _analysisView(turn.analysis!),
+          if (a.player != null && turn.invalidation == null) ...[
             const SizedBox(height: 16),
-            if (a.intent == CoachIntent.prices)
+            if (turn.analysis != null)
+              const SizedBox.shrink()
+            else if (a.intent == CoachIntent.prices)
               _priceCards(a)
             else if (a.intent == CoachIntent.history)
               _history(a)
@@ -844,6 +1207,94 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           style: CoachType.label.copyWith(fontSize: 10),
         ),
       ],
+    );
+  }
+
+  Widget _analysisView(CoachAnalysis analysis) {
+    String pct(num value) => '${(value * 100).toStringAsFixed(1)}%';
+    final sim = analysis.simulation;
+    return Padding(
+      padding: const EdgeInsets.only(top: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'EXPERIMENTAL / NO VALIDATED BETTING EDGE',
+            style: CoachType.label.copyWith(
+              color: CoachColors.warn,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(height: 10),
+          for (final leg in analysis.legs)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(leg.label, style: CoachType.label),
+            ),
+          if (sim != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              'Joint ${pct(sim.joint)}  /  Independent ${pct(sim.independent)}',
+              style: CoachType.number.copyWith(fontSize: 23),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Sampling-only interval ${pct(sim.lower)}–${pct(sim.upper)}. Excludes model and data uncertainty.',
+              style: CoachType.label,
+            ),
+            Text(
+              '10,000 seeded draws · correlation training uses only earlier seasons. Minimum paired observations: ${sim.training.expand((m) => [for (var i = 6; i < m.pairs.length; i++)
+                        for (var j = 6; j < i; j++) m.pairs[i][j]]).fold<int>(999999, (a, b) => a < b ? a : b) == 999999 ? 'n/a' : sim.training.expand((m) => [for (var i = 6; i < m.pairs.length; i++)
+                      for (var j = 6; j < i; j++) m.pairs[i][j]]).reduce((a, b) => a < b ? a : b)}.',
+              style: CoachType.label.copyWith(fontSize: 11),
+            ),
+          ],
+          const SizedBox(height: 16),
+          for (final row in analysis.rows)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: CoachColors.border)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text('${row['scenario']}', style: CoachType.label),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    '${pct((row['floor'] ?? row['chance']) as num)}${row.containsKey('floor') ? ' floor' : ''}',
+                    style: CoachType.number.copyWith(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+          if (analysis.conditionalEv != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: Text(
+                'Conditional EV: ${(analysis.conditionalEv! * 100).toStringAsFixed(1)}% per unit using USER-ENTERED, UNVERIFIED ticket decimal ${analysis.ticketPrice}. This is assumption-based arithmetic, not an established edge.',
+                style: CoachType.label.copyWith(color: CoachColors.warn),
+              ),
+            ),
+          const SizedBox(height: 14),
+          Text(
+            'Dependence validation: ${analysis.validation['uniqueGames']} unique games; adopted ${analysis.validation['adopted']}; profitability established: false. Recorded participants are not confirmed rosters. ${telemetry == null ? 'Availability telemetry is not connected.' : 'Availability must be checked separately against source status.'}',
+            style: CoachType.label.copyWith(fontSize: 11),
+          ),
+          const SizedBox(height: 12),
+          _DeskLink(
+            label: const Text('Stress this ticket'),
+            onPressed: busy
+                ? null
+                : () {
+                    lastAnalysis = analysis;
+                    _send('Stress this ticket');
+                  },
+          ),
+        ],
+      ),
     );
   }
 

@@ -30,29 +30,27 @@ Repository: https://github.com/AddversitY/coach
 
 Public app: https://addversity.github.io/coach/
 
-## Real AI connection
+## Hosted tools and research calculations
 
-`POST /v1/coach` accepts a bounded question, explain/challenge mode and bounded
-team/player evidence. Unlike the legacy research endpoint, it requires no
-placeholder price, assumptions or baseline probability. The server-only xAI
-adapter receives the retrieved evidence, limits citations to provided sources,
-disables provider storage and redacts credentials. Model failure returns an
-explicit unavailable result; the UI retains its labeled evidence response.
-AI text is interpretation, not a verified model forecast. Response numbers still
-require user verification; structured evidence cards are computed separately.
+The Cloudflare service in `hosting/` adds an allowlisted question planner,
+source-grounded explanations, persistent usage caps and telemetry. See
+[hosting setup and limitations](../hosting/README.md). The local development
+server stays private. GitHub Pages uses the hosted service only when the
+nonsecret `COACH_API_BASE_URL` Actions variable is configured and rebuilt.
 
-The existing development server remains loopback-only. **It has not been exposed
-to the internet.** Next, deploy a separate protected hosted service with server
-secrets, request rate limits, spending caps and an allowed-origin policy. The
-current unrestricted development CORS policy is not production access control.
-Do not publish that server unmodified. The model key belongs only on the hosted
-server. Set the nonsecret GitHub Actions variable `COACH_API_BASE_URL` to the
-resulting HTTPS service URL and rebuild. GitHub Pages cannot run this service.
-With the variable unset, no model calls or model charges occur.
+Explicit selections can run Gaussian-copula joint research with 10,000 seeded
+Monte Carlo draws, nine fixed stress scenarios, and bounded candidate ranking.
+Separate candidate tickets with `versus`. Every leg needs an exact full player
+name, supported stat, over/under and half-line. Whole-number push lines are
+unsupported. The model has no validated betting edge. Usage floors and variation
+are descriptive inputs, not participation guarantees. Manual `ticket odds`
+only enables conditional arithmetic, never a verified offered SGP or value claim.
 
-The owner requested hosting setup as the next step. A hosting account and model
-provider credential still need to be connected; no new account or subscription
-was created during the UI release.
+Analysis is withdrawn at kickoff, on affected reported scratches, stale telemetry,
+or changed inputs. Eligible latest analyses recompute when prices/evidence change;
+manual ticket quotes are discarded. Hosted interpretation uses server-retrieved
+records and explicitly labels device calculation output as unverified research.
+No personal bet history is recorded.
 
 ## Migration and checks
 

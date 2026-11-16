@@ -42,6 +42,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test hosted Coach boundaries
+        run: node --test hosting/worker.test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -81,6 +86,7 @@ jobs:
           key: odds-pilot-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Record the deployed source version
         run: |
+          python tools/build_coach_index.py --schedule build/web/data/snapshot.json --output build/web/data/coach-index.json
           python -c "import hashlib,json,os,pathlib,subprocess; names=['nfl-player-stats.json','nfl-history.json','nfl-matchup.json','parlay-calibration.json']; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'run':os.environ['GITHUB_RUN_ID'],'evidenceHashes':{name:hashlib.sha256((pathlib.Path('assets')/name).read_bytes()).hexdigest() for name in names}}))"
           touch build/web/.nojekyll
       - uses: actions/configure-pages@v5

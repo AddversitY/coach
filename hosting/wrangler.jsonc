@@ -1,0 +1,18 @@
+{
+  "name": "coach-research",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-16",
+  "workers_dev": true,
+  "ai": { "binding": "AI" },
+  "durable_objects": { "bindings": [{ "name": "STATE", "class_name": "CoachState" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CoachState"] }],
+  "triggers": { "crons": ["*/2 * * * *"] },
+  "vars": {
+    "ALLOWED_ORIGIN": "https://addversity.github.io",
+    "PUBLIC_BASE": "https://addversity.github.io/coach/",
+    "MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "MAX_MODEL_CALLS_PER_DAY": "60",
+    "MAX_MODEL_CALLS_PER_IP_HOUR": "8"
+  },
+  "observability": { "enabled": false }
+}
