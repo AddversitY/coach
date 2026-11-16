@@ -407,7 +407,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         !wantsLive &&
         (planned == 'analyze_game' ||
             RegExp(
-              r'\b(spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|forecast|projection|predict|wins?|winner|bet|bets)\b',
+              r'\b(spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
             ).hasMatch(lower));
     if (wantsEvaluation && (api != null || widget.evaluationLoader != null)) {
       try {
@@ -1288,6 +1288,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         const SizedBox(height: 14),
         if (game.raw['context'] is Map)
           _gameContextView(Map<String, dynamic>.from(game.raw['context'])),
+        if (game.raw['workloadTrial'] is Map &&
+            game.raw['workloadTrial']['available'] == true)
+          _workloadTrialView(
+            Map<String, dynamic>.from(game.raw['workloadTrial']),
+          ),
         Wrap(
           spacing: 8,
           runSpacing: 6,
@@ -1707,13 +1712,27 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
         if (report['historical'] is Map)
           _researchProgress(Map<String, dynamic>.from(report['historical'])),
+        if (report['workloadResearch'] is Map)
+          _workloadResearchView(
+            Map<String, dynamic>.from(report['workloadResearch']),
+          ),
         for (final model in report['models'] as List? ?? [])
           if (model['role'] == 'shadow')
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: Text(
-                'Background challenger: ${model['gradedGames'] ?? 0} graded games · ${model['pendingGames'] ?? 0} awaiting results. Separate from the serving model.',
-                style: CoachType.label,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${(model['modelVersion'] as String? ?? '').startsWith('workload-') ? 'Workload trial' : 'Background challenger'}: ${model['gradedGames'] ?? 0} games with results · ${model['pendingGames'] ?? 0} awaiting results · ${model['unresolved'] ?? 0} unresolved observations. Separate from the serving model.',
+                    style: CoachType.label,
+                  ),
+                  for (final row in model['workloads'] as List? ?? [])
+                    Text(
+                      '${_workloadLabel(row['group'])} · ${row['observations']} recorded forecasts across ${row['games']} games. Mean error: candidate ${value(row['mae'])}, weighted baseline ${value(row['incumbentMae'])}.',
+                      style: CoachType.label,
+                    ),
+                ],
               ),
             ),
         const SizedBox(height: 14),
@@ -1722,6 +1741,149 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           style: CoachType.label,
         ),
       ],
+    );
+  }
+
+  String _workloadLabel(dynamic group) =>
+      const {
+        'QB_attempts': 'QB passing attempts',
+        'QB_carries': 'QB carries',
+        'RB_carries': 'RB carries',
+        'RB_targets': 'RB targets',
+        'WR_targets': 'WR targets',
+        'TE_targets': 'TE targets',
+      }[group] ??
+      '$group';
+
+  Widget _workloadTrialView(Map<String, dynamic> trial) {
+    String value(dynamic n) => n is num ? n.toStringAsFixed(1) : '—';
+    final rows = trial['forecasts'] as List? ?? [];
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Workload trial',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text(
+        'Conditional forecasts for attempts, carries and targets',
+        style: CoachType.label,
+      ),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${trial['notice']}', style: CoachType.label),
+              for (final metric in ['attempts', 'carries', 'targets'])
+                for (final row
+                    in rows.where((r) => r['metric'] == metric).take(4))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${row['name']} · ${value(row['prediction'])} $metric',
+                          style: CoachType.body,
+                        ),
+                        Text(
+                          'Weighted baseline ${value(row['incumbent'])} · ${row['records']} prior appearances · Latest ${row['latestDate']}',
+                          style: CoachType.label,
+                        ),
+                        if (row['interval'] is List)
+                          Text(
+                            'Central 80% research range: ${value(row['interval'][0])}–${value(row['interval'][1])}. Conditional on a recorded appearance.',
+                            style: CoachType.label,
+                          ),
+                        for (final reason
+                            in (row['reviewReasons'] as List? ?? []).take(1))
+                          Text(
+                            '$reason',
+                            style: CoachType.label.copyWith(
+                              color: CoachColors.warn,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              const SizedBox(height: 12),
+              Text(
+                'Training through ${trial['cutoff']} · Inputs through ${trial['inputCutoff']}. These trial forecasts do not replace the serving prop estimates.',
+                style: CoachType.label,
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _workloadResearchView(Map<String, dynamic> report) {
+    final validation = report['validation'] as Map? ?? {};
+    String value(dynamic n) => n is num ? n.toStringAsFixed(2) : '—';
+    return Padding(
+      padding: const EdgeInsets.only(top: 18),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        title: Text(
+          'Workload forecast research',
+          style: CoachType.title.copyWith(fontSize: 20),
+        ),
+        subtitle: Text(
+          'Earlier-game evaluation against three simple baselines',
+          style: CoachType.label,
+        ),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Settings selected before season 2025; evaluated on later seasons. Evidence through ${report['cutoff']}. Errors are measured in attempts, carries or targets; lower is better.',
+                  style: CoachType.label,
+                ),
+                for (final entry in validation.entries)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_workloadLabel(entry.key)} · ${entry.value['recorded']} recorded results',
+                          style: CoachType.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Mean absolute error · Candidate ${value(entry.value['mae'])} / Weighted baseline ${value(entry.value['incumbentMae'])}',
+                          style: CoachType.label,
+                        ),
+                        Text(
+                          'Last-three mean ${value(entry.value['last3Mae'])} / Last-six mean ${value(entry.value['last6Mae'])} · ${entry.value['unresolved']} unresolved appearances',
+                          style: CoachType.label,
+                        ),
+                        if (entry.value['interval80Coverage'] is num)
+                          Text(
+                            'Central 80% ranges covered ${((entry.value['interval80Coverage'] as num) * 100).toStringAsFixed(0)}% of recorded results.',
+                            style: CoachType.label,
+                          ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 14),
+                Text(
+                  'Retrospective conditional research, not proof of a betting advantage. Missing appearances stay unresolved. Upcoming forecasts are captured separately; no automatic promotion changes serving prop estimates.',
+                  style: CoachType.label,
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

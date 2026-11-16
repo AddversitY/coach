@@ -54,6 +54,11 @@ next game. Whole-number pushes have explicit probability mass. A model-fair
 decimal price is `(1-push)/win`; conditional return is `win*decimal-(1-push)`.
 These calculations are not validated betting edges or guaranteed obtainable prices.
 
+The separate [conditional workload trial](WORKLOAD_FORECASTS.md) now predicts
+attempts, carries and targets, compares earlier-game errors with three baselines,
+and records upcoming forecasts for automatic grading. Its means and ranges are
+visible in **Workload trial**, while the existing prop estimates remain unchanged.
+
 ## Quarterbacks, availability and workload context
 
 The server now combines independently dated box scores, PFR snap counts through

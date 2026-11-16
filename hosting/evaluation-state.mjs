@@ -26,7 +26,7 @@ export async function evaluationState(state,path,request){
   });
   if(path==='/forecast-capture'){
     const snapshot=await request.json();
-    if(!snapshot?.id||snapshot.id.length>300||!snapshot.event?.id||!Array.isArray(snapshot.rows)||snapshot.rows.length>60||JSON.stringify(snapshot).length>100000||Date.parse(snapshot.capturedAt)>=Date.parse(snapshot.event.startsAt))return response({error:'Invalid forecast'},400);
+    if(!snapshot?.id||snapshot.id.length>300||!snapshot.event?.id||!Array.isArray(snapshot.rows)||snapshot.rows.length>60||(snapshot.workloads!=null&&(!Array.isArray(snapshot.workloads)||snapshot.workloads.length>80))||JSON.stringify(snapshot).length>100000||Date.parse(snapshot.capturedAt)>=Date.parse(snapshot.event.startsAt))return response({error:'Invalid forecast'},400);
     return storage.transaction(async txn=>{
       const key='forecast:'+snapshot.id,existing=await txn.get(key);
       if(existing)return response(existing);

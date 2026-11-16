@@ -85,6 +85,32 @@ Map<String, dynamic> gameOutlookFixture(
       'records': 8,
     },
   ],
+  'workloadTrial': {
+    'available': true,
+    'version': 'workload-ridge-v1',
+    'hasEdge': false,
+    'adopted': false,
+    'status': 'shadow_only',
+    'cutoff': '2026-11-12',
+    'inputCutoff': '2026-11-12',
+    'notice': 'Conditional workload trial; not a betting edge.',
+    'forecasts': [
+      {
+        'playerId': 'p',
+        'name': 'Recorded Quarterback',
+        'group': 'QB_attempts',
+        'metric': 'attempts',
+        'prediction': 28.1,
+        'incumbent': 30.2,
+        'last3': 31.0,
+        'last6': 30.5,
+        'records': 8,
+        'latestDate': '2026-11-12',
+        'interval': [20.0, 40.0],
+        'reviewReasons': [],
+      },
+    ],
+  },
   'limits': [
     'Experimental model; do not treat this estimate as a proven edge.',
   ],
@@ -151,6 +177,14 @@ void main() {
         'Kansas City Chiefs',
         DateTime.utc(2026, 11, 16, 20),
       );
+  test('workload trial rejects adoption and inverted ranges', () {
+    final raw = gameOutlookFixture(event, now);
+    raw['workloadTrial']['adopted'] = true;
+    expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+    raw['workloadTrial']['adopted'] = false;
+    raw['workloadTrial']['forecasts'][0]['interval'] = [40.0, 20.0];
+    expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+  });
   test('server game outlook preserves market scope and rejects impossible probabilities', () {
     final raw = gameOutlookFixture(event, now),
         outlook = GameOutlook.fromJson(raw);

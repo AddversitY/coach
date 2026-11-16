@@ -1,3 +1,4 @@
+import {workloadForecasts} from './workload-forecast.mjs';
 import {gameContext,projectionWarnings,decisionBrief} from './game-context.mjs';
 /* Deterministic pregame analysis. The score candidate failed the historical
  * market comparison, so available market probabilities anchor pricing. No AI
@@ -165,5 +166,6 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
     summary:rows.length?'Game forecasts and exact-price comparisons are available. These are research estimates; no validated betting edge has been established.':'The score outlook and player workload projections are available. Current sportsbook prices are missing for this game, so I cannot identify a priced betting opportunity.',
     limits:['The score-only candidate did not beat historical market baselines; pricing stays market-anchored when two-sided quotes exist.','All displayed prices are observations, not guaranteed obtainable offers. Settlement rules are unverified.','Player projections condition on recorded appearances and do not establish availability. Opponent/role-change adjustments are not validated.','The score model is not a possession simulator; key-number and tail calibration remain unproven.'],
     sourceFingerprint:JSON.stringify([model.version,model.cutoff,event.id,...quotes.map(q=>[quoteId(q),q.sourceAt,q.decimal])])};
+  report.workloadTrial=workloadForecasts(source,event,{now,context});
   report.context=context;report.decision=decisionBrief(report,context,{question});return report;
 }

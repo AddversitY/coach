@@ -1,3 +1,4 @@
+import {gradeWorkloads,addWorkloadGrade,workloadReport} from './workload-scoring.mjs';
 import {outcome} from './game-analysis.mjs';
 
 const logLoss=(p,y)=>-Math.log(Math.max(1e-6,Math.min(1-1e-6,y?p:1-p)));
@@ -41,7 +42,8 @@ export function gradeForecast(snapshot,result){
       aiPairs:ai.length,aiPairedBrier:mean(ai.map(r=>r.brier)),aiBrier:mean(ai.map(r=>r.aiBrier)),aiPairedLogLoss:mean(ai.map(r=>r.logLoss)),aiLogLoss:mean(ai.map(r=>r.aiLogLoss)),
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
   }
-  return {eventId:result.eventId,modelVersion:snapshot.modelVersion,capturedAt:snapshot.capturedAt,priced:snapshot.priced,unresolved,markets,hasEdge:false};
+  const workload=gradeWorkloads(snapshot,result);
+  return {workloads:workload.groups,eventId:result.eventId,modelVersion:snapshot.modelVersion,capturedAt:snapshot.capturedAt,priced:snapshot.priced,unresolved:unresolved+workload.unresolved,markets,hasEdge:false};
 }
 
 export function addGrade(aggregate,grade,direction=1){
@@ -53,11 +55,12 @@ export function addGrade(aggregate,grade,direction=1){
     if(row.aiPairs){current.aiGames+=direction;for(const k of ['aiPairedBrier','aiBrier','aiPairedLogLoss','aiLogLoss'])current[k]=(current[k]||0)+direction*row[k];}
     aggregate[market]=current;
   }
+  addWorkloadGrade(aggregate,grade.workloads,direction);
   return aggregate;
 }
 
 export function evaluationReport(aggregate,counts){
-  return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,markets:Object.entries(aggregate).map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
+  return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,workloads:workloadReport(aggregate),markets:Object.entries(aggregate).filter(([,row])=>row.kind!=='workload').map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
     brier:row.probabilityGames?row.brier/row.probabilityGames:null,logLoss:row.probabilityGames?row.logLoss/row.probabilityGames:null,
     baselineGames:row.baselineGames,pairedBrier:row.baselineGames?row.pairedBrier/row.baselineGames:null,baselineBrier:row.baselineGames?row.baselineBrier/row.baselineGames:null,
     pairedLogLoss:row.baselineGames?row.pairedLogLoss/row.baselineGames:null,baselineLogLoss:row.baselineGames?row.baselineLogLoss/row.baselineGames:null,

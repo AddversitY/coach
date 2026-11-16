@@ -51,6 +51,39 @@ class GameOutlook {
       throw const FormatException('Invalid role context');
     }
     bool finite(dynamic value) => value is num && value.isFinite;
+    final trial = raw['workloadTrial'];
+    if (trial != null) {
+      if (trial is! Map ||
+          trial['hasEdge'] != false ||
+          trial['forecasts'] is! List ||
+          trial['forecasts'].length > 80 ||
+          (trial['available'] == true &&
+              (trial['adopted'] != false ||
+                  trial['status'] != 'shadow_only'))) {
+        throw const FormatException('Invalid workload trial');
+      }
+      for (final row in trial['forecasts']) {
+        if (row is! Map ||
+            !{'attempts', 'carries', 'targets'}.contains(row['metric']) ||
+            !finite(row['prediction']) ||
+            row['prediction'] < 0 ||
+            row['prediction'] > 100 ||
+            !finite(row['incumbent']) ||
+            row['incumbent'] < 0) {
+          throw const FormatException('Invalid workload estimate');
+        }
+        final interval = row['interval'];
+        if (interval != null &&
+            (interval is! List ||
+                interval.length != 2 ||
+                !interval.every(finite) ||
+                interval[0] < 0 ||
+                interval[1] < interval[0] ||
+                interval[1] > 100)) {
+          throw const FormatException('Invalid workload range');
+        }
+      }
+    }
     final score = raw['score'] as Map;
     for (final key in [
       'home',

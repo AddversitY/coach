@@ -44,6 +44,8 @@ def build_context(events, dataset, records, matchup, now):
     team_games = sorted(games.values(), key=lambda g: (g['date'], g['team']), reverse=True)
     for g in team_games:
         other=games.get((g['opponent'],g['date'],g['week']))
+        for metric in ['attempts','carries','targets']:
+            g['allowed_'+metric]=other[metric] if other else None
         g['passingYardsAllowed']=other['passYards'] if other else None
         g['rushingYardsAllowed']=other['rushYards'] if other else None
         g['passers'].sort(key=lambda p: (-p['attempts'], p['id']))

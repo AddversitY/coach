@@ -45,5 +45,12 @@ class CoachIndexTests(unittest.TestCase):
         self.assertIsNotNone(newer['shadowScoreModel'])
         lab['sourceHash']='wrong'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
+        workload={'schemaVersion':1,'version':'workload-ridge-v1','trainedAt':'2026-11-15T10:00:00Z','cutoff':'2026-11-12','adopted':False,'hasEdge':False,'featureNames':list(range(17)),'models':{'QB_attempts':{'coefficients':[0]*17,'residuals':[0]*120,'trainingRows':200}}}
+        updated=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload)
+        self.assertEqual(updated['results'][0]['playerStats']['p']['attempts'],30)
+        self.assertEqual(updated['results'][0]['playerTeams']['p'],'BUF')
+        self.assertEqual(updated['players'][0]['games'][0]['position'],'QB')
+        workload['trainedAt']='2026-11-20T00:00:00Z'
+        with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload)
         model['trainedAt']='2026-11-20T00:00:00Z'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history)

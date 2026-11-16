@@ -287,6 +287,20 @@ void main() {
                 },
               },
             },
+            'workloadResearch': {
+              'cutoff': '2026-11-12',
+              'validation': {
+                'QB_attempts': {
+                  'recorded': 625,
+                  'unresolved': 208,
+                  'mae': 7.28,
+                  'incumbentMae': 7.84,
+                  'last3Mae': 8.14,
+                  'last6Mae': 7.89,
+                  'interval80Coverage': .81,
+                },
+              },
+            },
             'models': [
               {'role': 'shadow', 'gradedGames': 0, 'pendingGames': 1},
             ],
@@ -313,6 +327,10 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('Recorded team share 20%'), findsOneWidget);
+      await tester.ensureVisible(find.text('Workload trial'));
+      await tester.tap(find.text('Workload trial'));
+      await tester.pumpAndSettle();
+      expect(find.text('Recorded Quarterback · 28.1 attempts'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.ensureVisible(find.text('DraftKings'));
       await tester.tap(find.text('DraftKings'));
@@ -324,7 +342,7 @@ void main() {
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
       expect(
-        find.textContaining('Background challenger: 0 graded'),
+        find.textContaining('Background challenger: 0 games with results'),
         findsOneWidget,
       );
       await tester.ensureVisible(find.text('Research progress'));
@@ -332,6 +350,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.textContaining('Current 0.238 / Candidate 0.226 / Market 0.213'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Workload forecast research'));
+      await tester.tap(find.text('Workload forecast research'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Candidate 7.28 / Weighted baseline 7.84'),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);
