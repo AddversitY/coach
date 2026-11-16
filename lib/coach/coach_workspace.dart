@@ -106,6 +106,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     clockTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       if (mounted) {
         _expireAnalyses();
+        _reviewGameTurns();
         setState(() {});
       }
     });
@@ -206,6 +207,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         telemetryError = null;
       });
       _reviewLiveTurns();
+      _reviewGameTurns();
       _reviewAnalyses(previous);
     } catch (_) {
       if (mounted) {
@@ -222,6 +224,17 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         lastSnapshotRefresh != null &&
         now.difference(lastSnapshotRefresh!) > const Duration(minutes: 5)) {
       unawaited(_load());
+    }
+  }
+
+  void _reviewGameTurns() {
+    for (final turn in turns) {
+      if (turn.game == null || turn.invalidation != null) continue;
+      final change = reviewGameContext(turn.game!, telemetry, now);
+      if (change != null) {
+        turn.invalidation = change;
+        turn.generated = null;
+      }
     }
   }
 
@@ -1110,6 +1123,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                           a.text),
             style: CoachType.body,
           ),
+          if (turn.game?.raw['decision'] is Map && turn.invalidation == null)
+            _decisionView(
+              Map<String, dynamic>.from(turn.game!.raw['decision']),
+            ),
           if (turn.game != null &&
               turn.generated != null &&
               turn.invalidation == null)
@@ -1157,6 +1174,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           if (turn.analysis != null && turn.invalidation == null)
             _analysisView(turn.analysis!),
           if (turn.game != null && turn.invalidation == null) _gameView(turn),
+          if (turn.game != null && turn.invalidation != null)
+            _DeskLink(
+              label: const Text('Refresh game research'),
+              onPressed: busy ? null : () => _send(turn.question),
+            ),
           if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
           if (a.player != null &&
@@ -1264,6 +1286,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           'Central 80% research ranges · Margin ${score['marginRange']?.join(' to ')} · Total ${score['totalRange']?.join(' to ')}',
         ),
         const SizedBox(height: 14),
+        if (game.raw['context'] is Map)
+          _gameContextView(Map<String, dynamic>.from(game.raw['context'])),
         Wrap(
           spacing: 8,
           runSpacing: 6,
@@ -1402,6 +1426,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   caption(
                     '${number(projection['expectedWorkload'])} ${projection['workload']} · ${projection['records']} recorded appearances',
                   ),
+                  for (final warning
+                      in (projection['contextWarnings'] as List? ?? []).take(1))
+                    Text(
+                      '$warning',
+                      style: CoachType.label.copyWith(color: CoachColors.warn),
+                    ),
                 ],
               ),
             ),
@@ -1445,6 +1475,188 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _decisionView(Map<String, dynamic> brief) {
+    final lean = brief['lean'] as Map?;
+    final price = brief['price'] as Map?;
+    final minimum = price?['minimumDecimal'];
+    return Container(
+      margin: const EdgeInsets.only(top: 18, bottom: 8),
+      padding: const EdgeInsets.only(left: 16),
+      decoration: const BoxDecoration(
+        border: Border(left: BorderSide(color: CoachColors.border, width: 2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${brief['headline']}',
+            style: CoachType.title.copyWith(fontSize: 21),
+          ),
+          const SizedBox(height: 10),
+          if (lean != null)
+            Text(
+              'Research lean · ${lean['team']}. ${lean['notice']}',
+              style: CoachType.body,
+            ),
+          const SizedBox(height: 8),
+          if (minimum is num &&
+              minimum.isFinite &&
+              minimum > 1 &&
+              price?['selection'] is Map)
+            Text(
+              'Research break-even · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} at ${americanLabel(minimum.toDouble())}. ${price['notice']}',
+              style: CoachType.label,
+            )
+          else
+            Text('Price · ${brief['priceNotice']}', style: CoachType.label),
+          const SizedBox(height: 8),
+          Text(
+            'Counterargument · ${brief['counterargument']}',
+            style: CoachType.label,
+          ),
+          const SizedBox(height: 8),
+          Text('Before acting · ${brief['recheck']}', style: CoachType.label),
+        ],
+      ),
+    );
+  }
+
+  Widget _gameContextView(Map<String, dynamic> context) {
+    String share(dynamic value) =>
+        value is num ? '${(100 * value).toStringAsFixed(0)}%' : 'unavailable';
+    String number(dynamic value) =>
+        value is num ? value.toStringAsFixed(1) : 'unavailable';
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Lineup & workload',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: Text(
+        'Recorded roles through ${context['cutoff'] ?? 'unavailable evidence'} · starters unconfirmed',
+        style: CoachType.label,
+      ),
+      children: [
+        for (final team in context['teams'] as List? ?? [])
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 18),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${team['team']}',
+                    style: CoachType.title.copyWith(fontSize: 19),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Listed quarterback · ${team['quarterback']['listed'] ?? 'Unconfirmed'}',
+                    style: CoachType.body,
+                  ),
+                  Text(
+                    'Last recorded passing leader · ${team['quarterback']['lastObserved']?['name'] ?? 'Unavailable'} · ${team['quarterback']['lastObserved']?['date'] ?? ''}',
+                    style: CoachType.label,
+                  ),
+                  Text(
+                    '${team['quarterback']['notice']}',
+                    style: CoachType.label,
+                  ),
+                  if (team['restDays'] is num)
+                    Text(
+                      'Scheduled rest · ${team['restDays']} days',
+                      style: CoachType.label,
+                    ),
+                  for (final report
+                      in (team['availability'] as List? ?? []).take(8))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        '${report['playerName']} · ${report['value']['status']} · Reported ${_reportTime(report['value']['reportedUpdatedAt'])}',
+                        style: CoachType.label.copyWith(
+                          color: CoachColors.warn,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Offensive line · ${(team['offensiveLine']['lastObserved'] as List).length} high-snap players recorded in the latest team game.',
+                    style: CoachType.label,
+                  ),
+                  Text(
+                    '${team['offensiveLine']['notice']}',
+                    style: CoachType.label,
+                  ),
+                  for (final row in (team['usage'] as List? ?? []).take(6))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${row['name']} · ${row['metric']}',
+                            style: CoachType.body,
+                          ),
+                          Text(
+                            'Recent appearances: ${number(row['recentMean'])} per game · Prior: ${number(row['priorMean'])} · Recorded team share ${share(row['recentShare'])}',
+                            style: CoachType.label,
+                          ),
+                          Text(
+                            'Recorded offensive snap share ${share(row['recentSnapShare'])}; not expected playing time.',
+                            style: CoachType.label,
+                          ),
+                          if (row['latestTeamGameMissing'] == true)
+                            Text(
+                              'No recorded appearance in the latest team game; participation needs checking.',
+                              style: CoachType.label.copyWith(
+                                color: CoachColors.warn,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  if ((team['opponentRecentAllowance']?['games'] as num? ?? 0) >
+                      0) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      'Opponent allowance · ${number(team['opponentRecentAllowance']['passingYards'])} pass yards / ${number(team['opponentRecentAllowance']['rushingYards'])} rush yards across ${team['opponentRecentAllowance']['games']} recorded games. Schedule and game script are not adjusted.',
+                      style: CoachType.label,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        for (final source in context['sources'] as List? ?? [])
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${source['source'] ?? source['id']} · ${source['cutoff'] ?? _reportTime(source['retrievedAt'] ?? source['checkedAt'])}',
+                  style: CoachType.label,
+                ),
+                if (source['url'] is String || source['sourceUrl'] is String)
+                  _DeskLink(
+                    label: const Text('Open original source'),
+                    onPressed: () => _openReport(
+                      (source['url'] ?? source['sourceUrl']) as String,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        for (final unknown in context['unknowns'] as List? ?? [])
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text('$unknown', style: CoachType.label),
+          ),
+        const SizedBox(height: 12),
       ],
     );
   }
@@ -1618,7 +1830,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 final v = row.value;
                 final title = switch (row.kind) {
                   'injury' =>
-                    '${playerNames[row.playerId] ?? 'Player'} · ${v['status']}',
+                    '${playerNames[row.playerId] ?? v['playerName'] ?? 'Player'} · ${v['status']}',
                   'news' => '${v['title']}',
                   'weather' =>
                     v['roof'] != null

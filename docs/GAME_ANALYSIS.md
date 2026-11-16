@@ -54,6 +54,54 @@ next game. Whole-number pushes have explicit probability mass. A model-fair
 decimal price is `(1-push)/win`; conditional return is `win*decimal-(1-push)`.
 These calculations are not validated betting edges or guaranteed obtainable prices.
 
+## Quarterbacks, availability and workload context
+
+The server now combines independently dated box scores, PFR snap counts through
+nflverse, schedule quarterback listings/rest days, and the existing ESPN status
+feed. `tools/build_game_context.py` publishes six recorded team games with exact
+team/date/week opportunity denominators and matching offensive snap shares.
+Passing/rushing yards can be negative; opportunities and snap shares cannot.
+Duplicate identities, future records and unverifiable snap timestamps are
+rejected. Undated historical injury exports are not presented as current reports.
+
+`hosting/game-context.mjs` distinguishes an unconfirmed listed quarterback from
+the last recorded passing leader. A different listed name, recent observed
+leader changes, or a relevant reported quarterback concern triggers review.
+Recorded offensive linemen and schedule-listed quarterbacks can be matched to
+the existing injury feed by exact name/team, with compatible positions. Their
+original report dates are retained; the feed may describe an earlier game and
+does not establish next-game participation. No report is not a healthy status.
+
+The **Lineup & workload** fold shows recent versus preceding appearance workload,
+share of recorded team opportunities, observed offensive snap share, rest days,
+reported availability, and recent opponent yardage allowance. Missing appearances
+remain missing, not zero production. Shares do not establish routes or expected
+playing time. Opponent allowance is descriptive and is not adjusted for schedule,
+pace or game script. Listed quarterbacks and previous high-snap linemen are not
+confirmed starters. Snap-count definitions are documented by
+[nflreadr](https://nflreadr.nflverse.com/reference/load_snap_counts.html).
+
+Own reported availability, a participation gap, a large observed workload decline,
+unresolved passing-role continuity, or a reported line concern adds a projection
+warning and withholds that prop from the research ranking. The estimate remains
+visible with its conditions. These are evidence/review gates, not calibrated
+probability changes. No new quarterback, injury, opponent or weather point
+adjustments are applied to the serving model or claimed as validated improvements.
+
+The deterministic decision brief states the experimental game lean, the exact
+requested selection's research break-even price when present, a counterargument
+and what to recheck. A different side/line/market cannot fill a missing requested
+price. The brief cannot promote `hasEdge` or recommendation readiness. AI prose
+receives the same source context and brief and is prohibited from inventing
+starter confirmations or numerical adjustment factors.
+
+Source context is frozen alongside new prospective captures and supplied to the
+AI benchmark as descriptive evidence without forecast probabilities. Existing
+captures are not rewritten with later facts. Compact summaries keep captures
+within the existing storage bound. Injury/weather changes or expiry withdraw
+the earlier game read and offer a manual refresh, without automatic extra AI or
+odds calls. Stable re-polling does not invalidate an unchanged report.
+
 ## Price coverage within the existing free budget
 
 The public workflow uses the **balanced** publisher profile: moneyline, spread,

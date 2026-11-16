@@ -23,7 +23,10 @@ export function injuryReports(raw,index,at){
       const reportedAt=row.date;
       if(!recent(reportedAt,clock,status==='Injured Reserve'?180*24*HOUR:14*24*HOUR))continue;
       const code=club(athlete.team?.abbreviation||group.team?.abbreviation||group.abbreviation||'');
-      const matches=index.players.filter(p=>normalize(p.name)===normalize(athlete.displayName)&&club(p.team)===code);
+      const known=index.players.filter(p=>normalize(p.name)===normalize(athlete.displayName)&&club(p.team)===code);
+      const matches=known.length?known:(index.contextPlayers||[]).filter(p=>normalize(p.name)===normalize(athlete.displayName)&&club(p.team)===code);
+      const reportedPosition=athlete.position?.abbreviation;
+      if(reportedPosition&&matches.some(p=>p.position&&p.position!==reportedPosition&&!(['C','G','T','OT','OG','OL','LT','RT','LG','RG'].includes(p.position)&&['C','G','T','OT','OG','OL','LT','RT','LG','RG'].includes(reportedPosition))))continue;
       if(matches.length!==1)continue;
       const player=matches[0],event=nextEvent(player,index,clock);
       if(!event)continue;
@@ -31,7 +34,7 @@ export function injuryReports(raw,index,at){
       if(raw.season?.year&&raw.season.year!==season)continue;
       const id=`espn:${event.id}:${player.id}`;
       const observation={id,kind:'injury',eventId:event.id,playerId:player.id,source:'ESPN injury feed (unofficial)',observedAt:at,confirmed:false,
-        value:{status,reportedUpdatedAt:reportedAt,url:'https://www.espn.com/nfl/injuries',notice:'Provider player-status listing; not confirmation for this next game. Missing reports and Active labels do not confirm participation.'}};
+        value:{status,playerName:player.name,team:player.team,position:player.position||null,identitySource:player.identitySource||'recorded_box_scores',reportedUpdatedAt:reportedAt,url:'https://www.espn.com/nfl/injuries',notice:'Unofficial status listing; not confirmation for this next game. Missing reports do not confirm health.'}};
       if(!found.has(id)||Date.parse(found.get(id).value.reportedUpdatedAt)<Date.parse(reportedAt))found.set(id,observation);
     }
   }
@@ -42,8 +45,10 @@ export function injuryReports(raw,index,at){
 export async function collectInjuries(index,previous,clock,fetchJson){
   const before=previous?.sources?.find(s=>s.id==='injuries');
   const old=(previous?.observations||[]).filter(o=>o.kind==='injury'&&o.source==='ESPN injury feed (unofficial)'&&index.events.some(e=>e.id===o.eventId&&Date.parse(e.startsAt)>clock));
-  const source={id:'injuries',attribution:'ESPN',url:'https://www.espn.com/nfl/injuries',refreshMinutes:10,expiresAfterMinutes:12,notice:'Exact-name/team matches to recorded QB/RB/WR/TE participants only; not complete NFL roster coverage.'};
-  if(before?.state==='reported_unofficial'&&recent(before.checkedAt,clock,INJURY_INTERVAL)||before?.state==='unavailable'&&recent(before.attemptedAt,clock,INJURY_INTERVAL))return {observations:old.filter(o=>recent(o.observedAt,clock,12*MINUTE)),source:before};
+  const scopeVersion=(index.contextPlayers||[]).length?'recorded-offense-v2':'recorded-skill-v1',scopeCutoff=index.roleContext?.cutoff||null,scopePlayers=(index.contextPlayers||[]).length;
+  const sameScope=before?.scopeVersion===scopeVersion&&before?.scopeCutoff===scopeCutoff&&before?.scopePlayers===scopePlayers;
+  const source={scopeVersion,scopeCutoff,scopePlayers,id:'injuries',attribution:'ESPN',url:'https://www.espn.com/nfl/injuries',refreshMinutes:10,expiresAfterMinutes:12,notice:'Exact-name/team matches to recorded offensive participants, recent QB/line snap records and unconfirmed schedule QB listings; not complete NFL roster coverage.'};
+  if(sameScope&&(before?.state==='reported_unofficial'&&recent(before.checkedAt,clock,INJURY_INTERVAL)||before?.state==='unavailable'&&recent(before.attemptedAt,clock,INJURY_INTERVAL)))return {observations:old.filter(o=>recent(o.observedAt,clock,12*MINUTE)),source:before};
   try{
     // ESPN's expanded athlete data currently exceeds 8 MB. Bound it, then keep
     // only exact-name/team status facts. Never store the full provider response.

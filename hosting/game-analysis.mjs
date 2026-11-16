@@ -1,3 +1,4 @@
+import {gameContext,projectionWarnings,decisionBrief} from './game-context.mjs';
 /* Deterministic pregame analysis. The score candidate failed the historical
  * market comparison, so available market probabilities anchor pricing. No AI
  * prose can promote these research estimates into a validated betting edge. */
@@ -127,7 +128,7 @@ function propChance(projection,selection){
 }
 function percentile(samples,key,p){const rows=samples.map(r=>[key(r),r[2]]).sort((a,b)=>a[0]-b[0]);let total=0;for(const row of rows){total+=row[1];if(total>=p)return row[0];}return rows.at(-1)[0];}
 
-export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null,anchorMarket=true}={}){
+export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null,anchorMarket=true,question=''}={}){
   if(!event||Date.parse(event.startsAt)<=now)throw new Error('Upcoming game required');
   const model=source.index.scoreModel;
   if(!model||!fresh(model.trainedAt,now,22*86400000)||!fresh(model.cutoff+'T00:00:00Z',now,22*86400000))throw new Error('Forecast model unavailable');
@@ -136,7 +137,8 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
   const live=telemetry&&fresh(telemetry.checkedAt,now,5*60000)?telemetry:null;
   const injury=live?.observations.filter(o=>o.eventId===event.id&&o.kind==='injury'&&fresh(o.observedAt,now,12*60000))||[];
   const players=source.index.players.filter(p=>p.events.includes(event.id));
-  const projections=players.flatMap(p=>Object.keys(PROP_KEYS).map(m=>playerProjection(p,m)).filter(Boolean));
+  const context=gameContext(source,event,{now,telemetry:live});
+  const projections=players.flatMap(p=>Object.keys(PROP_KEYS).map(m=>playerProjection(p,m)).filter(Boolean)).map(p=>{const warnings=projectionWarnings(p,context);return {...p,contextWarnings:warnings,roleReviewRequired:warnings.length>0};});
   const rows=[];
   for(const q of quotes){
     if(bookId&&q.bookId!==bookId)continue;
@@ -145,12 +147,12 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
     if(GAME_MARKETS.has(s.market))probabilities=summarize(distribution.sample,s,event,paired?.threeWay);
     else{projection=projections.find(p=>p.name===s.participant&&p.market===s.market);if(!projection)continue;probabilities=propChance(projection,s);}
     const {win,push}=probabilities;
-    const blocked=!!projection&&injury.some(o=>o.playerId===projection.playerId&&['out','doubtful','inactive','injured reserve'].includes(String(o.value?.status).toLowerCase()));
+    const blocked=!!projection&&(projection.roleReviewRequired||injury.some(o=>o.playerId===projection.playerId&&['out','doubtful','inactive','injured reserve'].includes(String(o.value?.status).toLowerCase())));
     const same=quotes.filter(other=>JSON.stringify(other.selection)===JSON.stringify(s));
     const best=Math.max(...same.map(other=>other.decimal));
     rows.push({id:quoteId(q),selection:s,bookId:q.bookId,book:q.book,decimal:q.decimal,sourceAt:q.sourceAt,collectedAt:q.collectedAt,...probabilities,
       baseline:paired?.chance??null,minimumDecimal:win>0?(1-push)/win:null,conditionalEv:win*q.decimal-(1-push),priceStatus:fresh(q.sourceAt,now,120000)&&fresh(q.collectedAt,now,120000)?'recent_observation':'saved_snapshot',
-      bestObservedPrice:q.decimal===best,blocked,reason:blocked?'Reported availability concern; check the original source before using this projection.':null,
+      bestObservedPrice:q.decimal===best,blocked,reason:blocked?(projection.contextWarnings[0]||'Reported availability concern; check the original source before using this projection.'):null,contextWarnings:projection?.contextWarnings||[],
       playerId:projection?.playerId||null,threeWay:paired?.threeWay||false,forecastBasis:projection?'experimental_workload_rate':distribution.basis,modelValidated:false,hasEdge:false,rulesVerified:false});
   }
   rows.sort((a,b)=>Number(a.blocked)-Number(b.blocked)||Number(b.bestObservedPrice)-Number(a.bestObservedPrice)||b.conditionalEv-a.conditionalEv);
@@ -158,9 +160,10 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
   const categories=['spreads','totals','h2h','props'].map(market=>({market,label:{spreads:'Spread',totals:'Game total',h2h:'Moneyline',props:'Player props'}[market],rows:rows.filter(r=>market==='props'?PROP_KEYS[r.selection.market]:r.selection.market===market),status:rows.some(r=>market==='props'?PROP_KEYS[r.selection.market]:r.selection.market===market)?'priced_research':'prices_unavailable'}));
   const score={home:sample.reduce((a,r)=>a+r[0]*r[2],0),away:sample.reduce((a,r)=>a+r[1]*r[2],0),homeWin:homeChance.win,tie:homeChance.push,
     marginMedian:percentile(sample,r=>r[0]-r[1],.5),totalMedian:percentile(sample,r=>r[0]+r[1],.5),marginRange:[percentile(sample,r=>r[0]-r[1],.1),percentile(sample,r=>r[0]-r[1],.9)],totalRange:[percentile(sample,r=>r[0]+r[1],.1),percentile(sample,r=>r[0]+r[1],.9)]};
-  return {schemaVersion:1,version:GAME_VERSION,event,createdAt:new Date(now).toISOString(),cutoff:model.cutoff,modelVersion:model.version+'/'+GAME_VERSION,basis:distribution.basis,score,independentScore:distribution.independentScore,
+  const report={schemaVersion:1,version:GAME_VERSION,event,createdAt:new Date(now).toISOString(),cutoff:model.cutoff,modelVersion:model.version+'/'+GAME_VERSION,basis:distribution.basis,score,independentScore:distribution.independentScore,
     baselineHomeWin:source.index.scoreModel.baselineHomeWin??null,bookId,books:[...new Map(quotes.map(q=>[q.bookId,{id:q.bookId,name:q.book}])).values()],marketAsOf:quotes.filter(q=>GAME_MARKETS.has(q.selection.market)).map(q=>q.sourceAt).sort()[0]||null,availability:injury,weather:live?.observations.filter(o=>o.eventId===event.id&&o.kind==='weather')||[],categories:categories.map(c=>({...c,totalRows:c.rows.length,rows:c.rows.slice(0,150)})),projections:projections.slice(0,60),ranked:rows.filter(r=>!r.blocked).slice(0,12),validation:model.validation,legacyAudit:model.legacyAudit,hasEdge:false,recommendationsReady:false,
     summary:rows.length?'Game forecasts and exact-price comparisons are available. These are research estimates; no validated betting edge has been established.':'The score outlook and player workload projections are available. Current sportsbook prices are missing for this game, so I cannot identify a priced betting opportunity.',
     limits:['The score-only candidate did not beat historical market baselines; pricing stays market-anchored when two-sided quotes exist.','All displayed prices are observations, not guaranteed obtainable offers. Settlement rules are unverified.','Player projections condition on recorded appearances and do not establish availability. Opponent/role-change adjustments are not validated.','The score model is not a possession simulator; key-number and tail calibration remain unproven.'],
     sourceFingerprint:JSON.stringify([model.version,model.cutoff,event.id,...quotes.map(q=>[quoteId(q),q.sourceAt,q.decimal])])};
+  report.context=context;report.decision=decisionBrief(report,context,{question});return report;
 }

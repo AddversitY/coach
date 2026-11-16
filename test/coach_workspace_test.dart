@@ -304,6 +304,15 @@ void main() {
         expect(find.text(label), findsOneWidget);
       }
       expect(find.text('Player workload outlook'), findsOneWidget);
+      expect(find.text('Resolve the lineup questions first'), findsOneWidget);
+      await tester.ensureVisible(find.text('Lineup & workload'));
+      await tester.tap(find.text('Lineup & workload'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Listed quarterback · Listed Quarterback'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Recorded team share 20%'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.ensureVisible(find.text('DraftKings'));
       await tester.tap(find.text('DraftKings'));

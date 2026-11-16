@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'coach_telemetry.dart';
 import 'odds.dart';
 
 class GameOutlook {
@@ -31,6 +34,22 @@ class GameOutlook {
     }
     final event = SportEvent.fromJson(Map<String, dynamic>.from(raw['event']));
     final at = DateTime.parse(raw['createdAt'] as String).toUtc();
+    final brief = raw['decision'];
+    if (brief != null &&
+        (brief is! Map ||
+            brief['hasEdge'] != false ||
+            brief['recommendationsReady'] != false)) {
+      throw const FormatException('Invalid decision status');
+    }
+    final context = raw['context'];
+    if (context != null &&
+        (context is! Map ||
+            context['schemaVersion'] != 1 ||
+            context['adjustmentsApplied'] != false ||
+            context['teams'] is! List ||
+            context['teams'].length > 2)) {
+      throw const FormatException('Invalid role context');
+    }
     bool finite(dynamic value) => value is num && value.isFinite;
     final score = raw['score'] as Map;
     for (final key in [
@@ -84,4 +103,52 @@ class GameOutlook {
     }
     return GameOutlook._(raw, event, at);
   }
+}
+
+String? reviewGameContext(
+  GameOutlook game,
+  CoachTelemetry? telemetry,
+  DateTime now,
+) {
+  final stored = [
+    for (final key in ['availability', 'weather'])
+      for (final row in game.raw[key] as List? ?? [])
+        TelemetryObservation.fromJson(Map<String, dynamic>.from(row)),
+  ];
+  if (stored.any((o) => !currentObservation(o, now))) {
+    return 'Availability or weather evidence has expired. Refresh this game before using the earlier read.';
+  }
+  if (telemetry?.fresh(now) != true ||
+      telemetry!.checkedAt.isBefore(game.createdAt)) {
+    return null;
+  }
+  final current = telemetry.observations.where(
+    (o) =>
+        o.eventId == game.event.id &&
+        {'injury', 'weather'}.contains(o.kind) &&
+        currentObservation(o, now),
+  );
+  Object? canonical(Object? value) => value is Map
+      ? {
+          for (final k
+              in (value.keys.map((k) => k.toString()).toList()..sort()))
+            k: canonical(value[k]),
+        }
+      : value is List
+      ? value.map(canonical).toList()
+      : value;
+  String signature(TelemetryObservation o) => jsonEncode([
+    o.id,
+    o.kind,
+    o.playerId,
+    o.source,
+    o.confirmed,
+    canonical(o.value),
+  ]);
+  final before = stored.map(signature).toSet(),
+      after = current.map(signature).toSet();
+  if (before.length != after.length || !before.containsAll(after)) {
+    return 'Availability or weather reports changed. Refresh this game to review the new evidence.';
+  }
+  return null;
 }

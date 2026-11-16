@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/game_outlook.dart';
 import 'package:odds_edge/domain/odds.dart';
+import 'package:odds_edge/domain/coach_telemetry.dart';
 
 Map<String, dynamic> gameOutlookFixture(
   SportEvent event,
@@ -87,6 +88,59 @@ Map<String, dynamic> gameOutlookFixture(
   'limits': [
     'Experimental model; do not treat this estimate as a proven edge.',
   ],
+  'decision': {
+    'headline': 'Resolve the lineup questions first',
+    'lean': {
+      'team': event.home,
+      'notice': 'Experimental; not a recommendation.',
+    },
+    'price': null,
+    'priceNotice': 'No saved price for this requested selection.',
+    'counterargument':
+        'The listed quarterback differs from the last recorded passing leader.',
+    'recheck': 'Confirm the starting quarterback and exact price.',
+    'hasEdge': false,
+    'recommendationsReady': false,
+  },
+  'context': {
+    'schemaVersion': 1,
+    'version': 'role-context-v1',
+    'adjustmentsApplied': false,
+    'cutoff': '2026-11-12',
+    'teams': [
+      {
+        'team': event.home,
+        'quarterback': {
+          'listed': 'Listed Quarterback',
+          'lastObserved': {
+            'name': 'Recorded Quarterback',
+            'date': '2026-11-12',
+          },
+          'notice': 'A schedule listing is not a confirmed starter.',
+        },
+        'restDays': 7,
+        'availability': [],
+        'offensiveLine': {
+          'lastObserved': [],
+          'notice': 'Current starters unconfirmed.',
+        },
+        'usage': [
+          {
+            'name': 'Recorded Receiver',
+            'metric': 'targets',
+            'recentMean': 4.0,
+            'priorMean': 8.0,
+            'recentShare': .2,
+            'recentSnapShare': .75,
+          },
+        ],
+      },
+    ],
+    'sources': [],
+    'unknowns': [
+      'No automatic injury or quarterback point adjustment is applied.',
+    ],
+  },
 };
 
 void main() {
@@ -109,6 +163,64 @@ void main() {
     'unverified server output cannot silently claim an established edge',
     () {
       final raw = gameOutlookFixture(event, now)..['hasEdge'] = true;
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+    },
+  );
+  test(
+    'changed reports withdraw the old read while unchanged polling does not',
+    () {
+      final raw = gameOutlookFixture(event, now);
+      final observed = TelemetryObservation(
+        id: 'injury',
+        kind: 'injury',
+        eventId: event.id,
+        playerId: 'p',
+        source: 'ESPN',
+        observedAt: now,
+        value: {'status': 'Questionable'},
+      );
+      raw['availability'] = [
+        {
+          'id': observed.id,
+          'kind': observed.kind,
+          'eventId': event.id,
+          'playerId': 'p',
+          'source': 'ESPN',
+          'observedAt': now.toIso8601String(),
+          'value': observed.value,
+        },
+      ];
+      final game = GameOutlook.fromJson(raw);
+      expect(
+        reviewGameContext(
+          game,
+          CoachTelemetry(checkedAt: now, observations: [observed], sources: []),
+          now,
+        ),
+        isNull,
+      );
+      final changed = TelemetryObservation(
+        id: observed.id,
+        kind: 'injury',
+        eventId: event.id,
+        playerId: 'p',
+        source: 'ESPN',
+        observedAt: now,
+        value: {'status': 'Out'},
+      );
+      expect(
+        reviewGameContext(
+          game,
+          CoachTelemetry(checkedAt: now, observations: [changed], sources: []),
+          now,
+        ),
+        contains('reports changed'),
+      );
+      expect(
+        reviewGameContext(game, null, now.add(const Duration(minutes: 13))),
+        contains('expired'),
+      );
+      (raw['decision'] as Map)['hasEdge'] = true;
       expect(() => GameOutlook.fromJson(raw), throwsFormatException);
     },
   );
