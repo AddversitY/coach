@@ -162,12 +162,14 @@ export async function collectTelemetry(env, previous, clock=Date.now()) {
       value:{snapshotAt:snapshot.props.fetchedAt,quoteCount:saved.length,fingerprint:await digest(JSON.stringify(saved.map(q=>[q.selection,q.bookId,q.decimal,q.sourceAt,q.collectedAt]))),notice:'Saved observations only. Not a real-time market or sharp-money feed.'}});
   }
   sources.push({id:'markets',state:'published_snapshots_only',checkedAt:snapshot.props?.fetchedAt||null});
+  try{
   const oldMarket=await (await state(env).fetch(new Request('https://internal/market-state'))).json();
   const movements=marketMovements(snapshot,index,oldMarket||[],clock);
   const stored=await state(env).fetch(new Request('https://internal/market-update',{method:'POST',body:JSON.stringify(movements.state)}));
   if(!stored.ok)throw new Error('Market state storage unavailable');
   observations.push(...movements.observations);
   sources.push({id:'market_movement',state:movements.coverage?'saved_observations':'waiting_for_prices',checkedAt:snapshot.props?.fetchedAt||null,notice:'Observed price/line changes only. Repeated reads spend no odds credits and do not create new moves.'});
+  }catch{sources.push({id:'market_movement',state:'unavailable',checkedAt:null,notice:'Market-history refresh failed; other source checks remain independent.'});}
   const splits=await (await state(env).fetch(new Request('https://internal/splits'))).json();
   if(splits&&recent(splits.publishedAt,clock,30*60000)){
     observations.push(...splits.observations.filter(o=>index.events.some(e=>e.id===o.eventId&&Date.parse(e.startsAt)>clock)));
@@ -185,20 +187,38 @@ export class CoachState {
   async fetch(request){
     const path=new URL(request.url).pathname;
     const evaluation=await evaluationState(this.state,path,request);if(evaluation)return evaluation;
+    if(path==='/scheduled-status')return reply(await this.state.storage.get('scheduled-status')||null);
+    if(path==='/scheduled-status-update'){const body=await request.json();await this.state.storage.put('scheduled-status',body);return reply({ok:true});}
     if(path==='/splits')return reply(await this.state.storage.get('splits')||null);
     if(path==='/splits-update'){
       const body=await request.json();if(JSON.stringify(body).length>120000)return reply({error:'Splits feed too large'},413);
       await this.state.storage.put('splits',body);return reply({ok:true});
     }
-    if(path==='/market-state')return reply(await this.state.storage.get('market-state')||[]);
-    if(path==='/market-update'){
-      const body=await request.json();if(!Array.isArray(body)||JSON.stringify(body).length>120000)return reply({error:'Market state too large'},413);
-      await this.state.storage.put('market-state',body);return reply({ok:true});
+    if(path==='/market-state'){
+      const ids=await this.state.storage.get('market-state-events');
+      if(!ids)return reply(await this.state.storage.get('market-state')||[]);
+      return reply((await Promise.all(ids.map(id=>this.state.storage.get('market-state:'+id)))).flatMap(r=>r||[]));
     }
-    if(path==='/telemetry')return reply(await this.state.storage.get('telemetry')||null);
+    if(path==='/market-update'){
+      const body=await request.json();if(!Array.isArray(body)||body.length>2000||JSON.stringify(body).length>2000000)return reply({error:'Market state too large'},413);
+      const groups=new Map();
+      for(const row of body){const id=JSON.parse(row[0])[0];if(typeof id!=='string'||!/^nflverse:[A-Za-z0-9_]+$/.test(id))return reply({error:'Invalid event'},400);if(!groups.has(id))groups.set(id,[]);groups.get(id).push(row);}
+      if(groups.size>32||[...groups.values()].some(rows=>new TextEncoder().encode(JSON.stringify(rows)).length>120000))return reply({error:'Market shard too large'},413);
+      await this.state.storage.transaction(async txn=>{for(const [id,rows] of groups)await txn.put('market-state:'+id,rows);await txn.put('market-state-events',[...groups.keys()]);});
+      return reply({ok:true});
+    }
+    if(path==='/telemetry'){
+      const header=await this.state.storage.get('telemetry-header');if(!header)return reply(await this.state.storage.get('telemetry')||null);
+      const {parts,...metadata}=header;return reply({...metadata,observations:(await Promise.all(Array.from({length:parts},(_,i)=>this.state.storage.get('telemetry-observations:'+i)))).flatMap(r=>r||[])});
+    }
     if(path==='/update'){
-      const body=await request.json();if(JSON.stringify(body).length>120000)return reply({error:'Telemetry too large'},413);
-      await this.state.storage.put('telemetry',body);return reply({ok:true});
+      const body=await request.json();if(!Array.isArray(body.observations)||body.observations.length>600||JSON.stringify(body).length>1000000)return reply({error:'Telemetry too large'},413);
+      const {observations,...metadata}=body,parts=[];let part=[],bytes=2;
+      for(const observation of observations){const size=new TextEncoder().encode(JSON.stringify(observation)).length+1;if(size>100000)return reply({error:'Observation too large'},413);if(bytes+size>100000){parts.push(part);part=[];bytes=2;}part.push(observation);bytes+=size;}
+      if(part.length)parts.push(part);
+      if(new TextEncoder().encode(JSON.stringify(metadata)).length>100000)return reply({error:'Source metadata too large'},413);
+      await this.state.storage.transaction(async txn=>{for(let i=0;i<parts.length;i++)await txn.put('telemetry-observations:'+i,parts[i]);await txn.put('telemetry-header',{...metadata,parts:parts.length});});
+      return reply({ok:true});
     }
     if(path==='/reserve'){
       const {ip,now}=await request.json();const day=new Date(now).toISOString().slice(0,10),hour=Math.floor(now/3600000);
@@ -216,6 +236,7 @@ export class CoachState {
   }
 }
 function state(env){return env.STATE.get(env.STATE.idFromName('coach-research-state'));}
+async function scheduledHealth(env){try{return env.STATE?await (await state(env).fetch(new Request('https://internal/scheduled-status'))).json():null;}catch{return {state:'status_unavailable'};}}
 async function telemetry(env){return (await state(env).fetch(new Request('https://internal/telemetry'))).json();}
 async function storeTelemetry(env,value){return state(env).fetch(new Request('https://internal/update',{method:'POST',body:JSON.stringify(value)}));}
 async function reserve(env,request){
@@ -279,7 +300,7 @@ export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);const origin=request.headers.get('Origin');const allowed=env.ALLOWED_ORIGIN||'https://addversity.github.io';
     if(request.method==='OPTIONS')return new Response(null,{status:origin===allowed?204:403,headers:{'access-control-allow-origin':allowed,'access-control-allow-methods':'GET, POST, OPTIONS','access-control-allow-headers':'content-type','vary':'Origin'}});
-    if(url.pathname==='/health')return reply({service:'Coach',version:VERSION,aiConfigured:!!env.AI,telemetryConfigured:!!env.STATE,model:env.MODEL||MODEL_DEFAULT});
+    if(url.pathname==='/health')return reply({scheduled:await scheduledHealth(env),service:'Coach',version:VERSION,aiConfigured:!!env.AI,telemetryConfigured:!!env.STATE,model:env.MODEL||MODEL_DEFAULT});
     if(request.method==='GET'&&url.pathname==='/v1/evaluation'){
       try{
         const source=await published(env),version=source.index.scoreModel?.version+'/game-analysis-v1';
@@ -356,5 +377,17 @@ export default {
       return reply({available:true,answer:result.answer,cited},200,allowed);
     }catch{return reply({available:false,answer:'Coach interpretation is unavailable. Verified research tools remain available.',cited:[]},200,allowed);}
   },
-  async scheduled(_event,env,ctx){ctx.waitUntil((async()=>{try{const previous=await telemetry(env);await storeTelemetry(env,await collectTelemetry(env,previous));await recordResearch(env,await published(env));}catch{/* Keep prior timestamps; never replace failure with a fresh-looking empty feed. */}})());},
+  async scheduled(_event,env,ctx){ctx.waitUntil((async()=>{
+    const attemptedAt=new Date().toISOString();let stage='telemetry_read';
+    const status=body=>state(env).fetch(new Request('https://internal/scheduled-status-update',{method:'POST',body:JSON.stringify({attemptedAt,...body})}));
+    try{
+      await status({state:'running',stage});const previous=await telemetry(env);
+      stage='source_collection';const next=await collectTelemetry(env,previous);const saved=await storeTelemetry(env,next);if(!saved.ok)throw new Error('Telemetry state storage unavailable');
+      stage='forecast_capture';await status({state:'running',stage});await recordResearch(env,await published(env));
+      await status({state:'complete',stage:'complete',completedAt:new Date().toISOString()});
+    }catch(error){
+      const message=String(error?.message||'');const reason=/telemetry.*limit/i.test(message)?'telemetry_limit':/market state/i.test(message)?'state_storage':/fetch|source|response|JSON|HTTP/i.test(message)?'source_unavailable':'refresh_error';
+      try{await status({state:'failed',stage,reason});}catch{}
+    }
+  })());},
 };

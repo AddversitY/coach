@@ -130,7 +130,7 @@ export function marketMovements(snapshot,index,previous=[],clock=Date.now()){
     observations.push({id:`movement:${key}`,kind:'market',eventId:s.eventId,...(player?{playerId:player.id}:{}),source:'The Odds API / saved observations',observedAt:latest[3],confirmed:false,
       value:{market:s.market,participant:s.participant||null,outcome:s.outcome,book:q.book,fromLine:baseline[0],toLine:latest[0],fromDecimal:baseline[1],toDecimal:latest[1],fromSourceAt:baseline[2],toSourceAt:latest[2],notice:'Change between saved observations, not a verified opening line, steam or sharp-money flow. Settlement rules unverified.'}});
   }
-  if(JSON.stringify(state).length>120000)throw new Error('Market history exceeds storage limit');
+  if(state.length>2000||JSON.stringify(state).length>2000000)throw new Error('Market history exceeds collection limit');
   return {state,observations,coverage:state.length};
 }
 

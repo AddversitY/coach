@@ -29,3 +29,7 @@ Only named inactive designations can be confirmed. Missing names do not establis
 ## Verification
 
 Tests cover forecast leakage, neutral target ordering, exact three-way scores, legacy/late/unpriced exclusion, correction rollback, mixed AI versions, quota deferral and the hard two-call automatic limit. Official-source tests cover exact identities, game dates and weeks, emergency QB exclusions, caching, outside-window skips and timestamp preservation. Phone UI tests exercise the comparison panel without claiming a winner.
+
+## Scheduled refresh repair
+
+Live verification found that slate-wide market history exceeded the old 120 KB single-record limit, preventing scheduled source refresh. History is now atomically stored in bounded per-event records (with legacy reads preserved). Larger normalized telemetry is stored in bounded chunks with original timestamps. Market-history failures are isolated from other source checks. Regression tests replay 591 quotes without manufacturing duplicate movements and round-trip 600 normalized observations under per-record storage limits. The health endpoint reports the last scheduled attempt, stage and safe failure category; raw error messages and request logs are not retained in the app.
