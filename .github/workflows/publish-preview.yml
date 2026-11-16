@@ -61,6 +61,8 @@ jobs:
         env:
           COACH_API_BASE_URL: ${{ vars.COACH_API_BASE_URL }}
         run: flutter build web --release --base-href /coach/ --dart-define=ODDS_SNAPSHOT_PATH=data/snapshot.json --dart-define=COACH_API_BASE_URL="$COACH_API_BASE_URL"
+      - name: Version the web entrypoint
+        run: python tools/version_web_build.py
       - name: Fetch attributed public NFL schedule
         run: python tools/publish_snapshot.py --output build/web/data/snapshot.json
       - name: Restore price quota checkpoint

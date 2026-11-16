@@ -4,6 +4,13 @@ Cloudflare Worker for the one-page Coach app. It uses a Workers AI binding, a
 SQLite Durable Object for atomic pilot quotas/telemetry, and a two-minute cron.
 No AI credential is embedded in Flutter or committed to GitHub.
 
+Current deployment: https://coach-research.dds-dge.workers.dev
+
+The public app's hosting URL is configured. OAuth credentials are stored only in
+the ignored local CLI directory. Live planner and cited answer checks passed.
+Weather/roof telemetry is available; the unofficial injury source currently
+reports unavailable. No paid plan or new licensed feed was enabled.
+
 ## Deployment
 
 Use the official Wrangler CLI, sign in to the owner's Cloudflare account, then

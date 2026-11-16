@@ -11,7 +11,7 @@ export function reply(data, status=200, origin='') {
   return new Response(JSON.stringify(data), {status,headers:{'content-type':'application/json','cache-control':'no-store',...(origin?{'access-control-allow-origin':origin,'vary':'Origin'}:{})}});
 }
 export async function boundedJson(response, limit=2_000_000) {
-  if(!response.ok) throw new Error('Source unavailable');
+  if(!response.ok) throw new Error(`Source unavailable HTTP ${response.status}`);
   const reader=response.body.getReader();let size=0;const parts=[];
   while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>limit){await reader.cancel();throw new Error('Source too large');}parts.push(value);}
   const bytes=new Uint8Array(size);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.length;}
@@ -23,13 +23,14 @@ export function validateQuestion(body) {
 }
 export function parseModel(raw) {
   const text=typeof raw==='string'?raw:raw?.response;
+  if(text && typeof text==='object' && !Array.isArray(text) && JSON.stringify(text).length<=8000)return text;
   if(typeof text!=='string' || text.length>8000) throw new Error('Invalid model output');
   return JSON.parse(text.replace(/^\s*```(?:json)?\s*/,'').replace(/\s*```\s*$/,''));
 }
 async function sourceJson(url, limit) {
   const parsed=new URL(url);
   if(parsed.protocol!=='https:' || parsed.username || parsed.password) throw new Error('Invalid source');
-  return boundedJson(await fetch(url,{redirect:'error',signal:AbortSignal.timeout(12_000),headers:{'User-Agent':'Coach/1.0 (https://github.com/AddversitY/coach)','Accept':'application/json'}}),limit);
+  return boundedJson(await fetch(url,{redirect:'manual',signal:AbortSignal.timeout(12_000),headers:{'User-Agent':'Coach/1.0 (https://github.com/AddversitY/coach)','Accept':'application/json'}}),limit);
 }
 let evidenceCache;
 export function resetSourceCacheForTests(){evidenceCache=undefined;}

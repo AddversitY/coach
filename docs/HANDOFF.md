@@ -223,7 +223,19 @@ The deployment workflow publishes a compact dated player/event retrieval index.
 No additional odds credits, bet tracking, paid feed or subscription was added.
 See hosting/README.md for deployment and all remaining source/model limitations.
 
-The owner signed in to Cloudflare. Wrangler deployment authorization is still
-pending; do not claim the hosted AI is connected until OAuth succeeds, the
-Worker is deployed, health/source retrieval checked, and the Actions variable
-COACH_API_BASE_URL is configured for a rebuilt app. CLI credentials stay ignored.
+The owner authorized Wrangler and the service is deployed at
+https://coach-research.dds-dge.workers.dev. Health, live planning and grounded
+answer checks passed. COACH_API_BASE_URL is configured and the public rebuild
+succeeded. CLI credentials stay ignored. Workers JSON mode returns an object;
+the adapter handles both objects and JSON strings. Outbound requests use manual
+redirect mode (Workers rejects redirect:error) and reject redirect responses.
+
+Background telemetry runs on the two-minute schedule. NWS/roof metadata was
+observed; the unofficial injury source is currently unavailable and stays labeled
+unavailable. Sharp-money and licensed social feeds are not connected. No paid
+plan was enabled. Server logging used during setup was removed and the live log
+session closed.
+
+The web bootstrap retires only this app's deprecated Flutter cache worker.
+Release entrypoints use content-addressed filenames via version_web_build.py,
+with inline bootstrap, to prevent a cached guided-only app after hosting setup.

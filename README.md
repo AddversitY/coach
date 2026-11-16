@@ -2,7 +2,7 @@
 
 Sports research in one conversation. Ask about an NFL game, player, or prop line;
 Coach brings recorded evidence, charts and saved-price comparisons into the answer.
-The public app uses guided data responses until its hosted AI service is connected.
+Hosted Coach AI is connected through Cloudflare Workers AI. Guided evidence tools remain available if interpretation is unavailable.
 
 - [Open Coach](https://addversity.github.io/coach/)
 - [GitHub repository](https://github.com/AddversitY/coach)

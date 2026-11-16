@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker,{CoachState,normalizeInjuries,validatePlan,retrieve,parseModel,boundedJson} from './worker.mjs';
+import worker,{CoachState,normalizeInjuries,validatePlan,retrieve,parseModel,boundedJson,published,resetSourceCacheForTests} from './worker.mjs';
 
 const time=Date.now(),at=new Date(time).toISOString();
 const event={id:'e',home:'Buffalo Bills',away:'Kansas City Chiefs',startsAt:new Date(time+3600000).toISOString()};
@@ -55,4 +55,28 @@ test('retrieval excludes fixture, future, inconsistent and stale observations',(
     {...current.snapshot,props:{...current.snapshot.props,quotes:[{...quote,collectedAt:new Date(time-60000).toISOString()}]}},
     {...current.snapshot,props:{...current.snapshot.props,quotes:[{...quote,sourceAt:new Date(time-19*3600000).toISOString()}]}},
   ])assert.equal(prices({...current,snapshot:changed}).length,0);
+});
+
+test('Workers AI JSON mode accepts bounded parsed objects as well as JSON text',()=>{
+  const answer={answer:'Recorded evidence only',cited:['team_evidence']};
+  assert.deepEqual(parseModel({response:answer}),answer);
+  assert.deepEqual(parseModel({response:JSON.stringify(answer)}),answer);
+  assert.throws(()=>parseModel({response:{answer:'x'.repeat(8001)}}));
+  assert.throws(()=>parseModel({response:[]}));
+});
+
+test('source fetch uses Workers-compatible manual redirects and rejects redirected evidence',async()=>{
+  const original=globalThis.fetch;
+  resetSourceCacheForTests();
+  try{
+    globalThis.fetch=async(url,init)=>{
+      assert.equal(init.redirect,'manual');
+      const value=String(url).endsWith('coach-index.json')?{schemaVersion:1,players:[],events:[],cutoff:at.slice(0,10),retrievedAt:at}:{schemaVersion:1};
+      return Response.json(value);
+    };
+    const result=await published({},time);assert.equal(result.index.schemaVersion,1);
+    resetSourceCacheForTests();
+    globalThis.fetch=async()=>new Response('',{status:302,headers:{Location:'https://unapproved.example/'}});
+    await assert.rejects(published({},time),/Source unavailable/);
+  }finally{globalThis.fetch=original;resetSourceCacheForTests();}
 });
