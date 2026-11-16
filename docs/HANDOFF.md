@@ -3,8 +3,12 @@
 **Current product direction:** Coach is the only public page. Read
 [COACH_WORKSPACE.md](COACH_WORKSPACE.md) first. The older multi-page shell below
 is retained for component regression tests, not the public navigation. Hosted
-open-ended AI still needs a protected service and a server-only provider key;
-the current public release truthfully uses guided data responses until connected.
+open-ended AI runs through the protected Cloudflare service. The historical
+notes below describe earlier releases and must not override the current product
+direction. See [GAME_ANALYSIS.md](GAME_ANALYSIS.md) for the shared spread, total,
+moneyline and player-prop analysis and automatic internal forecast evaluation.
+The candidate has not demonstrated an edge; do not claim validated superiority.
+Personal bet logging remains outside the product scope.
 
 Odds Edge is an NFL odds app. It compares a price with the app's own chance. It does not tell the user to bet. The footer line is **Comparison, not a pick.**
 
