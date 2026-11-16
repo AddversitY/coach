@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {analyzeGame,outcome,resolveGame,validQuotes,playerProjection} from './game-analysis.mjs';
 import {forecastSnapshot,gradeForecast,addGrade,evaluationReport,validateBenchmark} from './forecast-evaluation.mjs';
 import {evaluationState} from './evaluation-state.mjs';
+import {shadowGame} from './shadow-forecast.mjs';
 
 const now=Date.UTC(2026,10,16,12),at=new Date(now).toISOString();
 const event={id:'nflverse:2026_11_BUF_KC',home:'Kansas City Chiefs',away:'Buffalo Bills',startsAt:new Date(now+3600000).toISOString()};
@@ -82,4 +83,35 @@ test('explicit dates and next week cannot silently select a different matchup',(
   assert.equal(resolveGame(data.index,'Analyze BUF next week',{},now).id,'later');
   assert.equal(resolveGame(data.index,'Analyze Bills on 2026-11-16',{},now).id,event.id);
   assert.equal(resolveGame(data.index,'Analyze Bills on 2026-11-19',{eventId:event.id},now),null);
+});
+
+test('independent shadow forecasts keep exact prices without borrowing market probabilities',()=>{
+  const data=source(gameQuotes()),e={...data.index.events[0],homeCode:'KC',awayCode:'BUF'};
+  const teams=['KC','BUF',...Array.from({length:30},(_,i)=>'T'+i)];
+  data.index.shadowScoreModel={...data.index.scoreModel,schemaVersion:1,version:'shadow',teams,coefficients:[20,3,...Array(64).fill(0)]};
+  const next=shadowGame(data,e);assert.ok(next);assert.equal(next.event.forecast.homeMean,23);
+  const result=analyzeGame(next.source,next.event,{now,anchorMarket:false});
+  const unpriced=analyzeGame({...next.source,snapshot:{props:{quotes:[]}}},next.event,{now,anchorMarket:false});
+  assert.equal(result.basis,'experimental_score_candidate');assert.equal(result.score.homeWin,unpriced.score.homeWin);
+  assert.ok(result.categories.find(c=>c.market==='spreads').rows.length);
+  assert.equal(data.index.scoreModel.version,'test');assert.equal(data.index.events[0].forecast.homeMean,24);
+  data.index.shadowScoreModel.validation={adopted:true,hasEdge:true};assert.equal(shadowGame(data,e),null);
+});
+
+test('serving and shadow evaluation cohorts remain separate through corrections',async()=>{
+  const values=new Map(),storage={get:async key=>structuredClone(values.get(key)),put:async(key,value)=>values.set(key,structuredClone(value)),transaction:async fn=>fn(storage)};
+  const state={storage},request=(path,body)=>evaluationState(state,path,new Request('https://internal'+path,{method:'POST',body:JSON.stringify(body)}));
+  const primary=forecastSnapshot(report([])),shadow={...structuredClone(primary),modelVersion:'shadow',id:`shadow:${event.id}:unpriced`};
+  shadow.rows[0].win=.95;shadow.rows[0].push=0;
+  await request('/forecast-capture',primary);
+  // Emulate a record captured by the original unscoped deployment.
+  values.delete('evaluation-model:'+primary.modelVersion);
+  await request('/forecast-capture',shadow);
+  const scores={eventId:event.id,homeScore:10,awayScore:30};
+  await request('/grade-batch',{hash:'a',results:[scores]});
+  const read=async()=> (await evaluationState(state,'/evaluation',new Request('https://internal/evaluation?modelVersion='+encodeURIComponent(primary.modelVersion)))).json();
+  let result=await read();assert.equal(result.capturedGames,1);assert.equal(result.gradedGames,1);assert.equal(result.models.length,2);
+  const other=result.models.find(m=>m.role==='shadow');assert.equal(other.gradedGames,1);assert.notEqual(result.markets[0].brier,other.markets[0].brier);
+  await request('/grade-batch',{hash:'b',results:[{...scores,homeScore:40}]});
+  result=await read();assert.equal(result.gradedGames,1);assert.equal(result.pendingGames,0);assert.equal(result.models.find(m=>m.role==='shadow').markets[0].games,1);
 });

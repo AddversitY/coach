@@ -42,14 +42,14 @@ def features(home,away,neutral=False):
     result[1,2+a]=result[0,34+a]=1
     return result
 
-def fit(rows,as_of):
+def fit(rows,as_of,*,ridge=RIDGE,half_life=HALF_LIFE):
     rows=[r for r in rows if 0<(as_of-date.fromisoformat(r['date'])).days<=WINDOW_DAYS]
     if len(rows)<MIN_TRAIN:
         raise ValueError('Insufficient strictly earlier score observations')
     x=np.concatenate([features(r['home'],r['away'],r.get('neutral',False)) for r in rows])
     y=np.array([score for r in rows for score in [r['homeScore'],r['awayScore']]],dtype=float)
-    weights=np.repeat([.5**((as_of-date.fromisoformat(r['date'])).days/HALF_LIFE) for r in rows],2)
-    penalty=np.full(66,RIDGE);penalty[0]=0;penalty[1]=4
+    weights=np.repeat([.5**((as_of-date.fromisoformat(r['date'])).days/half_life) for r in rows],2)
+    penalty=np.full(66,ridge);penalty[0]=0;penalty[1]=4
     coefficients=np.linalg.solve(x.T@(weights[:,None]*x)+np.diag(penalty),x.T@(weights*y))
     return coefficients,len(rows)
 

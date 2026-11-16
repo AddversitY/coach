@@ -1,6 +1,7 @@
 import {analyzeGame,resolveGame,requestedBook} from './game-analysis.mjs';
 import {forecastSnapshot,validateBenchmark,benchmarkTargets} from './forecast-evaluation.mjs';
 import {evaluationState} from './evaluation-state.mjs';
+import {shadowGame} from './shadow-forecast.mjs';
 import {collectInjuries,collectNews,injuryReports,marketMovements,marketSplitReports,recent} from './live-sources.mjs';
 /* Coach's bounded hosted interpreter and telemetry coordinator. No bookmaker
  * credential is needed here: reading published observations spends no odds credits. */
@@ -244,9 +245,14 @@ async function benchmarkForecast(env,request,snapshot){
   await state(env).fetch(new Request('https://internal/benchmark-save',{method:'POST',body:JSON.stringify({id:snapshot.id,result})}));
 }
 async function recordResearch(env,source){
+  const observations=await telemetry(env);
   for(const event of source.index.events){
     if(Date.parse(event.startsAt)<=Date.now()||Date.parse(event.startsAt)-Date.now()>24*3600000)continue;
-    try{await captureForecast(env,analyzeGame(source,event,{telemetry:await telemetry(env)}),source);}catch{/* Keep source collection available if a forecast is missing. */}
+    try{
+      await captureForecast(env,analyzeGame(source,event,{telemetry:observations}),source);
+      const shadow=shadowGame(source,event);
+      if(shadow)await captureForecast(env,analyzeGame(shadow.source,shadow.event,{telemetry:observations,anchorMarket:false}),shadow.source);
+    }catch{/* Keep source collection available if a forecast is missing. */}
   }
   if(Array.isArray(source.index.results))await state(env).fetch(new Request('https://internal/grade-batch',{method:'POST',body:JSON.stringify({hash:await digest(JSON.stringify(source.index.results)),results:source.index.results})}));
 }
@@ -257,7 +263,11 @@ export default {
     if(request.method==='OPTIONS')return new Response(null,{status:origin===allowed?204:403,headers:{'access-control-allow-origin':allowed,'access-control-allow-methods':'GET, POST, OPTIONS','access-control-allow-headers':'content-type','vary':'Origin'}});
     if(url.pathname==='/health')return reply({service:'Coach',version:VERSION,aiConfigured:!!env.AI,telemetryConfigured:!!env.STATE,model:env.MODEL||MODEL_DEFAULT});
     if(request.method==='GET'&&url.pathname==='/v1/evaluation'){
-      try{return reply(await (await state(env).fetch(new Request('https://internal/evaluation'))).json(),200,origin===allowed?allowed:'');}catch{return reply({error:'Evaluation unavailable'},503,origin===allowed?allowed:'');}
+      try{
+        const source=await published(env),version=source.index.scoreModel?.version+'/game-analysis-v1';
+        const report=await (await state(env).fetch(new Request('https://internal/evaluation?modelVersion='+encodeURIComponent(version)))).json();
+        return reply({...report,historical:source.index.forecastLab||null},200,origin===allowed?allowed:'');
+      }catch{return reply({error:'Evaluation unavailable'},503,origin===allowed?allowed:'');}
     }
     if(request.method==='GET'&&url.pathname==='/v1/telemetry'){
       try{return reply(await telemetry(env)||{schemaVersion:1,checkedAt:'1970-01-01T00:00:00Z',observations:[],sources:[{id:'telemetry',state:'not_checked'}]},200,origin===allowed?allowed:'');}catch{return reply({error:'Telemetry unavailable'},503,origin===allowed?allowed:'');}

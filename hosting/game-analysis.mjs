@@ -127,11 +127,11 @@ function propChance(projection,selection){
 }
 function percentile(samples,key,p){const rows=samples.map(r=>[key(r),r[2]]).sort((a,b)=>a[0]-b[0]);let total=0;for(const row of rows){total+=row[1];if(total>=p)return row[0];}return rows.at(-1)[0];}
 
-export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null}={}){
+export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=null,anchorMarket=true}={}){
   if(!event||Date.parse(event.startsAt)<=now)throw new Error('Upcoming game required');
   const model=source.index.scoreModel;
   if(!model||!fresh(model.trainedAt,now,22*86400000)||!fresh(model.cutoff+'T00:00:00Z',now,22*86400000))throw new Error('Forecast model unavailable');
-  const quotes=validQuotes(source,event,now),distribution=scoreSamples(source,event,quotes);
+  const quotes=validQuotes(source,event,now),distribution=scoreSamples(source,event,anchorMarket?quotes:[]);
   if(!distribution)throw new Error('Score forecast unavailable');
   const live=telemetry&&fresh(telemetry.checkedAt,now,5*60000)?telemetry:null;
   const injury=live?.observations.filter(o=>o.eventId===event.id&&o.kind==='injury'&&fresh(o.observedAt,now,12*60000))||[];

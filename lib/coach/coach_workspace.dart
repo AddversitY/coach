@@ -343,7 +343,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final at = now;
     String resolved = question;
     String? planned;
-    if (api != null) {
+    final directEvaluation = RegExp(
+      r'coach.*perform|forecast results|model results|evaluation|benchmark',
+    ).hasMatch(question.toLowerCase());
+    if (api != null && !directEvaluation) {
       try {
         final plan = await api!
             .coachPlan({
@@ -381,9 +384,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           r'\b(simulate|simulation|parlay|joint|stress|robust|rank|optimize)\b',
         ).hasMatch(lower) ||
         {'joint_probability', 'stress_test', 'robust_rank'}.contains(planned);
-    final wantsEvaluation = RegExp(
-      r'coach.*perform|forecast results|model results|evaluation|benchmark',
-    ).hasMatch(lower);
+    final wantsEvaluation =
+        directEvaluation ||
+        RegExp(
+          r'coach.*perform|forecast results|model results|evaluation|benchmark',
+        ).hasMatch(lower);
     final wantsGame =
         (api != null || widget.gameAnalysisLoader != null) &&
         !wantsLive &&
@@ -1488,12 +1493,87 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               ],
             ),
           ),
+        if (report['historical'] is Map)
+          _researchProgress(Map<String, dynamic>.from(report['historical'])),
+        for (final model in report['models'] as List? ?? [])
+          if (model['role'] == 'shadow')
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(
+                'Background challenger: ${model['gradedGames'] ?? 0} graded games · ${model['pendingGames'] ?? 0} awaiting results. Separate from the serving model.',
+                style: CoachType.label,
+              ),
+            ),
         const SizedBox(height: 14),
         Text(
           '${report['notice'] ?? 'No settled forecasts yet. No profits or predictive advantage are claimed.'}',
           style: CoachType.label,
         ),
       ],
+    );
+  }
+
+  Widget _researchProgress(Map<String, dynamic> lab) {
+    const labels = {
+      'moneyline': 'Moneyline',
+      'spreads': 'Spread',
+      'totals': 'Game total',
+    };
+    final markets = lab['markets'] as Map? ?? {};
+    String error(dynamic v) => v is num ? v.toStringAsFixed(3) : '—';
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        title: Text(
+          'Research progress',
+          style: CoachType.title.copyWith(fontSize: 20),
+        ),
+        subtitle: Text(
+          'A research candidate is being tested in the background.',
+          style: CoachType.label,
+        ),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Settings selected using seasons before 2025. Retrospective evaluation on ${lab['evaluationGames']} later games; counts vary by available market and pushes.',
+                  style: CoachType.label,
+                ),
+                const SizedBox(height: 12),
+                for (final name in labels.keys)
+                  if (markets[name] is Map)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${labels[name]} · ${markets[name]['games']} games',
+                            style: CoachType.body.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            'Forecast error · Current ${error(markets[name]['incumbentBrier'])} / Candidate ${error(markets[name]['brier'])} / Market ${error(markets[name]['marketBrier'])}',
+                            style: CoachType.label,
+                          ),
+                        ],
+                      ),
+                    ),
+                Text(
+                  'Lower error is better. The candidate remains experimental and is not used for recommendations. Historical closing prices do not establish obtainable returns or superiority to AI.',
+                  style: CoachType.label,
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

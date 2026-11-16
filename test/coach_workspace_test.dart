@@ -276,6 +276,20 @@ void main() {
             'unresolved': 0,
             'markets': [],
             'notice': 'No settled forecasts yet.',
+            'historical': {
+              'evaluationGames': 409,
+              'markets': {
+                'moneyline': {
+                  'games': 407,
+                  'incumbentBrier': .238,
+                  'brier': .226,
+                  'marketBrier': .213,
+                },
+              },
+            },
+            'models': [
+              {'role': 'shadow', 'gradedGames': 0, 'pendingGames': 1},
+            ],
           },
         ),
       );
@@ -300,6 +314,17 @@ void main() {
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
+      expect(
+        find.textContaining('Background challenger: 0 graded'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Research progress'));
+      await tester.tap(find.text('Research progress'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Current 0.238 / Candidate 0.226 / Market 0.213'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },

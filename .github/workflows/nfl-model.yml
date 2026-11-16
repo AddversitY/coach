@@ -47,12 +47,15 @@ jobs:
       - name: Train the fixed game-score candidate
         run: python model/game_forecast.py --schedule model/.cache/games.csv
 
+      - name: Evaluate the shadow challenger on separate seasons
+        run: python model/forecast_lab.py --schedule model/.cache/games.csv
+
       - name: Commit a refreshed model report
         if: github.event_name != 'pull_request'
         run: |
           git config user.name "odds-edge-model"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json
+          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json
           if git diff --cached --quiet; then
             echo "Model reports unchanged."
           else

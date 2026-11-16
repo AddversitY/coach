@@ -30,5 +30,15 @@ class CoachIndexTests(unittest.TestCase):
         self.assertEqual(result['events'][0]['homeCode'],'KC')
         self.assertEqual(len(result['results']),1)
         self.assertEqual(result['results'][0]['playerStats']['p']['passing_yards'],250)
+        import hashlib,json
+        shadow=dict(model,teams=sorted(TEAMS),validation={'adopted':False,'hasEdge':False})
+        lab={'schemaVersion':1,'generatedAt':'2026-11-15T10:00:00Z','cutoff':history['cutoff'],
+             'sourceHash':hashlib.sha256(json.dumps(history,sort_keys=True).encode()).hexdigest(),
+             'challengerModel':shadow,'decision':{'adopted':False,'hasEdge':False}}
+        indexed=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
+        self.assertEqual(indexed['shadowScoreModel']['teams'],sorted(TEAMS))
+        self.assertNotIn('challengerModel',indexed['forecastLab'])
+        lab['sourceHash']='wrong'
+        with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
         model['trainedAt']='2026-11-20T00:00:00Z'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history)

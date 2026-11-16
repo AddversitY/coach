@@ -67,6 +67,43 @@ continuous live-price service. Unsupported games/books/markets remain unavailabl
 
 ## Automatic forward evaluation
 
+### Challenger research
+
+`model/forecast_lab.py` now selects from a declared six-member ridge/recency
+grid using only seasons before 2025 and an earlier-week score-error objective.
+Later-season labels are excluded from parameter selection. The selected ridge-8,
+180-day candidate is then evaluated on 409 games from 2025 onward. This is a
+retrospective comparison: earlier v1 aggregate reports already included these
+seasons. It is not a newly untouched confirmation dataset.
+
+| Market | Paired games | Current Brier | Challenger Brier | Market Brier |
+| --- | ---: | ---: | ---: | ---: |
+| Moneyline | 407 | 0.2384 | 0.2257 | 0.2133 |
+| Spread | 402 | 0.2724 | 0.2677 | 0.2498 |
+| Total | 409 | 0.2679 | 0.2596 | 0.2504 |
+
+The challenger improved both Brier and log loss over the incumbent on all three
+markets but **did not clear the market gate**. `assets/forecast-lab.json` includes
+all development candidates, season slices, calibration buckets, paired 95%
+week-block bootstrap intervals and source hashes. Actual paired historical odds
+are required here; missing odds are not replaced by an artificial 50% market.
+Intervals are exploratory and are not adjusted for multiple comparisons.
+
+The challenger remains `shadow_only`, `adopted:false`, `hasEdge:false`. Its
+independent forecasts are captured by the existing coordinator within 24 hours
+of kickoff, using the same public sources and saved prices. Market prices do not
+anchor these shadow probabilities. No extra odds requests or AI benchmark calls
+are made for the shadow trial, and it cannot change the user-facing predictions.
+Serving and challenger evaluation counts and errors are stored separately by
+model version, including corrections and migration of the original cohort.
+Ask **Coach performance**, then open **Research progress** to see the comparison.
+This explicit request loads the report without spending an AI planner call.
+
+The weekly model workflow refreshes the research artifact. Its dated history
+hash must match the published result source before the challenger can be indexed.
+Different team-array orders are preserved because coefficients use that exact
+model's team order.
+
 `GET /v1/evaluation` and **Coach performance** show the model's research record.
 The background coordinator captures the first available forecast within 24 hours
 of kickoff for each game/model, plus the first priced cohort when available.
