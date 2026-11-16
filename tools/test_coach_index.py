@@ -38,6 +38,11 @@ class CoachIndexTests(unittest.TestCase):
         indexed=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
         self.assertEqual(indexed['shadowScoreModel']['teams'],sorted(TEAMS))
         self.assertNotIn('challengerModel',indexed['forecastLab'])
+        self.assertTrue(indexed['forecastLab']['matchesLatestHistory'])
+        lab['sourceHash']='0'*64
+        newer=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
+        self.assertFalse(newer['forecastLab']['matchesLatestHistory'])
+        self.assertIsNotNone(newer['shadowScoreModel'])
         lab['sourceHash']='wrong'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,lab)
         model['trainedAt']='2026-11-20T00:00:00Z'

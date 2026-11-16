@@ -80,13 +80,14 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
         generated=datetime.fromisoformat(forecast_lab['generatedAt'].replace('Z','+00:00'))
         trained=datetime.fromisoformat(shadow['trainedAt'].replace('Z','+00:00'))
         if (forecast_lab.get('schemaVersion')!=1 or generated.tzinfo is None or generated>now or trained.tzinfo is None or trained>now
-            or not game_history or forecast_lab.get('sourceHash')!=hashlib.sha256(json.dumps(game_history,sort_keys=True).encode()).hexdigest()
-            or forecast_lab['cutoff']!=game_history['cutoff'] or shadow['cutoff']!=forecast_lab['cutoff']
+            or not game_history or not isinstance(forecast_lab.get('sourceHash'),str) or len(forecast_lab['sourceHash'])!=64 or any(c not in '0123456789abcdef' for c in forecast_lab['sourceHash'])
+            or forecast_lab['cutoff']>game_history['cutoff'] or shadow['cutoff']!=forecast_lab['cutoff']
             or (now.date()-datetime.fromisoformat(shadow['cutoff']).date()).days>21
             or len(shadow.get('teams',[]))!=32 or set(shadow['teams'])!=set(TEAMS) or len(shadow['coefficients'])!=66 or not 120<=len(shadow['residuals'])<=1000
             or forecast_lab['decision'].get('adopted') is not False or forecast_lab['decision'].get('hasEdge') is not False):
             raise ValueError('Invalid shadow research provenance')
         lab={k:v for k,v in forecast_lab.items() if k!='challengerModel'}
+        lab['matchesLatestHistory']=forecast_lab['sourceHash']==hashlib.sha256(json.dumps(game_history,sort_keys=True).encode()).hexdigest()
     return {'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
         'retrievedAt':iso(retrieved),'evidenceHash':hashlib.sha256(json.dumps(dataset,sort_keys=True).encode()).hexdigest(),
         'events':events,'players':players,'notice':'Recorded participants, not confirmed rosters. Marginal probabilities are not validated live forecasts.'}

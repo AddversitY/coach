@@ -100,7 +100,10 @@ Ask **Coach performance**, then open **Research progress** to see the comparison
 This explicit request loads the report without spending an AI planner call.
 
 The weekly model workflow refreshes the research artifact. Its dated history
-hash must match the published result source before the challenger can be indexed.
+hash identifies the training/evaluation vintage. New daily result publications
+may legitimately be newer than that frozen vintage; `matchesLatestHistory` makes
+that distinction explicit, and training cutoffs cannot exceed the result source.
+Models older than 21 days are rejected by the publisher.
 Different team-array orders are preserved because coefficients use that exact
 model's team order.
 

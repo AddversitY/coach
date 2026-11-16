@@ -1540,7 +1540,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Settings selected using seasons before 2025. Retrospective evaluation on ${lab['evaluationGames']} later games; counts vary by available market and pushes.',
+                  'Evidence through ${lab['cutoff'] ?? 'the dated research source'}. Settings selected using seasons before 2025. Retrospective evaluation on ${lab['evaluationGames']} later games; counts vary by available market and pushes.',
                   style: CoachType.label,
                 ),
                 const SizedBox(height: 12),
