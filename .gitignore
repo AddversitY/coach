@@ -57,3 +57,6 @@ app.*.map.json
 
 # Hosted service dependencies
 hosting/node_modules/
+
+# Local hosting tool cache
+/.wrangler/
