@@ -1,3 +1,4 @@
+import {validPregameBenchmark,headToHead} from './head-to-head.mjs';
 import {attachCalibration,calibrationSummary} from './calibration-trial.mjs';
 import {gradeWorkloads,addWorkloadGrade,workloadReport} from './workload-scoring.mjs';
 import {outcome} from './game-analysis.mjs';
@@ -7,7 +8,7 @@ const mean=a=>a.length?a.reduce((sum,x)=>sum+x,0)/a.length:null;
 export function forecastSnapshot(report){
   const kick=Date.parse(report.event.startsAt),captured=Date.parse(report.createdAt);
   if(!Number.isFinite(kick)||!Number.isFinite(captured)||captured>=kick||kick-captured>24*3600000)return null;
-  const priced=report.categories.flatMap(c=>c.rows.slice(0,c.market==='props'?18:12));
+  const priced=report.categories.flatMap(c=>[...c.rows].sort((a,b)=>JSON.stringify(a.selection).localeCompare(JSON.stringify(b.selection))||String(a.book).localeCompare(String(b.book))).slice(0,c.market==='props'?18:12));
   const rows=priced.length?priced.map(r=>({id:r.id,playerId:r.playerId,threeWay:r.threeWay,selection:r.selection,decimal:r.decimal,win:r.win,push:r.push,baseline:r.baseline,sourceAt:r.sourceAt,collectedAt:r.collectedAt,book:r.book,rulesVerified:false,forecastBasis:r.forecastBasis})):[{
     id:'home-moneyline-no-price',selection:{eventId:report.event.id,market:'h2h',outcome:report.event.home,participant:'',point:null,period:'full_game',rules:'unpriced_research'},decimal:null,win:report.score.homeWin,push:report.score.tie,baseline:report.baselineHomeWin??null,forecastBasis:report.basis,rulesVerified:false,
   }];
@@ -34,7 +35,7 @@ export function gradeForecast(snapshot,result){
     results.push({market,push:false,priced:!!row.decimal,probability:p,actual:y,calibrationBrier:Number.isFinite(calibrationP)?(calibrationP-y)**2:null,calibrationLogLoss:Number.isFinite(calibrationP)?logLoss(calibrationP,y):null,brier:(p-y)**2,logLoss:logLoss(p,y),
       servingBrier:Number.isFinite(servingP)?(servingP-y)**2:null,servingLogLoss:Number.isFinite(servingP)?logLoss(servingP,y):null,
       baselineBrier:Number.isFinite(baseline)?(baseline-y)**2:null,baselineLogLoss:Number.isFinite(baseline)?logLoss(baseline,y):null,
-      aiBrier:Number.isFinite(aiP)?(aiP-y)**2:null,aiLogLoss:Number.isFinite(aiP)?logLoss(aiP,y):null,
+      aiBrier:Number.isFinite(aiP)?(aiP-y)**2:null,aiLogLoss:Number.isFinite(aiP)?logLoss(aiP,y):null,headEligible:validPregameBenchmark(snapshot),
       hypotheticalReturn:row.decimal?(y?row.decimal-1:-1):null});
   }
   const markets={};
@@ -42,8 +43,9 @@ export function gradeForecast(snapshot,result){
     const all=results.filter(r=>r.market===market),decided=all.filter(r=>!r.push),paired=decided.filter(r=>r.baselineBrier!=null),ai=decided.filter(r=>r.aiBrier!=null),serving=decided.filter(r=>r.servingBrier!=null);
     if(!all.length)continue;
     const matched=paired.filter(r=>r.priced),calibrated=decided.filter(r=>r.calibrationBrier!=null);
+    const head=matched.filter(r=>r.aiBrier!=null&&r.headEligible);
     const calibration=Array.from({length:5},(_,bin)=>{const rows=decided.filter(r=>Math.min(4,Math.floor(r.probability*5))===bin);return {bin,observations:rows.length,predicted:mean(rows.map(r=>r.probability)),observed:mean(rows.map(r=>r.actual))};}).filter(b=>b.observations);
-    markets[market]={calibrationPairs:calibrated.length,calibrationBrierDelta:mean(calibrated.map(r=>r.calibrationBrier-r.brier)),calibrationLogDelta:mean(calibrated.map(r=>r.calibrationLogLoss-r.logLoss)),calibration,priceMatchedPairs:matched.length,priceMatchedBrierDelta:mean(matched.map(r=>r.brier-r.baselineBrier)),priceMatchedLogDelta:mean(matched.map(r=>r.logLoss-r.baselineLogLoss)),servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
+    markets[market]={headModel:head.length?snapshot.benchmarkModel:null,headPairs:head.length,headCoachBrier:mean(head.map(r=>r.brier)),headAiBrier:mean(head.map(r=>r.aiBrier)),headMarketBrier:mean(head.map(r=>r.baselineBrier)),headCoachLog:mean(head.map(r=>r.logLoss)),headAiLog:mean(head.map(r=>r.aiLogLoss)),headMarketLog:mean(head.map(r=>r.baselineLogLoss)),calibrationPairs:calibrated.length,calibrationBrierDelta:mean(calibrated.map(r=>r.calibrationBrier-r.brier)),calibrationLogDelta:mean(calibrated.map(r=>r.calibrationLogLoss-r.logLoss)),calibration,priceMatchedPairs:matched.length,priceMatchedBrierDelta:mean(matched.map(r=>r.brier-r.baselineBrier)),priceMatchedLogDelta:mean(matched.map(r=>r.logLoss-r.baselineLogLoss)),servingPairs:serving.length,servingPairedBrier:mean(serving.map(r=>r.brier)),servingBrier:mean(serving.map(r=>r.servingBrier)),servingPairedLogLoss:mean(serving.map(r=>r.logLoss)),servingLogLoss:mean(serving.map(r=>r.servingLogLoss)),observations:all.length,decided:decided.length,pushes:all.length-decided.length,brier:mean(decided.map(r=>r.brier)),logLoss:mean(decided.map(r=>r.logLoss)),
       baselinePairs:paired.length,pairedBrier:mean(paired.map(r=>r.brier)),baselineBrier:mean(paired.map(r=>r.baselineBrier)),pairedLogLoss:mean(paired.map(r=>r.logLoss)),baselineLogLoss:mean(paired.map(r=>r.baselineLogLoss)),
       aiPairs:ai.length,aiPairedBrier:mean(ai.map(r=>r.brier)),aiBrier:mean(ai.map(r=>r.aiBrier)),aiPairedLogLoss:mean(ai.map(r=>r.logLoss)),aiLogLoss:mean(ai.map(r=>r.aiLogLoss)),
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
@@ -55,6 +57,7 @@ export function gradeForecast(snapshot,result){
 export function addGrade(aggregate,grade,direction=1){
   for(const [market,row] of Object.entries(grade.markets)){
     const current=aggregate[market]||{games:0,observations:0,pushes:0,probabilityGames:0,baselineGames:0,aiGames:0};
+    if(row.headPairs){current.headModels ||= {};current.headModels[row.headModel]=(current.headModels[row.headModel]||0)+direction;current.headGames=(current.headGames||0)+direction;current.headObservations=(current.headObservations||0)+direction*row.headPairs;for(const key of ['headCoachBrier','headAiBrier','headMarketBrier','headCoachLog','headAiLog','headMarketLog'])current[key]=(current[key]||0)+direction*row[key];}
     if(row.calibrationPairs){current.calibrationGames=(current.calibrationGames||0)+direction;current.calibrationBrierDelta=(current.calibrationBrierDelta||0)+direction*row.calibrationBrierDelta;current.calibrationLogDelta=(current.calibrationLogDelta||0)+direction*row.calibrationLogDelta;}
     if(row.priceMatchedPairs){
       current.priceMatchedGames=(current.priceMatchedGames||0)+direction;
@@ -90,7 +93,7 @@ function priceComparison(row){
 }
 export function evaluationReport(aggregate,counts){
   return {schemaVersion:1,mode:'prospective_research',...counts,hasEdge:false,workloads:workloadReport(aggregate),markets:Object.entries(aggregate).filter(([,row])=>row.kind!=='workload').map(([market,row])=>({market,games:row.games,observations:row.observations,pushes:row.pushes,
-    calibrationTrial:calibrationSummary(row),priceComparison:priceComparison(row),calibration:Object.entries(row.calibration||{}).filter(([,b])=>b.games>0).map(([bin,b])=>({lower:Number(bin)/5,upper:(Number(bin)+1)/5,games:b.games,observations:b.observations,predicted:b.predicted/b.games,observed:b.observed/b.games})),
+    headToHead:headToHead(row),calibrationTrial:calibrationSummary(row),priceComparison:priceComparison(row),calibration:Object.entries(row.calibration||{}).filter(([,b])=>b.games>0).map(([bin,b])=>({lower:Number(bin)/5,upper:(Number(bin)+1)/5,games:b.games,observations:b.observations,predicted:b.predicted/b.games,observed:b.observed/b.games})),
     servingGames:row.servingGames||0,servingPairedBrier:row.servingGames?row.servingPairedBrier/row.servingGames:null,servingBrier:row.servingGames?row.servingBrier/row.servingGames:null,
     brier:row.probabilityGames?row.brier/row.probabilityGames:null,logLoss:row.probabilityGames?row.logLoss/row.probabilityGames:null,
     baselineGames:row.baselineGames,pairedBrier:row.baselineGames?row.pairedBrier/row.baselineGames:null,baselineBrier:row.baselineGames?row.baselineBrier/row.baselineGames:null,
@@ -102,11 +105,13 @@ export function evaluationReport(aggregate,counts){
 
 export function benchmarkTargets(snapshot){
   const chosen=[],seen=new Set();
+  const rows=[...snapshot.rows].sort((a,b)=>JSON.stringify(a.selection).localeCompare(JSON.stringify(b.selection))||String(a.book).localeCompare(String(b.book)));
+  const ordered=snapshot.benchmarkPromptVersion==='fair-source-context-v3'?rows:snapshot.rows;
   const take=row=>{const identity=JSON.stringify(row.selection);if(!seen.has(identity)){seen.add(identity);chosen.push(row);}};
   for(const market of ['spreads','totals','h2h','props']){
-    const row=snapshot.rows.find(r=>market==='props'?r.selection.market.startsWith('player_'):r.selection.market===market);if(row)take(row);
+    const row=ordered.find(r=>market==='props'?r.selection.market.startsWith('player_'):r.selection.market===market);if(row)take(row);
   }
-  for(const row of snapshot.rows){if(chosen.length>=6)break;take(row);}
+  for(const row of ordered){if(chosen.length>=6)break;take(row);}
   return chosen.slice(0,6);
 }
 

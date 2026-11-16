@@ -764,7 +764,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. Injury listings are unofficial, weather is a forecast, and headlines are attributed reports. Source availability is shown below.',
+              'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. General injury listings are unofficial; named NFL.com inactive reports are checked near kickoff. Weather is a forecast, and headlines are attributed reports. Source availability is shown below.',
               style: CoachType.label,
             ),
             if (telemetryError != null)
@@ -1924,6 +1924,86 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _headToHeadView(Map<String, dynamic> report) {
+    String number(dynamic value) =>
+        value is num ? value.toStringAsFixed(3) : '—';
+    final coverage = report['benchmarkCoverage'] as Map? ?? {};
+    final protocol = report['headToHeadProtocol'] as Map?;
+    const labels = {
+      'h2h': 'Moneyline',
+      'spreads': 'Spread',
+      'totals': 'Game total',
+      'props': 'Player props',
+    };
+    final markets = (report['markets'] as List? ?? []).whereType<Map>();
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Coach vs AI vs market',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: const Text(
+        'Matched pregame predictions · no proven winner',
+        style: CoachType.label,
+      ),
+      children: [
+        Text(
+          'AI baselines · ${coverage['fair_available'] ?? 0} complete · ${coverage['fair_partial'] ?? 0} partial · ${coverage['fair_waiting_for_quota'] ?? 0} waiting for quota · ${(coverage['fair_unavailable'] as num? ?? 0) + (coverage['fair_late'] as num? ?? 0) + (coverage['fair_expired'] as num? ?? 0)} unavailable or late. Older protocols are excluded.',
+          style: CoachType.label,
+        ),
+        if (protocol != null)
+          Text('${protocol['notice']}', style: CoachType.label),
+        for (final market in labels.keys)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Builder(
+                builder: (context) {
+                  final row = markets
+                      .where((r) => r['market'] == market)
+                      .firstOrNull;
+                  final head = row?['headToHead'] as Map?;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${labels[market]} · ${head?['games'] ?? 0} matched games',
+                        style: CoachType.body,
+                      ),
+                      if ((head?['games'] as num? ?? 0) > 0) ...[
+                        Text(
+                          'Brier error · Coach ${number(head?['coachBrier'])} / AI ${number(head?['aiBrier'])} / Market ${number(head?['marketBrier'])}',
+                          style: CoachType.label,
+                        ),
+                        Text(
+                          'Log loss · Coach ${number(head?['coachLogLoss'])} / AI ${number(head?['aiLogLoss'])} / Market ${number(head?['marketLogLoss'])}',
+                          style: CoachType.label,
+                        ),
+                        if (head?['status'] == 'mixed_models_not_comparable')
+                          const Text(
+                            'AI model versions changed; combined scores are withheld.',
+                            style: CoachType.label,
+                          ),
+                      ] else
+                        const Text(
+                          'No completed three-way comparison yet.',
+                          style: CoachType.label,
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        const Text(
+          'Lower error is better. Missing AI replies are never counted as Coach wins. This tests one configured AI using frozen public context; it does not establish profitability or superiority to every AI.',
+          style: CoachType.label,
+        ),
+      ],
+    );
+  }
+
   Widget _evaluationView(Map<String, dynamic> report) {
     const labels = {
       'h2h': 'Moneyline',
@@ -1943,6 +2023,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         ),
         if (report['audit'] is Map)
           _accuracyAuditView(Map<String, dynamic>.from(report['audit'])),
+        _headToHeadView(report),
         for (final row in report['markets'] as List? ?? [])
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -1988,11 +2069,6 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 if ((row['baselineGames'] as num? ?? 0) > 0)
                   Text(
                     'Same-observation comparison on ${row['baselineGames']} games: Coach ${value(row['pairedBrier'])}, market/reference ${value(row['baselineBrier'])}.',
-                    style: CoachType.label,
-                  ),
-                if ((row['aiGames'] as num? ?? 0) > 0)
-                  Text(
-                    'Paired generic-model baseline on ${row['aiGames']} games: Coach ${value(row['aiPairedBrier'])}, AI ${value(row['aiBrier'])}.',
                     style: CoachType.label,
                   ),
               ],
@@ -2537,7 +2613,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 };
                 final detail = switch (row.kind) {
                   'injury' =>
-                    'Reported ${_reportTime(v['reportedUpdatedAt'])}. This listing does not confirm availability for the next game.',
+                    row.confirmed &&
+                            row.source == 'NFL.com official inactive report'
+                        ? 'Official inactive designation for this exact game. Published ${_reportTime(v['reportedUpdatedAt'])}. Omitted players are not confirmed active or starting.'
+                        : 'Reported ${_reportTime(v['reportedUpdatedAt'])}. This listing does not confirm availability for the next game.',
                   'news' =>
                     '${v['author'] ?? 'ESPN'} · Published ${_reportTime(v['publishedAt'])}',
                   'weather' =>

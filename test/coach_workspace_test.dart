@@ -290,6 +290,10 @@ void main() {
             return result;
           },
           evaluationLoader: () async => {
+            'benchmarkCoverage': {'fair_available': 1, 'fair_unavailable': 1},
+            'headToHeadProtocol': {
+              'notice': 'Same frozen facts; current configured AI only.',
+            },
             'audit': {
               'gradedGames': 0,
               'pendingGames': 1,
@@ -314,6 +318,15 @@ void main() {
             'markets': [
               {
                 'market': 'spreads',
+                'headToHead': {
+                  'games': 1,
+                  'coachBrier': 0.2,
+                  'aiBrier': 0.3,
+                  'marketBrier': 0.25,
+                  'coachLogLoss': 0.5,
+                  'aiLogLoss': 0.7,
+                  'marketLogLoss': 0.6,
+                },
                 'games': 1,
                 'brier': 0.2,
                 'priceComparison': {
@@ -435,6 +448,21 @@ void main() {
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
+      await tester.ensureVisible(find.text('Coach vs AI vs market'));
+      await tester.tap(find.text('Coach vs AI vs market'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining(
+          'Brier error · Coach 0.200 / AI 0.300 / Market 0.250',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining(
+          'Missing AI replies are never counted as Coach wins',
+        ),
+        findsOneWidget,
+      );
       await tester.ensureVisible(find.text('Accuracy audit'));
       await tester.tap(find.text('Accuracy audit'));
       await tester.pumpAndSettle();

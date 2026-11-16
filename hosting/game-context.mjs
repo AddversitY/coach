@@ -62,7 +62,7 @@ export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
   const sources=[...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...(reports.length?[{id:'availability',source:'ESPN injury feed (unofficial)',url:'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}]:[])];
   return {schemaVersion:1,version:'role-context-v1',eventId:event.id,createdAt:new Date(now).toISOString(),cutoff:usable?data.cutoff:null,teams,alerts,weather,sources,
     readiness:usable?'descriptive_context':'context_unavailable',adjustmentsApplied:false,
-    participation:{state:'unconfirmed',officialActiveListAvailable:false,confirmedStartersAvailable:false,reportedConcerns:reports.filter(o=>CONCERN.has(String(o.value?.status).toLowerCase())).length,checkedAt:injuries.map(o=>o.observedAt).sort().at(-1)||null,notice:'Only unofficial reports and recorded participation are connected. A missing report or Active label does not confirm next-game availability or a starting role.'},
+    participation:{state:'unconfirmed',officialActiveListAvailable:false,confirmedStartersAvailable:false,officialNamedInactives:injuries.filter(o=>o.confirmed===true&&o.source==='NFL.com official inactive report').length,reportedConcerns:reports.filter(o=>CONCERN.has(String(o.value?.status).toLowerCase())).length,checkedAt:injuries.map(o=>o.observedAt).sort().at(-1)||null,notice:'Official NFL.com named inactive reports are checked near kickoff when available; other listings remain unofficial. Missing names or an Active label do not confirm participation or a starting role.'},
     unknowns:['Confirmed starting quarterbacks, active lists and expected snap counts require a current game-specific source.','Recorded workload and snap share do not measure routes, coaching plans or recovery.','No validated quarterback, injury, offensive-line or weather probability adjustment is applied.']};
 }
 
@@ -79,7 +79,7 @@ export function projectionWarnings(projection,context){
 }
 
 export function contextEvidence(context){
-  const report=o=>({playerName:o.playerName,position:o.position,status:o.value?.status,reportedAt:o.value?.reportedUpdatedAt,source:o.source,url:o.value?.url,confirmed:false});
+  const report=o=>({playerName:o.playerName,position:o.position,status:o.value?.status,reportedAt:o.value?.reportedUpdatedAt,source:o.source,url:o.value?.url,confirmed:o.confirmed===true&&o.source==='NFL.com official inactive report'});
   return {...context,teams:context.teams.map(t=>({...t,
     quarterback:{...t.quarterback,reports:t.quarterback.reports.map(report)},
     availability:t.availability.map(report),

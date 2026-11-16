@@ -304,3 +304,8 @@ Coach now resolves short follow-ups from session-only selection context before A
 ## Accuracy audit and reassessment conditions (2026-11-16)
 
 The first prospective audit has 1 captured game per cohort and 0 graded games. Historical game challengers trail the market/reference baseline in all three game markets; player candidates are mixed. A fixed 0.80 log-odds calibration trial is captured for future snapshots only and graded separately without changing serving probabilities or old captures. The performance view exposes the audit; decisions explain exact price, official participation and validation conditions for reassessment. Official active lists and confirmed starters remain unavailable. See [ACCURACY_AUDIT.md](ACCURACY_AUDIT.md) and its dated audit record. No extra provider or AI calls, caps or adoption permissions changed.
+
+
+## Fair head-to-head and official inactives (2026-11-16)
+
+Implemented fair-source-context-v3: allowlisted frozen facts exclude Coach forecasts, kickoff deadlines are enforced, and matched three-way scores compare Coach, configured AI and market only. Earlier protocol results are excluded from this fair comparison. The primary cohort may automatically request at most 2 priced pregame baselines per UTC day within existing global AI caps; other games remain request-triggered. A narrow cached NFL.com inactive-report monitor confirms only exact named inactives, never active/starting status from omissions. See [HEAD_TO_HEAD.md](HEAD_TO_HEAD.md) for the protocol and remaining data/model limitations.

@@ -155,7 +155,7 @@ LiveResearch liveResearch({
       ? 'No current matching report is available in the connected sources. That does not confirm a player is healthy, active, or starting.'
       : '${rows.length} matching ${rows.length == 1 ? 'report' : 'reports'} from connected sources. Check the original publication time: an injury listing or headline does not confirm availability for the next game.';
   final sourceIds = <String>{
-    if (kinds.contains('injury')) 'injuries',
+    if (kinds.contains('injury')) ...{'injuries', 'official_inactives'},
     if (kinds.contains('news')) 'beat_writers',
     if (kinds.contains('market')) ...{
       'markets',
