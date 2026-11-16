@@ -473,6 +473,13 @@ void main() {
       expect(questions.last, contains('DraftKings'));
       await send(tester, 'What about the spread?');
       expect(questions.last, isNot(contains('45.5')));
+      await tester.ensureVisible(find.text('Explore the evidence').first);
+      await tester.tap(find.text('Explore the evidence').first);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Refresh game analysis').first);
+      await tester.tap(find.text('Refresh game analysis').first);
+      await tester.pumpAndSettle();
+      expect(questions.last, contains('game total over 45.5'));
       final count = questions.length;
       await send(tester, 'What about Unknown Person?');
       expect(questions.length, count);

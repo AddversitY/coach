@@ -51,8 +51,9 @@ class CoachWorkspace extends StatefulWidget {
 }
 
 class _Turn {
-  _Turn(this.question, this.answer, this.at);
-  final String question;
+  _Turn(this.question, this.answer, this.at, {String? researchQuery})
+    : researchQuery = researchQuery ?? question;
+  final String question, researchQuery;
   final CoachAnswer answer;
   final DateTime at;
   final anchor = GlobalKey();
@@ -244,7 +245,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     for (final turn in turns) {
       if (turn.live == null) continue;
       final updated = liveResearch(
-        question: turn.question,
+        question: turn.researchQuery,
         now: now,
         telemetry: telemetry,
         playerId: turn.answer.player?.id,
@@ -676,7 +677,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         );
       }
     }
-    final turn = _Turn(question, answer, at)
+    final turn = _Turn(question, answer, at, researchQuery: resolved)
       ..analysis = result
       ..game = game
       ..evaluation = evaluation
@@ -1215,7 +1216,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           if (turn.game != null && turn.invalidation != null)
             _DeskLink(
               label: const Text('Refresh game research'),
-              onPressed: busy ? null : () => _send(turn.question),
+              onPressed: busy ? null : () => _send(turn.researchQuery),
             ),
           if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
@@ -1395,7 +1396,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             game.raw['productionTrial']['available'] == true)
           _productionTrialView(
             Map<String, dynamic>.from(game.raw['productionTrial']),
-            turn.question,
+            turn.researchQuery,
           ),
         if (game.raw['priceCoverage'] is Map)
           _priceCoverageView(
@@ -1413,7 +1414,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   : (_) {
                       selectedBookId = null;
                       session.eventId = game.event.id;
-                      _send(turn.question);
+                      _send(turn.researchQuery);
                     },
             ),
             for (final book in books)
@@ -1425,7 +1426,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     : (_) {
                         selectedBookId = book['id'] as String;
                         session.eventId = game.event.id;
-                        _send(turn.question);
+                        _send(turn.researchQuery);
                       },
               ),
           ],
@@ -1579,7 +1580,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   ? null
                   : () {
                       session.eventId = game.event.id;
-                      _send(turn.question);
+                      _send(turn.researchQuery);
                     },
             ),
             _DeskLink(
@@ -2520,7 +2521,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               : () {
                   session.eventId = turn.answer.event?.id;
                   session.playerId = turn.answer.player?.id;
-                  _send(turn.question);
+                  _send(turn.researchQuery);
                 },
         ),
       ],
