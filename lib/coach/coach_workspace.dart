@@ -59,6 +59,7 @@ class _Turn {
   final anchor = GlobalKey();
   AssistantReply? generated;
   bool aiFailed = false;
+  String? aiFailureReason;
   CoachAnalysis? analysis;
   String? invalidation;
   GameOutlook? game;
@@ -722,6 +723,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             turn.generated = reply;
           } else {
             turn.aiFailed = true;
+            turn.aiFailureReason = reply.failureReason;
           }
         });
       } catch (_) {
@@ -1180,7 +1182,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
-                'AI interpretation is unavailable. Showing the calculated evidence response.',
+                turn.aiFailureReason == 'provider_daily_limit'
+                    ? 'The daily free AI allowance is exhausted. Showing the calculated evidence response.'
+                    : 'AI interpretation is unavailable. Showing the calculated evidence response.',
                 style: CoachType.label.copyWith(
                   color: CoachColors.warn,
                   fontSize: 11,
@@ -1929,6 +1933,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         value is num ? value.toStringAsFixed(3) : '—';
     final coverage = report['benchmarkCoverage'] as Map? ?? {};
     final protocol = report['headToHeadProtocol'] as Map?;
+    final provider = report['aiProvider'] as Map?;
+    final pausedUntil = DateTime.tryParse('${provider?['blockedUntil']}');
     const labels = {
       'h2h': 'Moneyline',
       'spreads': 'Spread',
@@ -1951,6 +1957,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           'AI baselines · ${coverage['fair_available'] ?? 0} complete · ${coverage['fair_partial'] ?? 0} partial · ${coverage['fair_waiting_for_quota'] ?? 0} waiting for quota · ${(coverage['fair_unavailable'] as num? ?? 0) + (coverage['fair_late'] as num? ?? 0) + (coverage['fair_expired'] as num? ?? 0)} unavailable or late. Older protocols are excluded.',
           style: CoachType.label,
         ),
+        if (pausedUntil != null && pausedUntil.isAfter(now))
+          Text(
+            'AI replies are paused after the provider’s free daily allowance was exhausted. Next retry eligibility: ${formatEastern(pausedUntil, year: true)}. Calculated research stays available.',
+            style: CoachType.label,
+          ),
         if (protocol != null)
           Text('${protocol['notice']}', style: CoachType.label),
         for (final market in labels.keys)
@@ -2004,6 +2015,87 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _gameModelResearch(Map<String, dynamic> report) {
+    String number(dynamic value) =>
+        value is num ? value.toStringAsFixed(3) : '—';
+    const labels = {
+      'all_games': 'All games',
+      'extreme_final_total': 'Unusually low/high final totals',
+      'large_favorite_7plus': 'Favorites of at least 7 points',
+      'observed_qb_change': 'Observed quarterback changes',
+      'observed_qb_continuity': 'Observed quarterback continuity',
+    };
+    final audit = report['errorAudit'] as Map?;
+    final regime = report['regimeResearch'] as Map?;
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Game model research',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: const Text(
+        'Error patterns and one fixed distribution trial',
+        style: CoachType.label,
+      ),
+      children: [
+        if (audit?['development'] is Map) ...[
+          const Text('Development seasons before 2025', style: CoachType.body),
+          for (final key in labels.keys)
+            if (audit!['development'][key] is Map)
+              Text(
+                '${labels[key]} · ${audit['development'][key]['games']} games · Score error ${number(audit['development'][key]['scoreMae'])} points',
+                style: CoachType.label,
+              ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              'Final-total extremes and observed quarterback changes are diagnostic slices, not information assumed known before a game or automatic injury penalties.',
+              style: CoachType.label,
+            ),
+          ),
+        ],
+        if (regime?['retrospectiveLater'] is Map) ...[
+          const Text(
+            'Fixed scoring-regime trial · later-period probability error',
+            style: CoachType.body,
+          ),
+          for (final market in (regime!['retrospectiveLater'] as Map).keys)
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$market · ${regime['retrospectiveLater'][market]['games']} games',
+                      style: CoachType.body,
+                    ),
+                    Text(
+                      'Brier · Trial ${number(regime['retrospectiveLater'][market]['brier'])} / Original ${number(regime['retrospectiveLater'][market]['incumbentBrier'])} / Market ${number(regime['retrospectiveLater'][market]['marketBrier'])}',
+                      style: CoachType.label,
+                    ),
+                    if (regime['vsExistingShadow'] is Map)
+                      Text(
+                        'Existing challenger ${number(regime['vsExistingShadow'][market]?['incumbentBrier'])}. Lower error is better.',
+                        style: CoachType.label,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              'This fixed trial stays in background research. Compare it with both the existing challenger and market baselines above. Later seasons were previously reported; only future frozen captures provide untouched evaluation.',
+              style: CoachType.label,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   Widget _evaluationView(Map<String, dynamic> report) {
     const labels = {
       'h2h': 'Moneyline',
@@ -2024,6 +2116,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         if (report['audit'] is Map)
           _accuracyAuditView(Map<String, dynamic>.from(report['audit'])),
         _headToHeadView(report),
+        if (report['errorAudit'] is Map || report['regimeResearch'] is Map)
+          _gameModelResearch(report),
         for (final row in report['markets'] as List? ?? [])
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -2096,6 +2190,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                         ? 'Yards/receptions trial'
                         : (model['modelVersion'] as String? ?? '').startsWith('workload-')
                         ? 'Workload trial'
+                        : (model['modelVersion'] as String? ?? '').startsWith('score-regime')
+                        ? 'Scoring-regime trial'
                         : 'Background challenger'}: ${model['gradedGames'] ?? 0} games with results · ${model['pendingGames'] ?? 0} awaiting results · ${model['unresolved'] ?? 0} unresolved observations. Separate from the serving model.',
                     style: CoachType.label,
                   ),

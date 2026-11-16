@@ -290,6 +290,30 @@ void main() {
             return result;
           },
           evaluationLoader: () async => {
+            'aiProvider': {
+              'blockedUntil': now
+                  .add(const Duration(hours: 1))
+                  .toIso8601String(),
+            },
+            'errorAudit': {
+              'development': {
+                'all_games': {'games': 512, 'scoreMae': 7.635},
+                'extreme_final_total': {'games': 139, 'scoreMae': 11.260},
+              },
+            },
+            'regimeResearch': {
+              'retrospectiveLater': {
+                'totals': {
+                  'games': 409,
+                  'brier': 0.268,
+                  'incumbentBrier': 0.268,
+                  'marketBrier': 0.250,
+                },
+              },
+              'vsExistingShadow': {
+                'totals': {'incumbentBrier': 0.260},
+              },
+            },
             'benchmarkCoverage': {'fair_available': 1, 'fair_unavailable': 1},
             'headToHeadProtocol': {
               'notice': 'Same frozen facts; current configured AI only.',

@@ -50,6 +50,11 @@ jobs:
       - name: Evaluate the shadow challenger on separate seasons
         run: python model/forecast_lab.py --schedule model/.cache/games.csv
 
+      - name: Audit game errors and freeze the scoring-regime challenger
+        run: |
+          python model/error_audit.py --schedule model/.cache/games.csv
+          python model/regime_forecast.py --schedule model/.cache/games.csv
+
       - name: Evaluate conditional workload forecasts
         run: python model/workload_forecast.py --schedule model/.cache/games.csv
 
@@ -61,7 +66,7 @@ jobs:
         run: |
           git config user.name "odds-edge-model"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/workload-model.json assets/production-model.json
+          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/game-error-audit.json assets/regime-research.json assets/workload-model.json assets/production-model.json
           if git diff --cached --quiet; then
             echo "Model reports unchanged."
           else

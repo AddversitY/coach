@@ -1,3 +1,4 @@
+import {regimeWeights} from './regime-weights.mjs';
 import {compareResearch} from './research-comparison.mjs';
 import {productionForecasts} from './production-forecast.mjs';
 import {workloadForecasts} from './workload-forecast.mjs';
@@ -96,7 +97,9 @@ function scoreSamples(source,event,quotes){
   const errors=model.residuals.filter(e=>Array.isArray(e)&&e.length===2&&e.every(finite));
   if(errors.length<120)return null;
   const centers=[0,1].map(i=>constraints.length?errors.reduce((a,e)=>a+e[i],0)/errors.length:0);
-  const sample=errors.map(e=>[Math.max(0,Math.min(90,Math.round(homeMean+e[0]-centers[0]))),Math.max(0,Math.min(90,Math.round(awayMean+e[1]-centers[1]))),1/errors.length]);
+  const researchWeights=model.version==='score-regime-kernel-v1'&&!constraints.length?regimeWeights(model.residualContexts||[],[homeMean,awayMean]):null;
+  if(model.version==='score-regime-kernel-v1'&&(!researchWeights||researchWeights.length!==errors.length))return null;
+  const sample=errors.map((e,i)=>[Math.max(0,Math.min(90,Math.round(homeMean+e[0]-centers[0]))),Math.max(0,Math.min(90,Math.round(awayMean+e[1]-centers[1]))),researchWeights?researchWeights[i]:1/errors.length]);
   // Fit market constraints jointly, preserving a single coherent distribution.
   // This is a market benchmark, not an independent claim of predictive edge.
   for(let step=0;step<24&&constraints.length;step++)for(const constraint of constraints){

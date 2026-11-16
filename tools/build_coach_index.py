@@ -1,11 +1,11 @@
 """Publish a compact, dated Coach retrieval index. No odds-provider calls."""
-import argparse, ast, csv, hashlib, io, json, urllib.request
+import argparse, ast, csv, hashlib, io, json, math, urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from publish_snapshot import SOURCE, TEAMS, ALIASES, build_snapshot, iso
 from build_game_context import build_context
 
-def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None, forecast_lab=None, matchup=None, workload_model=None, production_model=None):
+def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None, forecast_lab=None, matchup=None, workload_model=None, production_model=None, regime_research=None, error_audit=None):
     metadata=dataset.get('metadata',dataset)
     cutoff=datetime.fromisoformat(metadata['cutoff']).date()
     retrieved=datetime.fromisoformat(metadata['retrievedAt'].replace('Z','+00:00'))
@@ -125,8 +125,24 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
             or len(production_model.get('featureNames',[]))!=24 or not 1<=len(production_model.get('models',{}))<=9
             or any(len(m['coefficients'])!=24 or not 120<=len(m['residualPairs'])<=512 or m['trainingRows']<200 for m in production_model['models'].values())):
             raise ValueError('Invalid joint production research model')
+    regime=None;regime_summary=None
+    history_hash=hashlib.sha256(json.dumps(game_history,sort_keys=True).encode()).hexdigest() if game_history else None
+    if regime_research:
+        regime=regime_research.get('model',{});trained=datetime.fromisoformat(regime.get('trainedAt','').replace('Z','+00:00'))
+        if (regime.get('version')!='score-regime-kernel-v1' or regime.get('schemaVersion')!=1 or trained.tzinfo is None or trained>now
+            or not forecast_model or regime.get('cutoff')!=forecast_model['cutoff'] or regime_research.get('sourceHash')!=history_hash or regime.get('sourceHash')!=history_hash
+            or len(regime.get('coefficients',[]))!=66 or not all(math.isfinite(v) for v in regime['coefficients'])
+            or regime.get('teams')!=forecast_model['teams'] or not 120<=len(regime.get('residuals',[]))<=1000
+            or len(regime.get('residualContexts',[]))!=len(regime['residuals'])
+            or any(len(row)!=2 or any(not math.isfinite(v) for v in row) for row in regime['residuals']+regime['residualContexts'])
+            or regime.get('validation',{}).get('adopted') is not False or regime.get('validation',{}).get('hasEdge') is not False
+            or regime.get('specification')!={'totalBandwidth':10.,'marginBandwidth':7.,'uniformMixture':.5,'minimumEffectiveErrors':120,'ridge':40.,'halfLifeDays':180.}):
+            raise ValueError('Invalid scoring-regime research provenance')
+        regime_summary={k:v for k,v in regime_research.items() if k!='model'}
+    if error_audit and (error_audit.get('version')!='game-error-audit-v1' or error_audit.get('sourceHash')!=history_hash or error_audit.get('cutoff')!=game_history['cutoff']):
+        raise ValueError('Invalid game-error audit provenance')
     context_players=context.pop('contextPlayers')
-    return {'priorTrialFields':['date','week','position','attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions'],'productionModel':production_model,'workloadModel':workload_model,'roleContext':context,'contextPlayers':context_players,'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
+    return {'regimeScoreModel':regime,'regimeResearch':regime_summary,'errorAudit':error_audit,'priorTrialFields':['date','week','position','attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions'],'productionModel':production_model,'workloadModel':workload_model,'roleContext':context,'contextPlayers':context_players,'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
         'retrievedAt':iso(retrieved),'evidenceHash':hashlib.sha256(json.dumps(dataset,sort_keys=True).encode()).hexdigest(),
         'events':events,'players':players,'notice':'Recorded participants, not confirmed rosters. Marginal probabilities are not validated live forecasts.'}
 
@@ -137,7 +153,7 @@ def main():
     with urllib.request.urlopen(SOURCE,timeout=30) as r:rows=list(csv.DictReader(io.StringIO(r.read().decode('utf-8-sig'))))
     tree=ast.parse(Path('model/weather.py').read_text(encoding='utf-8'))
     stadiums=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.AnnAssign) and getattr(node.target,'id',None)=='STADIUMS')
-    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')))
+    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/regime-research.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/game-error-audit.json').read_text(encoding='utf-8-sig')))
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,allow_nan=False,separators=(',',':')),encoding='utf-8')
     print(f'Coach index: {len(result["players"])} recorded players; zero odds credits.')
 if __name__=='__main__':main()

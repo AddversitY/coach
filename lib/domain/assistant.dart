@@ -44,6 +44,7 @@ class AssistantReply {
     required this.available,
     required this.answer,
     required this.cited,
+    this.failureReason,
   });
 
   static const unavailable = AssistantReply(
@@ -53,6 +54,7 @@ class AssistantReply {
   );
 
   final bool available;
+  final String? failureReason;
   final String answer;
   final List<String> cited;
 
@@ -85,7 +87,25 @@ class AssistantReply {
         }
       }
     }
-    return AssistantReply(available: available, answer: answer, cited: cited);
+    return AssistantReply(
+      available: available,
+      answer: answer,
+      cited: cited,
+      failureReason:
+          const {
+            'provider_daily_limit',
+            'provider_capacity',
+            'model_requires_paid_plan',
+            'invalid_model_request',
+            'invalid_model_reply',
+            'provider_timeout',
+            'provider_access',
+            'provider_unavailable',
+            'pilot_usage_limit',
+          }.contains(json['failureReason'])
+          ? json['failureReason'] as String
+          : null,
+    );
   }
 }
 

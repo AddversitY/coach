@@ -72,6 +72,15 @@ class CoachIndexTests(unittest.TestCase):
         self.assertEqual(joint['productionModel']['version'],'production-joint-v1')
         production['volumeModelHash']='wrong'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload,production_model=production)
+        regime={'schemaVersion':1,'version':'regime-research-v1','sourceHash':hashlib.sha256(json.dumps(history,sort_keys=True).encode()).hexdigest(),'model':dict(model,version='score-regime-kernel-v1',sourceHash=hashlib.sha256(json.dumps(history,sort_keys=True).encode()).hexdigest(),residualContexts=[[46,3]]*120,validation={'adopted':False,'hasEdge':False},specification={'totalBandwidth':10.,'marginBandwidth':7.,'uniformMixture':.5,'minimumEffectiveErrors':120,'ridge':40.,'halfLifeDays':180.})}
+        checked=build_index(build_snapshot(rows,now),data,rows,now,{},model,history,regime_research=regime)
+        self.assertEqual(checked['regimeScoreModel']['version'],'score-regime-kernel-v1')
+        self.assertNotIn('model',checked['regimeResearch'])
+        regime['model']['validation']['adopted']=True
+        with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,regime_research=regime)
+        regime['model']['validation']['adopted']=False
+        regime['model']['residualContexts']=[[float('nan'),3]]*120
+        with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,regime_research=regime)
         workload['trainedAt']='2026-11-20T00:00:00Z'
         with self.assertRaises(ValueError):build_index(build_snapshot(rows,now),data,rows,now,{},model,history,workload_model=workload)
         model['trainedAt']='2026-11-20T00:00:00Z'

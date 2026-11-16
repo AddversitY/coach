@@ -9,3 +9,9 @@ export function shadowGame(source,event){
   const shadowEvent={...event,forecast};
   return {source:{...source,index:{...source.index,scoreModel:model}},event:shadowEvent};
 }
+
+export function regimeShadowGame(source,event){
+  const model=source.index.regimeScoreModel;
+  if(model?.version!=='score-regime-kernel-v1'||!Array.isArray(model.residualContexts)||model.residualContexts.length!==model.residuals?.length)return null;
+  return shadowGame({...source,index:{...source.index,shadowScoreModel:model}},event);
+}

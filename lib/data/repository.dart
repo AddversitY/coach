@@ -51,7 +51,11 @@ class BackendRepository {
     return jsonDecode(text);
   }
 
-  Future<dynamic> _post(String path, Object body) async {
+  Future<dynamic> _post(
+    String path,
+    Object body, {
+    bool allowQuotaReply = false,
+  }) async {
     final request = http.Request('POST', _endpoint(path))
       ..followRedirects = false
       ..headers['content-type'] = 'application/json'
@@ -62,7 +66,8 @@ class BackendRepository {
     final text = await response.stream.bytesToString().timeout(
       const Duration(seconds: 150),
     );
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 &&
+        !(allowQuotaReply && response.statusCode == 429)) {
       throw StateError('Backend unavailable (${response.statusCode}).');
     }
     return jsonDecode(text);
@@ -121,7 +126,7 @@ class BackendRepository {
   }
 
   Future<AssistantReply> coach(Map<String, dynamic> request) async {
-    final decoded = await _post('/v1/coach', request);
+    final decoded = await _post('/v1/coach', request, allowQuotaReply: true);
     if (decoded is! Map) throw StateError('Coach unavailable.');
     return AssistantReply.fromJson(Map<String, dynamic>.from(decoded));
   }

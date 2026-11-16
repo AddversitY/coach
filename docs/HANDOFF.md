@@ -309,3 +309,8 @@ The first prospective audit has 1 captured game per cohort and 0 graded games. H
 ## Fair head-to-head and official inactives (2026-11-16)
 
 Implemented fair-source-context-v3: allowlisted frozen facts exclude Coach forecasts, kickoff deadlines are enforced, and matched three-way scores compare Coach, configured AI and market only. Earlier protocol results are excluded from this fair comparison. The primary cohort may automatically request at most 2 priced pregame baselines per UTC day within existing global AI caps; other games remain request-triggered. A narrow cached NFL.com inactive-report monitor confirms only exact named inactives, never active/starting status from omissions. See [HEAD_TO_HEAD.md](HEAD_TO_HEAD.md) for the protocol and remaining data/model limitations.
+
+
+## AI recovery and scoring-regime research (2026-11-16)
+
+A live diagnostic confirmed the provider daily free-AI limit. A safe cooldown and deterministic game planner reduce failed/avoidable inference calls without changing models or enabling paid service. The development error audit and one fixed score-regime kernel challenger are implemented and published. It slightly improves the original fixed model, but trails both market references and the stronger existing challenger; it remains a separate future-game research cohort. Later-period results are retrospective, not a fresh holdout. See [MODEL_ERROR_REVIEW.md](MODEL_ERROR_REVIEW.md) for actual scores, assumptions and recovery behavior.

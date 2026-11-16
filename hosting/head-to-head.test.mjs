@@ -44,3 +44,12 @@ test('different AI model versions are not pooled into a superiority score',()=>{
  const result={eventId:'g',homeScore:20,awayScore:10},aggregate=addGrade({},gradeForecast(a,result));addGrade(aggregate,gradeForecast(b,result));
  const report=evaluationReport(aggregate,{}).markets[0].headToHead;assert.equal(report.status,'mixed_models_not_comparable');assert.equal(report.aiBrier,null);assert.equal(report.models.length,2);
 });
+
+test('provider daily-limit deferral waits for reset without burning another automatic reservation',async()=>{
+ const s=state(),a=snapshot();await call(s,'/forecast-capture',a);await call(s,'/benchmark-reserve',{id:a.id});
+ await call(s,'/benchmark-save',{id:a.id,result:null,reason:'provider_daily_limit'});
+ assert.equal((await s.storage.get('forecast:'+a.id)).benchmarkState,'waiting_for_quota');
+ await s.storage.put('ai-provider-status',{blockedUntil:new Date(now+60000).toISOString()});
+ assert.equal((await (await call(s,'/benchmark-auto-reserve',{id:a.id,limit:2})).json()).reserved,false);assert.equal(await s.storage.get('automatic-benchmark-budget'),undefined);
+ assert.equal((await (await call(s,'/benchmark-auto-reserve',{id:a.id,limit:2},now+61000)).json()).reserved,true);
+});

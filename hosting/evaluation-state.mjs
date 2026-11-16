@@ -18,9 +18,11 @@ async function trackBenchmark(txn,snapshot){
   if(!snapshot.benchmarkFacts)return;
   const key=`benchmark-event:${snapshot.modelVersion}:${snapshot.event.id}`,old=await txn.get(key);
   if(old?.priced&&!snapshot.priced)return;
-  const value={id:snapshot.id,priced:snapshot.priced,state:snapshot.benchmarkState,protocol:snapshot.benchmarkPromptVersion||'legacy'};
+  const value={id:snapshot.id,priced:snapshot.priced,state:snapshot.benchmarkState,protocol:snapshot.benchmarkPromptVersion||'legacy',reason:snapshot.benchmarkReason||null};
   if(old&&JSON.stringify(old)===JSON.stringify(value))return;
-  const scoped=await modelState(txn,snapshot.modelVersion);scoped.benchmarkCoverage ||= {};
+  const scoped=await modelState(txn,snapshot.modelVersion);scoped.benchmarkCoverage ||= {};scoped.benchmarkFailureReasons ||= {};
+  if(old?.reason)scoped.benchmarkFailureReasons[old.reason]=Math.max(0,(scoped.benchmarkFailureReasons[old.reason]||0)-1);
+  if(value.reason)scoped.benchmarkFailureReasons[value.reason]=(scoped.benchmarkFailureReasons[value.reason]||0)+1;
   const counter=v=>(v.protocol==='fair-source-context-v3'?'fair_':'legacy_')+v.state;
   if(old)scoped.benchmarkCoverage[counter(old)]=Math.max(0,(scoped.benchmarkCoverage[counter(old)]||0)-1);
   scoped.benchmarkCoverage[counter(value)]=(scoped.benchmarkCoverage[counter(value)]||0)+1;
@@ -33,9 +35,9 @@ export async function evaluationState(state,path,request,clock=Date.now()){
     const versions=await txn.get('evaluation-versions')||[];
     const selected=new URL(request.url).searchParams.get('modelVersion')||versions[0]||null;
     const models=[];
-    for(const version of versions){const scoped=await modelState(txn,version);models.push({...evaluationReport(scoped.aggregate,scoped.counts),modelVersion:version,benchmarkCoverage:scoped.benchmarkCoverage||{},role:version===selected?'serving':'shadow'});}
+    for(const version of versions){const scoped=await modelState(txn,version);models.push({...evaluationReport(scoped.aggregate,scoped.counts),modelVersion:version,benchmarkCoverage:scoped.benchmarkCoverage||{},benchmarkFailureReasons:scoped.benchmarkFailureReasons||{},role:version===selected?'serving':'shadow'});}
     const current=models.find(m=>m.modelVersion===selected)||{...evaluationReport({},emptyCounts()),modelVersion:selected,role:'serving'};
-    return response({...current,models});
+    return response({...current,models,aiProvider:await txn.get('ai-provider-status')||null});
   });
   if(path==='/forecast-capture'){
     const snapshot=await request.json();
@@ -59,6 +61,7 @@ export async function evaluationState(state,path,request,clock=Date.now()){
     const {id,limit}=await request.json();
     return storage.transaction(async txn=>{
       const snapshot=await txn.get('forecast:'+id);
+      const provider=await txn.get('ai-provider-status');if(provider&&Date.parse(provider.blockedUntil)>clock)return response({reserved:false,reason:'provider_daily_limit'});
       if(!snapshot?.priced||snapshot.benchmarkPromptVersion!=='fair-source-context-v3'||!['not_requested','waiting_for_quota'].includes(snapshot.benchmarkState)||clock>=Date.parse(snapshot.event.startsAt))return response({reserved:false});
       const day=new Date(clock).toISOString().slice(0,10),budget=await txn.get('automatic-benchmark-budget');
       const next=budget?.day===day?budget:{day,count:0,ids:[]};
@@ -84,7 +87,7 @@ export async function evaluationState(state,path,request,clock=Date.now()){
       snapshot.benchmarkCompletedAt=new Date(clock).toISOString();
       if(clock>=Date.parse(snapshot.event.startsAt)){snapshot.benchmarkState='late';snapshot.benchmarkReason='completed_after_kickoff';}
       else if(result){snapshot.benchmark=validateBenchmark(result,snapshot);snapshot.benchmarkState=snapshot.benchmark.length===benchmarkTargets(snapshot).length?'available':'partial';}
-      else {snapshot.benchmarkState=reason==='quota_deferred'?'waiting_for_quota':'unavailable';snapshot.benchmarkReason=reason==='quota_deferred'?'quota_deferred':'model_unavailable';}
+      else {snapshot.benchmarkState=['quota_deferred','provider_daily_limit'].includes(reason)?'waiting_for_quota':'unavailable';snapshot.benchmarkReason=['quota_deferred','provider_daily_limit','provider_capacity','model_requires_paid_plan','invalid_model_request','invalid_model_reply','provider_timeout','provider_access','provider_unavailable'].includes(reason)?reason:'model_unavailable';}
       await txn.put('forecast:'+id,snapshot);await trackBenchmark(txn,snapshot);return response({ok:true});
     });
   }
