@@ -245,7 +245,7 @@ void main() {
       expect(find.text('From the reporters'), findsOneWidget);
       expect(find.text('A dated NFL report'), findsOneWidget);
       expect(find.textContaining('Test Reporter'), findsOneWidget);
-      expect(find.text('Read source ↗'), findsOneWidget);
+      expect(find.text('Read source'), findsOneWidget);
       expect(request!['question'], 'Latest reporter news');
       expect((request!['context'] as Map)['eventId'], isNull);
       expect(tester.takeException(), isNull);

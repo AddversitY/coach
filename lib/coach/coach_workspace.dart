@@ -1191,7 +1191,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     ),
                     if (v['url'] is String)
                       _DeskLink(
-                        label: const Text('Read source ↗'),
+                        label: const Text('Read source'),
                         onPressed: () => _openReport(v['url'] as String),
                       ),
                   ],
