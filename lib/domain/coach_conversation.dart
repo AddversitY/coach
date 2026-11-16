@@ -1,5 +1,6 @@
 import 'odds.dart';
 import 'eastern.dart';
+import 'nfl_teams.dart';
 
 /// Session-only context for explicit selections. Never persists personal bets.
 class CoachConversation {
@@ -77,12 +78,13 @@ class CoachConversation {
       }
       nextSide = follow.group(1);
     }
+    final matchup = '${event!.away} at ${event!.home}';
     final subject = allMarkets
-        ? team ?? event!.home
+        ? team ?? matchup
         : marketOnly &&
               ['spread', 'moneyline', 'game total'].contains(nextMarket)
-        ? team ?? event!.home
-        : playerName ?? team ?? event!.home;
+        ? team ?? matchup
+        : playerName ?? team ?? matchup;
     if ([
           'receptions',
           'receiving yards',
@@ -127,10 +129,13 @@ class CoachConversation {
     }
     final namedTeams = [next.home, next.away]
         .where(
-          (t) => RegExp(
-            '\\b${RegExp.escape(t.split(' ').last)}\\b',
-            caseSensitive: false,
-          ).hasMatch(query),
+          (t) =>
+              RegExp(
+                '\\b${RegExp.escape(t.split(' ').last)}\\b',
+                caseSensitive: false,
+              ).hasMatch(query) ||
+              RegExp('\\b${RegExp.escape(nflTeams[t] ?? 'UNMATCHED')}\\b')
+                  .hasMatch(query),
         )
         .toList();
     team = namedTeams.length == 1 ? namedTeams.single : null;

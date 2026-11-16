@@ -69,4 +69,17 @@ void main() {
       contains('Which player'),
     );
   });
+  test('team abbreviations retain their side and an unspecified side stays unspecified', () {
+    final c = CoachConversation()..remember(event, 'BUF spread line 3.5');
+    expect(
+      c.resolve('Why?', now).query,
+      startsWith('Buffalo Bills spread line 3.5'),
+    );
+    c.remember(event, 'Analyze ${event.away} at ${event.home}');
+    final q = c.resolve('What about the spread?', now).query;
+    expect(q, contains('${event.away} at ${event.home}'));
+    final all = c.resolve('Compare the markets', now).query;
+    expect(all, contains('Compare the markets'));
+    expect(all, isNot(contains('spread line')));
+  });
 }
