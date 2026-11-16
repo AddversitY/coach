@@ -89,3 +89,14 @@ test('market ingestion requires its own credential before any source access',asy
     assert.equal(response.status,401);assert.equal(network,0);
   }finally{globalThis.fetch=original;}
 });
+
+test('news retrieval excludes unrelated injury, weather and price evidence',()=>{
+  const telemetry={checkedAt:at,sources:[{id:'beat_writers',state:'attributed_headlines'},{id:'injuries',state:'reported_unofficial'}],observations:[
+    {id:'news',kind:'news',eventId:'e',observedAt:at,value:{title:'Recorded Player report',url:'https://www.espn.com/nfl/report'}},
+    {id:'injury',kind:'injury',eventId:'e',playerId:'p',observedAt:at,value:{status:'Out'}}
+  ]};
+  const result=retrieve('Recorded Player news',{},source,telemetry,time).team_evidence[0];
+  assert.deepEqual(result.telemetry.map(row=>row.id),['news']);assert.equal(result.savedPrices,undefined);
+  assert.deepEqual(result.sources.map(row=>row.id),['beat_writers']);
+  assert.deepEqual(parseModel({choices:[{message:{content:'{"answer":"Scoped report","cited":["team_evidence"]}'}}]}),{answer:'Scoped report',cited:['team_evidence']});
+});
