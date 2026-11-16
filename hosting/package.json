@@ -1,1 +1,1 @@
-{"name":"coach-research-service","private":true,"type":"module","scripts":{"test":"node --test *.test.mjs"},"engines":{"node":">=22"}}
+{"name":"coach-research-service","private":true,"type":"module","scripts":{"test":"node --test *.test.mjs"},"engines":{"node":">=22"},"dependencies":{"fast-xml-parser":"5.12.1"}}

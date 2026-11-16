@@ -14,7 +14,7 @@ test('planner cannot invent players, lines, odds or flip sides',()=>{
   assert.deepEqual(validatePlan({tool:'stress_test',query:'stress it'},'stress it',source.index),{tool:'clarify',query:'stress it'});
 });
 test('injury facts require exact name and club, remain unofficial, and never fabricate scratches',()=>{
-  const raw={injuries:[{team:{abbreviation:'BUF'},injuries:[{status:'Out',athlete:{displayName:'Recorded Player'}}]}]};
+  const raw={injuries:[{team:{abbreviation:'BUF'},injuries:[{status:'Out',date:at,athlete:{displayName:'Recorded Player'}}]}]};
   const result=normalizeInjuries(raw,source.index,at);assert.equal(result.length,1);assert.equal(result[0].confirmed,false);
   raw.injuries[0].team.abbreviation='KC';assert.equal(normalizeInjuries(raw,source.index,at).length,0);
 });
@@ -79,4 +79,13 @@ test('source fetch uses Workers-compatible manual redirects and rejects redirect
     globalThis.fetch=async()=>new Response('',{status:302,headers:{Location:'https://unapproved.example/'}});
     await assert.rejects(published({},time),/Source unavailable/);
   }finally{globalThis.fetch=original;resetSourceCacheForTests();}
+});
+
+test('market ingestion requires its own credential before any source access',async()=>{
+  const original=globalThis.fetch;let network=0;
+  try{
+    globalThis.fetch=async()=>{network++;throw Error('should not fetch');};
+    const response=await worker.fetch(new Request('https://coach.example/v1/ingest',{method:'POST',headers:{Authorization:'Bearer news-only'},body:JSON.stringify({kind:'market_splits'})}),{INGEST_SECRET:'news-only',MARKET_INGEST_SECRET:'market-only'});
+    assert.equal(response.status,401);assert.equal(network,0);
+  }finally{globalThis.fetch=original;}
 });

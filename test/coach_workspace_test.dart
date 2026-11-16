@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/coach/coach_workspace.dart';
 import 'package:odds_edge/data/published_snapshot.dart';
 import 'package:odds_edge/domain/assistant.dart';
+import 'package:odds_edge/domain/coach_telemetry.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
@@ -31,6 +32,7 @@ void main() {
   Widget frame({
     Future<AssistantReply> Function(Map<String, dynamic>)? ask,
     Future<PublishedSnapshot> Function()? loader,
+    Future<CoachTelemetry> Function()? telemetryLoader,
   }) => MaterialApp(
     theme: coachTheme(),
     home: CoachWorkspace(
@@ -38,6 +40,7 @@ void main() {
       playerLoader: () async => fixtureData(),
       clock: () => now,
       ask: ask,
+      telemetryLoader: telemetryLoader,
     ),
   );
   Future<void> send(WidgetTester tester, String q) async {
@@ -193,6 +196,58 @@ void main() {
         'Stress test Recorded Quarterback over 245 passing yards',
       );
       expect(find.text('Let’s make the inputs explicit'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
+    'phone brings attributed reporter news to Coach without requiring a game',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      Map<String, dynamic>? request;
+      final report = CoachTelemetry(
+        checkedAt: now,
+        observations: [
+          TelemetryObservation(
+            id: 'headline',
+            kind: 'news',
+            eventId: 'nfl',
+            source: 'ESPN NFL RSS',
+            observedAt: now,
+            value: {
+              'title': 'A dated NFL report',
+              'author': 'Test Reporter',
+              'publishedAt': now.toIso8601String(),
+              'url': 'https://www.espn.com/nfl/story/_/id/123/test',
+            },
+          ),
+        ],
+        sources: const [
+          {'id': 'beat_writers', 'state': 'attributed_headlines'},
+        ],
+      );
+      await tester.pumpWidget(
+        frame(
+          telemetryLoader: () async => report,
+          ask: (payload) async {
+            request = payload;
+            return const AssistantReply(
+              available: true,
+              answer: 'An attributed report is available; participation remains unconfirmed.',
+              cited: ['team_evidence'],
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Latest reporter news');
+      expect(find.text('From the reporters'), findsOneWidget);
+      expect(find.text('A dated NFL report'), findsOneWidget);
+      expect(find.textContaining('Test Reporter'), findsOneWidget);
+      expect(find.text('Read source ↗'), findsOneWidget);
+      expect(request!['question'], 'Latest reporter news');
+      expect((request!['context'] as Map)['eventId'], isNull);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },

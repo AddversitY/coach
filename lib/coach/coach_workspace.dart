@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import '../data/nfl_assets.dart';
 import '../data/published_snapshot.dart';
 import '../data/repository.dart';
+import '../data/source_link.dart';
 import '../domain/assistant.dart';
 import '../domain/coach_session.dart';
 import '../domain/eastern.dart';
@@ -27,6 +28,7 @@ class CoachWorkspace extends StatefulWidget {
     this.playerLoader,
     this.analysisHistoryLoader,
     this.validationLoader,
+    this.telemetryLoader,
     this.ask,
     this.clock,
   });
@@ -34,6 +36,7 @@ class CoachWorkspace extends StatefulWidget {
   final Future<PlayerStatsDataset> Function()? playerLoader;
   final Future<List<HistoricalGame>> Function()? analysisHistoryLoader;
   final Future<Map<String, dynamic>> Function()? validationLoader;
+  final Future<CoachTelemetry> Function()? telemetryLoader;
   final Future<AssistantReply> Function(Map<String, dynamic>)? ask;
   final DateTime Function()? clock;
   @override
@@ -50,6 +53,8 @@ class _Turn {
   bool aiFailed = false;
   CoachAnalysis? analysis;
   String? invalidation;
+  LiveResearch? live;
+  String? liveNotice;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -75,6 +80,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   List<HistoricalGame>? analysisScores;
   Map<String, dynamic>? analysisValidation;
   bool pollingTelemetry = false;
+  Map<String, String> playerNames = {};
   DateTime? lastSnapshotRefresh;
   final analysisEngine = const CoachAnalysisEngine();
   DateTime get now => widget.clock?.call().toUtc() ?? DateTime.now().toUtc();
@@ -121,6 +127,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       setState(() {
         snapshot = results[0] as PublishedSnapshot;
         data = results[1] as PlayerStatsDataset;
+        playerNames = {for (final row in data!.rows) row.playerId: row.name};
         lastSnapshotRefresh = now;
       });
     } catch (_) {
@@ -154,6 +161,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
 
   void _expireAnalyses() {
     for (final turn in turns) {
+      if (turn.live?.rows.any((row) => !currentObservation(row, now)) == true) {
+        turn.liveNotice = 'This report snapshot has expired. Check the latest updates before using it.';
+        turn.generated = null;
+      }
       if (turn.analysis?.legs.any((l) => !l.event.startsAt.isAfter(now)) ==
           true) {
         turn.invalidation =
@@ -164,16 +175,23 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   }
 
   Future<void> _pollTelemetry() async {
-    if (api == null || pollingTelemetry || !mounted) return;
+    if ((api == null && widget.telemetryLoader == null) ||
+        pollingTelemetry ||
+        !mounted) {
+      return;
+    }
     pollingTelemetry = true;
     try {
-      final next = CoachTelemetry.fromJson(await api!.coachTelemetry());
+      final next = widget.telemetryLoader != null
+          ? await widget.telemetryLoader!()
+          : CoachTelemetry.fromJson(await api!.coachTelemetry());
       if (!mounted) return;
       final previous = telemetry;
       setState(() {
         telemetry = next;
         telemetryError = null;
       });
+      _reviewLiveTurns();
       _reviewAnalyses(previous);
     } catch (_) {
       if (mounted) {
@@ -190,6 +208,27 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         lastSnapshotRefresh != null &&
         now.difference(lastSnapshotRefresh!) > const Duration(minutes: 5)) {
       unawaited(_load());
+    }
+  }
+
+  void _reviewLiveTurns() {
+    for (final turn in turns) {
+      if (turn.live == null) continue;
+      final updated = liveResearch(
+        question: turn.question,
+        now: now,
+        telemetry: telemetry,
+        playerId: turn.answer.player?.id,
+        eventId: turn.answer.event?.id,
+      );
+      final before = turn.live!.rows.map((row) => row.signature).toSet();
+      final after = updated.rows.map((row) => row.signature).toSet();
+      if (telemetry?.fresh(now) != true ||
+          before.length != after.length ||
+          !before.containsAll(after)) {
+        turn.generated = null;
+        turn.liveNotice = 'Source reports have changed. Check the latest updates for a fresh answer.';
+      }
     }
   }
 
@@ -312,8 +351,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     }
     if (!mounted) return;
     CoachAnalysis? result;
+    LiveResearch? live;
     late CoachAnswer answer;
     final lower = resolved.toLowerCase();
+    final wantsLive =
+        planned == 'market_status' ||
+        RegExp(
+          r'injur|availab|inactive|scratch|news|reporter|beat writer|headline|weather|forecast|market|sharp|money|steam|movement|latest updates',
+        ).hasMatch(lower);
     final wantsAnalysis =
         RegExp(
           r'\b(simulate|simulation|parlay|joint|stress|robust|rank|optimize)\b',
@@ -462,8 +507,30 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         playerIds: snapshot!.playerIdsByName,
         now: at,
       );
+      if (wantsLive && answer.intent != CoachIntent.clarify) {
+        await _pollTelemetry();
+        if (!mounted) return;
+        live = liveResearch(
+          question: resolved,
+          now: now,
+          telemetry: telemetry,
+          playerId: answer.player?.id,
+          eventId: answer.event?.id,
+        );
+        answer = CoachAnswer(
+          title: live.title,
+          text: live.summary,
+          intent: CoachIntent.live,
+          event: answer.event,
+          player: answer.player,
+          metric: answer.metric,
+          coverage: answer.coverage,
+        );
+      }
     }
-    final turn = _Turn(question, answer, at)..analysis = result;
+    final turn = _Turn(question, answer, at)
+      ..analysis = result
+      ..live = live;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -483,7 +550,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     if (aiConnected &&
         answer.intent != CoachIntent.clarify &&
         turn.invalidation == null &&
-        (answer.player != null || answer.event != null)) {
+        (answer.player != null ||
+            answer.event != null ||
+            answer.intent == CoachIntent.live)) {
       try {
         final payload = answer.modelPayload(question, at);
         payload['context'] = {
@@ -542,7 +611,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. No verified current injury or weather feed is supplied here.',
+              'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. Injury listings are unofficial, weather is a forecast, and headlines are attributed reports. Source availability is shown below.',
               style: CoachType.label,
             ),
             if (telemetryError != null)
@@ -927,6 +996,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           const SizedBox(height: 12),
           SelectableText(
             turn.invalidation ??
+                turn.liveNotice ??
                 turn.generated?.answer ??
                 turn.analysis?.summary ??
                 a.text,
@@ -968,7 +1038,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
           if (turn.analysis != null && turn.invalidation == null)
             _analysisView(turn.analysis!),
-          if (a.player != null && turn.invalidation == null) ...[
+          if (turn.live != null) _liveView(turn),
+          if (a.player != null &&
+              turn.invalidation == null &&
+              a.intent != CoachIntent.live) ...[
             const SizedBox(height: 16),
             if (turn.analysis != null)
               const SizedBox.shrink()
@@ -1030,6 +1103,151 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         ],
       ),
     );
+  }
+
+  Widget _liveView(_Turn turn) {
+    final live = turn.live!;
+    final visible = turn.liveNotice == null
+        ? live.rows.where((row) => currentObservation(row, now)).take(12)
+        : <TelemetryObservation>[];
+    const labels = {
+      'injuries': 'Availability',
+      'beat_writers': 'Reporter headlines',
+      'markets': 'Saved prices',
+      'market_movement': 'Price movement',
+      'sharp_money': 'Verified sharp money',
+      'betting_splits': 'Reported betting shares',
+      'weather': 'Weather',
+    };
+    const states = {
+      'reported_unofficial': 'Provider reports',
+      'attributed_headlines': 'Connected',
+      'attributed_feed': 'Provider-reported shares',
+      'forecast_only': 'Forecast only',
+      'published_snapshots_only': 'Snapshot data',
+      'saved_observations': 'Tracking saved observations',
+      'waiting_for_prices': 'Waiting for current prices',
+      'provider_required': 'Provider needed',
+      'not_connected': 'Not connected',
+      'unavailable': 'Unavailable',
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final row in visible)
+          Container(
+            margin: const EdgeInsets.only(top: 18),
+            padding: const EdgeInsets.only(top: 16),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: CoachColors.border)),
+            ),
+            child: Builder(
+              builder: (context) {
+                final v = row.value;
+                final title = switch (row.kind) {
+                  'injury' =>
+                    '${playerNames[row.playerId] ?? 'Player'} · ${v['status']}',
+                  'news' => '${v['title']}',
+                  'weather' =>
+                    v['roof'] != null
+                        ? 'Roof: ${v['roof']}'
+                        : '${v['temperature']}°${v['unit'] ?? ''} · ${v['forecast'] ?? 'Forecast'}',
+                  _ =>
+                    v['signalType'] == 'betting_splits'
+                        ? '${v['outcome']} · ${v['market']}'
+                        : v['fromDecimal'] != null
+                        ? '${v['participant'] ?? 'Market'} · ${v['outcome'] ?? ''}'
+                        : 'Saved price snapshot',
+                };
+                final detail = switch (row.kind) {
+                  'injury' =>
+                    'Reported ${_reportTime(v['reportedUpdatedAt'])}. This listing does not confirm availability for the next game.',
+                  'news' =>
+                    '${v['author'] ?? 'ESPN'} · Published ${_reportTime(v['publishedAt'])}',
+                  'weather' =>
+                    '${v['windSpeed'] == null ? 'Schedule roof metadata' : 'Wind ${v['windSpeed']}'} · Forecast, not observed game conditions.',
+                  _ =>
+                    v['signalType'] == 'betting_splits'
+                        ? '${v['betPercent']}% of bets · ${v['moneyPercent']}% of money. Provider-reported shares do not identify professional bettors.'
+                        : v['fromDecimal'] != null
+                        ? '${v['book'] ?? 'Book'}: ${v['fromLine'] ?? ''} at ${v['fromDecimal']} → ${v['toLine'] ?? ''} at ${v['toDecimal']}\n${_reportTime(v['fromSourceAt'])} → ${_reportTime(v['toSourceAt'])}. Saved observations, not sharp-money flow.'
+                        : '${v['quoteCount'] ?? 0} saved observations. Original snapshot ${_reportTime(v['snapshotAt'])}.',
+                };
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: CoachType.body.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(detail, style: CoachType.label),
+                    const SizedBox(height: 5),
+                    Text(
+                      '${row.source} · Checked ${formatEastern(row.observedAt, year: true)}',
+                      style: CoachType.label.copyWith(fontSize: 10),
+                    ),
+                    if (v['url'] is String)
+                      _DeskLink(
+                        label: const Text('Read source ↗'),
+                        onPressed: () => _openReport(v['url'] as String),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        if (live.rows.length > 12 && turn.liveNotice == null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              'Showing 12 of ${live.rows.length} matching reports. Ask about a specific player or game to narrow the evidence.',
+              style: CoachType.label,
+            ),
+          ),
+        const SizedBox(height: 18),
+        Wrap(
+          spacing: 16,
+          runSpacing: 8,
+          children: [
+            for (final source in live.sources)
+              Text(
+                '${labels[source['id']] ?? source['id']}: ${states[source['state']] ?? source['state']}',
+                style: CoachType.label.copyWith(fontSize: 10),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _DeskLink(
+          label: const Text('Check latest updates'),
+          onPressed: busy
+              ? null
+              : () {
+                  session.eventId = turn.answer.event?.id;
+                  session.playerId = turn.answer.player?.id;
+                  _send(turn.question);
+                },
+        ),
+      ],
+    );
+  }
+
+  String _reportTime(dynamic value) {
+    final date = value is String ? DateTime.tryParse(value) : null;
+    return date == null ? 'time unavailable' : formatEastern(date, year: true);
+  }
+
+  Future<void> _openReport(String value) async {
+    final uri = Uri.tryParse(value);
+    if (uri == null || uri.scheme != 'https' || uri.userInfo.isNotEmpty) return;
+    if (openSourceLink(uri)) return;
+    await Clipboard.setData(ClipboardData(text: uri.toString()));
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Source link copied')));
+    }
   }
 
   void _follow(CoachAnswer answer, String action) {

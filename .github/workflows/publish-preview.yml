@@ -45,8 +45,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Install hosted source parser
+        run: npm ci --prefix hosting --ignore-scripts --no-audit --no-fund
       - name: Test hosted Coach boundaries
-        run: node --test hosting/worker.test.mjs
+        run: node --test hosting/*.test.mjs
       - uses: subosito/flutter-action@v2
         with:
           channel: stable

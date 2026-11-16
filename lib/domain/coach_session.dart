@@ -14,6 +14,7 @@ enum CoachIntent {
   challenge,
   history,
   clarify,
+  live,
 }
 
 class CoachAnswer {

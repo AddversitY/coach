@@ -54,3 +54,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Hosted service dependencies
+hosting/node_modules/

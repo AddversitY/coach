@@ -239,3 +239,25 @@ session closed.
 The web bootstrap retires only this app's deprecated Flutter cache worker.
 Release entrypoints use content-addressed filenames via version_web_build.py,
 with inline bootstrap, to prevent a cached guided-only app after hosting setup.
+
+
+## Live evidence in Coach (2026-11-16)
+
+Connected the existing ESPN injury endpoint after discovering its expanded
+payload is 8.8 MB, beyond the prior 2 MB cap. The bounded 16 MB collector retains
+only exact recorded-player/team matches, next-game scope, and original report
+dates. Polls are shared and cached ten minutes; failures retain timestamps and
+back off. Status is unofficial and does not confirm availability for the next game.
+
+Reporter news uses ESPN's published NFL RSS feed with original titles, links,
+publisher dates and supplied author bylines. Its 30-minute TTL is respected.
+No article bodies or social posts are copied. Coach now answers league-wide or
+player/game news and availability questions with structured source cards and
+source links. Old interpretations are withdrawn when the supporting reports change.
+
+Added bounded saved-market comparison: exact book/market/player/side matching,
+original observation times, no duplicate-read signals or ambiguous alt-line
+comparisons, no new odds calls. A separately authenticated provider adapter can
+accept licensed bet/money shares; it remains off without provider credentials.
+Verified sharp-money flow is still unavailable and is labeled provider needed.
+See LIVE_FEEDS.md for cadence, attribution, scope and the integration contract.

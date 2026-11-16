@@ -8,11 +8,13 @@ Current deployment: https://coach-research.dds-dge.workers.dev
 
 The public app's hosting URL is configured. OAuth credentials are stored only in
 the ignored local CLI directory. Live planner and cited answer checks passed.
-Weather/roof telemetry is available; the unofficial injury source currently
-reports unavailable. No paid plan or new licensed feed was enabled.
+Injury listings and attributed reporter headlines are connected, alongside
+weather/roof telemetry. No paid plan or new licensed feed was enabled. See
+[feed coverage and cadence](../docs/LIVE_FEEDS.md).
 
 ## Deployment
 
+Run `npm ci --prefix hosting --ignore-scripts --no-audit --no-fund` first.
 Use the official Wrangler CLI, sign in to the owner's Cloudflare account, then
 run `wrangler deploy --config hosting/wrangler.jsonc`. Set the account ID through
 `CLOUDFLARE_ACCOUNT_ID`. Keep CLI auth in an ignored private directory. The
@@ -21,7 +23,7 @@ repository does not provision a paid subscription or custom domain.
 Verify `/health` and `/v1/telemetry`, then set the nonsecret GitHub Actions
 variable `COACH_API_BASE_URL` to the resulting HTTPS Worker URL and rerun
 Publish research preview. The public app's `data/coach-index.json` must exist
-before interpretation can succeed. Run `node --test hosting/worker.test.mjs`.
+before interpretation can succeed. Run `node --test hosting/*.test.mjs`.
 
 ## Bounds and evidence
 
@@ -47,9 +49,16 @@ before interpretation can succeed. Run `node --test hosting/worker.test.mjs`.
   adjustments are inferred.
 - Markets read existing published snapshots, retaining original observation
   times and the existing credit limits. This is not real-time market data.
-- Sharp-money and beat-writer sources remain disconnected. `/v1/ingest` is off
-  until `INGEST_SECRET` and `NEWS_ALLOWED_HOSTS` are configured for an authorized
-  source. It accepts attributed titles/links, never confirmed scratch claims.
+- Reporter headlines use ESPN's published RSS feed, preserving author bylines
+  and publication dates, and respecting its 30-minute TTL. No article bodies or
+  private social posts are fetched. It is not comprehensive beat-writer coverage.
+- Verified sharp-money flow is not connected. Matching saved-price changes are
+  tracked as market observations. An authenticated `/v1/ingest` adapter accepts
+  provider-reported ticket/handle shares only after `MARKET_INGEST_SECRET` and
+  `MARKET_ALLOWED_HOSTS` are configured. Such shares do not identify professional
+  bettors. The adapter is disabled by default; no provider subscription is created.
+- Optional attributed-news ingestion remains disabled until `INGEST_SECRET` and
+  `NEWS_ALLOWED_HOSTS` are configured. Posts never become confirmed scratches.
 - Free-plan allowance and provider availability may stop AI responses. Guided
   research remains available. No paid upgrade is performed automatically.
 

@@ -76,6 +76,108 @@ class CoachTelemetry {
   }
 }
 
+bool currentObservation(TelemetryObservation item, DateTime now) {
+  final limit = item.value['signalType'] == 'betting_splits'
+      ? const Duration(minutes: 30)
+      : switch (item.kind) {
+          'injury' => const Duration(minutes: 12),
+          'weather' => const Duration(minutes: 35),
+          'news' => const Duration(minutes: 65),
+          'market' => const Duration(hours: 18),
+          _ => Duration.zero,
+        };
+  return !item.observedAt.isAfter(now) &&
+      now.difference(item.observedAt) <= limit;
+}
+
+class LiveResearch {
+  const LiveResearch({
+    required this.title,
+    required this.summary,
+    required this.rows,
+    required this.sources,
+  });
+  final String title, summary;
+  final List<TelemetryObservation> rows;
+  final List<Map<String, dynamic>> sources;
+}
+
+LiveResearch liveResearch({
+  required String question,
+  required DateTime now,
+  CoachTelemetry? telemetry,
+  String? playerId,
+  String? eventId,
+}) {
+  final q = question.toLowerCase();
+  final kinds = <String>{
+    if (RegExp(r'injur|availab|inactive|scratch').hasMatch(q)) 'injury',
+    if (RegExp(r'news|reporter|writer|headline').hasMatch(q)) 'news',
+    if (RegExp(r'market|sharp|money|steam|movement|splits').hasMatch(q))
+      'market',
+    if (RegExp(r'weather|wind|forecast').hasMatch(q)) 'weather',
+  };
+  if (kinds.isEmpty) kinds.addAll({'injury', 'news', 'market', 'weather'});
+  final rows = telemetry?.fresh(now) == true
+      ? telemetry!.observations
+            .where(
+              (item) =>
+                  kinds.contains(item.kind) &&
+                  currentObservation(item, now) &&
+                  (eventId == null || item.eventId == eventId) &&
+                  (playerId == null ||
+                      item.playerId == null && item.eventId == eventId ||
+                      item.playerId == playerId),
+            )
+            .toList()
+      : <TelemetryObservation>[];
+  final newsLinks = <String>{};
+  rows.removeWhere(
+    (row) =>
+        row.kind == 'news' &&
+        row.value['url'] is String &&
+        !newsLinks.add(row.value['url'] as String),
+  );
+  rows.sort((a, b) => b.observedAt.compareTo(a.observedAt));
+  final title = kinds.length != 1
+      ? 'Latest reports'
+      : switch (kinds.single) {
+          'injury' => 'Availability reports',
+          'news' => 'From the reporters',
+          'market' => 'Market observations',
+          _ => 'Game weather',
+        };
+  final summary = telemetry?.fresh(now) != true
+      ? 'Source checks are unavailable or stale. I cannot confirm current reports. Try checking again shortly.'
+      : kinds.contains('market')
+      ? 'I can show changes between saved prices when matching observations exist. Price movement and betting splits do not identify professional bettors. Verified sharp-money flow still needs a provider.'
+      : rows.isEmpty
+      ? 'No current matching report is available in the connected sources. That does not confirm a player is healthy, active, or starting.'
+      : '${rows.length} matching ${rows.length == 1 ? 'report' : 'reports'} from connected sources. Check the original publication time: an injury listing or headline does not confirm availability for the next game.';
+  final sourceIds = <String>{
+    if (kinds.contains('injury')) 'injuries',
+    if (kinds.contains('news')) 'beat_writers',
+    if (kinds.contains('market')) ...{
+      'markets',
+      'market_movement',
+      'sharp_money',
+    },
+    if (kinds.contains('weather')) 'weather',
+  };
+  return LiveResearch(
+    title: title,
+    summary: summary,
+    rows: rows,
+    sources: [
+      for (final source in telemetry?.sources ?? <Map<String, dynamic>>[])
+        if (sourceIds.contains(source['id']) ||
+            kinds.contains('weather') &&
+                '${source['id']}'.startsWith('weather:'))
+          source,
+    ],
+  );
+}
+
 class AnalysisInvalidation {
   const AnalysisInvalidation(this.reason, {this.recompute = false});
   final String reason;
@@ -106,7 +208,7 @@ AnalysisInvalidation? checkAnalysis({
         item.id: item,
     };
     for (final item in after.observations) {
-      if (item.observedAt.isAfter(now) ||
+      if (!currentObservation(item, now) ||
           !analysis.eventIds.contains(item.eventId)) {
         continue;
       }
