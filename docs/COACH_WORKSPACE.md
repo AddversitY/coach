@@ -1,5 +1,16 @@
 # Coach is the app
 
+## Visual identity
+
+The public Coach theme is paper-white, stone gray and graphite, with bundled
+Fraunces for editorial headlines and Inter for reading and tabular figures.
+A custom bracketed C mark, fine rules, numbered starting prompts, square
+composer and underlined follow-ups replace the previous dark chat styling.
+Question notes and research responses have different typographic roles;
+charts use graphite and retain labeled warning states. The light theme is
+scoped to Coach so the archived shell keeps its existing regression styling.
+Phone, desktop and enlarged-text flows are checked before publishing.
+
 The public entry point now opens one conversation. There is no Today, Research
 or Tools navigation. A question retrieves matching upcoming NFL games, recorded
 players and exact saved prices; results appear as interactive responses.

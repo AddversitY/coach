@@ -4,7 +4,7 @@ import 'package:odds_edge/coach/coach_workspace.dart';
 import 'package:odds_edge/data/published_snapshot.dart';
 import 'package:odds_edge/domain/assistant.dart';
 import 'package:odds_edge/domain/odds.dart';
-import 'package:odds_edge/theme/edge_theme.dart';
+import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
 
 import 'game_research_test.dart'
@@ -32,7 +32,7 @@ void main() {
     Future<AssistantReply> Function(Map<String, dynamic>)? ask,
     Future<PublishedSnapshot> Function()? loader,
   }) => MaterialApp(
-    theme: edgeTheme(),
+    theme: coachTheme(),
     home: CoachWorkspace(
       snapshotLoader: loader ?? () async => snapshot(),
       playerLoader: () async => fixtureData(),
@@ -69,7 +69,7 @@ void main() {
       expect(tester.takeException(), isNull);
       await tester.tap(find.byKey(const Key('coach-new-chat')));
       await tester.pumpAndSettle();
-      expect(find.text('A clearer read.\nOne conversation.'), findsOneWidget);
+      expect(find.text('Read the game.\nQuestion the line.'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
   );
@@ -80,7 +80,7 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(
         MaterialApp(
-          theme: edgeTheme(),
+          theme: coachTheme(),
           home: CoachWorkspace(
             snapshotLoader: () async => snapshot(),
             clock: () => now,

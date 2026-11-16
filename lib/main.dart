@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'coach/coach_workspace.dart';
 import 'data/published_snapshot.dart';
-import 'theme/edge_theme.dart';
+import 'theme/coach_theme.dart';
 
 void main() => runApp(const OddsEdgeApp());
 
@@ -13,7 +13,7 @@ class OddsEdgeApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     title: 'Coach',
     debugShowCheckedModeBanner: false,
-    theme: edgeTheme(),
+    theme: coachTheme(),
     home: CoachWorkspace(snapshotLoader: snapshotLoader),
   );
 }

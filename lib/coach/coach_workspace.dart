@@ -10,7 +10,7 @@ import '../domain/coach_session.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
 import '../domain/player_stats.dart';
-import '../theme/edge_theme.dart';
+import '../theme/coach_theme.dart';
 
 class CoachWorkspace extends StatefulWidget {
   const CoachWorkspace({
@@ -176,18 +176,18 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Behind Coach’s answers', style: EdgeType.title),
+            Text('Behind Coach’s answers', style: CoachType.title),
             const SizedBox(height: 16),
             Text(
               aiConnected
                   ? 'AI interpretation uses only the supplied research evidence. Check each answer’s source details.'
                   : 'Guided data mode. Responses are calculated from saved records and supported question patterns. Open-ended AI interpretation is not connected on this deployment.',
-              style: EdgeType.body,
+              style: CoachType.body,
             ),
             const SizedBox(height: 16),
             Text(
               'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. No verified current injury or weather feed is supplied here.',
-              style: EdgeType.label,
+              style: CoachType.label,
             ),
             const SizedBox(height: 20),
             OutlinedButton.icon(
@@ -209,12 +209,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   @override
   Widget build(BuildContext context) => Scaffold(
     key: const Key('coach-workspace'),
-    backgroundColor: EdgeColors.background,
+    backgroundColor: CoachColors.background,
     body: SafeArea(
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
             child: Row(
               children: [
                 const _CoachMark(),
@@ -225,11 +225,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     children: [
                       Text(
                         'Coach',
-                        style: EdgeType.title.copyWith(fontSize: 21),
+                        style: CoachType.title.copyWith(fontSize: 30),
                       ),
                       Text(
-                        'SPORTS RESEARCH',
-                        style: EdgeType.label.copyWith(
+                        'THE RESEARCH DESK',
+                        style: CoachType.label.copyWith(
                           fontSize: 9,
                           letterSpacing: 1.8,
                         ),
@@ -255,18 +255,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                           session.metric = null;
                           session.line = null;
                         }),
-                  icon: const Icon(Icons.edit_square, size: 20),
+                  icon: const Icon(Icons.add, size: 22),
                 ),
               ],
             ),
           ),
+          const Divider(),
           if (loadError != null || snapshot?.stale(now) == true)
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: Text(
                 loadError ?? 'Schedule snapshot is older than 24 hours. Refresh before using it.',
-                style: EdgeType.label.copyWith(
-                  color: EdgeColors.warn,
+                style: CoachType.label.copyWith(
+                  color: CoachColors.warn,
                   fontSize: 12,
                 ),
               ),
@@ -300,10 +301,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   children: [
                     DecoratedBox(
                       decoration: BoxDecoration(
-                        color: EdgeColors.surface,
-                        borderRadius: BorderRadius.circular(22),
+                        color: CoachColors.surface,
+                        borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: EdgeColors.border.withValues(alpha: .65),
+                          color: CoachColors.border.withValues(alpha: .65),
                         ),
                       ),
                       child: Padding(
@@ -341,7 +342,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                               onPressed: busy || loading || snapshot == null
                                   ? null
                                   : () => _send(composer.text),
-                              icon: const Icon(Icons.arrow_upward, size: 20),
+                              style: IconButton.styleFrom(
+                                backgroundColor: CoachColors.accent,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              icon: const Icon(Icons.north_east, size: 20),
                             ),
                           ],
                         ),
@@ -352,9 +360,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                       aiConnected
                           ? 'AI interpretation · verify the evidence and current prices'
                           : 'Guided data mode · open-ended AI not connected',
-                      style: EdgeType.label.copyWith(
+                      style: CoachType.label.copyWith(
                         fontSize: 10,
-                        color: EdgeColors.textTertiary,
+                        color: CoachColors.textTertiary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -369,68 +377,126 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   );
 
   Widget _welcome() => LayoutBuilder(
-    builder: (context, constraints) => SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: (constraints.maxHeight - 48).clamp(0, double.infinity),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'A clearer read.\nOne conversation.',
-              style: EdgeType.display.copyWith(
-                fontSize: 40,
-                fontWeight: FontWeight.w500,
-                height: 1.13,
-              ),
+    builder: (context, box) {
+      final wide = box.maxWidth >= 680;
+      final headlineSize = wide ? 72.0 : 44.0;
+      final prompts = ['Brief me', 'Find a player', 'Compare prices'];
+      Widget prompt(int index) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: loading || snapshot == null
+              ? null
+              : () => _send(prompts[index]),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: CoachColors.border)),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Bring me a game, a player, or a line.\nWe’ll work through the evidence together.',
-              style: EdgeType.body.copyWith(color: EdgeColors.textSecondary),
-            ),
-            const SizedBox(height: 28),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+            child: Row(
               children: [
-                for (final prompt in [
-                  'Brief me',
-                  'Find a player',
-                  'Compare prices',
-                ])
-                  ActionChip(
-                    label: Text(prompt),
-                    onPressed: loading || snapshot == null
-                        ? null
-                        : () => _send(prompt),
+                Text(
+                  '0${index + 1}',
+                  style: CoachType.label.copyWith(
+                    fontSize: 10,
+                    letterSpacing: 1,
                   ),
+                ),
+                const SizedBox(width: 18),
+                Expanded(
+                  child: Text(
+                    prompts[index],
+                    style: CoachType.body.copyWith(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const Icon(Icons.north_east, size: 17),
+                const SizedBox(width: 12),
               ],
             ),
-            const SizedBox(height: 22),
-            if (loading)
-              const Text('Loading the research…', style: EdgeType.label)
-            else if (snapshot == null)
-              TextButton.icon(
-                onPressed: _load,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry loading data'),
-              )
-            else
+          ),
+        ),
+      );
+      return SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(24, wide ? 52 : 28, 24, 28),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: (box.maxHeight - (wide ? 80 : 56)).clamp(
+              0,
+              double.infinity,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Container(width: 22, height: 2, color: CoachColors.accent),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'A DIFFERENT VIEW OF THE GAME',
+                      style: CoachType.label.copyWith(
+                        fontSize: 9,
+                        letterSpacing: 1.7,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
               Text(
-                'NFL · saved prices and dated player records',
-                style: EdgeType.label.copyWith(
-                  fontSize: 11,
-                  color: EdgeColors.textTertiary,
+                'Read the game.\nQuestion the line.',
+                style: CoachType.display.copyWith(fontSize: headlineSize),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Bring me a player, a game, or a line.\nWe’ll work through the evidence together.',
+                style: CoachType.body.copyWith(
+                  color: CoachColors.textSecondary,
+                  fontSize: wide ? 17 : 14,
                 ),
               ),
-          ],
+              SizedBox(height: wide ? 44 : 30),
+              if (wide)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < 3; i++)
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: i == 2 ? 0 : 24),
+                          child: prompt(i),
+                        ),
+                      ),
+                  ],
+                )
+              else
+                for (var i = 0; i < 3; i++) prompt(i),
+              const SizedBox(height: 20),
+              if (loading)
+                const Text('Loading the research…', style: CoachType.label)
+              else if (snapshot == null)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: _load,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry loading data'),
+                  ),
+                )
+              else
+                Text(
+                  'NFL / DATED RECORDS / SAVED PRICES',
+                  style: CoachType.label.copyWith(
+                    fontSize: 9,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+            ],
+          ),
         ),
-      ),
-    ),
+      );
+    },
   );
 
   Widget _turn(_Turn turn) {
@@ -447,10 +513,25 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               margin: const EdgeInsets.only(left: 32, bottom: 28),
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               decoration: BoxDecoration(
-                color: EdgeColors.surfaceHigh,
-                borderRadius: BorderRadius.circular(18),
+                color: CoachColors.surfaceHigh,
+                border: const Border(
+                  left: BorderSide(color: CoachColors.textTertiary, width: 2),
+                ),
               ),
-              child: Text(turn.question, style: EdgeType.body),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'YOUR QUESTION',
+                    style: CoachType.label.copyWith(
+                      fontSize: 9,
+                      letterSpacing: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(turn.question, style: CoachType.body),
+                ],
+              ),
             ),
           ),
           Row(
@@ -459,7 +540,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               const SizedBox(width: 8),
               Text(
                 'Coach',
-                style: EdgeType.body.copyWith(fontWeight: FontWeight.w600),
+                style: CoachType.body.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -467,25 +548,25 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   turn.generated != null
                       ? 'AI interpretation'
                       : 'Evidence response',
-                  style: EdgeType.label.copyWith(fontSize: 10),
+                  style: CoachType.label.copyWith(fontSize: 10),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 18),
-          Text(a.title, style: EdgeType.title.copyWith(fontSize: 22)),
+          Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
           SelectableText(
             turn.generated?.answer ?? a.text,
-            style: EdgeType.body,
+            style: CoachType.body,
           ),
           if (turn.aiFailed)
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
                 'AI interpretation is unavailable. Showing the calculated evidence response.',
-                style: EdgeType.label.copyWith(
-                  color: EdgeColors.warn,
+                style: CoachType.label.copyWith(
+                  color: CoachColors.warn,
                   fontSize: 11,
                 ),
               ),
@@ -495,8 +576,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               padding: const EdgeInsets.only(top: 10),
               child: Text(
                 a.evidenceNotice!,
-                style: EdgeType.label.copyWith(
-                  color: EdgeColors.warn,
+                style: CoachType.label.copyWith(
+                  color: CoachColors.warn,
                   fontSize: 12,
                 ),
               ),
@@ -527,7 +608,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               runSpacing: 8,
               children: [
                 for (final m in a.player!.metrics)
-                  ActionChip(
+                  _DeskLink(
                     label: Text(m.shortLabel),
                     onPressed: busy
                         ? null
@@ -541,7 +622,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   'Challenge this',
                   'Show recorded games',
                 ])
-                  ActionChip(
+                  _DeskLink(
                     label: Text(action),
                     onPressed: busy ? null : () => _follow(a, action),
                   ),
@@ -554,7 +635,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             dense: true,
             title: Text(
               'Sources & limits',
-              style: EdgeType.label.copyWith(fontSize: 11),
+              style: CoachType.label.copyWith(fontSize: 11),
             ),
             children: [
               Align(
@@ -564,7 +645,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   child: Text(
                     'Research checked ${formatEastern(turn.at, year: true)}.\n${a.coverage == null ? 'Schedule: nflverse · CC BY 4.0' : 'Box scores through ${a.coverage!.toIso8601String().substring(0, 10)} · nflverse · CC BY 4.0'}\nHistorical participants are not confirmed rosters. Saved prices may have changed. Settlement rules are unverified. No validated prop probability or edge is supplied.'
                     '${turn.generated == null ? '' : '\nAI used: ${turn.generated!.cited.map((id) => assistantInputLabels[id] ?? id).join(', ')}'}',
-                    style: EdgeType.label.copyWith(fontSize: 11),
+                    style: CoachType.label.copyWith(fontSize: 11),
                   ),
                 ),
               ),
@@ -590,12 +671,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     padding: const EdgeInsets.only(top: 8),
     child: ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      title: Text(title, style: EdgeType.body),
-      subtitle: Text(subtitle, style: EdgeType.label.copyWith(fontSize: 11)),
+      title: Text(title, style: CoachType.body),
+      subtitle: Text(subtitle, style: CoachType.label.copyWith(fontSize: 11)),
       trailing: const Icon(
         Icons.arrow_forward,
         size: 18,
-        color: EdgeColors.accent,
+        color: CoachColors.accent,
       ),
       onTap: busy ? null : action,
     ),
@@ -613,7 +694,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     if (groups.isEmpty) {
       return Text(
         'No unexpired saved prices for this selection. Ask for performance or another line.',
-        style: EdgeType.label,
+        style: CoachType.label,
       );
     }
     final lines =
@@ -628,7 +709,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       children: [
         Text(
           'Saved snapshots · confirm current prices',
-          style: EdgeType.label.copyWith(color: EdgeColors.warn, fontSize: 11),
+          style: CoachType.label.copyWith(
+            color: CoachColors.warn,
+            fontSize: 11,
+          ),
         ),
         if (lines.length > 1)
           Wrap(
@@ -636,7 +720,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             runSpacing: 4,
             children: [
               for (final value in lines)
-                ActionChip(
+                _DeskLink(
                   label: Text('Line $value'),
                   onPressed: busy
                       ? null
@@ -663,24 +747,24 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 tilePadding: EdgeInsets.zero,
                 title: Text(
                   '${best.selection.outcome} ${best.selection.point} · ${americanLabel(best.decimal)}',
-                  style: EdgeType.number.copyWith(fontSize: 21),
+                  style: CoachType.number.copyWith(fontSize: 21),
                 ),
                 subtitle: Text(
                   '${best.book} · highest saved · ${list.length} books\nSource ${formatEastern(best.sourceAt)} · ${best.eligible(now) ? 'recent' : 'outdated'} snapshot',
-                  style: EdgeType.label.copyWith(fontSize: 11),
+                  style: CoachType.label.copyWith(fontSize: 11),
                 ),
                 children: [
                   for (final q in list)
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(q.book, style: EdgeType.body),
+                      title: Text(q.book, style: CoachType.body),
                       trailing: Text(
                         americanLabel(q.decimal),
-                        style: EdgeType.number.copyWith(fontSize: 20),
+                        style: CoachType.number.copyWith(fontSize: 20),
                       ),
                       subtitle: Text(
                         'Source ${formatEastern(q.sourceAt, year: true)}\nChecked ${formatEastern(q.collectedAt, year: true)}',
-                        style: EdgeType.label.copyWith(fontSize: 10),
+                        style: CoachType.label.copyWith(fontSize: 10),
                       ),
                     ),
                 ],
@@ -703,7 +787,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       children: [
         Text(
           'Recorded ${a.metric.label.toLowerCase()} · oldest → newest',
-          style: EdgeType.label.copyWith(fontSize: 11),
+          style: CoachType.label.copyWith(fontSize: 11),
         ),
         const SizedBox(height: 12),
         SizedBox(
@@ -733,8 +817,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                                     .toDouble(),
                                 decoration: BoxDecoration(
                                   color: values[i]! < 0
-                                      ? EdgeColors.warn
-                                      : EdgeColors.accent.withValues(
+                                      ? CoachColors.warn
+                                      : CoachColors.accent.withValues(
                                           alpha: .75,
                                         ),
                                   borderRadius: BorderRadius.circular(3),
@@ -743,7 +827,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                             const SizedBox(height: 6),
                             Text(
                               'W${games[i].week}',
-                              style: EdgeType.label.copyWith(fontSize: 9),
+                              style: CoachType.label.copyWith(fontSize: 9),
                             ),
                           ],
                         ),
@@ -757,7 +841,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         const SizedBox(height: 8),
         Text(
           'Negative values are amber; missing values stay blank. Historical production is not a forecast.',
-          style: EdgeType.label.copyWith(fontSize: 10),
+          style: CoachType.label.copyWith(fontSize: 10),
         ),
       ],
     );
@@ -768,17 +852,51 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       for (final g in a.player!.games.take(20))
         ListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text('vs ${g.opponent}', style: EdgeType.body),
+          title: Text('vs ${g.opponent}', style: CoachType.body),
           subtitle: Text(
             '${g.date.toIso8601String().substring(0, 10)} · Week ${g.week}',
-            style: EdgeType.label.copyWith(fontSize: 11),
+            style: CoachType.label.copyWith(fontSize: 11),
           ),
           trailing: Text(
             '${g.stats[a.metric.key] ?? '—'}',
-            style: EdgeType.number.copyWith(fontSize: 20),
+            style: CoachType.number.copyWith(fontSize: 20),
           ),
         ),
     ],
+  );
+}
+
+class _DeskLink extends StatelessWidget {
+  const _DeskLink({required this.label, required this.onPressed});
+  final Widget label;
+  final VoidCallback? onPressed;
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onPressed,
+    child: Container(
+      constraints: const BoxConstraints(minHeight: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: CoachColors.border)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: DefaultTextStyle(
+              style: CoachType.label.copyWith(
+                color: onPressed == null
+                    ? CoachColors.textTertiary
+                    : CoachColors.text,
+              ),
+              child: label,
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Icon(Icons.north_east, size: 12),
+        ],
+      ),
+    ),
   );
 }
 
@@ -786,14 +904,39 @@ class _CoachMark extends StatelessWidget {
   const _CoachMark({this.size = 34});
   final double size;
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => SizedBox(
     width: size,
     height: size,
-    decoration: BoxDecoration(
-      color: EdgeColors.accent.withValues(alpha: .12),
-      borderRadius: BorderRadius.circular(size * .32),
-      border: Border.all(color: EdgeColors.accent.withValues(alpha: .25)),
+    child: CustomPaint(
+      painter: const _DeskMark(),
+      child: Center(
+        child: Text('C', style: CoachType.title.copyWith(fontSize: size * .72)),
+      ),
     ),
-    child: Icon(Icons.auto_awesome, size: size * .55, color: EdgeColors.accent),
   );
+}
+
+class _DeskMark extends CustomPainter {
+  const _DeskMark();
+  @override
+  void paint(Canvas canvas, Size size) {
+    final pen = Paint()
+      ..color = CoachColors.accent
+      ..strokeWidth = 1.3
+      ..style = PaintingStyle.stroke;
+    final edge = size.width * .3;
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, edge)
+        ..lineTo(0, 0)
+        ..lineTo(edge, 0)
+        ..moveTo(size.width - edge, size.height)
+        ..lineTo(size.width, size.height)
+        ..lineTo(size.width, size.height - edge),
+      pen,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _DeskMark oldDelegate) => false;
 }
