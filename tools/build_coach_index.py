@@ -200,6 +200,10 @@ def main():
     current={name:research_for_history(report,fingerprint,'historyHash' if name=='football-research' else 'sourceHash') for name,report in reports.items()}
     result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),history,json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')),current['regime-research'],current['game-error-audit'],current['football-research'],json.loads(Path('assets/team-efficiency.json').read_text(encoding='utf-8')))
     result['researchAvailability']={name:'current' if current[name] else 'awaiting_refit_after_evidence_update' for name in current}
-    args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,allow_nan=False,separators=(',',':')),encoding='utf-8')
+    payload=json.dumps(result,allow_nan=False,separators=(',',':'))
+    # Keep publication inside the hosted reader's bounded response budget.
+    # Fail before replacing output instead of deploying an unreadable index.
+    if len(payload.encode('utf-8'))>3_000_000:raise ValueError('Coach index exceeds the hosted source size limit')
+    args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(payload,encoding='utf-8')
     print(f'Coach index: {len(result["players"])} recorded players; zero odds credits.')
 if __name__=='__main__':main()

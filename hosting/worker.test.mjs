@@ -86,6 +86,17 @@ test('source fetch uses Workers-compatible manual redirects and rejects redirect
   }finally{globalThis.fetch=original;resetSourceCacheForTests();}
 });
 
+test('a growing research index remains readable while oversized sources fail closed',async()=>{
+ const original=globalThis.fetch;
+ const index={schemaVersion:1,players:[],events:[],cutoff:at.slice(0,10),retrievedAt:at,researchNotes:'x'.repeat(2_050_000)};
+ try{
+  globalThis.fetch=async url=>Response.json(String(url).endsWith('coach-index.json')?index:{schemaVersion:1});
+  resetSourceCacheForTests();assert.equal((await published({},time)).index.researchNotes.length,2_050_000);
+  index.researchNotes='x'.repeat(3_000_000);resetSourceCacheForTests();
+  await assert.rejects(published({},time));
+ }finally{globalThis.fetch=original;resetSourceCacheForTests();}
+});
+
 test('market ingestion requires its own credential before any source access',async()=>{
   const original=globalThis.fetch;let network=0;
   try{

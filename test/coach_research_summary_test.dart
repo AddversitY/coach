@@ -51,6 +51,34 @@ Map<String, dynamic> researchSummaryFixture() => {
 };
 void main() {
   testWidgets(
+    'missing prices use one explanation instead of four empty market cards',
+    (tester) async {
+      final fixture = researchSummaryFixture();
+      for (final option in fixture['options'] as List) {
+        option['status'] = 'missing_price';
+        option['researchState'] = 'unavailable';
+      }
+      fixture['summary']['text'] =
+          'Prices are waiting for the scheduled pregame update window.';
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: coachTheme(),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: CoachResearchSummary(comparison: fixture),
+            ),
+          ),
+        ),
+      );
+      expect(
+        find.textContaining('scheduled pregame update window'),
+        findsOneWidget,
+      );
+      expect(find.text('Spread'), findsNothing);
+      expect(find.text('PASS / RESEARCH ONLY'), findsOneWidget);
+    },
+  );
+  testWidgets(
     'a phone shows all market checks and pass reasons without implying probability',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));

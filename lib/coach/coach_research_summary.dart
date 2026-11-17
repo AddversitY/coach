@@ -19,6 +19,9 @@ class CoachResearchSummary extends StatelessWidget {
         .whereType<Map>()
         .toList();
     final leaders = summary['leadingMarkets'] as List? ?? [];
+    final hasMarketEvidence = options.any(
+      (option) => option['status'] != 'missing_price',
+    );
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 20),
       padding: const EdgeInsets.all(18),
@@ -67,26 +70,27 @@ class CoachResearchSummary extends StatelessWidget {
           const SizedBox(height: 10),
           Text('${summary['text']}', style: CoachType.body),
           const SizedBox(height: 14),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final columns = constraints.maxWidth >= 600 ? 2 : 1;
-              final width =
-                  (constraints.maxWidth - (columns - 1) * 8) / columns;
-              return Wrap(
-                spacing: 8,
-                children: [
-                  for (final option in options)
-                    SizedBox(
-                      width: width,
-                      child: _market(
-                        option,
-                        leaders.contains(option['market']),
+          if (hasMarketEvidence)
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final columns = constraints.maxWidth >= 600 ? 2 : 1;
+                final width =
+                    (constraints.maxWidth - (columns - 1) * 8) / columns;
+                return Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final option in options)
+                      SizedBox(
+                        width: width,
+                        child: _market(
+                          option,
+                          leaders.contains(option['market']),
+                        ),
                       ),
-                    ),
-                ],
-              );
-            },
-          ),
+                  ],
+                );
+              },
+            ),
           if ((summary['reasons'] as List? ?? []).isNotEmpty) ...[
             const SizedBox(height: 16),
             const Text('Why inspect it', style: CoachType.body),
@@ -124,7 +128,9 @@ class CoachResearchSummary extends StatelessWidget {
             ),
           const SizedBox(height: 8),
           Text(
-            '${summary['notice']}',
+            hasMarketEvidence
+                ? '${summary['notice']}'
+                : 'No model has a demonstrated betting edge.',
             style: CoachType.label.copyWith(fontSize: 10),
           ),
         ],

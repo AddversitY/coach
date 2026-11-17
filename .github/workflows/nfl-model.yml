@@ -66,6 +66,23 @@ jobs:
       - name: Evaluate joint workload and efficiency production forecasts
         run: python model/production_forecast.py --schedule model/.cache/games.csv
 
+      - name: Preserve completed public research reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coach-research-${{ github.run_id }}
+          retention-days: 7
+          path: |
+            assets/nfl-model.json
+            assets/parlay-calibration.json
+            assets/game-forecast-model.json
+            assets/forecast-lab.json
+            assets/game-error-audit.json
+            assets/regime-research.json
+            assets/team-efficiency.json
+            assets/football-research.json
+            assets/workload-model.json
+            assets/production-model.json
+
       - name: Commit a refreshed model report
         if: github.event_name != 'pull_request'
         run: |
@@ -76,6 +93,14 @@ jobs:
             echo "Model reports unchanged."
           else
             git commit -m "Refresh Coach's Line from nflverse"
+            git fetch origin main
+            # Code may move during a long fit. Rebase those changes, but never
+            # publish a model trained against a different evidence batch.
+            if ! git diff --quiet HEAD origin/main -- assets/nfl-history.json assets/nfl-player-stats.json assets/nfl-matchup.json; then
+              echo "Evidence changed during fitting. Reports are saved as an artifact; a fresh fit is required."
+              exit 1
+            fi
+            git rebase origin/main
             git push
           fi
 

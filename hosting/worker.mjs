@@ -62,7 +62,7 @@ export async function published(env, clock=Date.now()) {
   const base=env.PUBLIC_BASE||BASE_DEFAULT;
   // Deployment configuration, never a caller-controlled URL.
   if(new URL(base).origin!=='https://addversity.github.io') throw new Error('Unapproved public source');
-  const [index,snapshot]=await Promise.all([sourceJson(new URL('data/coach-index.json',base),2_000_000),sourceJson(new URL('data/snapshot.json',base),1_000_000)]);
+  const [index,snapshot]=await Promise.all([sourceJson(new URL('data/coach-index.json',base),3_000_000),sourceJson(new URL('data/snapshot.json',base),1_000_000)]);
   if(index.schemaVersion!==1 || !Array.isArray(index.players) || !Array.isArray(index.events) || index.players.length>1200 || ![1,2].includes(snapshot.schemaVersion))throw new Error('Invalid source schema');
   const cutoff=Date.parse(index.cutoff+'T00:00:00Z'),retrieved=Date.parse(index.retrievedAt);
   if(!Number.isFinite(cutoff)||!Number.isFinite(retrieved)||retrieved>clock||cutoff>clock||retrieved<cutoff||clock-cutoff>22*86400000)throw new Error('Evidence too old');
