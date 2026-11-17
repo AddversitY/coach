@@ -30,13 +30,38 @@ class CoachConversation {
 
   static String? marketIn(String text) {
     final q = text.toLowerCase();
-    if (RegExp(r'moneyline|win outright').hasMatch(q)) return 'moneyline';
+    if (RegExp(r'\bmoneyline\b|\bml\b|win outright').hasMatch(q)) {
+      return 'moneyline';
+    }
     if (RegExp(r'spread|cover').hasMatch(q)) return 'spread';
     if (RegExp(r'receptions').hasMatch(q)) return 'receptions';
-    if (RegExp(r'receiving|rec\. yards').hasMatch(q)) return 'receiving yards';
-    if (RegExp(r'passing|pass yards').hasMatch(q)) return 'passing yards';
-    if (RegExp(r'rushing|rush yards').hasMatch(q)) return 'rushing yards';
+    if (RegExp(r'\breceiving\b|\brec\.?\s+(yards?|yds?)\b').hasMatch(q)) {
+      return 'receiving yards';
+    }
+    if (RegExp(r'\bpassing\b|\bpass\s+(yards?|yds?)\b').hasMatch(q)) {
+      return 'passing yards';
+    }
+    if (RegExp(r'\brushing\b|\brush\s+(yards?|yds?)\b').hasMatch(q)) {
+      return 'rushing yards';
+    }
     if (RegExp(r'total|over.?under').hasMatch(q)) return 'game total';
+    final hasTeam = nflTeams.entries.any(
+      (t) => [t.key, t.key.split(' ').last, t.value].any(
+        (alias) => RegExp(
+          '\\b${RegExp.escape(alias)}\\b',
+          caseSensitive: false,
+        ).hasMatch(q),
+      ),
+    );
+    if (hasTeam) {
+      if (RegExp(r'\b(over|under)\s+-?\d').hasMatch(q)) return 'game total';
+      final clean = q.replaceAll(RegExp(r'\b20\d{2}-\d{2}-\d{2}\b'), '');
+      if (RegExp(r'[+-]\d+(?:\.\d+)?')
+          .allMatches(clean)
+          .any((m) => double.parse(m[0]!).abs() < 100)) {
+        return 'spread';
+      }
+    }
     return null;
   }
 

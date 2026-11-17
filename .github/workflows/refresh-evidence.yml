@@ -5,6 +5,9 @@ on:
   schedule:
     # After the overnight source updates, before the morning Pages publication.
     - cron: '0 10 * * *'
+    # Monday box scores can arrive after the morning fetch. Catch Tuesday's
+    # later free-source release without running a second full refresh daily.
+    - cron: '0 22 * * 2'
 
 permissions:
   contents: read

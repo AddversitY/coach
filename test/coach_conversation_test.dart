@@ -4,6 +4,30 @@ import 'package:odds_edge/domain/coach_conversation.dart';
 import 'game_research_test.dart' show event, now;
 
 void main() {
+  test('common shorthand preserves market identity and excludes American prices and dates', () {
+    expect(CoachConversation.marketIn('Bills -3.5 at -110'), 'spread');
+    expect(CoachConversation.marketIn('Chiefs +3.5'), 'spread');
+    expect(CoachConversation.marketIn('Bills ML -150'), 'moneyline');
+    expect(CoachConversation.marketIn('Bills under 45.5'), 'game total');
+    expect(
+      CoachConversation.marketIn('Recorded Receiver rec yds over 65.5'),
+      'receiving yards',
+    );
+    expect(
+      CoachConversation.marketIn('Recorded Quarterback pass yds under 245.5'),
+      'passing yards',
+    );
+    expect(
+      CoachConversation.marketIn('Recorded Runner rush yds over 68.5'),
+      'rushing yards',
+    );
+    expect(CoachConversation.marketIn('Bills on 2026-11-22 at -110'), isNull);
+    final c = CoachConversation()..remember(event, 'Bills -3.5 at -110');
+    expect(
+      c.resolve('Show the opposing case', now).query,
+      contains('spread line -3.5'),
+    );
+  });
   test('bare team questions open visual game research without treating injury questions as team-only prompts', () {
     for (final q in [
       'Bills',

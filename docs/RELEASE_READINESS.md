@@ -10,9 +10,9 @@ One light, editorial Coach workspace. A user asks about a matchup, spread, total
 
 | Area | Current evidence | Remaining acceptance condition |
 | --- | --- | --- |
-| Core questions | Nineteen fixed requests plus follow-up, book, line, date, unknown-player and stale-source regression cases | Broaden realistic phrasing and ambiguous requests; verify the hosted experience |
+| Core questions | Twenty-seven fixed requests plus follow-up, book, line, date, unknown-player and stale-source regression cases | Broaden realistic phrasing and ambiguous requests; verify the hosted experience |
 | Visual research | Team margin/total/scoring charts, player production/workload, exact book comparisons, raw observations and phone tests | Final desktop and phone visual review with current sources |
-| Price reliability | Free pilot uses saved snapshots, an 18-hour lifetime, six-hour pregame acquisition window and persistent quota reservations | Publish explicit waiting/limit/outage reasons and confirm them on the hosted app |
+| Price reliability | Free pilot uses saved snapshots, an 18-hour lifetime, six-hour pregame acquisition window and persistent quota reservations | Confirmed on hosted release 9a1e1b5; price acquisition remains intentionally limited |
 | Source context | Dated historical records, weather, unofficial injuries, named official injury/inactive checks and invalidation | Confirm failure states; full active lists and confirmed starters remain unavailable |
 | Automatic operation | Live scheduled job completes; first captured game graded automatically | Verify result-source refresh, unresolved player outcomes and baseline failure reporting |
 | Hosting | Public Pages app and private-key Worker; automatic build/deploy checks | Push each verified release and inspect the deployed result |
@@ -20,7 +20,7 @@ One light, editorial Coach workspace. A user asks about a matchup, spread, total
 
 ## Research completion is separate
 
-Live audit on 2026-11-17: one game captured and graded in the serving cohort, fifteen player observations unresolved, zero qualified fair AI comparisons. The frozen AI baseline for that game failed; it cannot be regenerated after kickoff. A fresh free-source batch now contains player and score records through November 16 and is staged for release. The first game's outcome is not evidence of general skill.
+Live audit on 2026-11-17: one game captured and graded in the serving cohort, initially fifteen player observations unresolved, zero qualified fair AI comparisons. The frozen AI baseline for that game failed; it cannot be regenerated after kickoff. Published free-source records through November 16 resolved all fifteen serving observations. Some separate workload/production observations remain absent or mismatched and correctly unresolved. The first game's outcome is not evidence of general skill.
 
 Future pregame captures must retain exact selection/line, source age, frozen facts, model/protocol and completion deadlines. Market and configured-AI comparisons must use the same settled observations, average within games and report missing coverage. Historical challengers remain unadopted. No model currently has a demonstrated betting edge. A future result that fails to beat the reference must remain visible.
 

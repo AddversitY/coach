@@ -1,6 +1,6 @@
 /* Descriptive context never silently becomes an injury/quarterback point model. */
 import {selectionExplanation,answerFollowUps} from './answer-quality.mjs';
-import {spreadHandicap} from './selection-focus.mjs';
+import {spreadHandicap,requestedMarket} from './selection-focus.mjs';
 const LINE=new Set(['C','G','T','OT','OG','OL','LT','RT','LG','RG']);
 const CONCERN=new Set(['questionable','out','doubtful','inactive','injured reserve']);
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
@@ -100,14 +100,15 @@ export function contextEvidence(context){
 
 export function decisionBrief(report,context,{question=''}={}){
   const q=question.toLowerCase(),names=[...new Set([...context.teams.flatMap(t=>t.usage),...(report.projections||[])].filter(p=>(' '+name(q)+' ').includes(' '+name(p.name)+' ')).map(p=>p.name))];
-  const requested=/moneyline|win outright/.test(q)?'h2h':/spread|cover/.test(q)?'spreads':/\breceiving\b|\brec\. yards/.test(q)?'player_reception_yds':/\breceptions\b/.test(q)?'player_receptions':/passing|pass yards/.test(q)?'player_pass_yds':/rushing|rush yards/.test(q)?'player_rush_yds':/total|over.?under/.test(q)?'totals':null;
+  const mentionedTeams=[report.event.home,report.event.away].filter(team=>[team,team.split(' ').at(-1),report.event[team===report.event.home?'homeCode':'awayCode']].filter(Boolean).some(alias=>(' '+name(q)+' ').includes(' '+name(alias)+' ')));
+  const selectedTeam=mentionedTeams.length===1?mentionedTeams[0]:null;
+  const requested=requestedMarket(question,{hasPlayer:names.length>0,hasTeam:!!selectedTeam});
   const side=q.match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/);
   const spreadLine=requested==='spreads'?spreadHandicap(question):null;
   const rows=requested||names.length||side?report.categories.flatMap(c=>c.rows):report.ranked;
-  const mentionedTeams=[report.event.home,report.event.away].filter(team=>[team,team.split(' ').at(-1),report.event[team===report.event.home?'homeCode':'awayCode']].filter(Boolean).some(alias=>(' '+name(q)+' ').includes(' '+name(alias)+' ')));
-  const selectedTeam=mentionedTeams.length===1?mentionedTeams[0]:null;
   const parlay=/\b(parlay|sgp)\b|same.game.parlay/i.test(q),playerRequest=names.length>0||requested?.startsWith('player_');
-  const ranked=rows.filter(r=>!parlay&&!r.blocked&&(!playerRequest||names.length===1)&&(!requested||r.selection.market===requested)&&(!selectedTeam||!['spreads','h2h'].includes(r.selection.market)||r.selection.outcome===selectedTeam)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
+  const missingPlayerMarket=names.length===1&&side&&!requested;
+  const ranked=rows.filter(r=>!missingPlayerMarket&&!parlay&&!r.blocked&&(!playerRequest||names.length===1)&&(!requested||r.selection.market===requested)&&(!selectedTeam||!['spreads','h2h'].includes(r.selection.market)||r.selection.outcome===selectedTeam)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
   const home=report.event.home,away=report.event.away;
   const lean=report.score.homeWin>(1-report.score.homeWin-report.score.tie)?home:away;
   const priced=!!best;
@@ -122,7 +123,7 @@ export function decisionBrief(report,context,{question=''}={}){
   const explanation=selectionExplanation(report,requested||names.length?best:null);
   return {status:unavailable?'officially_unavailable':wait?'wait_for_context':priced?'research_only':'wait_for_prices',
     decisionLabel:wait?'Wait':'Pass',
-    clarification:!parlay&&playerRequest&&names.length!==1?'Which recorded player should I use? Give one full player name with the market, side and line.':null,
+    clarification:!parlay&&playerRequest&&names.length!==1?'Which recorded player should I use? Give one full player name with the market, side and line.':missingPlayerMarket?'Which player market do you mean: passing yards, rushing yards, receiving yards or receptions?':null,
     ...explanation,
     followUps:answerFollowUps(report,requested||names.length?best:null),
     headline:parlay?'Pass — the ticket needs its own analysis':unavailable?`Pass — ${unavailable.name} is officially ${unavailable.status.toLowerCase()}`:wait?'Wait — lineup clarity is missing':priced?'Pass — no demonstrated model edge':'Pass — the matching price is missing',

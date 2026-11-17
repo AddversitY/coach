@@ -25,6 +25,37 @@ import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
 
+const _sourceLabels = {
+  'injuries': 'Player availability',
+  'official_inactives': 'NFL inactive reports',
+  'official_injuries': 'NFL injury designations',
+  'beat_writers': 'Reporter headlines',
+  'markets': 'Saved prices',
+  'market_movement': 'Price movement',
+  'sharp_money': 'Verified sharp money',
+  'betting_splits': 'Reported betting shares',
+  'weather': 'Weather',
+};
+const _sourceStates = {
+  'reported_unofficial': 'Unofficial reports',
+  'attributed_headlines': 'Attributed headlines available',
+  'attributed_feed': 'Provider-reported shares',
+  'forecast_only': 'Forecast only',
+  'published_snapshots_only': 'Saved snapshots only',
+  'saved_observations': 'Tracking saved observations',
+  'waiting_for_prices': 'Waiting for current prices',
+  'provider_required': 'Additional data source needed',
+  'not_connected': 'Not connected',
+  'unavailable': 'Unavailable',
+  'outside_game_day_window': 'Checks begin near kickoff',
+  'outside_pregame_window': 'Waiting for the pregame window',
+  'awaiting_matching_report': 'Waiting for a matching game report',
+  'named_inactives_found': 'Named inactive players confirmed',
+  'official_designations': 'Official designations available',
+};
+String _sourceStatus(Map<String, dynamic> source) =>
+    '${_sourceLabels['${source['id']}'.split(':').first] ?? 'Additional source'}: ${_sourceStates[source['state']] ?? 'Status unavailable'}';
+
 class CoachWorkspace extends StatefulWidget {
   const CoachWorkspace({
     super.key,
@@ -785,10 +816,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             if (telemetry != null) ...[
               const SizedBox(height: 12),
               for (final source in telemetry!.sources)
-                Text(
-                  '${source['id']}: ${source['state']}',
-                  style: CoachType.label,
-                ),
+                Text(_sourceStatus(source), style: CoachType.label),
             ],
             const SizedBox(height: 20),
             OutlinedButton.icon(
@@ -2913,27 +2941,6 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final visible = turn.liveNotice == null
         ? live.rows.where((row) => currentObservation(row, now)).take(12)
         : <TelemetryObservation>[];
-    const labels = {
-      'injuries': 'Availability',
-      'beat_writers': 'Reporter headlines',
-      'markets': 'Saved prices',
-      'market_movement': 'Price movement',
-      'sharp_money': 'Verified sharp money',
-      'betting_splits': 'Reported betting shares',
-      'weather': 'Weather',
-    };
-    const states = {
-      'reported_unofficial': 'Provider reports',
-      'attributed_headlines': 'Connected',
-      'attributed_feed': 'Provider-reported shares',
-      'forecast_only': 'Forecast only',
-      'published_snapshots_only': 'Snapshot data',
-      'saved_observations': 'Tracking saved observations',
-      'waiting_for_prices': 'Waiting for current prices',
-      'provider_required': 'Provider needed',
-      'not_connected': 'Not connected',
-      'unavailable': 'Unavailable',
-    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -3020,7 +3027,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           children: [
             for (final source in live.sources)
               Text(
-                '${labels[source['id']] ?? source['id']}: ${states[source['state']] ?? source['state']}',
+                _sourceStatus(source),
                 style: CoachType.label.copyWith(fontSize: 10),
               ),
           ],

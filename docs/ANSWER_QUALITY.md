@@ -14,7 +14,7 @@ Follow-up links offer a market comparison, the opposing case and matchup evidenc
 
 ## Fixed question suite
 
-`hosting/fixtures/answer-scenarios.json` supplies nineteen realistic question forms across spreads, moneylines, totals, receiving yards, receptions, passing yards, rushing yards and parlays. The tests run those questions through the real game-analysis engine, not a mocked answer generator. They verify exact selected market/side/line, preserved follow-up context, explicit unvalidated status and missing-input behavior.
+`hosting/fixtures/answer-scenarios.json` supplies twenty-seven realistic question forms across spreads, moneylines, totals, receiving yards, receptions, passing yards, rushing yards and parlays. The tests run those questions through the real game-analysis engine, not a mocked answer generator. They verify exact selected market/side/line, preserved follow-up context, explicit unvalidated status and missing-input behavior.
 
 Additional checks cover stale/closed prices, requested books with no matching quotes, blocked roles, push-aware threshold arithmetic and invalid probabilities. Phone tests verify judgment, threshold, line-change limitations and follow-up layout; session tests cover typed market switches and mixed spread/odds numbers.
 
@@ -35,3 +35,8 @@ These checks assess deterministic structured answers, source selection and conve
 Coach is a functioning hosted early product with game/prop research, a single conversation, free source checks and automatic model evaluation. This pass strengthens the path to a dependable test release. Remaining release work includes broader real-user question coverage, explicit handling of source outages/limits, verified starter/participation coverage where obtainable and operating-cost/reliability review.
 
 Predictive superiority is a separate, uncompleted research milestone: collect untouched pregame predictions across future weeks, grade matching results, compare against market prices and completed configured-AI baselines, and assess calibration/error uncertainty by market. There is no supported completion percentage or guaranteed date for that outcome, and the models may not beat the market.
+
+
+## Everyday wording and exact intent
+
+The fixed suite now includes signed team spreads without the word spread, ML, game-side over/under wording and rec/pass/rush yds. The server decision and default chart share the same market recognition; app conversation memory retains shorthand selections for follow-ups. American prices and ISO dates cannot become spread handicaps. A named player plus over/under and a line without a stat asks which player market is intended and does not attach that threshold to a default production chart. Deterministic recognized requests do not need planner inference. This expands routing correctness, not predictive skill.

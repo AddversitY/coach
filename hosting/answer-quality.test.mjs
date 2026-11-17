@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {decisionBrief} from './game-context.mjs';
 import {selectionExplanation} from './answer-quality.mjs';
 import {resolveGame,analyzeGame,requestedBook} from './game-analysis.mjs';
+import {deterministicGameRoute} from './worker.mjs';
 const cases=JSON.parse(readFileSync(new URL('./fixtures/answer-scenarios.json',import.meta.url)));
 const now=Date.UTC(2026,10,17,12),at=new Date(now).toISOString();
 const event={id:'nflverse:2026_11_KC_BUF',home:'Buffalo Bills',away:'Kansas City Chiefs',homeCode:'BUF',awayCode:'KC',startsAt:'2026-11-22T18:00:00Z',forecast:{homeMean:24,awayMean:20,modelVersion:'test',cutoff:'2026-11-12'}};
@@ -30,6 +31,19 @@ test('stale prices, blocked roles and an unavailable requested book cannot becom
  }
  const data=source(),question='Bills spread -3.5 at FanDuel';assert.equal(analyzeGame(data,event,{now,question,bookId:requestedBook(question,{})}).decision.price,null);
  const report=analyzeGame(data,event,{now});report.categories.forEach(c=>c.rows.forEach(r=>r.blocked=true));assert.equal(decisionBrief(report,report.context,{question:'Recorded Receiver receiving yards over 65.5'}).judgment,null);
+});
+
+test('shorthand routes without model inference and charts preserve the actual requested market',()=>{
+ const data=source();
+ for(const question of ['Bills -3.5','Bills ML -150','Bills under 45.5','Recorded Receiver rec yds over 65.5'])assert.equal(deterministicGameRoute(question,data.index,{}),true);
+ assert.equal(analyzeGame(data,event,{now,question:'Bills -3.5'}).visualEvidence.teamMetric,'margin');
+ const r=analyzeGame(data,event,{now,question:'Recorded Receiver over 65.5'});
+ assert.match(r.decision.clarification,/Which player market/);assert.equal(r.decision.price,null);assert.equal(r.visualEvidence.players[0].line,null);
+ const rec=analyzeGame(data,event,{now,question:'Recorded Receiver rec yds over 65.5'});
+ assert.equal(rec.visualEvidence.players[0].metric,'receiving_yards');assert.equal(rec.visualEvidence.players[0].line,65.5);
+ const total=analyzeGame(data,event,{now,question:'Bills under 45.5'});
+ assert.equal(total.visualEvidence.teamMetric,'total');
+ assert.equal(total.visualEvidence.teams[0].series.find(s=>s.metric==='total').line,45.5);
 });
 test('break-even arithmetic preserves pushes and never creates an alternate-line cutoff or a guaranteed value claim',()=>{
  const row={selection:{market:'spreads',outcome:'Bills',point:-3},win:.45,push:.1,decimal:1.91,forecastBasis:'market_anchored'};

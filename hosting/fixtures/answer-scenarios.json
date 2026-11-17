@@ -1,4 +1,12 @@
 [
+ {"question":"Do you like Bills -3.5?","market":"spreads","outcome":"Buffalo Bills","point":-3.5},
+ {"question":"Chiefs +3.5 at -110","market":"spreads","outcome":"Kansas City Chiefs","point":3.5},
+ {"question":"Bills ML -150","market":"h2h","outcome":"Buffalo Bills","point":null},
+ {"question":"Bills game under 45.5","market":"totals","outcome":"Under","point":45.5},
+ {"question":"Recorded Receiver rec yds over 65.5","market":"player_reception_yds","outcome":"Over","point":65.5},
+ {"question":"Recorded Quarterback pass yds under 245.5","market":"player_pass_yds","outcome":"Under","point":245.5},
+ {"question":"Recorded Runner rush yds over 68.5","market":"player_rush_yds","outcome":"Over","point":68.5},
+ {"question":"Recorded Receiver over 65.5","missing":true},
  {"question":"Do you like the Bills spread -3.5?","market":"spreads","outcome":"Buffalo Bills","point":-3.5},
  {"question":"BUF -3.5 spread at -110","market":"spreads","outcome":"Buffalo Bills","point":-3.5},
  {"question":"BUF -2.5 spread at -110","missing":true},
