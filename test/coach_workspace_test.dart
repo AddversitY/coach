@@ -55,6 +55,66 @@ void main() {
   }
 
   testWidgets(
+    'availability expiry retains dated graphs while withdrawing decisions and price comparisons',
+    (tester) async {
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (_) async {
+            final report = gameOutlookFixture(event, now);
+            report['weather'] = [
+              {
+                'id': 'old-weather',
+                'eventId': event.id,
+                'kind': 'weather',
+                'source': 'Test weather',
+                'observedAt': now
+                    .subtract(const Duration(minutes: 36))
+                    .toIso8601String(),
+                'value': {'windMph': 10},
+              },
+            ];
+            report['visualEvidence'] = {
+              'focus': 'team',
+              'selectedTeam': event.home,
+              'cutoff': '2026-11-12',
+              'teams': [
+                {
+                  'name': event.home,
+                  'code': 'BUF',
+                  'samples': [
+                    {
+                      'date': '2026-11-08',
+                      'label': '11-08',
+                      'value': 24,
+                      'secondary': 17,
+                    },
+                  ],
+                },
+              ],
+              'priceComparison': {'offers': []},
+            };
+            return report;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Bills spread');
+      expect(find.text('Exact-selection prices'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 31));
+      await tester.pumpAndSettle();
+      expect(find.text('THE MATCHUP / RECENT FORM'), findsOneWidget);
+      expect(find.textContaining('Recorded history retained.'), findsOneWidget);
+      expect(find.text('Exact-selection prices'), findsNothing);
+      expect(find.text('Resolve the lineup questions first'), findsNothing);
+      expect(
+        find.textContaining('Availability or weather evidence has expired.'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'a missing-price player prop still leads with a recorded chart without AI',
     (tester) async {
       await tester.pumpWidget(frame());

@@ -30,6 +30,8 @@ Exact-selection price comparisons use the existing validated saved quotes for th
 
 Tests cover handicap signs/zero, date and American-odds ambiguity, total equality, opponent switching, window missingness, exact quote matching/latest-per-book selection, timestamps and mobile layouts.
 
+When availability/weather context expires or changes, the dated historical graphs remain visible with a retained-history notice; live decisions and saved-book comparisons are withdrawn until refreshed. Schedule/data invalidations still hide the affected view. Newly generated reports exclude already-expired weather observations, preventing an old cached weather row from invalidating a fresh response immediately.
+
 ## Boundaries and verification
 
 No source requests, odds credits or inference calls are added by chart generation. The charts use the existing attributed nflverse history and player evidence. Forecasts, experimental line thresholds and probability judgments remain separate; no serving model or captured cohort is changed.

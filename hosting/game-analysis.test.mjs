@@ -11,6 +11,11 @@ const player={id:'p',name:'Recorded Receiver',team:'BUF',events:[event.id],games
 const quote=(market,outcome,point=null,decimal=1.91)=>({selection:{eventId:event.id,market,outcome,point,participant:market.startsWith('player_')?player.name:'',period:'full_game',rules:market.startsWith('player_')?'player_prop_unverified':'game_market_unverified'},bookId:'draftkings',book:'DraftKings',provider:'the-odds-api',sourceAt:at,collectedAt:at,decimal,status:'open',demo:false});
 function source(quotes=[]){return {index:{events:[{...event,forecast:{homeMean:24,awayMean:20,modelVersion:'test',cutoff:'2026-11-12'}}],players:[player],scoreModel:{version:'test',trainedAt:at,cutoff:'2026-11-12',residuals:Array.from({length:180},(_,i)=>[i%17-8,i*7%19-9]),validation:{adopted:false,hasEdge:false,markets:{}},baselineHomeWin:.55}},snapshot:{odds:{coverage:{players:[{playerId:'p',name:player.name}]}},props:{quotes,fetchedAt:at,demo:false}}};}
 const gameQuotes=()=>[quote('spreads',event.home,-3.5),quote('spreads',event.away,3.5),quote('totals','Over',47.5),quote('totals','Under',47.5),quote('h2h',event.home,null,1.67),quote('h2h',event.away,null,2.3),quote('player_receptions','Over',5.5),quote('player_receptions','Under',5.5)];
+test('a newly created report cannot include expired weather observations',()=>{
+ const data=source(),weather={id:'weather',eventId:event.id,kind:'weather',source:'Test',observedAt:new Date(now-36*60000).toISOString(),value:{windMph:10}},telemetry={checkedAt:at,observations:[weather]};
+ assert.equal(analyzeGame(data,data.index.events[0],{now,telemetry}).weather.length,0);
+ weather.observedAt=at;assert.equal(analyzeGame(data,data.index.events[0],{now,telemetry}).weather.length,1);
+});
 function report(quotes=gameQuotes()){const data=source(quotes);return analyzeGame(data,data.index.events[0],{now});}
 
 test('analyze a game supports four market categories and coherent win/push/loss arithmetic',()=>{

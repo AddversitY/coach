@@ -1099,6 +1099,15 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
 
   Widget _turn(_Turn turn) {
     final a = turn.answer;
+    final historyOnly =
+        turn.invalidation?.startsWith('Availability or weather') == true;
+    final visual = turn.game?.raw['visualEvidence'] is Map
+        ? Map<String, dynamic>.from(turn.game!.raw['visualEvidence'])
+        : null;
+    if (historyOnly && visual != null) {
+      visual.remove('priceComparison');
+      visual['historyOnlyNotice'] = 'Recorded history retained. The live assessment and saved-price comparison are withdrawn until refreshed.';
+    }
     return Padding(
       key: turn.anchor,
       padding: const EdgeInsets.only(bottom: 36),
@@ -1154,11 +1163,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           const SizedBox(height: 18),
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
-          if (turn.game?.raw['visualEvidence'] is Map &&
-              turn.invalidation == null)
-            CoachEvidenceVisuals(
-              data: Map<String, dynamic>.from(turn.game!.raw['visualEvidence']),
-            ),
+          if (visual != null && (turn.invalidation == null || historyOnly))
+            CoachEvidenceVisuals(data: visual),
           if (turn.game?.raw['visualEvidence'] is! Map &&
               a.player != null &&
               turn.invalidation == null &&

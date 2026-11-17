@@ -111,6 +111,14 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
             style: CoachType.label.copyWith(fontSize: 9, letterSpacing: 1.4),
           ),
           const SizedBox(height: 10),
+          if (widget.data['historyOnlyNotice'] is String)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                '${widget.data['historyOnlyNotice']}',
+                style: CoachType.label.copyWith(color: CoachColors.warn),
+              ),
+            ),
           Text(
             '${player?['name'] ?? chosen?['name'] ?? 'Recorded results'}',
             style: CoachType.title.copyWith(fontSize: 25),
