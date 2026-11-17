@@ -23,6 +23,7 @@ import '../domain/odds.dart';
 import '../domain/player_stats.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
+import 'coach_research_summary.dart';
 
 class CoachWorkspace extends StatefulWidget {
   const CoachWorkspace({
@@ -1099,6 +1100,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
 
   Widget _turn(_Turn turn) {
     final a = turn.answer;
+    final comparison = turn.game?.raw['comparison'];
+    final primarySummary =
+        comparison is Map &&
+        comparison['summary'] is Map &&
+        comparison['summary']['primary'] == true &&
+        turn.invalidation == null;
     final historyOnly =
         turn.invalidation?.startsWith('Availability or weather') == true;
     final visual = turn.game?.raw['visualEvidence'] is Map
@@ -1163,6 +1170,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           const SizedBox(height: 18),
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
+          if (primarySummary)
+            CoachResearchSummary(
+              comparison: Map<String, dynamic>.from(comparison),
+              onFollow: busy ? null : (query) => _send(query),
+            ),
           if (visual != null && (turn.invalidation == null || historyOnly))
             CoachEvidenceVisuals(data: visual),
           if (turn.game?.raw['visualEvidence'] is! Map &&
@@ -1185,7 +1197,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                             a.text),
               style: CoachType.body,
             ),
-          if (turn.game?.raw['decision'] is Map && turn.invalidation == null)
+          if (turn.game?.raw['decision'] is Map &&
+              turn.invalidation == null &&
+              !primarySummary)
             _decisionView(
               Map<String, dynamic>.from(turn.game!.raw['decision']),
             ),
@@ -1341,6 +1355,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       ),
       subtitle: Text('${comparison['headline']}', style: CoachType.label),
       children: [
+        if (comparison['summary'] is Map &&
+            comparison['summary']['primary'] != true)
+          CoachResearchSummary(
+            comparison: comparison,
+            onFollow: busy ? null : (query) => _send(query),
+          ),
         for (final option in comparison['options'] as List? ?? [])
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -1359,6 +1379,33 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                       style: CoachType.label,
                     ),
                   Text('${option['reason']}', style: CoachType.label),
+                  for (final fact in option['facts'] as List? ?? [])
+                    Text('$fact', style: CoachType.label),
+                  if ((option['criteria'] as List? ?? []).isNotEmpty)
+                    ExpansionTile(
+                      tilePadding: EdgeInsets.zero,
+                      title: const Text(
+                        'Coverage checks',
+                        style: CoachType.label,
+                      ),
+                      children: [
+                        for (final check in option['criteria'] as List)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '${check['label']} · ${check['state']}',
+                              style: CoachType.label,
+                            ),
+                          ),
+                      ],
+                    ),
+                  for (final risk in option['risks'] as List? ?? [])
+                    Text('Review · $risk', style: CoachType.label),
+                  if (option['selection'] != null)
+                    const Text(
+                      'Representative saved selection; not a preferred side.',
+                      style: CoachType.label,
+                    ),
                 ],
               ),
             ),

@@ -224,6 +224,24 @@ void main() {
         ],
       };
       expect(GameOutlook.fromJson(raw).raw['comparison'], isNotNull);
+      raw['comparison']['summary'] = {
+        'version': 'research-summary-v1',
+        'action': 'pass',
+        'hasEdge': false,
+        'primary': true,
+        'leadingMarkets': ['spreads'],
+        'followUps': [],
+      };
+      expect(
+        GameOutlook.fromJson(raw).raw['comparison']['summary']['primary'],
+        isTrue,
+      );
+      raw['comparison']['summary']['hasEdge'] = true;
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+      raw['comparison']['summary']['hasEdge'] = false;
+      raw['comparison']['summary']['leadingMarkets'] = ['props'];
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+      raw['comparison']['summary']['leadingMarkets'] = ['spreads'];
       raw['comparison']['options'][0]['decimal'] = 99;
       expect(() => GameOutlook.fromJson(raw), throwsFormatException);
       raw['comparison']['options'][0]['decimal'] = row['decimal'];

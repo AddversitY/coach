@@ -9,6 +9,7 @@ import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
 
 import 'game_outlook_test.dart' show gameOutlookFixture;
+import 'coach_research_summary_test.dart' show researchSummaryFixture;
 import 'game_research_test.dart'
     show event, now, fixtureData, dataWith, recorded;
 
@@ -53,6 +54,41 @@ void main() {
     await tester.tap(find.byKey(const Key('coach-send')));
     await tester.pumpAndSettle();
   }
+
+  testWidgets(
+    'whole-game research leads with one summary while exact-selection answers retain their decision',
+    (tester) async {
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            final raw = gameOutlookFixture(event, now),
+                comparison = researchSummaryFixture();
+            comparison.addAll({
+              'basis': 'evidence_completeness',
+              'action': 'pass',
+              'hasEdge': false,
+              'recommendationsReady': false,
+            });
+            for (final option in comparison['options']) {
+              option['selection'] = null;
+            }
+            comparison['summary']['leadingMarkets'] = [];
+            comparison['summary']['primary'] = !(payload['question'] as String)
+                .contains('spread');
+            raw['comparison'] = comparison;
+            return raw;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills');
+      expect(find.text('THE RESEARCH READ'), findsOneWidget);
+      expect(find.text('Resolve the lineup questions first'), findsNothing);
+      await send(tester, 'Bills spread line -3.5');
+      expect(find.text('Resolve the lineup questions first'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'availability expiry retains dated graphs while withdrawing decisions and price comparisons',

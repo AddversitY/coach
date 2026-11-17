@@ -199,6 +199,20 @@ class GameOutlook {
         throw const FormatException('Invalid research comparison');
       }
       final seen = <String>{};
+      final summary = comparison['summary'];
+      if (summary != null &&
+          (summary is! Map ||
+              summary['version'] != 'research-summary-v1' ||
+              summary['action'] != 'pass' ||
+              summary['hasEdge'] != false ||
+              summary['primary'] is! bool ||
+              summary['leadingMarkets'] is! List ||
+              summary['leadingMarkets'].length > 4 ||
+              summary['leadingMarkets'].any((m) => !names.contains(m)) ||
+              summary['followUps'] is! List ||
+              summary['followUps'].length > 3)) {
+        throw const FormatException('Invalid research summary');
+      }
       for (final option in comparison['options']) {
         if (option is! Map ||
             !names.contains(option['market']) ||
@@ -222,6 +236,16 @@ class GameOutlook {
             );
           }
         }
+      }
+      if (summary is Map &&
+          (summary['leadingMarkets'] as List).any(
+            (m) => !(comparison['options'] as List).any(
+              (o) => o['market'] == m && o['selection'] != null,
+            ),
+          )) {
+        throw const FormatException(
+          'Research priority requires a supported selection',
+        );
       }
     }
     return GameOutlook._(raw, event, at);

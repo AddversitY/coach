@@ -334,3 +334,7 @@ Team/player game-analysis answers now lead with interactive charts before the de
 ## Bet-specific charts, workload and saved-book comparison (2026-11-17)
 
 Spread and total requests now default to margin/combined-score series with the exact requested comparison threshold. Spread signs are reversed correctly into margin needed; opponent switching clears an unrelated spread. Player production has a separate attempts/carries/targets chart with explicit recent/prior three-game observation counts. A dated book comparison keeps the latest exact event/side/line/rules quote per book, with no additional odds calls. Charts and quote ordering remain descriptive, not historical betting performance or a model adoption. See the bet-specific section of [VISUAL_EVIDENCE.md](VISUAL_EVIDENCE.md).
+
+## Visual research priority summary (2026-11-17)
+
+Whole-game questions now lead with The research read: a four-market evidence matrix, supporting records, unresolved risks and grounded follow-ups. Current usable evidence outranks stale/incomplete coverage; equal scores do not force a winning market or side. Raw margin/combined-score/W-L-T/workload facts remain descriptive. Coverage checks are not probabilities; all actions stay Pass/research only. Specific-line questions retain their own decisions, and summaries are withheld when live context is invalidated. No odds/AI cap or serving-model change. See [RESEARCH_SUMMARY.md](RESEARCH_SUMMARY.md) for fixed rules, limitations and tests.
