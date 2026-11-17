@@ -22,6 +22,7 @@ import '../domain/eastern.dart';
 import '../domain/odds.dart';
 import '../domain/player_stats.dart';
 import '../theme/coach_theme.dart';
+import 'coach_evidence_visuals.dart';
 
 class CoachWorkspace extends StatefulWidget {
   const CoachWorkspace({
@@ -1151,6 +1152,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           const SizedBox(height: 18),
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
           const SizedBox(height: 12),
+          if (turn.game?.raw['visualEvidence'] is Map &&
+              turn.invalidation == null)
+            CoachEvidenceVisuals(
+              data: Map<String, dynamic>.from(turn.game!.raw['visualEvidence']),
+            ),
           if (turn.game == null ||
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
@@ -1234,7 +1240,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               _priceCards(a)
             else if (a.intent == CoachIntent.history)
               _history(a)
-            else if (a.intent == CoachIntent.evidence)
+            else if (a.intent == CoachIntent.evidence &&
+                turn.game?.raw['visualEvidence'] is! Map)
               _chart(a),
             const SizedBox(height: 12),
             Wrap(
@@ -3126,73 +3133,36 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
 
   Widget _chart(CoachAnswer a) {
     final games = a.player!.games.take(10).toList().reversed.toList();
-    final values = games.map((g) => g.stats[a.metric.key]).toList();
-    final max = values.whereType<num>().fold<double>(
-      1,
-      (v, n) => n.abs() > v ? n.abs().toDouble() : v,
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Recorded ${a.metric.label.toLowerCase()} · oldest → newest',
-          style: CoachType.label.copyWith(fontSize: 11),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 100,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              for (var i = 0; i < games.length; i++)
-                Expanded(
-                  child: Tooltip(
-                    message:
-                        '${games[i].date.toIso8601String().substring(0, 10)}: ${values[i] ?? 'missing'}',
-                    child: Semantics(
-                      label:
-                          'Week ${games[i].week}: ${values[i] ?? 'missing'} ${a.metric.label}',
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (values[i] == null)
-                              const Text('—')
-                            else
-                              Container(
-                                height: (values[i]!.abs() / max * 70)
-                                    .clamp(2, 70)
-                                    .toDouble(),
-                                decoration: BoxDecoration(
-                                  color: values[i]! < 0
-                                      ? CoachColors.warn
-                                      : CoachColors.accent.withValues(
-                                          alpha: .75,
-                                        ),
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'W${games[i].week}',
-                              style: CoachType.label.copyWith(fontSize: 9),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+    return CoachEvidenceVisuals(
+      data: {
+        'focus': 'player',
+        'cutoff': games.isEmpty
+            ? 'unavailable'
+            : games.last.date.toIso8601String().substring(0, 10),
+        'players': [
+          {
+            'name': a.player!.name,
+            'metric': a.metric.key,
+            'line': a.line,
+            'lineSource': 'Requested line',
+            'series': [
+              for (final metric in a.player!.metrics)
+                {
+                  'metric': metric.key,
+                  'label': metric.label,
+                  'samples': [
+                    for (final game in games)
+                      {
+                        'date': game.date.toIso8601String().substring(0, 10),
+                        'label': 'W${game.week}',
+                        'value': game.stats[metric.key],
+                      },
+                  ],
+                },
             ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Negative values are amber; missing values stay blank. Historical production is not a forecast.',
-          style: CoachType.label.copyWith(fontSize: 10),
-        ),
-      ],
+          },
+        ],
+      },
     );
   }
 

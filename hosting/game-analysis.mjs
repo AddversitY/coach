@@ -3,6 +3,7 @@ import {compareResearch} from './research-comparison.mjs';
 import {productionForecasts} from './production-forecast.mjs';
 import {workloadForecasts} from './workload-forecast.mjs';
 import {gameContext,projectionWarnings,decisionBrief} from './game-context.mjs';
+import {visualEvidence} from './visual-evidence.mjs';
 /* Deterministic pregame analysis. The score candidate failed the historical
  * market comparison, so available market probabilities anchor pricing. No AI
  * prose can promote these research estimates into a validated betting edge. */
@@ -175,5 +176,5 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
   report.productionTrial=includeProduction?productionForecasts(source,event,{now,workloadTrial:report.workloadTrial,observations:rows}):{available:false,forecasts:[],rows:[],hasEdge:false};
   report.priceCoverage={checkedAt:report.createdAt,provider:'The Odds API',mode:'limited_saved_snapshots',markets:categories.map(c=>({market:c.market,quotes:c.rows.length,books:[...new Set(c.rows.map(r=>r.book))],newestAt:c.rows.map(r=>r.sourceAt).sort().at(-1)||null,oldestAt:c.rows.map(r=>r.sourceAt).sort()[0]||null})),notice:'Only listed exact selections are covered. Saved prices are not live or guaranteed available.'};
   report.comparison=compareResearch(report);
-  report.context=context;report.decision=decisionBrief(report,context,{question});return report;
+  report.context=context;report.decision=decisionBrief(report,context,{question});report.visualEvidence=visualEvidence(source,event,report,question,now);return report;
 }

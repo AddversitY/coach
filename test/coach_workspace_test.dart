@@ -276,6 +276,26 @@ void main() {
               {'text': 'Confirm official active players before reassessing.'},
               {'text': 'Better future probability accuracy is still required.'},
             ];
+            result['visualEvidence'] = {
+              'focus': 'team',
+              'selectedTeam': event.home,
+              'cutoff': '2026-11-12',
+              'teams': [
+                {
+                  'name': event.home,
+                  'code': 'BUF',
+                  'samples': [
+                    {
+                      'date': '2026-11-08',
+                      'label': '11-08',
+                      'value': 24,
+                      'secondary': 17,
+                      'opponent': 'Other',
+                    },
+                  ],
+                },
+              ],
+            };
             result['decision']['decidingFactor'] =
                 'The exact price needs a fresh check.';
             result['decision']['judgment'] = {
@@ -470,6 +490,8 @@ void main() {
       );
       await tester.pumpAndSettle();
       await send(tester, 'Analyze Bills');
+      expect(find.text('THE MATCHUP / RECENT FORM'), findsOneWidget);
+      expect(find.text('Scored / game'), findsOneWidget);
       expect(find.textContaining('Experimental outlook: 55%'), findsOneWidget);
       await tester.ensureVisible(find.text('Price reasoning'));
       await tester.tap(find.text('Price reasoning'));
