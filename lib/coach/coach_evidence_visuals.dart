@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/coach_theme.dart';
+import '../domain/eastern.dart';
+import '../domain/odds.dart';
 
 /// Interactive recorded evidence, kept separate from forecast probabilities.
 class CoachEvidenceVisuals extends StatefulWidget {
@@ -25,28 +27,59 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
     final player = widget.data['focus'] == 'player' && players.isNotEmpty
         ? players.first
         : null;
-    final series = (player?['series'] as List? ?? []).whereType<Map>().toList();
-    final selected =
-        series
-            .where((s) => s['metric'] == (metric ?? player?['metric']))
-            .firstOrNull ??
-        series.firstOrNull;
     final chosen =
         teams
             .where((t) => t['name'] == (team ?? widget.data['selectedTeam']))
             .firstOrNull ??
         teams.firstOrNull;
-    final sampleData = player != null ? selected : chosen;
+    final series = ((player ?? chosen)?['series'] as List? ?? [])
+        .whereType<Map>()
+        .toList();
+    if (player == null && series.isEmpty && chosen != null) {
+      series.add({
+        'metric': 'scoring',
+        'label': 'Points scored & allowed',
+        'paired': true,
+        'samples': chosen['samples'],
+      });
+    }
+    final selected =
+        series
+            .where(
+              (s) =>
+                  s['metric'] ==
+                  (metric ??
+                      player?['metric'] ??
+                      widget.data['teamMetric'] ??
+                      'scoring'),
+            )
+            .firstOrNull ??
+        series.firstOrNull;
+    final paired = player == null && selected?['metric'] == 'scoring';
+    final recordSamples = (chosen?['samples'] as List? ?? [])
+        .whereType<Map>()
+        .toList();
+    final sampleData = selected;
     final samples = (sampleData?['samples'] as List? ?? [])
         .whereType<Map>()
         .take(10)
         .toList();
-    final line =
-        player != null &&
-            selected?['metric'] == player['metric'] &&
-            player['line'] is num
+    final double? line = player == null
+        ? (selected?['line'] is num
+              ? (selected!['line'] as num).toDouble()
+              : null)
+        : selected?['metric'] == player['metric'] && player['line'] is num
         ? (player['line'] as num).toDouble()
         : null;
+    final volumeKey = const {
+      'passing_yards': 'attempts',
+      'rushing_yards': 'carries',
+      'receiving_yards': 'targets',
+      'receptions': 'targets',
+    }[selected?['metric']];
+    final workload = player == null
+        ? null
+        : series.where((s) => s['metric'] == volumeKey).firstOrNull;
     final values = samples
         .map((s) => s['value'])
         .whereType<num>()
@@ -99,7 +132,7 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
                 ],
               ),
             ),
-          if (player != null && series.isNotEmpty)
+          if (series.isNotEmpty)
             DropdownButton<String>(
               isExpanded: true,
               value: selected?['metric'] as String?,
@@ -118,18 +151,24 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
             runSpacing: 12,
             children: [
               _stat(
-                player != null ? 'Recorded average' : 'Scored / game',
+                player != null
+                    ? 'Recorded average'
+                    : paired
+                    ? 'Scored / game'
+                    : selected?['metric'] == 'margin'
+                    ? 'Average margin'
+                    : 'Average total',
                 average(values),
               ),
-              if (player == null) _stat('Allowed / game', average(against)),
+              if (paired) _stat('Allowed / game', average(against)),
               if (player == null)
                 _stat(
                   'Record',
-                  '${samples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] > s['secondary']).length}W · ${samples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] < s['secondary']).length}L · ${samples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] == s['secondary']).length}T',
+                  '${recordSamples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] > s['secondary']).length}W · ${recordSamples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] < s['secondary']).length}L · ${recordSamples.where((s) => s['value'] is num && s['secondary'] is num && s['value'] == s['secondary']).length}T',
                 ),
               if (line != null)
                 _stat(
-                  '${player?['lineSource'] ?? 'Comparison line'}',
+                  '${player?['lineSource'] ?? selected?['lineSource'] ?? 'Comparison line'}',
                   _number(line),
                 ),
               if (line != null)
@@ -149,14 +188,22 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
               ),
             )
           else
-            _bars(samples, line: line, paired: player == null),
+            _bars(samples, line: line, paired: paired),
           const SizedBox(height: 10),
           Text(
-            player == null
+            paired
                 ? 'Dark = points scored · Stone = points allowed'
                 : '${selected?['label'] ?? 'Recorded value'}${line == null ? '' : ' · Dashed rule = comparison line'}',
             style: CoachType.label.copyWith(fontSize: 10),
           ),
+          if (selected?['comparisonNote'] is String)
+            Text('${selected!['comparisonNote']}', style: CoachType.label),
+          if (player == null && !paired)
+            const Text(
+              'Earlier final scores against this comparison line. This is not historical sportsbook cover or total performance.',
+              style: CoachType.label,
+            ),
+          if (workload != null) _workload(workload),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: const Text('View recorded values', style: CoachType.label),
@@ -167,7 +214,7 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '${sample['date']}${sample['opponent'] == null ? '' : ' vs ${sample['opponent']}'} · ${sample['value'] is num ? _number(sample['value']) : 'Missing'}${player == null ? ' scored / ${sample['secondary'] is num ? _number(sample['secondary']) : 'Missing'} allowed' : ''}',
+                      '${sample['date']}${sample['opponent'] == null ? '' : ' vs ${sample['opponent']}'} · ${sample['value'] is num ? _number(sample['value']) : 'Missing'}${paired ? ' scored / ${sample['secondary'] is num ? _number(sample['secondary']) : 'Missing'} allowed' : ''}',
                       style: CoachType.label,
                     ),
                   ),
@@ -189,8 +236,159 @@ class _CoachEvidenceVisualsState extends State<CoachEvidenceVisuals> {
                 : 'Different prior opponents. Recent scoring is descriptive, not opponent-adjusted or a forecast.',
             style: CoachType.label.copyWith(fontSize: 10),
           ),
+          if (widget.data['priceComparison'] is Map)
+            _prices(widget.data['priceComparison'] as Map),
         ],
       ),
+    );
+  }
+
+  Widget _workload(Map series) {
+    final samples = (series['samples'] as List? ?? [])
+        .whereType<Map>()
+        .take(10)
+        .toList();
+    final recent = samples.reversed.take(3).toList(),
+        prior = samples.reversed.skip(3).take(3).toList();
+    String mean(List<Map> rows) {
+      final values = rows
+          .map((r) => r['value'])
+          .whereType<num>()
+          .where((v) => v.isFinite)
+          .toList();
+      return values.isEmpty
+          ? '—'
+          : (values.reduce((a, b) => a + b) / values.length).toStringAsFixed(1);
+    }
+
+    int count(List<Map> rows) => rows
+        .where((r) => r['value'] is num && (r['value'] as num).isFinite)
+        .length;
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Divider(color: CoachColors.border),
+          const SizedBox(height: 10),
+          Text(
+            'Workload · ${series['label']}',
+            style: CoachType.title.copyWith(fontSize: 19),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 28,
+            runSpacing: 8,
+            children: [
+              _stat('Recent 3 · ${count(recent)}/3 recorded', mean(recent)),
+              _stat('Previous 3 · ${count(prior)}/3 recorded', mean(prior)),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _bars(samples, paired: false),
+          const SizedBox(height: 6),
+          const Text(
+            'Opportunities and production use separate units. Recorded workload does not establish expected playing time.',
+            style: CoachType.label,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _prices(Map comparison) {
+    final offers = (comparison['offers'] as List? ?? [])
+        .whereType<Map>()
+        .toList();
+    String time(dynamic value) {
+      final at = value is String ? DateTime.tryParse(value) : null;
+      return at == null ? 'Time unavailable' : formatEastern(at, year: true);
+    }
+
+    String label = 'No supported exact selection';
+    if (comparison['selection'] is Map) {
+      try {
+        label = Selection.fromJson(
+          Map<String, dynamic>.from(comparison['selection']),
+        ).label;
+      } catch (_) {
+        label = 'Exact selection';
+      }
+    }
+    Widget offer(Map row, int index) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text('${row['book']}', style: CoachType.body)),
+              Text(
+                row['decimal'] is num
+                    ? americanLabel((row['decimal'] as num).toDouble())
+                    : '—',
+                style: CoachType.number.copyWith(fontSize: 18),
+              ),
+            ],
+          ),
+          if (index == 0 && offers.length > 1)
+            const Text(
+              'Highest saved price for this exact selection',
+              style: CoachType.label,
+            ),
+          Text(
+            'Observed ${time(row['sourceAt'])}',
+            style: CoachType.label.copyWith(fontSize: 10),
+          ),
+          Text(
+            'Saved ${time(row['collectedAt'])}',
+            style: CoachType.label.copyWith(fontSize: 10),
+          ),
+        ],
+      ),
+    );
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      initiallyExpanded: true,
+      title: Text(
+        'Exact-selection prices',
+        style: CoachType.title.copyWith(fontSize: 19),
+      ),
+      subtitle: Text(
+        '${offers.length} saved books · $label',
+        style: CoachType.label,
+      ),
+      children: [
+        if (offers.isEmpty)
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'No saved price matches this exact side and line. The charts remain available.',
+              style: CoachType.label,
+            ),
+          ),
+        for (var i = 0; i < math.min(4, offers.length); i++)
+          offer(offers[i], i),
+        if (offers.length > 4)
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            title: Text(
+              '${offers.length - 4} more books',
+              style: CoachType.label,
+            ),
+            children: [
+              for (var i = 4; i < offers.length; i++) offer(offers[i], i),
+            ],
+          ),
+        Text(
+          'Compared ${time(comparison['checkedAt'])}. This does not refresh sportsbook prices.',
+          style: CoachType.label.copyWith(fontSize: 10),
+        ),
+        Text(
+          '${comparison['notice'] ?? 'Saved observations only; recheck the exact line and rules at the sportsbook.'}',
+          style: CoachType.label,
+        ),
+      ],
     );
   }
 

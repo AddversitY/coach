@@ -330,3 +330,7 @@ Added selection-specific model/market-based judgments, push-aware experimental e
 ## Visual research answers (2026-11-17)
 
 Team/player game-analysis answers now lead with interactive charts before the decision text. Team chips switch six-game points-scored/allowed histories, averages and W/L/T records. Exact player requests show up to ten recorded values, a requested/current comparison line, above/below/equal counts and a stat selector that clears incompatible lines. Local player evidence reuses the component. Tap tooltips and expandable raw records preserve dates and exact observations; missing values, zero, negative production and ties stay distinct. Histories are explicitly separate from forecasts and past sportsbook settlement performance. No extra source/AI/odds requests or model changes. See [VISUAL_EVIDENCE.md](VISUAL_EVIDENCE.md).
+
+## Bet-specific charts, workload and saved-book comparison (2026-11-17)
+
+Spread and total requests now default to margin/combined-score series with the exact requested comparison threshold. Spread signs are reversed correctly into margin needed; opponent switching clears an unrelated spread. Player production has a separate attempts/carries/targets chart with explicit recent/prior three-game observation counts. A dated book comparison keeps the latest exact event/side/line/rules quote per book, with no additional odds calls. Charts and quote ordering remain descriptive, not historical betting performance or a model adoption. See the bet-specific section of [VISUAL_EVIDENCE.md](VISUAL_EVIDENCE.md).

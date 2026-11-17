@@ -3165,6 +3165,29 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                       },
                   ],
                 },
+              for (final key
+                  in (a.player!.position == 'QB'
+                      ? ['attempts', 'carries']
+                      : a.player!.position == 'RB'
+                      ? ['carries', 'targets']
+                      : ['targets']))
+                if (games.any((g) => g.stats[key] is num))
+                  {
+                    'metric': key,
+                    'label': const {
+                      'attempts': 'Pass attempts',
+                      'carries': 'Carries',
+                      'targets': 'Targets',
+                    }[key],
+                    'samples': [
+                      for (final game in games)
+                        {
+                          'date': game.date.toIso8601String().substring(0, 10),
+                          'label': 'W${game.week}',
+                          'value': game.stats[key],
+                        },
+                    ],
+                  },
             ],
           },
         ],

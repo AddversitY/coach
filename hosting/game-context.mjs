@@ -1,5 +1,6 @@
 /* Descriptive context never silently becomes an injury/quarterback point model. */
 import {selectionExplanation,answerFollowUps} from './answer-quality.mjs';
+import {spreadHandicap} from './selection-focus.mjs';
 const LINE=new Set(['C','G','T','OT','OG','OL','LT','RT','LG','RG']);
 const CONCERN=new Set(['questionable','out','doubtful','inactive','injured reserve']);
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
@@ -101,10 +102,7 @@ export function decisionBrief(report,context,{question=''}={}){
   const q=question.toLowerCase(),names=[...new Set([...context.teams.flatMap(t=>t.usage),...(report.projections||[])].filter(p=>(' '+name(q)+' ').includes(' '+name(p.name)+' ')).map(p=>p.name))];
   const requested=/moneyline|win outright/.test(q)?'h2h':/spread|cover/.test(q)?'spreads':/\breceiving\b|\brec\. yards/.test(q)?'player_reception_yds':/\breceptions\b/.test(q)?'player_receptions':/passing|pass yards/.test(q)?'player_pass_yds':/rushing|rush yards/.test(q)?'player_rush_yds':/total|over.?under/.test(q)?'totals':null;
   const side=q.match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/);
-  const directSpread=q.match(/(?:spread|line|cover)\s*(?:at\s*)?([+-]?\d+(?:\.\d+)?)/)?.[1];
-  const signedSpread=(q.match(/[+-]\d+(?:\.\d+)?/g)||[]).find(n=>Math.abs(Number(n))<100);
-  const spreadText=directSpread!=null&&Math.abs(Number(directSpread))<100?directSpread:signedSpread||directSpread;
-  const spreadLine=requested==='spreads'&&spreadText!=null?Number(spreadText):null;
+  const spreadLine=requested==='spreads'?spreadHandicap(question):null;
   const rows=requested||names.length||side?report.categories.flatMap(c=>c.rows):report.ranked;
   const mentionedTeams=[report.event.home,report.event.away].filter(team=>[team,team.split(' ').at(-1),report.event[team===report.event.home?'homeCode':'awayCode']].filter(Boolean).some(alias=>(' '+name(q)+' ').includes(' '+name(alias)+' ')));
   const selectedTeam=mentionedTeams.length===1?mentionedTeams[0]:null;
