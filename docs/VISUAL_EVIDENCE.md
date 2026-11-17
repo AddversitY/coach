@@ -16,6 +16,8 @@ The stat selector exposes relevant recorded workload/production metrics. Changin
 
 Named-player requests routed through hosted game analysis use a bounded visualEvidence object. Local recorded-player evidence uses the same chart component. Unknown/ambiguous player identities never acquire another player's series. Empty histories display an explicit missing-data state.
 
+Known player-prop questions route without AI planning and resolve the named player's own upcoming game rather than inheriting an unrelated prior matchup. Missing-price/local player replies also lead with a chart, so the visual evidence does not depend on a quoted price or remaining inference allowance.
+
 ## Boundaries and verification
 
 No source requests, odds credits or inference calls are added by chart generation. The charts use the existing attributed nflverse history and player evidence. Forecasts, experimental line thresholds and probability judgments remain separate; no serving model or captured cohort is changed.

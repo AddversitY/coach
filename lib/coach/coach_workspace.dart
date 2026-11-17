@@ -1159,6 +1159,13 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             CoachEvidenceVisuals(
               data: Map<String, dynamic>.from(turn.game!.raw['visualEvidence']),
             ),
+          if (turn.game?.raw['visualEvidence'] is! Map &&
+              a.player != null &&
+              turn.invalidation == null &&
+              turn.analysis == null &&
+              a.intent != CoachIntent.live &&
+              a.intent != CoachIntent.history)
+            _chart(a),
           if (turn.game == null ||
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
@@ -1241,10 +1248,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             else if (a.intent == CoachIntent.prices)
               _priceCards(a)
             else if (a.intent == CoachIntent.history)
-              _history(a)
-            else if (a.intent == CoachIntent.evidence &&
-                turn.game?.raw['visualEvidence'] is! Map)
-              _chart(a),
+              _history(a),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,

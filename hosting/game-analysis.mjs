@@ -26,6 +26,12 @@ export function resolveGame(index,question,context={},now=Date.now()){
   const future=index.events.filter(e=>Date.parse(e.startsAt)>now&&(exact==null||day(e.startsAt)===exact)&&(start==null||day(e.startsAt)>=start&&day(e.startsAt)<start+7*86400000)).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt));
   const q=normalize(question),names=[...new Set([...Object.values(index.clubs||{}),...future.flatMap(e=>[e.home,e.away])])];
   const matched=names.filter(name=>(' '+q+' ').includes(' '+normalize(name)+' ')||(' '+q+' ').includes(' '+normalize(name.split(' ').at(-1))+' ')||future.some(e=>{const code=e.home===name?e.homeCode:e.awayCode;return [e.home,e.away].includes(name)&&typeof code==='string'&&new RegExp('\\b'+code+'\\b').test(question);}));
+  const namedPlayers=(index.players||[]).filter(p=>(' '+q+' ').includes(' '+normalize(p.name)+' '));
+  if(namedPlayers.length){
+    const exactPlayers=namedPlayers.filter(p=>!namedPlayers.some(other=>other.name!==p.name&&normalize(other.name).includes(normalize(p.name))));
+    const options=future.filter(e=>exactPlayers.every(p=>p.events?.includes(e.id))&&matched.every(name=>[e.home,e.away].includes(name)));
+    return options[0]||null;
+  }
   if(matched.length){const options=future.filter(e=>matched.every(name=>[e.home,e.away].includes(name)));return options[0]||null;}
   return future.find(e=>e.id===context.eventId)||null;
 }

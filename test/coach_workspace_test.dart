@@ -55,6 +55,19 @@ void main() {
   }
 
   testWidgets(
+    'a missing-price player prop still leads with a recorded chart without AI',
+    (tester) async {
+      await tester.pumpWidget(frame());
+      await tester.pumpAndSettle();
+      await send(tester, 'Recorded Quarterback passing yards over 245.5');
+      expect(find.text('THE PLAYER / RECENT FORM'), findsOneWidget);
+      expect(find.text('Requested line'), findsOneWidget);
+      expect(find.text('245.5'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'phone has one conversation with contextual follow-ups and no navigation pages',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
