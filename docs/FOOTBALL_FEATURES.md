@@ -34,6 +34,8 @@ Weekly training rebuilds the evidence and this same fixed model. The public inde
 
 The worker captures a separate `score-football-features-v1/game-analysis-v1` cohort within the existing pregame capture window. It does not change serving probabilities, request extra AI benchmarks, fetch extra paid odds or track personal bets. Future frozen snapshots and final results provide the untouched evaluation; old cohorts are preserved. Coach's performance view reports this trial alongside existing research without promoting it to recommendations.
 
+If the public schedule changes a kickoff after training, that exact event's trial inputs are withheld until refitting. Coverage reports the withheld identities and old/current times. Other matching events and the current schedule can still publish; no mismatched forecast is silently reused.
+
 Tests cover target/future-week score, EPA and role perturbations; closing-price separation; prior-date guards; unknown role flags; bounded corrections; Python/JavaScript projection parity; malformed/adopted inputs; source provenance; and phone layout. Reproduce with the existing model environment:
 
 ```powershell

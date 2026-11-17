@@ -27,6 +27,11 @@ class CoachIndexTests(unittest.TestCase):
         f.update(blocks={'2026_11':block},events={'nflverse:2026_11_BUF_KC':record})
         def build(candidate):return build_index(build_snapshot(rows,now),data,rows,now,{},model,history,football_research=candidate,team_efficiency=evidence)
         self.assertEqual(len(build(f)['footballScoreModel']['events']),1)
+        rescheduled=copy.deepcopy(f);rescheduled['events']['nflverse:2026_11_BUF_KC']['startsAt']='2026-11-18T21:00:00Z'
+        withheld=build(rescheduled)
+        self.assertEqual(withheld['footballScoreModel']['events'],{})
+        self.assertEqual(withheld['footballResearch']['coverage']['withheldAfterScheduleChange'],1)
+        self.assertEqual(withheld['footballResearch']['coverage']['withheldEvents'][0]['state'],'withheld_until_refit')
         for change in [lambda c:c.update(historyHash='wrong'),lambda c:c['validation'].update(adopted=True),lambda c:c['blocks']['2026_11'].update(inputCutoff='2026-11-16'),lambda c:c['events']['nflverse:2026_11_BUF_KC']['roles'].update(home={'lastGame':'2026-11-16'})]:
             bad=copy.deepcopy(f);change(bad)
             with self.assertRaises(ValueError):build(bad)

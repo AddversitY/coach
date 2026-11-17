@@ -158,10 +158,13 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
             or f.get('specification')!={'baseRidge':8.,'baseHalfLifeDays':180.,'featureRidge':20.,'featureHalfLifeDays':180.,'correctionCap':7.,'featureCount':16,'minimumResidualTrainingGames':100,'epaHalfLifeDays':84.,'epaRidgePlays':200.,'pacePriorIntervals':50.,'volumePriorGames':3.}
             or not 120<=len(f.get('residuals',[]))<=1000 or any(len(row)!=5 or any(not math.isfinite(v) for v in row[:4]) or not isinstance(row[4],str) or row[4]>f['cutoff'] for row in f['residuals'])):
             raise ValueError('Invalid football feature research provenance')
-        selected={};blocks={}
+        selected={};blocks={};schedule_changes=[]
         for event in events:
             record=f.get('events',{}).get(event['id'])
             if not record:continue
+            if datetime.fromisoformat(record['startsAt'].replace('Z','+00:00'))!=datetime.fromisoformat(event['startsAt'].replace('Z','+00:00')):
+                schedule_changes.append({'eventId':event['id'],'trainedStartsAt':record['startsAt'],'currentStartsAt':event['startsAt'],'state':'withheld_until_refit'})
+                continue
             key=record['block'];b=f['blocks'][key]
             parts=event['id'].split(':',1)[1].split('_');target=(int(parts[0]),int(parts[1]))
             allowed=max((g['date'] for g in game_history['games'] if (g['season'],g['week'])<target and g['date']<b['fitDate']),default='')
@@ -178,6 +181,7 @@ def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, gam
         football.update(events=selected,blocks=blocks,sourceUrl=team_efficiency['sourceUrl'],sourceRetrievedAt=team_efficiency['retrievedAt'])
         football_summary={k:f[k] for k in ['version','cutoff','featureNames','specification','development','retrospectiveLater','protocol','validation']}
         football_summary['coverage']={'teamGames':len(team_efficiency['rows']),'seasons':len(team_efficiency['sources']),'sourceUrl':team_efficiency['sourceUrl'],'retrievedAt':team_efficiency['retrievedAt']}
+        football_summary['coverage'].update(publishedEvents=len(selected),withheldAfterScheduleChange=len(schedule_changes),withheldEvents=schedule_changes)
     context_players=context.pop('contextPlayers')
     return {'footballScoreModel':football,'footballResearch':football_summary,'regimeScoreModel':regime,'regimeResearch':regime_summary,'errorAudit':error_audit,'priorTrialFields':['date','week','position','attempts','carries','targets','passing_yards','rushing_yards','receiving_yards','receptions'],'productionModel':production_model,'workloadModel':workload_model,'roleContext':context,'contextPlayers':context_players,'forecastLab':lab,'shadowScoreModel':shadow,'clubs':TEAMS,'scoreModel':model,'results':results,'schemaVersion':1,'builtAt':iso(now),'cutoff':str(cutoff),
         'retrievedAt':iso(retrieved),'evidenceHash':hashlib.sha256(json.dumps(dataset,sort_keys=True).encode()).hexdigest(),
