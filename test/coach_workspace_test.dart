@@ -489,7 +489,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await send(tester, 'Analyze Bills');
+      await send(tester, 'Bills');
       expect(find.text('THE MATCHUP / RECENT FORM'), findsOneWidget);
       expect(find.text('Scored / game'), findsOneWidget);
       expect(find.textContaining('Experimental outlook: 55%'), findsOneWidget);

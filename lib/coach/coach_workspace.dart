@@ -361,13 +361,15 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final at = now;
     final request = conversation.resolve(question, at);
     String resolved = request.query;
-    String? planned = request.game ? 'analyze_game' : null;
+    String? planned = request.game || CoachConversation.isTeamPrompt(question)
+        ? 'analyze_game'
+        : null;
     final directEvaluation = RegExp(
       r'coach.*perform|forecast results|model results|evaluation|benchmark',
     ).hasMatch(question.toLowerCase());
     if (api != null &&
         !directEvaluation &&
-        !request.game &&
+        planned == null &&
         !RegExp(
           r'^(what|how) about\b',
           caseSensitive: false,

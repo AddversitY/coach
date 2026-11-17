@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {deterministicGameRoute} from './worker.mjs';
 import assert from 'node:assert/strict';
 import worker,{CoachState,normalizeInjuries,validatePlan,retrieve,parseModel,boundedJson,published,resetSourceCacheForTests} from './worker.mjs';
 
@@ -6,6 +7,10 @@ const time=Date.now(),at=new Date(time).toISOString();
 const event={id:'e',home:'Buffalo Bills',away:'Kansas City Chiefs',startsAt:new Date(time+3600000).toISOString()};
 const player={id:'p',name:'Recorded Player',team:'BUF',events:['e'],position:'QB',games:[]};
 const source={index:{events:[event],players:[player],cutoff:at.slice(0,10)},snapshot:{props:{quotes:[]}}};
+test('team-only prompts select visual game research without inference or stealing specialized questions',()=>{
+ for(const q of ['Bills','Buffalo Bills','Tell me about the Bills'])assert.equal(deterministicGameRoute(q,source.index),true);
+ for(const q of ['Bills injuries','Bills weather','Unknown Team'])assert.equal(deterministicGameRoute(q,source.index),false);
+});
 
 test('planner cannot invent players, lines, odds or flip sides',()=>{
   assert.throws(()=>validatePlan({tool:'joint_probability',query:'Recorded Player over 250.5 passing yards'},'Recorded Player over 245.5 passing yards',source.index),/number/);

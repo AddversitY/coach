@@ -110,7 +110,11 @@ export function retrieve(question, context, source, telemetry, now=Date.now()) {
     ...(playerEvidence.length?{player_evidence:playerEvidence}:{}),
   };
 }
-export function deterministicGameRoute(question,index,context={}){return !/injur|availab|news|weather|sharp|parlay|simulate|stress|robust|rank/i.test(question)&&/\b(analyze|spreads?|totals?|moneyline|matchup|forecast|projection|efficiency|pace|rest|quarterback|roles?|worth|options|best bet)\b/i.test(question)&&!!resolveGame(index,question,context);}
+export function deterministicGameRoute(question,index,context={}){
+  const simple=person(question).replace(/^(?:tell me about|show me|show|what about|how about|analyze|explore)\s+/,'').replace(/^the\s+/,'');
+  const teamOnly=index.events.some(e=>[e.home,e.away,e.home?.split(' ').at(-1),e.away?.split(' ').at(-1),e.homeCode,e.awayCode].filter(Boolean).some(alias=>person(alias)===simple));
+  return !/injur|availab|news|weather|sharp|parlay|simulate|stress|robust|rank/i.test(question)&&(teamOnly||/\b(analyze|spreads?|totals?|moneyline|matchup|forecast|projection|efficiency|pace|rest|quarterback|roles?|worth|options|best bet)\b/i.test(question))&&!!resolveGame(index,question,context);
+}
 export function validatePlan(plan,question,index,context={}) {
   if(!plan||!TYPES.has(plan.tool)||typeof plan.query!=='string'||plan.query.length>500)throw new Error('Invalid tool plan');
   const originalNumbers=question.match(/\d+(?:\.\d+)?/g)||[];

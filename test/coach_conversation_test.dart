@@ -4,6 +4,24 @@ import 'package:odds_edge/domain/coach_conversation.dart';
 import 'game_research_test.dart' show event, now;
 
 void main() {
+  test('bare team questions open visual game research without treating injury questions as team-only prompts', () {
+    for (final q in [
+      'Bills',
+      'BUF',
+      'Tell me about the Buffalo Bills',
+      'Show me the Bills',
+    ]) {
+      expect(CoachConversation.isTeamPrompt(q), isTrue);
+    }
+    for (final q in [
+      'Bills injuries',
+      'Show unknown team',
+      'Bills weather',
+      'Bills games last season',
+    ]) {
+      expect(CoachConversation.isTeamPrompt(q), isFalse);
+    }
+  });
   test('focused follow-ups preserve the subject and do not carry a spread into a total or matchup', () {
     final c = CoachConversation()..remember(event, 'buf -3.5 spread at -110');
     expect(c.point, -3.5);

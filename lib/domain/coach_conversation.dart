@@ -7,6 +7,27 @@ class CoachConversation {
   SportEvent? event;
   String? playerName, market, side, team, bookId;
   double? point;
+  static bool isTeamPrompt(String text) {
+    final q = text
+        .toLowerCase()
+        .trim()
+        .replaceAll(RegExp(r'[?!.]+$'), '')
+        .replaceFirst(
+          RegExp(
+            r'^(tell me about|show me|show|what about|how about|analyze|explore)\s+',
+          ),
+          '',
+        )
+        .replaceFirst(RegExp(r'^the\s+'), '');
+    return nflTeams.entries.any(
+      (t) => [
+        t.key.toLowerCase(),
+        t.key.split(' ').last.toLowerCase(),
+        t.value.toLowerCase(),
+      ].contains(q),
+    );
+  }
+
   static String? marketIn(String text) {
     final q = text.toLowerCase();
     if (RegExp(r'moneyline|win outright').hasMatch(q)) return 'moneyline';
