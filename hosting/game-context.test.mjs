@@ -86,3 +86,16 @@ test('participation and reassessment conditions never infer official availabilit
   assert.equal(brief.whatWouldChange[0].state,'missing_exact_quote');assert.equal(brief.whatWouldChange[0].selection,null);
   assert.match(brief.whatWouldChange[1].text,/official source/);assert.match(brief.whatWouldChange[2].text,/alone does not establish an edge/);assert.equal(brief.action,'pass');
 });
+
+test('official absences produce a focused pass, uncertain designations wait, and neither invents playing time',()=>{
+ const data=source(),observation={id:'official',eventId:event.id,kind:'injury',playerId:'p',source:'NFL.com official injury report',confirmed:true,observedAt:at,value:{status:'Out',team:'BUF',playerName:'Receiver',position:'WR',url:'https://www.nfl.com/injuries/',reportedUpdatedAt:null}};
+ const telemetry={checkedAt:at,observations:[observation]},context=gameContext(data,event,{now,telemetry});
+ const report={event,ranked:[],categories:[{rows:[]}],score:{homeWin:.6,tie:.02},basis:'experimental_score_candidate'};
+ let brief=decisionBrief(report,context,{question:'Receiver receiving yards over 65.5'});
+ assert.equal(brief.reason,'officially_unavailable');assert.equal(brief.decisionLabel,'Pass');assert.equal(brief.price,null);
+ const team=context.teams.find(t=>t.code==='BUF');assert.equal(team.lineupReview.expectedPlayingTime,null);assert.equal(team.lineupReview.keyAbsences[0].priorRole.recentMean,4);
+ assert.ok(context.sources.some(s=>s.source===observation.source));assert.equal(contextEvidence(context).teams.find(t=>t.code==='BUF').availability[0].reportedAt,null);
+ assert.equal(contextEvidence(context).teams.find(t=>t.code==='BUF').lineupReview.keyAbsences[0].priorRole.observations,undefined);
+ observation.value.status='Questionable';brief=decisionBrief(report,gameContext(data,event,{now,telemetry}),{question:'Receiver receiving yards over 65.5'});assert.equal(brief.decisionLabel,'Wait');assert.equal(brief.recommendationsReady,false);
+ telemetry.checkedAt=new Date(now-13*60000).toISOString();assert.equal(gameContext(data,event,{now,telemetry}).teams.find(t=>t.code==='BUF').lineupReview.keyAbsences.length,0);
+});

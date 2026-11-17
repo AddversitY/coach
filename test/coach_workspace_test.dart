@@ -276,6 +276,20 @@ void main() {
               {'text': 'Confirm official active players before reassessing.'},
               {'text': 'Better future probability accuracy is still required.'},
             ];
+            result['decision']['decidingFactor'] =
+                'The exact price needs a fresh check.';
+            result['context']['teams'][0]['lineupReview'] = {
+              'keyAbsences': [
+                {
+                  'name': 'Recorded Receiver',
+                  'status': 'Out',
+                  'source': 'NFL.com official injury report',
+                  'checkedAt': now.toIso8601String(),
+                  'priorRole': {'metric': 'targets', 'recentMean': 4.0},
+                },
+              ],
+              'uncertain': [],
+            };
             result['priceCoverage'] = {
               'markets': [
                 {
@@ -290,6 +304,10 @@ void main() {
             return result;
           },
           evaluationLoader: () async => {
+            'resultCollection': {
+              'state': 'awaiting_final',
+              'checkedAt': now.toIso8601String(),
+            },
             'aiProvider': {
               'blockedUntil': now
                   .add(const Duration(hours: 1))
@@ -425,7 +443,13 @@ void main() {
               },
             },
             'models': [
-              {'role': 'shadow', 'gradedGames': 0, 'pendingGames': 1},
+              {
+                'role': 'shadow',
+                'gradedGames': 0,
+                'pendingGames': 1,
+                'capturedGames': 1,
+                'forwardWindow': {'weeksGraded': 0},
+              },
             ],
           },
         ),
@@ -465,6 +489,10 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('Recorded team share 20%'), findsOneWidget);
+      expect(
+        find.textContaining('Officially Out · Recorded Receiver'),
+        findsOneWidget,
+      );
       await tester.ensureVisible(find.text('Workload trial'));
       await tester.tap(find.text('Workload trial'));
       await tester.pumpAndSettle();
@@ -486,6 +514,14 @@ void main() {
       await send(tester, 'Coach performance');
       expect(find.text('Coach’s forecast record'), findsOneWidget);
       expect(find.text('No settled forecasts yet.'), findsOneWidget);
+      await tester.ensureVisible(find.text('Forward testing'));
+      await tester.tap(find.text('Forward testing'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Game scores are checked every 15 minutes'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('0 weeks with results'), findsOneWidget);
       await tester.ensureVisible(find.text('Coach vs AI vs market'));
       await tester.tap(find.text('Coach vs AI vs market'));
       await tester.pumpAndSettle();

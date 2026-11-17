@@ -5,6 +5,7 @@ const finite=n=>typeof n==='number'&&Number.isFinite(n);
 const name=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').trim();
 const fresh=(s,now,age)=>Number.isFinite(Date.parse(s))&&Date.parse(s)<=now&&now-Date.parse(s)<=age;
 const mean=a=>a.length?a.reduce((a,b)=>a+b,0)/a.length:null;
+const official=o=>o.confirmed===true&&['NFL.com official inactive report','NFL.com official injury report'].includes(o.source);
 
 export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
   const data=source.index.roleContext;
@@ -56,12 +57,16 @@ export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
     }).filter(p=>p.appearances).sort((a,b)=>(b.recentShare??0)-(a.recentShare??0)).slice(0,18);
     const otherCode=event[(side==='home'?'away':'home')+'Code'];
     const opponentGames=usable?(data.teamGames||[]).filter(g=>g.team===otherCode&&finite(g.passingYardsAllowed)&&finite(g.rushingYardsAllowed)&&g.date<=data.cutoff&&Date.parse(g.date+'T00:00:00Z')<now).slice(0,6):[];
-    teams.push({side,team:event[side],code,footballEvidence:footballUsable?footballRecord.roles?.[side]||null:null,quarterback,availability:reports.filter(o=>o.team===code),
+    const officialReports=reports.filter(o=>o.team===code&&official(o));
+    const keyAbsences=officialReports.filter(o=>['Out','Inactive'].includes(o.value.status)).map(o=>({playerId:o.playerId,name:o.playerName,position:o.position,status:o.value.status,source:o.source,url:o.value.url,checkedAt:o.observedAt,reportedAt:o.value.reportedUpdatedAt||null,priorRole:usage.find(p=>p.playerId===o.playerId)||null}));
+    const lineupReview={status:officialReports.length?'official_designations_available':'awaiting_official_designations',keyAbsences,uncertain:officialReports.filter(o=>['Questionable','Doubtful'].includes(o.value.status)).map(o=>({playerId:o.playerId,name:o.playerName,status:o.value.status,source:o.source,url:o.value.url,checkedAt:o.observedAt})),starterConfirmed:false,expectedPlayingTime:null,notice:'Prior workload describes recorded usage, not a replacement projection or expected snaps. Official designations do not confirm starters.'};
+    teams.push({side,team:event[side],code,lineupReview,footballEvidence:footballUsable?footballRecord.roles?.[side]||null:null,quarterback,availability:reports.filter(o=>o.team===code),
       opponentRecentAllowance:{team:otherCode,games:opponentGames.length,passingYards:mean(opponentGames.map(g=>g.passingYardsAllowed)),rushingYards:mean(opponentGames.map(g=>g.rushingYardsAllowed)),notice:'Recorded opposing offense production; not adjusted for opponents, pace or game script and not a probability adjustment.'},offensiveLine:{lastObserved:lineObserved,reports:lineReports,asOf:latestSnaps.length?latest.date:null,coverage:lineObserved.length===5?'five_high_snap_players_observed':'incomplete',notice:'Previous high-snap linemen are not confirmed starters. No report does not establish a healthy line.'},usage,
       restDays:event.restDays?.[side]??null,latestRecordedGame:latest?.date||null});
   }
   const weather=observations.filter(o=>o.eventId===event.id&&o.kind==='weather'&&fresh(o.observedAt,now,35*60000));
-  const sources=[...(footballUsable?[{id:'football_features',source:'nflverse play-by-play / earlier-week summaries',url:source.index.footballScoreModel.sourceUrl,cutoff:source.index.footballScoreModel.cutoff,retrievedAt:source.index.footballScoreModel.sourceRetrievedAt}]:[]),...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...(reports.length?[{id:'availability',source:'ESPN injury feed (unofficial)',url:'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}]:[])];
+  const reportSources=[...new Map(reports.map(o=>[o.source,{id:'availability',source:o.source,url:o.value?.url||'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}])).values()];
+  const sources=[...(footballUsable?[{id:'football_features',source:'nflverse play-by-play / earlier-week summaries',url:football.sourceUrl,cutoff:football.cutoff,retrievedAt:football.sourceRetrievedAt}]:[]),...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...reportSources];
   return {schemaVersion:1,version:footballUsable?'role-context-football-v2':'role-context-v1',eventId:event.id,createdAt:new Date(now).toISOString(),cutoff:usable?data.cutoff:null,teams,alerts,weather,sources,
     readiness:usable?'descriptive_context':'context_unavailable',adjustmentsApplied:false,
     participation:{state:'unconfirmed',officialActiveListAvailable:false,confirmedStartersAvailable:false,officialNamedInactives:injuries.filter(o=>o.confirmed===true&&o.source==='NFL.com official inactive report').length,reportedConcerns:reports.filter(o=>CONCERN.has(String(o.value?.status).toLowerCase())).length,checkedAt:injuries.map(o=>o.observedAt).sort().at(-1)||null,notice:'Official NFL.com named inactive reports are checked near kickoff when available; other listings remain unofficial. Missing names or an Active label do not confirm participation or a starting role.'},
@@ -81,11 +86,12 @@ export function projectionWarnings(projection,context){
 }
 
 export function contextEvidence(context){
-  const report=o=>({playerName:o.playerName,position:o.position,status:o.value?.status,reportedAt:o.value?.reportedUpdatedAt,source:o.source,url:o.value?.url,confirmed:o.confirmed===true&&o.source==='NFL.com official inactive report'});
+  const report=o=>({playerName:o.playerName,position:o.position,status:o.value?.status,reportedAt:o.value?.reportedUpdatedAt||null,checkedAt:o.observedAt,source:o.source,url:o.value?.url,confirmed:official(o)});
   return {...context,teams:context.teams.map(t=>({...t,
     quarterback:{...t.quarterback,reports:t.quarterback.reports.map(report)},
     availability:t.availability.map(report),
     offensiveLine:{...t.offensiveLine,reports:t.offensiveLine.reports.map(report)},
+    lineupReview:t.lineupReview?{...t.lineupReview,keyAbsences:t.lineupReview.keyAbsences.map(a=>({...a,priorRole:a.priorRole?{metric:a.priorRole.metric,recentMean:a.priorRole.recentMean,appearances:a.priorRole.appearances}:null}))}:null,
     usage:t.usage.slice(0,10).map(({observations,notice,...p})=>p),
   }))};
 }
@@ -107,15 +113,20 @@ export function decisionBrief(report,context,{question=''}={}){
   const focus=requested||focusedPlayer?'selection':'game';
   const focusTeam=context.teams.find(t=>t.usage.some(p=>names.includes(p.name)))?.code;
   const alerts=focusedPlayer&&focusTeam?context.alerts.filter(a=>a.team===focusTeam):context.alerts;
+  const unavailable=context.teams.flatMap(t=>t.lineupReview?.keyAbsences||[]).find(p=>names.includes(p.name));
+  const uncertain=context.teams.flatMap(t=>t.lineupReview?.uncertain||[]).find(p=>names.includes(p.name));
+  const wait=!unavailable&&(alerts.length>0||!!uncertain);
   const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||(focusedPlayer?'Player forecasts are conditional on a recorded appearance; exact-line probabilities and future calibration remain unvalidated.':'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.');
-  return {status:alerts.length?'wait_for_context':priced?'research_only':'wait_for_prices',
-    headline:alerts.length?'Wait for lineup clarity':priced?'Compare the price. Keep this in research.':'Pass for now — the matching price is missing',
+  return {status:unavailable?'officially_unavailable':wait?'wait_for_context':priced?'research_only':'wait_for_prices',
+    decisionLabel:wait?'Wait':'Pass',
+    headline:unavailable?`Pass — ${unavailable.name} is officially ${unavailable.status.toLowerCase()}`:wait?'Wait — lineup clarity is missing':priced?'Pass — no demonstrated model edge':'Pass — the matching price is missing',
+    decidingFactor:unavailable?`${unavailable.source} lists ${unavailable.name} as ${unavailable.status}. A prior workload does not establish a role in this game.`:uncertain?`${uncertain.name} has an official ${uncertain.status.toLowerCase()} designation; playing time remains unknown.`:alerts.length?risk:priced?'A matching saved quote exists, but future results have not established better probability accuracy than the market.':'A fresh quote for this exact selection is needed before a price comparison is possible.',
     whatWouldChange:[
       {kind:'price',state:best?'recheck_saved_quote':'missing_exact_quote',selection:best?.selection||null,text:best?'Refresh this exact selection at the sportsbook. A saved price may no longer be obtainable; the research break-even price is not an approval to bet.':'Provide a fresh sportsbook price matching the requested game, player, side and line; unrelated prices cannot fill the gap.'},
       {kind:'availability',state:'official_confirmation_needed',text:focusedPlayer?'Confirm this player is active and verify the expected role using a current game-specific official source. Historical appearances and unofficial reports do not establish participation.':'Confirm the game’s starting quarterbacks and relevant active players using a current official source. Resolve conflicting listings before reassessing.'},
       {kind:'validation',state:'not_demonstrated',text:'The model needs better probability accuracy than matched market baselines on future games. A lineup update or a more attractive price alone does not establish an edge.'},
     ],
-    action:'pass',focus,reason:alerts.length?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
+    action:'pass',focus,reason:unavailable?'officially_unavailable':wait?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
     lean:focusedPlayer||requested==='totals'?null:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
     price:best?{selection:best.selection,book:best.book,observedDecimal:best.decimal,minimumDecimal:best.minimumDecimal,sourceAt:best.sourceAt,notice:'Model break-even price only; a larger price does not establish a real betting edge.'}:null,
     priceNotice:best?'Saved observation only. Recheck this exact line at the sportsbook; the model break-even price is unvalidated.':'No usable saved price matches this question. Other games, players or lines cannot supply its price.',

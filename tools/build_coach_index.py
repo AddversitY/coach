@@ -5,6 +5,13 @@ from pathlib import Path
 from publish_snapshot import SOURCE, TEAMS, ALIASES, build_snapshot, iso
 from build_game_context import build_context
 
+def research_for_history(report, history_hash, field='sourceHash'):
+    """A daily evidence update must not publish an unmatched weekly trial."""
+    value=report.get(field)
+    if not isinstance(value,str) or len(value)!=64 or any(c not in '0123456789abcdef' for c in value):
+        raise ValueError('Invalid research history fingerprint')
+    return report if value==history_hash else None
+
 def build_index(schedule, dataset, rows, now, stadiums, forecast_model=None, game_history=None, forecast_lab=None, matchup=None, workload_model=None, production_model=None, regime_research=None, error_audit=None, football_research=None, team_efficiency=None):
     metadata=dataset.get('metadata',dataset)
     cutoff=datetime.fromisoformat(metadata['cutoff']).date()
@@ -183,7 +190,12 @@ def main():
     with urllib.request.urlopen(SOURCE,timeout=30) as r:rows=list(csv.DictReader(io.StringIO(r.read().decode('utf-8-sig'))))
     tree=ast.parse(Path('model/weather.py').read_text(encoding='utf-8'))
     stadiums=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.AnnAssign) and getattr(node.target,'id',None)=='STADIUMS')
-    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/regime-research.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/game-error-audit.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/football-research.json').read_text(encoding='utf-8')),json.loads(Path('assets/team-efficiency.json').read_text(encoding='utf-8')))
+    history=json.loads(Path('assets/nfl-history.json').read_text(encoding='utf-8-sig'))
+    fingerprint=hashlib.sha256(json.dumps(history,sort_keys=True).encode()).hexdigest()
+    reports={name:json.loads(Path('assets/'+name+'.json').read_text(encoding='utf-8-sig')) for name in ['regime-research','game-error-audit','football-research']}
+    current={name:research_for_history(report,fingerprint,'historyHash' if name=='football-research' else 'sourceHash') for name,report in reports.items()}
+    result=build_index(json.loads(args.schedule.read_text(encoding='utf-8')),json.loads(args.players.read_text(encoding='utf-8-sig')),rows,datetime.now(timezone.utc),stadiums,json.loads(Path('assets/game-forecast-model.json').read_text(encoding='utf-8')),history,json.loads(Path('assets/forecast-lab.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/nfl-matchup.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/workload-model.json').read_text(encoding='utf-8-sig')),json.loads(Path('assets/production-model.json').read_text(encoding='utf-8-sig')),current['regime-research'],current['game-error-audit'],current['football-research'],json.loads(Path('assets/team-efficiency.json').read_text(encoding='utf-8')))
+    result['researchAvailability']={name:'current' if current[name] else 'awaiting_refit_after_evidence_update' for name in current}
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,allow_nan=False,separators=(',',':')),encoding='utf-8')
     print(f'Coach index: {len(result["players"])} recorded players; zero odds credits.')
 if __name__=='__main__':main()

@@ -31,19 +31,39 @@ async function trackBenchmark(txn,snapshot){
 export async function evaluationState(state,path,request,clock=Date.now()){
 
   const storage=state.storage;
+  if(path==='/result-targets'){
+    let events=await storage.get('evaluation-events');
+    if(!events&&storage.list){
+      events={};const old=await storage.list({prefix:'forecast:',limit:1000});
+      for(const snapshot of old.values())if(snapshot?.event?.id)events[snapshot.event.id]={id:snapshot.event.id,startsAt:snapshot.event.startsAt};
+      await storage.put('evaluation-events',events);
+    }
+    return response({events:Object.values(events||{}).filter(e=>clock>=Date.parse(e.startsAt)&&clock-Date.parse(e.startsAt)<72*3600000).slice(0,48)});
+  }
+  if(path==='/final-score-state'){
+    if(request.method==='POST'){const body=await request.json();if(JSON.stringify(body).length>60000||!Array.isArray(body.results)||body.results.length>48)return response({error:'Invalid final scores'},400);await storage.put('final-score-state',body);return response({ok:true});}
+    return response(await storage.get('final-score-state')||null);
+  }
   if(path==='/evaluation')return storage.transaction(async txn=>{
     const versions=await txn.get('evaluation-versions')||[];
     const selected=new URL(request.url).searchParams.get('modelVersion')||versions[0]||null;
     const models=[];
-    for(const version of versions){const scoped=await modelState(txn,version);models.push({...evaluationReport(scoped.aggregate,scoped.counts),modelVersion:version,benchmarkCoverage:scoped.benchmarkCoverage||{},benchmarkFailureReasons:scoped.benchmarkFailureReasons||{},role:version===selected?'serving':'shadow'});}
+    for(const version of versions){const scoped=await modelState(txn,version);models.push({...evaluationReport(scoped.aggregate,scoped.counts),forwardWindow:{firstCapturedAt:scoped.firstCapturedAt||null,lastCapturedAt:scoped.lastCapturedAt||null,weeksCaptured:Object.keys(scoped.captureWeeks||{}).length,weeksGraded:Object.keys(scoped.gradedWeeks||{}).length,lastGradedAt:scoped.lastGradedAt||null,notice:'Week counts describe observed coverage, not a minimum sample that proves superiority.'},modelVersion:version,benchmarkCoverage:scoped.benchmarkCoverage||{},benchmarkFailureReasons:scoped.benchmarkFailureReasons||{},role:version===selected?'serving':'shadow'});}
     const current=models.find(m=>m.modelVersion===selected)||{...evaluationReport({},emptyCounts()),modelVersion:selected,role:'serving'};
-    return response({...current,models,aiProvider:await txn.get('ai-provider-status')||null});
+    return response({...current,models,resultCollection:(await txn.get('final-score-state'))?.source||null,aiProvider:await txn.get('ai-provider-status')||null});
   });
   if(path==='/forecast-capture'){
     const snapshot=await request.json();
     if(!snapshot?.id||snapshot.id.length>300||!snapshot.event?.id||!Array.isArray(snapshot.rows)||snapshot.rows.length>60||(snapshot.workloads!=null&&(!Array.isArray(snapshot.workloads)||snapshot.workloads.length>80))||JSON.stringify(snapshot).length>100000||Date.parse(snapshot.capturedAt)>=Date.parse(snapshot.event.startsAt))return response({error:'Invalid forecast'},400);
     return storage.transaction(async txn=>{
+      const events=await txn.get('evaluation-events')||{};
+      events[snapshot.event.id]={id:snapshot.event.id,startsAt:snapshot.event.startsAt};
+      await txn.put('evaluation-events',Object.fromEntries(Object.entries(events).sort((a,b)=>Date.parse(b[1].startsAt)-Date.parse(a[1].startsAt)).slice(0,128)));
       const key='forecast:'+snapshot.id,existing=await txn.get(key);
+      const timeline=await modelState(txn,snapshot.modelVersion),capturedAt=existing?.capturedAt||snapshot.capturedAt;
+      timeline.firstCapturedAt=[timeline.firstCapturedAt,capturedAt].filter(Boolean).sort()[0];timeline.lastCapturedAt=[timeline.lastCapturedAt,capturedAt].filter(Boolean).sort().at(-1);
+      const week=snapshot.event.id.match(/^nflverse:(20\d{2}_\d{2})_/)?.[1];if(week){timeline.captureWeeks||={};timeline.captureWeeks[week]=true;}
+      await txn.put('evaluation-model:'+snapshot.modelVersion,timeline);
       if(existing){await trackBenchmark(txn,existing);return response(existing);}
       const counts=await txn.get('evaluation-counts')||{capturedGames:0,snapshots:0,gradedGames:0,pendingGames:0,unresolved:0};
       if(counts.capturedGames>=5000)return response({error:'Research storage limit'},409);
@@ -108,6 +128,8 @@ export async function evaluationState(state,path,request,clock=Date.now()){
         if(old){addGrade(aggregate,old,-1);addGrade(scoped.aggregate,old,-1);counts.unresolved-=old.unresolved;scoped.counts.unresolved-=old.unresolved;}
         else{counts.gradedGames++;counts.pendingGames--;scoped.counts.gradedGames++;scoped.counts.pendingGames--;}
         addGrade(aggregate,grade);addGrade(scoped.aggregate,grade);counts.unresolved+=grade.unresolved;scoped.counts.unresolved+=grade.unresolved;
+        const week=snapshot.event.id.match(/^nflverse:(20\d{2}_\d{2})_/)?.[1];if(week){scoped.gradedWeeks||={};scoped.gradedWeeks[week]=true;scoped.captureWeeks||={};scoped.captureWeeks[week]=true;}scoped.lastGradedAt=new Date(clock).toISOString();
+        scoped.firstCapturedAt=[scoped.firstCapturedAt,snapshot.capturedAt].filter(Boolean).sort()[0];scoped.lastCapturedAt=[scoped.lastCapturedAt,snapshot.capturedAt].filter(Boolean).sort().at(-1);
         await txn.put('evaluation-model:'+version,scoped);
         await txn.put(key,grade);await txn.put('evaluation-aggregate',aggregate);await txn.put('evaluation-counts',counts);
       });

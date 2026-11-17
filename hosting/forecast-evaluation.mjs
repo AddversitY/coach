@@ -51,7 +51,7 @@ export function gradeForecast(snapshot,result){
       hypotheticalReturn:mean(decided.filter(r=>r.hypotheticalReturn!=null).map(r=>r.hypotheticalReturn))};
   }
   const workload=gradeWorkloads(snapshot,result);
-  return {workloads:workload.groups,eventId:result.eventId,modelVersion:snapshot.modelVersion,capturedAt:snapshot.capturedAt,priced:snapshot.priced,unresolved:unresolved+workload.unresolved,markets,hasEdge:false};
+  return {resultEvidence:result.evidence||{source:'Published nflverse final outcomes',scope:'Recorded game/player results'},workloads:workload.groups,eventId:result.eventId,modelVersion:snapshot.modelVersion,capturedAt:snapshot.capturedAt,priced:snapshot.priced,unresolved:unresolved+workload.unresolved,markets,hasEdge:false};
 }
 
 export function addGrade(aggregate,grade,direction=1){

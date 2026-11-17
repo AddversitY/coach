@@ -1,9 +1,14 @@
 import unittest
 from datetime import datetime,timezone
-from build_coach_index import build_index
+from build_coach_index import build_index,research_for_history
 from publish_snapshot import build_snapshot
 
 class CoachIndexTests(unittest.TestCase):
+    def test_daily_evidence_does_not_publish_an_unmatched_weekly_trial(self):
+        report={'sourceHash':'a'*64}
+        self.assertIs(research_for_history(report,'a'*64),report)
+        self.assertIsNone(research_for_history(report,'b'*64))
+        with self.assertRaises(ValueError):research_for_history({'sourceHash':'wrong'},'b'*64)
     def test_football_trial_requires_matching_sources_and_earlier_week_inputs(self):
         import copy,hashlib,json
         from pathlib import Path

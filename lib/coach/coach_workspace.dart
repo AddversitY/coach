@@ -1651,6 +1651,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             '${brief['headline']}',
             style: CoachType.title.copyWith(fontSize: 21),
           ),
+          if (brief['decidingFactor'] is String) ...[
+            const SizedBox(height: 8),
+            Text('${brief['decidingFactor']}', style: CoachType.body),
+          ],
           const SizedBox(height: 10),
           if (price?['observedDecimal'] is num && price?['selection'] is Map)
             Text(
@@ -1747,6 +1751,27 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     '${team['team']}',
                     style: CoachType.title.copyWith(fontSize: 19),
                   ),
+                  if (team['lineupReview'] is Map) ...[
+                    for (final absence
+                        in team['lineupReview']['keyAbsences'] as List? ?? [])
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text(
+                          'Officially ${absence['status']} · ${absence['name']} · ${absence['source']} · Checked ${_reportTime(absence['checkedAt'])}${absence['priorRole'] is Map ? ' · Prior recorded ${absence['priorRole']['metric']}: ${number(absence['priorRole']['recentMean'])}/game' : ''}',
+                          style: CoachType.label,
+                        ),
+                      ),
+                    for (final player
+                        in team['lineupReview']['uncertain'] as List? ?? [])
+                      Text(
+                        'Official ${player['status']} · ${player['name']} · Checked ${_reportTime(player['checkedAt'])}',
+                        style: CoachType.label,
+                      ),
+                    const Text(
+                      'Upcoming starter and expected playing time remain unconfirmed.',
+                      style: CoachType.label,
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Text(
                     'Listed quarterback · ${team['quarterback']['listed'] ?? 'Unconfirmed'}',
@@ -2200,6 +2225,38 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         if (report['audit'] is Map)
           _accuracyAuditView(Map<String, dynamic>.from(report['audit'])),
         _headToHeadView(report),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(
+            'Forward testing',
+            style: CoachType.title.copyWith(fontSize: 20),
+          ),
+          subtitle: const Text(
+            'Frozen before kickoff. Scored after the final.',
+            style: CoachType.label,
+          ),
+          children: [
+            Text(
+              'Final-score checks · ${_finalCheckLabel(report['resultCollection']?['state'])} · ${_reportTime(report['resultCollection']?['checkedAt'])}. Game scores are checked every 15 minutes; player outcomes wait for recorded box scores.',
+              style: CoachType.label,
+            ),
+            for (final model in report['models'] as List? ?? [])
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '${_forwardModelLabel(model)} · ${model['gradedGames'] ?? 0} graded / ${model['capturedGames'] ?? 0} captured · ${model['forwardWindow']?['weeksGraded'] ?? 0} weeks with results · ${model['unresolved'] ?? 0} unresolved observations',
+                    style: CoachType.label,
+                  ),
+                ),
+              ),
+            const Text(
+              'A few games cannot prove an advantage. Compare matched prices and completed AI baselines across future weeks; missing AI replies never count as wins.',
+              style: CoachType.label,
+            ),
+          ],
+        ),
         if (report['footballResearch'] is Map)
           _footballResearchView(
             Map<String, dynamic>.from(report['footballResearch']),
@@ -2873,6 +2930,25 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         ),
       ],
     );
+  }
+
+  String _finalCheckLabel(dynamic value) =>
+      const {
+        'awaiting_final': 'Waiting for a matching final score',
+        'final_scores_available': 'Final scores available',
+        'no_recent_captured_games': 'No recent captured games to check',
+        'unavailable': 'Source temporarily unavailable',
+      }[value] ??
+      'Awaiting the first check';
+
+  String _forwardModelLabel(dynamic model) {
+    if (model['role'] == 'serving') return 'Coach';
+    final version = model['modelVersion'] as String? ?? '';
+    if (version.startsWith('score-football')) return 'Football features';
+    if (version.startsWith('score-regime')) return 'Scoring patterns';
+    if (version.startsWith('workload')) return 'Workload';
+    if (version.startsWith('production')) return 'Yards & receptions';
+    return 'Score challenger';
   }
 
   String _reportTime(dynamic value) {
