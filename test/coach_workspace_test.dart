@@ -301,6 +301,20 @@ void main() {
                 'extreme_final_total': {'games': 139, 'scoreMae': 11.260},
               },
             },
+            'footballResearch': {
+              'cutoff': '2026-11-12',
+              'coverage': {'teamGames': 2448, 'seasons': 5},
+              'retrospectiveLater': {
+                'moneyline': {
+                  'games': 407,
+                  'brier': 0.2252,
+                  'incumbentBrier': 0.2257,
+                  'marketBrier': 0.2133,
+                  'logLoss': 0.6415,
+                  'incumbentLogLoss': 0.6419,
+                },
+              },
+            },
             'regimeResearch': {
               'retrospectiveLater': {
                 'totals': {
@@ -513,6 +527,17 @@ void main() {
       );
       expect(
         find.textContaining('Background challenger: 0 games with results'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Research progress'));
+      await tester.ensureVisible(find.text('Pregame football-feature trial'));
+      await tester.tap(find.text('Pregame football-feature trial'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('2448 sourced team-games'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Trial 0.2252 / Existing challenger 0.2257 / Market 0.2133',
+        ),
         findsOneWidget,
       );
       await tester.ensureVisible(find.text('Research progress'));

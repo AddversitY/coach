@@ -8,6 +8,8 @@ const mean=a=>a.length?a.reduce((a,b)=>a+b,0)/a.length:null;
 
 export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
   const data=source.index.roleContext;
+  const football=source.index.footballScoreModel,footballRecord=football?.events?.[event.id];
+  const footballUsable=football?.version==='score-football-features-v1'&&fresh(football.cutoff+'T00:00:00Z',now,22*86400000)&&fresh(football.sourceRetrievedAt,now,22*86400000)&&footballRecord&&Date.parse(footballRecord.startsAt)===Date.parse(event.startsAt)&&footballRecord.inputCutoff<event.startsAt.slice(0,10);
   const usable=data?.schemaVersion===1&&fresh(data.cutoff+'T00:00:00Z',now,22*86400000)&&fresh(data.retrievedAt,now,22*86400000);
   const observations=telemetry&&fresh(telemetry.checkedAt,now,5*60000)?telemetry.observations||[]:[];
   const injuries=observations.filter(o=>o.eventId===event.id&&o.kind==='injury'&&fresh(o.observedAt,now,12*60000));
@@ -54,13 +56,13 @@ export function gameContext(source,event,{now=Date.now(),telemetry=null}={}){
     }).filter(p=>p.appearances).sort((a,b)=>(b.recentShare??0)-(a.recentShare??0)).slice(0,18);
     const otherCode=event[(side==='home'?'away':'home')+'Code'];
     const opponentGames=usable?(data.teamGames||[]).filter(g=>g.team===otherCode&&finite(g.passingYardsAllowed)&&finite(g.rushingYardsAllowed)&&g.date<=data.cutoff&&Date.parse(g.date+'T00:00:00Z')<now).slice(0,6):[];
-    teams.push({side,team:event[side],code,quarterback,availability:reports.filter(o=>o.team===code),
+    teams.push({side,team:event[side],code,footballEvidence:footballUsable?footballRecord.roles?.[side]||null:null,quarterback,availability:reports.filter(o=>o.team===code),
       opponentRecentAllowance:{team:otherCode,games:opponentGames.length,passingYards:mean(opponentGames.map(g=>g.passingYardsAllowed)),rushingYards:mean(opponentGames.map(g=>g.rushingYardsAllowed)),notice:'Recorded opposing offense production; not adjusted for opponents, pace or game script and not a probability adjustment.'},offensiveLine:{lastObserved:lineObserved,reports:lineReports,asOf:latestSnaps.length?latest.date:null,coverage:lineObserved.length===5?'five_high_snap_players_observed':'incomplete',notice:'Previous high-snap linemen are not confirmed starters. No report does not establish a healthy line.'},usage,
       restDays:event.restDays?.[side]??null,latestRecordedGame:latest?.date||null});
   }
   const weather=observations.filter(o=>o.eventId===event.id&&o.kind==='weather'&&fresh(o.observedAt,now,35*60000));
-  const sources=[...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...(reports.length?[{id:'availability',source:'ESPN injury feed (unofficial)',url:'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}]:[])];
-  return {schemaVersion:1,version:'role-context-v1',eventId:event.id,createdAt:new Date(now).toISOString(),cutoff:usable?data.cutoff:null,teams,alerts,weather,sources,
+  const sources=[...(footballUsable?[{id:'football_features',source:'nflverse play-by-play / earlier-week summaries',url:source.index.footballScoreModel.sourceUrl,cutoff:source.index.footballScoreModel.cutoff,retrievedAt:source.index.footballScoreModel.sourceRetrievedAt}]:[]),...(usable?[{id:'workload',source:data.source,url:data.sourceUrl,cutoff:data.cutoff,retrievedAt:data.retrievedAt}]:[]),...(snaps.length?[{id:'snaps',...data.snapSource,url:data.snapSource.sourceUrl}]:[]),{id:'schedule',source:'nflverse schedule',...event.scheduleEvidence},...(reports.length?[{id:'availability',source:'ESPN injury feed (unofficial)',url:'https://www.espn.com/nfl/injuries',checkedAt:telemetry.checkedAt}]:[])];
+  return {schemaVersion:1,version:footballUsable?'role-context-football-v2':'role-context-v1',eventId:event.id,createdAt:new Date(now).toISOString(),cutoff:usable?data.cutoff:null,teams,alerts,weather,sources,
     readiness:usable?'descriptive_context':'context_unavailable',adjustmentsApplied:false,
     participation:{state:'unconfirmed',officialActiveListAvailable:false,confirmedStartersAvailable:false,officialNamedInactives:injuries.filter(o=>o.confirmed===true&&o.source==='NFL.com official inactive report').length,reportedConcerns:reports.filter(o=>CONCERN.has(String(o.value?.status).toLowerCase())).length,checkedAt:injuries.map(o=>o.observedAt).sort().at(-1)||null,notice:'Official NFL.com named inactive reports are checked near kickoff when available; other listings remain unofficial. Missing names or an Active label do not confirm participation or a starting role.'},
     unknowns:['Confirmed starting quarterbacks, active lists and expected snap counts require a current game-specific source.','Recorded workload and snap share do not measure routes, coaching plans or recovery.','No validated quarterback, injury, offensive-line or weather probability adjustment is applied.']};

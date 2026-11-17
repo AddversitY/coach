@@ -4,6 +4,28 @@ from build_coach_index import build_index
 from publish_snapshot import build_snapshot
 
 class CoachIndexTests(unittest.TestCase):
+    def test_football_trial_requires_matching_sources_and_earlier_week_inputs(self):
+        import copy,hashlib,json
+        from pathlib import Path
+        from publish_snapshot import TEAMS
+        now=datetime(2026,11,17,12,tzinfo=timezone.utc)
+        rows=[dict(game_id='2026_11_BUF_KC',gameday='2026-11-18',gametime='13:00',away_team='BUF',home_team='KC',home_score='',away_score='',stadium='Known',roof='outdoors')]
+        data={'currentSeason':2026,'cutoff':'2026-11-12','retrievedAt':'2026-11-15T10:00:00Z','rows':[]}
+        history={'cutoff':'2026-11-12','retrievedAt':'2026-11-15T10:00:00Z','games':[dict(id='2026_10_BUF_KC',season=2026,week=10,date='2026-11-08',home='KC',away='BUF',homeScore=27,awayScore=24)]}
+        digest=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()
+        model={'schemaVersion':1,'version':'test','cutoff':'2026-11-12','trainedAt':'2026-11-15T10:00:00Z','teams':list(TEAMS),'coefficients':[20,3]+[0]*64,'residuals':[[0,0]]*120}
+        sample=json.loads(Path('hosting/fixtures/football-parity.json').read_text())[0]['source']['index']['footballScoreModel']
+        evidence={'historyHash':digest(history),'sourceUrl':'https://github.com/nflverse/nflverse-data','retrievedAt':'2026-11-15T10:00:00Z','rows':[],'sources':[]}
+        f=copy.deepcopy(sample);f.update(trainedAt='2026-11-16T12:00:00Z',historyHash=digest(history),evidenceHash=digest(evidence),teams=list(TEAMS),development={},retrospectiveLater={},protocol={},residuals=sample['residuals'][:120])
+        block=next(iter(f['blocks'].values()));block.update(inputCutoff='2026-11-08',fitDate='2026-11-12')
+        record=next(iter(f['events'].values()));record.update(block='2026_11',inputCutoff='2026-11-08',startsAt='2026-11-18T18:00:00Z',roles={})
+        f.update(blocks={'2026_11':block},events={'nflverse:2026_11_BUF_KC':record})
+        def build(candidate):return build_index(build_snapshot(rows,now),data,rows,now,{},model,history,football_research=candidate,team_efficiency=evidence)
+        self.assertEqual(len(build(f)['footballScoreModel']['events']),1)
+        for change in [lambda c:c.update(historyHash='wrong'),lambda c:c['validation'].update(adopted=True),lambda c:c['blocks']['2026_11'].update(inputCutoff='2026-11-16'),lambda c:c['events']['nflverse:2026_11_BUF_KC']['roles'].update(home={'lastGame':'2026-11-16'})]:
+            bad=copy.deepcopy(f);change(bad)
+            with self.assertRaises(ValueError):build(bad)
+
     def test_trial_history_can_reach_prior_seasons_without_crossing_a_trade(self):
         now=datetime(2026,11,15,12,tzinfo=timezone.utc)
         rows=[dict(game_id='2026_11_BUF_KC',gameday='2026-11-16',gametime='13:00',away_team='BUF',home_team='KC',home_score='',away_score='',stadium='Known',roof='outdoors')]

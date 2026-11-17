@@ -420,7 +420,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         (request.game ||
             planned == 'analyze_game' ||
             RegExp(
-              r'\b(what about|how about|worth|options|recommend|look at|spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
+              r'\b(what about|how about|worth|options|recommend|look at|spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|efficiency|pace|rest|quarterback|roles?|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
             ).hasMatch(lower));
     if (request.clarification != null) {
       answer = CoachAnswer(
@@ -1760,6 +1760,26 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     '${team['quarterback']['notice']}',
                     style: CoachType.label,
                   ),
+                  if (team['footballEvidence'] is Map) ...[
+                    Text(
+                      'Earlier-game football evidence',
+                      style: CoachType.body.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Opponent-adjusted offense EPA ${number(team['footballEvidence']['adjustedOffenseEpaPerPlay'])} / allowance ${number(team['footballEvidence']['adjustedAllowanceEpaPerPlay'])} per play relative to league · Clock pace ${number(team['footballEvidence']['clockSecondsPerSnap'])} sec/snap',
+                      style: CoachType.label,
+                    ),
+                    Text(
+                      'Recorded dropback leader · ${team['footballEvidence']['lastObservedQB']?['name'] ?? 'Unavailable'} · ${team['footballEvidence']['lastObservedQB']?['date'] ?? ''} · Upcoming starter unconfirmed',
+                      style: CoachType.label,
+                    ),
+                    Text(
+                      '${team['footballEvidence']['notice']}',
+                      style: CoachType.label,
+                    ),
+                  ],
                   if (team['restDays'] is num)
                     Text(
                       'Scheduled rest · ${team['restDays']} days',
@@ -2096,6 +2116,70 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  Widget _footballResearchView(Map<String, dynamic> research) {
+    String error(dynamic value) =>
+        value is num ? value.toStringAsFixed(4) : '—';
+    final coverage = research['coverage'] as Map?;
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(
+        'Pregame football-feature trial',
+        style: CoachType.title.copyWith(fontSize: 20),
+      ),
+      subtitle: const Text(
+        'Opponent-adjusted efficiency, pace, rest and prior QB roles',
+        style: CoachType.label,
+      ),
+      children: [
+        if (coverage != null)
+          Text(
+            '${coverage['teamGames']} sourced team-games across ${coverage['seasons']} seasons · Evidence through ${research['cutoff']}',
+            style: CoachType.label,
+          ),
+        const Text(
+          'Uses only earlier weeks. Current-game starter listings and closing prices are not predictors. Official named inactives remain a separate availability check; missing names do not confirm a starter.',
+          style: CoachType.label,
+        ),
+        for (final entry
+            in (research['retrospectiveLater'] as Map? ?? {}).entries)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${entry.key} · ${entry.value['games']} games',
+                    style: CoachType.body,
+                  ),
+                  Text(
+                    'Brier · Trial ${error(entry.value['brier'])} / Existing challenger ${error(entry.value['incumbentBrier'])} / Market ${error(entry.value['marketBrier'])}',
+                    style: CoachType.label,
+                  ),
+                  Text(
+                    'Log loss · Trial ${error(entry.value['logLoss'])} / Existing challenger ${error(entry.value['incumbentLogLoss'])}. Lower is better.',
+                    style: CoachType.label,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        Text(
+          '${research['protocol']?['historicalScope'] ?? 'Retrospective evaluation only. Future frozen games provide untouched evaluation.'}',
+          style: CoachType.label,
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            'The fixed trial remains separate from recommendations. Mixed historical results are not a validated betting edge.',
+            style: CoachType.label,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _evaluationView(Map<String, dynamic> report) {
     const labels = {
       'h2h': 'Moneyline',
@@ -2116,6 +2200,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         if (report['audit'] is Map)
           _accuracyAuditView(Map<String, dynamic>.from(report['audit'])),
         _headToHeadView(report),
+        if (report['footballResearch'] is Map)
+          _footballResearchView(
+            Map<String, dynamic>.from(report['footballResearch']),
+          ),
         if (report['errorAudit'] is Map || report['regimeResearch'] is Map)
           _gameModelResearch(report),
         for (final row in report['markets'] as List? ?? [])
@@ -2192,6 +2280,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                         ? 'Workload trial'
                         : (model['modelVersion'] as String? ?? '').startsWith('score-regime')
                         ? 'Scoring-regime trial'
+                        : (model['modelVersion'] as String? ?? '').startsWith('score-football')
+                        ? 'Football-feature trial'
                         : 'Background challenger'}: ${model['gradedGames'] ?? 0} games with results · ${model['pendingGames'] ?? 0} awaiting results · ${model['unresolved'] ?? 0} unresolved observations. Separate from the serving model.',
                     style: CoachType.label,
                   ),
