@@ -734,7 +734,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       if (turns.length > 40) turns.removeAt(0);
     });
     _toEnd();
+    final requestedInterpretation = RegExp(
+      r'\b(explain|why|interpret|reasoning)\b|walk me through|talk me through',
+      caseSensitive: false,
+    ).hasMatch(question);
     if (aiConnected &&
+        (game == null || requestedInterpretation) &&
         answer.intent != CoachIntent.clarify &&
         turn.invalidation == null &&
         (answer.player != null ||
@@ -1256,6 +1261,22 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   color: CoachColors.warn,
                   fontSize: 11,
                 ),
+              ),
+            ),
+          if (turn.game != null &&
+              aiConnected &&
+              turn.generated == null &&
+              !turn.aiFailed &&
+              turn.invalidation == null)
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: _DeskLink(
+                label: const Text('Explain this research'),
+                onPressed: busy
+                    ? null
+                    : () => _send(
+                        'Explain the matchup research for ${turn.researchQuery} on ${easternWall(turn.game!.event.startsAt).toIso8601String().substring(0, 10)}',
+                      ),
               ),
             ),
           if (a.evidenceNotice != null)

@@ -219,6 +219,36 @@ void main() {
     },
   );
 
+  testWidgets(
+    'structured game research saves interpretation calls until explicitly requested',
+    (tester) async {
+      var calls = 0;
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async => gameOutlookFixture(event, now),
+          ask: (payload) async {
+            calls++;
+            return const AssistantReply(
+              available: true,
+              answer: 'The dated evidence has limitations.',
+              cited: ['team_evidence'],
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills spread -3.5');
+      expect(calls, 0);
+      expect(find.text('Explain this research'), findsOneWidget);
+      await tester.ensureVisible(find.text('Explain this research'));
+      await tester.tap(find.text('Explain this research'));
+      await tester.pumpAndSettle();
+      expect(calls, 1);
+      expect(find.text('The dated evidence has limitations.'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets('AI uses retrieved evidence and fails back truthfully', (
     tester,
   ) async {

@@ -37,3 +37,8 @@ The November 16 evidence batch now has matching fixed score, shadow, error/regim
 Release f36a923 passed hosted build/deployment, local app analysis and 393 app tests, 67 model tests and 85 tool tests at publication. The source-budget regression passed subsequently. The new release verifier and its failure-case tests bring the tool suite to 88 tests. A real read-back verified all four deployed evidence hashes, 29 matching schedule/index identities, November 16 player coverage and a recent completed scheduled service refresh. Phone review confirmed signed-spread margin thresholds and passing-yard shorthand with the requested line, readable controls and separate workload context. Screenshots are retained locally as release evidence.
 
 The release verifier makes only bounded public file and health requests. It never invokes AI, pricing or forecast capture. It fails on mixed releases, changed evidence bytes, mismatched kickoff times, stale/future schedule or player research and failed/stalled scheduled collection. CDN propagation gets three bounded read-only attempts.
+
+
+## Free interpretation budget
+
+Standard structured game research no longer makes a second AI request merely to restate the charts and decision. Users can ask why or use Explain this research for an evidence-grounded interpretation. Existing global/per-IP caps, two-baseline automatic daily ceiling and provider cooldown remain unchanged. No inference model was switched. Cloudflare documents the shared [10,000-neuron daily allocation and UTC reset](https://developers.cloudflare.com/workers-ai/platform/pricing/); this is still a limited free prototype allowance, not unlimited public-user capacity. The app keeps its calculated research available when interpretation is unavailable.
