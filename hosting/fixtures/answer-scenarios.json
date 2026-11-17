@@ -1,0 +1,21 @@
+[
+ {"question":"Do you like the Bills spread -3.5?","market":"spreads","outcome":"Buffalo Bills","point":-3.5},
+ {"question":"BUF -3.5 spread at -110","market":"spreads","outcome":"Buffalo Bills","point":-3.5},
+ {"question":"BUF -2.5 spread at -110","missing":true},
+ {"question":"Bills spread line -2.5","missing":true},
+ {"question":"Chiefs +3.5 spread","market":"spreads","outcome":"Kansas City Chiefs","point":3.5},
+ {"question":"Bills moneyline","market":"h2h","outcome":"Buffalo Bills","point":null},
+ {"question":"KC moneyline at +150","market":"h2h","outcome":"Kansas City Chiefs","point":null},
+ {"question":"Game total over 45.5","market":"totals","outcome":"Over","point":45.5},
+ {"question":"Under 45.5 game total","market":"totals","outcome":"Under","point":45.5},
+ {"question":"Game total over 47.5","missing":true},
+ {"question":"Recorded Receiver receiving yards over 65.5","market":"player_reception_yds","outcome":"Over","point":65.5},
+ {"question":"Recorded Receiver receiving yards under 65.5","market":"player_reception_yds","outcome":"Under","point":65.5},
+ {"question":"Unknown Receiver receiving yards over 65.5","missing":true},
+ {"question":"Recorded Receiver receptions over 5.5","market":"player_receptions","outcome":"Over","point":5.5},
+ {"question":"Recorded Receiver receptions over 6.5","missing":true},
+ {"question":"Recorded Quarterback passing yards under 245.5","market":"player_pass_yds","outcome":"Under","point":245.5},
+ {"question":"Recorded Runner rushing yards over 68.5","market":"player_rush_yds","outcome":"Over","point":68.5},
+ {"question":"Build a three leg parlay with Bills moneyline and game total over 45.5","missing":true,"ticket":true},
+ {"question":"Value this SGP Bills spread -3.5 and Recorded Receiver over 65.5 receiving yards","missing":true,"ticket":true}
+]

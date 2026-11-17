@@ -278,6 +278,20 @@ void main() {
             ];
             result['decision']['decidingFactor'] =
                 'The exact price needs a fresh check.';
+            result['decision']['judgment'] = {
+              'text': 'Experimental outlook: 55% for this exact selection, excluding pushes.',
+            };
+            result['decision']['priceBoundary'] = {
+              'minimumDecimal': 2.0,
+              'notice': 'Experimental threshold only.',
+              'linePolicy': 'A different line requires a new calculation.',
+            };
+            result['decision']['followUps'] = [
+              {
+                'label': 'Compare the total',
+                'query': 'Analyze ${event.away} at ${event.home} game total',
+              },
+            ];
             result['context']['teams'][0]['lineupReview'] = {
               'keyAbsences': [
                 {
@@ -456,6 +470,19 @@ void main() {
       );
       await tester.pumpAndSettle();
       await send(tester, 'Analyze Bills');
+      expect(find.textContaining('Experimental outlook: 55%'), findsOneWidget);
+      await tester.ensureVisible(find.text('Price reasoning'));
+      await tester.tap(find.text('Price reasoning'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Exact-line threshold · +100'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('A different line requires a new calculation.'),
+        findsOneWidget,
+      );
+      expect(find.text('Compare the total'), findsOneWidget);
       expect(find.text('Player workload outlook'), findsNothing);
       await tester.ensureVisible(find.text('What would change this answer?'));
       await tester.tap(find.text('What would change this answer?'));

@@ -28,10 +28,10 @@ class CoachConversation {
       r'^(?:(?:what|how) about |and |then |instead )?(?:the )?(over|under)(?:\s+(-?\d+(?:\.\d+)?))?$',
     ).firstMatch(q);
     final marketOnly = RegExp(
-      r'^(?:(?:what|how) about |and |then )?(?:the )?(spread|moneyline|game total|total|receptions|receiving yards|passing yards|rushing yards)$',
+      r'^(?:(?:what|how) about |and |then |compare )?(?:the )?(spread|moneyline|game total|total|receptions|receiving yards|passing yards|rushing yards)$',
     ).hasMatch(q);
     final same = RegExp(
-      r'^(why|why that|why this|what argues against it|what could go wrong|compare the options|compare the markets|which looks strongest|what else|refresh|check again)$',
+      r'^(why|why that|why this|show the opposing case|show the matchup|what argues against it|what could go wrong|compare the options|compare the markets|which looks strongest|what else|refresh|check again)$',
     ).hasMatch(q);
     final bookOnly = RegExp(
       r'^(?:(?:what|how) about |and |at |on )?(draftkings|fanduel|betmgm|caesars|espn bet|fanatics|betrivers|hard rock bet|bally bet|fliff)$',
@@ -51,6 +51,7 @@ class CoachConversation {
       'compare the markets',
       'which looks strongest',
       'what else',
+      'show the matchup',
     ].contains(q);
     var nextMarket = allMarkets
         ? null
@@ -134,8 +135,10 @@ class CoachConversation {
                 '\\b${RegExp.escape(t.split(' ').last)}\\b',
                 caseSensitive: false,
               ).hasMatch(query) ||
-              RegExp('\\b${RegExp.escape(nflTeams[t] ?? 'UNMATCHED')}\\b')
-                  .hasMatch(query),
+              RegExp(
+                '\\b${RegExp.escape(nflTeams[t] ?? 'UNMATCHED')}\\b',
+                caseSensitive: false,
+              ).hasMatch(query),
         )
         .toList();
     team = namedTeams.length == 1 ? namedTeams.single : null;
@@ -156,7 +159,15 @@ class CoachConversation {
         r'(?:spread|line|cover)\s*(?:at\s*)?([+-]?\d+(?:\.\d+)?)',
         caseSensitive: false,
       ).firstMatch(query);
-      if (line != null) point = double.tryParse(line.group(1)!);
+      if (line != null && double.parse(line.group(1)!).abs() < 100) {
+        point = double.tryParse(line.group(1)!);
+      } else {
+        final signed = RegExp(r'[+-]\d+(?:\.\d+)?')
+            .allMatches(query)
+            .map((m) => double.parse(m[0]!))
+            .where((n) => n.abs() < 100);
+        if (signed.isNotEmpty) point = signed.first;
+      }
     }
   }
 

@@ -1651,9 +1651,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             '${brief['headline']}',
             style: CoachType.title.copyWith(fontSize: 21),
           ),
-          if (brief['decidingFactor'] is String) ...[
+          if (brief['clarification'] is String) ...[
+            const SizedBox(height: 8),
+            Text('${brief['clarification']}', style: CoachType.body),
+          ],
+          if (brief['decidingFactor'] is String &&
+              (brief['judgment'] is! Map ||
+                  brief['reason'] == 'context_unresolved')) ...[
             const SizedBox(height: 8),
             Text('${brief['decidingFactor']}', style: CoachType.body),
+          ],
+          if (brief['judgment'] is Map) ...[
+            const SizedBox(height: 10),
+            Text('${brief['judgment']['text']}', style: CoachType.body),
           ],
           const SizedBox(height: 10),
           if (price?['observedDecimal'] is num && price?['selection'] is Map)
@@ -1665,12 +1675,23 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             tilePadding: EdgeInsets.zero,
             title: const Text('Price reasoning', style: CoachType.label),
             children: [
+              if (brief['priceBoundary'] is Map) ...[
+                Text(
+                  'Exact-line threshold · ${americanLabel((brief['priceBoundary']['minimumDecimal'] as num).toDouble())}. ${brief['priceBoundary']['notice']}',
+                  style: CoachType.label,
+                ),
+                Text(
+                  '${brief['priceBoundary']['linePolicy']}',
+                  style: CoachType.label,
+                ),
+              ],
               if (lean != null)
                 Text(
                   '${lean['team']} · ${lean['notice']}',
                   style: CoachType.label,
                 ),
-              if (minimum is num &&
+              if (brief['priceBoundary'] is! Map &&
+                  minimum is num &&
                   minimum.isFinite &&
                   minimum > 1 &&
                   price?['selection'] is Map)
@@ -1678,7 +1699,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   'Research break-even · ${Selection.fromJson(Map<String, dynamic>.from(price!['selection'])).label} at ${americanLabel(minimum.toDouble())}. ${price['notice']}',
                   style: CoachType.label,
                 )
-              else
+              else if (brief['priceBoundary'] is! Map)
                 Text('Price · ${brief['priceNotice']}', style: CoachType.label),
             ],
           ),
@@ -1709,6 +1730,23 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     ),
                   ),
               ],
+            ),
+          if (brief['followUps'] is List)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                children: [
+                  for (final follow in brief['followUps'] as List)
+                    _DeskLink(
+                      label: Text('${follow['label']}'),
+                      onPressed: busy
+                          ? null
+                          : () => _send('${follow['query']}'),
+                    ),
+                ],
+              ),
             ),
         ],
       ),

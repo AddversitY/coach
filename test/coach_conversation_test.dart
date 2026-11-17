@@ -4,6 +4,22 @@ import 'package:odds_edge/domain/coach_conversation.dart';
 import 'game_research_test.dart' show event, now;
 
 void main() {
+  test('focused follow-ups preserve the subject and do not carry a spread into a total or matchup', () {
+    final c = CoachConversation()..remember(event, 'buf -3.5 spread at -110');
+    expect(c.point, -3.5);
+    expect(
+      c.resolve('Show the opposing case', now).query,
+      contains('spread line -3.5'),
+    );
+    final total = c.resolve('Compare the total', now);
+    expect(total.clarification, isNull);
+    expect(total.query, contains('game total'));
+    expect(total.query, isNot(contains('-3.5')));
+    final matchup = c.resolve('Show the matchup', now);
+    expect(matchup.query, isNot(contains('spread line')));
+    c.clear();
+    expect(c.resolve('Compare the total', now).clarification, isNotNull);
+  });
   test('under follow-up preserves player, market and exact explicit line', () {
     final c = CoachConversation()
       ..remember(
