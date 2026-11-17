@@ -49,3 +49,7 @@ test('a representative selection is neutral between equal-coverage sides, not ch
  const first=compareResearch(withHistory([row,other])),changed=withHistory([{...row,decimal:20},{...other,decimal:1.01}]);
  const second=compareResearch(changed);assert.deepEqual(first.options[0].selection,second.options[0].selection);assert.equal(first.options[0].equivalentSelections,2);assert.equal(second.options[0].equivalentSelections,2);
 });
+test('expired source prices are explained without claiming betting markets do not exist',()=>{
+ const input=withHistory([]);input.priceCoverage={savedQuotesExpired:true};const out=compareResearch(input);
+ assert.equal(out.summary.state,'insufficient_support');assert.match(out.summary.text,/quotes have expired/);assert.match(out.summary.text,/charts below remain/);assert.match(out.summary.blockers[0],/18-hour/);
+});

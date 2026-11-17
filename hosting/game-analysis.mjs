@@ -181,5 +181,8 @@ export function analyzeGame(source,event,{now=Date.now(),telemetry=null,bookId=n
   report.workloadTrial=workloadForecasts(source,event,{now,context});
   report.productionTrial=includeProduction?productionForecasts(source,event,{now,workloadTrial:report.workloadTrial,observations:rows}):{available:false,forecasts:[],rows:[],hasEdge:false};
   report.priceCoverage={checkedAt:report.createdAt,provider:'The Odds API',mode:'limited_saved_snapshots',markets:categories.map(c=>({market:c.market,quotes:c.rows.length,books:[...new Set(c.rows.map(r=>r.book))],newestAt:c.rows.map(r=>r.sourceAt).sort().at(-1)||null,oldestAt:c.rows.map(r=>r.sourceAt).sort()[0]||null})),notice:'Only listed exact selections are covered. Saved prices are not live or guaranteed available.'};
+  const savedPriceAt=source.snapshot.props?.fetchedAt;
+  report.priceCoverage.savedSourceAt=savedPriceAt||null;
+  report.priceCoverage.savedQuotesExpired=Number.isFinite(Date.parse(savedPriceAt))&&now-Date.parse(savedPriceAt)>18*3600000;
   report.context=context;report.decision=decisionBrief(report,context,{question});report.visualEvidence=visualEvidence(source,event,report,question,now,quotes);report.comparison=compareResearch(report);return report;
 }
