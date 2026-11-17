@@ -10,12 +10,12 @@ One light, editorial Coach workspace. A user asks about a matchup, spread, total
 
 | Area | Current evidence | Remaining acceptance condition |
 | --- | --- | --- |
-| Core questions | Twenty-seven fixed requests plus shorthand, follow-up, book, line, date, unknown-player and stale-source regression cases | Broaden realistic phrasing and ambiguous requests; verify the hosted experience |
-| Visual research | Team margin/total/scoring charts, player production/workload, exact book comparisons, raw observations and phone tests | Desktop verified on hosted release; final phone visual review pending |
+| Core questions | Twenty-seven fixed requests plus shorthand, follow-up, book, line, date, unknown-player and stale-source regression cases | Hosted shorthand spread and passing-yard requests verified; unknown/ambiguous subjects retain clarification |
+| Visual research | Team margin/total/scoring charts, player production/workload, exact book comparisons, raw observations and phone tests | Desktop and 390 × 844 phone review passed for margin and player charts |
 | Price reliability | Free pilot uses saved snapshots, an 18-hour lifetime, six-hour pregame acquisition window and persistent quota reservations | Confirmed on hosted release 9a1e1b5; price acquisition remains intentionally limited |
 | Source context | Dated historical records, weather, unofficial injuries, named official injury/inactive checks and invalidation | Confirm failure states; full active lists and confirmed starters remain unavailable |
 | Automatic operation | Live scheduled job completes; first captured game graded automatically | Serving player outcomes resolved after free-source refresh; preserve missing trial appearances and failed AI baselines |
-| Hosting | Public Pages app and private-key Worker; automatic build/deploy checks | Push each verified release and inspect the deployed result |
+| Hosting | Public Pages app and private-key Worker; automatic build/deploy checks | Release f36a923 deployed and inspected; automatic post-publication verification added |
 | Costs | Existing free caps and reserve are unchanged | No paid service without explicit approval; do not erase or reinitialize private usage records |
 
 ## Research completion is separate
@@ -30,3 +30,10 @@ The release can be made dependable through engineering. Predictive superiority r
 ## Current report refit
 
 The November 16 evidence batch now has matching fixed score, shadow, error/regime, football, workload and production reports. Football inputs include 2,474 sourced team-games and all 29 currently scheduled events. The historical challengers still trail market baselines; no adoption or predictive-superiority claim follows from the refresh. Future frozen captures remain untouched. Automatic outputs are preserved as bounded public artifacts before publication; changed input evidence blocks publishing an old fit.
+
+
+## Verified release baseline
+
+Release f36a923 passed hosted build/deployment, local app analysis and 393 app tests, 67 model tests and 85 tool tests at publication. The source-budget regression passed subsequently. The new release verifier and its failure-case tests bring the tool suite to 88 tests. A real read-back verified all four deployed evidence hashes, 29 matching schedule/index identities, November 16 player coverage and a recent completed scheduled service refresh. Phone review confirmed signed-spread margin thresholds and passing-yard shorthand with the requested line, readable controls and separate workload context. Screenshots are retained locally as release evidence.
+
+The release verifier makes only bounded public file and health requests. It never invokes AI, pricing or forecast capture. It fails on mixed releases, changed evidence bytes, mismatched kickoff times, stale/future schedule or player research and failed/stalled scheduled collection. CDN propagation gets three bounded read-only attempts.

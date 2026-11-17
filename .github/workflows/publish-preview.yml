@@ -25,6 +25,8 @@ concurrency:
 
 jobs:
   build:
+    outputs:
+      source_sha: ${{ steps.source_version.outputs.commit }}
     if: >-
       github.event_name != 'workflow_run' ||
       (github.event.workflow_run.conclusion == 'success' &&
@@ -89,7 +91,9 @@ jobs:
           path: .tools/odds-publish-state
           key: odds-pilot-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Record the deployed source version
+        id: source_version
         run: |
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           python tools/build_coach_index.py --schedule build/web/data/snapshot.json --output build/web/data/coach-index.json
           python -c "import hashlib,json,os,pathlib,subprocess; names=['nfl-player-stats.json','nfl-history.json','nfl-matchup.json','parlay-calibration.json']; pathlib.Path('build/web/version.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'run':os.environ['GITHUB_RUN_ID'],'evidenceHashes':{name:hashlib.sha256((pathlib.Path('assets')/name).read_bytes()).hexdigest() for name in names}}))"
           touch build/web/.nojekyll
@@ -102,6 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -111,3 +116,11 @@ jobs:
       - name: Publish the preview
         id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.build.outputs.source_sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify public release and scheduled service
+        run: python tools/verify_release.py --expected-commit "${{ needs.build.outputs.source_sha }}"
