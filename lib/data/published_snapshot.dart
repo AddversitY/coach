@@ -37,6 +37,64 @@ DateTime _publishedTime(Object? value) {
   return DateTime.parse(value).toUtc();
 }
 
+const _priceAvailabilityMessages = <String, String>{
+  'disabled': 'Scheduled sportsbook price updates are disabled.',
+  'missing_key': 'The price connection needs its server credential restored.',
+  'identity_unavailable':
+      'Prices are withheld until player identities can be verified.',
+  'publication_running': 'A scheduled price update is already running.',
+  'ledger_unavailable': 'Price updates are paused while the private usage checkpoint is recovered.',
+  'daily_limit': 'The free daily price-update allowance has been used.',
+  'monthly_limit': 'The free monthly price-update allowance has been used.',
+  'no_upcoming_game':
+      'There are no upcoming NFL games in the current schedule.',
+  'waiting_window':
+      'Prices are waiting for the scheduled pregame update window.',
+  'usage_review': 'Price updates are paused for a provider-usage check.',
+  'protected_reserve':
+      'Price updates are paused to preserve the free provider allowance.',
+  'event_unmatched': 'The provider has no verified match for an upcoming game.',
+  'no_valid_quotes': 'The provider returned no usable exact-selection prices.',
+  'source_unavailable': 'The scheduled price update could not be completed. Saved prices have not been refreshed.',
+};
+
+String _priceAvailabilityMessage(Map<String, dynamic> odds, DateTime now) {
+  if (odds['status'] == 'not_configured') {
+    return 'Sportsbook prices are not connected.';
+  }
+  final availability = odds['availability'];
+  if (odds['status'] != 'unavailable' ||
+      odds['provider'] != 'the-odds-api' ||
+      availability is! Map<String, dynamic> ||
+      !_priceAvailabilityMessages.containsKey(availability['reason'])) {
+    throw const FormatException('Invalid public price availability.');
+  }
+  final checked = _publishedTime(availability['checkedAt']);
+  if (checked.isAfter(now.add(const Duration(seconds: 5)))) {
+    throw const FormatException('Future price availability check.');
+  }
+  if (now.difference(checked) > const Duration(hours: 24)) {
+    return 'The price-update status is out of date. Refresh the schedule before relying on it.';
+  }
+  var message = _priceAvailabilityMessages[availability['reason']]!;
+  if (availability['eligibleAt'] != null) {
+    final eligible = _publishedTime(availability['eligibleAt']);
+    if (!const [
+          'waiting_window',
+          'daily_limit',
+          'monthly_limit',
+        ].contains(availability['reason']) ||
+        !eligible.isAfter(checked) ||
+        eligible.difference(checked) > const Duration(days: 32)) {
+      throw const FormatException('Invalid price eligibility time.');
+    }
+    message += eligible.isAfter(now)
+        ? ' Next eligible window: ${formatEastern(eligible)}. This is eligibility, not a promised refresh time.'
+        : ' The eligibility time has passed; a successful scheduled update is still needed.';
+  }
+  return message;
+}
+
 /// Public, read-only app snapshot. Never an authenticated backend or raw feed.
 class PublishedSnapshot {
   const PublishedSnapshot({
@@ -117,16 +175,17 @@ class PublishedSnapshot {
       return _parsePrices(raw, board, props, generated, scheduleAt, now);
     }
     if (props.quotes.isNotEmpty ||
-        odds['status'] != 'not_configured' ||
+        !const ['not_configured', 'unavailable'].contains(odds['status']) ||
         props.fetchedAt != scheduleAt) {
       throw const FormatException('Version one cannot contain prices.');
     }
+    final availabilityMessage = _priceAvailabilityMessage(odds, now);
     return PublishedSnapshot(
       board: board,
       props: props,
       generatedAt: generated,
       scheduleAt: scheduleAt,
-      oddsMessage: 'Sportsbook prices are not connected.',
+      oddsMessage: availabilityMessage,
     );
   }
 

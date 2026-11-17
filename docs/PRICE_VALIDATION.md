@@ -27,3 +27,8 @@ Frozen pregame snapshots and separate model cohorts remain unchanged. New gradin
 The report stays `collecting_evidence` below 1,000 matched priced games, then `review_required`. This is a research reporting threshold, not an adoption gate. `adopted` and `hasEdge` remain false regardless of the interval. The worker regrades existing frozen records once under the new grading version without replacing captures or double-counting old results. Score corrections remove prior calibration and comparison contributions before adding replacements.
 
 Generic AI benchmarks still use their existing shared limits and requested-game behavior. No extra background AI calls, provider credits, personal bet logs or paid tiers were added. Actual validation must wait for games and source results; historical improvements cannot prove future profit or superiority to every AI.
+
+
+## Schedule-only availability
+
+The price publisher now emits a version-one schedule with odds.status unavailable and a bounded availability reason instead of claiming the source is disconnected for every empty result. Checked time describes the publisher check, never a new quote. A future eligibleAt is published only for the pregame window or daily/monthly allowance reset; eligibility does not promise a successful refresh. The app and Worker reconstruct public wording from an allowlist rather than exposing provider errors. Stale availability checks expire after 24 hours. Prices still expire after 18 hours. Free caps, protected reserve, persistent accounting, no-retry policy and six-hour acquisition window are unchanged.

@@ -38,6 +38,35 @@ TTL = timedelta(hours=18)
 COST, DAILY_CAP, MONTHLY_CAP, RESERVE = 4, 4, 60, 50
 ROOT = Path(__file__).resolve().parents[1]
 
+AVAILABILITY = {
+    'disabled': 'Scheduled sportsbook price updates are disabled.',
+    'missing_key': 'The price connection needs its server credential restored.',
+    'identity_unavailable': 'Prices are withheld until player identities can be verified.',
+    'publication_running': 'A scheduled price update is already running.',
+    'ledger_unavailable': 'Price updates are paused while the private usage checkpoint is recovered.',
+    'daily_limit': 'The free daily price-update allowance has been used.',
+    'monthly_limit': 'The free monthly price-update allowance has been used.',
+    'no_upcoming_game': 'There are no upcoming NFL games in the current schedule.',
+    'waiting_window': 'Prices are waiting for the scheduled pregame update window.',
+    'usage_review': 'Price updates are paused for a provider-usage check.',
+    'protected_reserve': 'Price updates are paused to preserve the free provider allowance.',
+    'event_unmatched': 'The provider has no verified match for an upcoming game.',
+    'no_valid_quotes': 'The provider returned no usable exact-selection prices.',
+    'source_unavailable': 'The scheduled price update could not be completed. Saved prices have not been refreshed.',
+}
+
+
+def unavailable(schedule, now, reason, log, eligible_at=None):
+    """Publish an allowlisted reason, never exception text or private ledger data."""
+    result = copy.deepcopy(schedule)
+    result['odds'] = dict(status='unavailable', provider=PROVIDER,
+        availability=dict(reason=reason, checkedAt=iso(now), message=AVAILABILITY[reason]))
+    if eligible_at is not None:
+        result['odds']['availability']['eligibleAt'] = iso(eligible_at)
+    for board in ('board', 'props'):
+        result[board]['notices'] = ['Actual NFL schedule from nflverse.', AVAILABILITY[reason]]
+    return result, log
+
 
 def at(value):
     if not isinstance(value, str):
@@ -386,7 +415,7 @@ def collect_slate(source, schedule, dataset, event, provider_event, now, ledger,
         if part and event not in covered:
             covered.append(event)
     if not quotes or len(quotes) > 2000:
-        return copy.deepcopy(schedule), 'Schedule only; no validated slate prices.'
+        return unavailable(schedule, now, 'no_valid_quotes', 'Schedule only; no validated slate prices.')
     primary = event if event in covered else covered[0]
     markets = requested_markets('slate', now)
     write_json(cache_path, dict(event=primary, events=covered, quotes=quotes, players=players, fetchedAt=iso(now), markets=list(markets)))
@@ -397,10 +426,10 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         provider=None, initialize_state=False, refresh_window=None, profile='props'):
     validate_schedule(schedule, now)
     if not enabled or (not key and fixture_dir is None):
-        return copy.deepcopy(schedule), 'Schedule only; price pilot disabled or no server key; zero odds credits.'
+        return unavailable(schedule, now, 'disabled' if not enabled else 'missing_key', 'Schedule only; price pilot disabled or no server key; zero odds credits.')
     upcoming = [event for event in schedule['board']['events'] if at(event['startsAt']) > now]
     if upcoming and not any(dataset_context(dataset, event, now) for event in upcoming):
-        return copy.deepcopy(schedule), 'Schedule only; bundled player identity provenance is unavailable.'
+        return unavailable(schedule, now, 'identity_unavailable', 'Schedule only; bundled player identity provenance is unavailable.')
     if state_dir is None:
         raise ValueError('A private persistent state directory is required.')
     state_dir = Path(state_dir)
@@ -409,13 +438,13 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
     try:
         descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
-        return copy.deepcopy(schedule), 'Schedule only; another pilot publication is running.'
+        return unavailable(schedule, now, 'publication_running', 'Schedule only; another pilot publication is running.')
     os.close(descriptor)
     try:
         ledger_path, cache_path = state_dir / 'ledger.json', state_dir / 'quotes.json'
         if not ledger_path.exists():
             if not initialize_state:
-                return copy.deepcopy(schedule), 'Schedule only; private pilot credit ledger unavailable.'
+                return unavailable(schedule, now, 'ledger_unavailable', 'Schedule only; private pilot credit ledger unavailable.')
             write_json(ledger_path, {'version': 1, 'fixture': fixture_dir is not None, 'reservations': [], 'providerUsed': 0})
         ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
         if (set(ledger) != {'version', 'fixture', 'reservations', 'providerUsed'} or ledger.get('version') != 1
@@ -447,11 +476,14 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         spent_day = sum(e['credits'] for e in ledger['reservations'] if at(e['at']).date() == now.date())
         spent_month = sum(e['credits'] for e in ledger['reservations'] if at(e['at']).strftime('%Y-%m') == now.strftime('%Y-%m'))
         if spent_day + COST > DAILY_CAP or spent_month + COST > MONTHLY_CAP:
-            return copy.deepcopy(schedule), 'Schedule only; pilot credit cap reached.'
+            monthly = spent_month + COST > MONTHLY_CAP
+            tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            eligible = (now.replace(day=28) + timedelta(days=4)).replace(day=1, hour=0, minute=0, second=0, microsecond=0) if monthly else tomorrow
+            return unavailable(schedule, now, 'monthly_limit' if monthly else 'daily_limit', 'Schedule only; pilot credit cap reached.', eligible)
         if not any(at(e['startsAt']) > now for e in schedule['board']['events']):
-            return copy.deepcopy(schedule), 'Schedule only; no upcoming pilot game.'
+            return unavailable(schedule, now, 'no_upcoming_game', 'Schedule only; no upcoming pilot game.')
         if refresh_window is not None and min(at(e['startsAt']) for e in upcoming) - now > refresh_window:
-            return copy.deepcopy(schedule), 'Schedule only; next game is outside the pregame refresh window; zero odds credits.'
+            return unavailable(schedule, now, 'waiting_window', 'Schedule only; next game is outside the pregame refresh window; zero odds credits.', min(at(e['startsAt']) for e in upcoming) - refresh_window)
         markets=requested_markets(profile,now)
         source = provider or Provider(key, fixture_dir, markets)
         upstream, headers = source.request()
@@ -459,16 +491,16 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
             raise ValueError('Free event index or credit accounting is invalid.')
         provider_used = credits(headers, 'x-requests-used')
         if provider_used != ledger['providerUsed']:
-            return copy.deepcopy(schedule), 'Schedule only; provider usage differs from quota checkpoint; manual reconciliation required.'
+            return unavailable(schedule, now, 'usage_review', 'Schedule only; provider usage differs from quota checkpoint; manual reconciliation required.')
         if credits(headers, 'x-requests-remaining') < RESERVE + COST:
-            return copy.deepcopy(schedule), 'Schedule only; protected provider credit reserve.'
+            return unavailable(schedule, now, 'protected_reserve', 'Schedule only; protected provider credit reserve.')
         pair = match_event(upstream, schedule['board']['events'], now)
         if not pair:
-            return copy.deepcopy(schedule), 'Schedule only; no exact upcoming provider match.'
+            return unavailable(schedule, now, 'event_unmatched', 'Schedule only; no exact upcoming provider match.')
         event, provider_event = pair
         directory = player_directory(dataset, event, now)
         if not directory:
-            return copy.deepcopy(schedule), 'Schedule only; no unambiguous bundled player identities.'
+            return unavailable(schedule, now, 'identity_unavailable', 'Schedule only; no unambiguous bundled player identities.')
         # Reserve the maximum before the paid call, even if it times out or its
         # response is invalid. Never retry a possibly charged request.
         ledger['reservations'].append({'at': iso(now), 'credits': COST})
@@ -492,7 +524,7 @@ def run(schedule, dataset, now, *, enabled=False, key='', state_dir=None, fixtur
         write_json(ledger_path, ledger)
         quotes, players = normalize_quotes(raw, event, provider_event, directory, now, markets)
         if not quotes:
-            return copy.deepcopy(schedule), 'Schedule only; no validated exact price observations.'
+            return unavailable(schedule, now, 'no_valid_quotes', 'Schedule only; no validated exact price observations.')
         write_json(cache_path, dict(event=event, quotes=quotes, players=players, fetchedAt=iso(now), markets=list(markets)))
         return publish_observations(schedule, event, quotes, players, now, now, fixture_dir is not None, markets), 'Published limited NFL price observations; at most four odds credits.'
     finally:
@@ -524,7 +556,7 @@ def main():
     except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError):
         # Provider/network/cache failure should retain a valid current schedule.
         validate_schedule(schedule, now)
-        result, message = schedule, 'Schedule only; price publication unavailable; no retries.'
+        result, message = unavailable(schedule, now, 'source_unavailable', 'Schedule only; price publication unavailable; no retries.')
     write_json(args.output, result)
     print(message)
 

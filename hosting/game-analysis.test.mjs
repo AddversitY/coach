@@ -32,6 +32,15 @@ test('unpriced score outlook never invents a sportsbook opportunity',()=>{
   assert.ok(result.categories.every(c=>c.status==='prices_unavailable'));assert.ok(result.projections.length);
   assert.match(result.summary,/prices are missing/);assert.equal(result.score.homeWin+result.score.tie<=1,true);
 });
+test('a schedule rebuild is not a new price observation and waiting status reaches the research summary',()=>{
+ const data=source([]);data.snapshot.odds={status:'unavailable',provider:'the-odds-api',availability:{reason:'waiting_window',checkedAt:at,eligibleAt:new Date(now+3600000).toISOString()}};
+ const r=analyzeGame(data,data.index.events[0],{now});
+ assert.equal(r.priceCoverage.savedSourceAt,null);assert.equal(r.priceCoverage.savedQuotesExpired,false);
+ assert.equal(r.priceCoverage.availability.reason,'waiting_window');assert.match(r.comparison.summary.text,/pregame update window/);
+ data.snapshot.odds={status:'limited',fetchedAt:new Date(now-19*3600000).toISOString()};
+ assert.equal(analyzeGame(data,data.index.events[0],{now}).priceCoverage.savedQuotesExpired,true);
+});
+
 test('event, book, freshness and identity boundaries exclude invalid prices',()=>{
   const rows=gameQuotes();const data=source(rows);
   for(const bad of [{...rows[0],demo:true},{...rows[0],book:'Wrong book'},{...rows[0],sourceAt:new Date(now+1).toISOString()},{...rows[0],selection:{...rows[0].selection,outcome:'Dallas Cowboys'}}]){

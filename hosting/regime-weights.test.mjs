@@ -11,6 +11,7 @@ test('conditional replay weights match Python and preserve a coherent distributi
 });
 test('AI daily-limit classification is safe and deterministic routes do not need inference',()=>{
  assert.equal(aiFailure(new Error('3036 daily free allocation exhausted')),'provider_daily_limit');assert.equal(aiFailure(new Error('3040 capacity exceeded')),'provider_capacity');
+ assert.equal(aiFailure(new Error('Invalid benchmark probability')),'invalid_model_reply');
  const now=Date.now(),index={events:[{id:'g',home:'Buffalo Bills',away:'Miami Dolphins',startsAt:new Date(now+3600000).toISOString()}],players:[]};
  assert.equal(deterministicGameRoute('Analyze Bills spread',index,{}),true);assert.equal(deterministicGameRoute('Bills injury news',index,{}),false);assert.equal(deterministicGameRoute('Analyze an unknown club',index,{}),false);
 });

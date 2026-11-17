@@ -71,22 +71,28 @@ class QuotePublicationTests(unittest.TestCase):
         defaults.update(kwargs)
         return run(schedule(), dataset(), NOW, **defaults)
 
-    def test_default_disabled_and_missing_key_preserve_v1_without_calls(self):
-        for args in ({}, {'enabled': True}):
+    def test_default_disabled_and_missing_key_report_reason_without_calls(self):
+        for args, reason in (({}, 'disabled'), ({'enabled': True}, 'missing_key')):
             result, _ = run(schedule(), dataset(), NOW, provider=self.provider, **args)
-            self.assertEqual(result, schedule())
+            self.assertEqual(result['board']['events'], schedule()['board']['events'])
+            self.assertEqual(result['props']['quotes'], [])
+            self.assertEqual(result['odds']['availability']['reason'], reason)
         self.assertEqual(self.provider.calls, [])
 
     def test_missing_ledger_fails_closed_without_provider_calls(self):
         result, message = self.publish(initialize_state=False)
         self.assertEqual(result['schemaVersion'], 1)
         self.assertIn('ledger', message)
+        self.assertEqual(result['odds']['availability']['reason'], 'ledger_unavailable')
         self.assertEqual(self.provider.calls, [])
 
     def test_pregame_window_skips_distant_games_without_provider_requests(self):
         result, message = self.publish(refresh_window=timedelta(hours=6))
         self.assertEqual(result['schemaVersion'], 1)
         self.assertIn('pregame refresh window', message)
+        self.assertEqual(result['odds']['availability']['reason'], 'waiting_window')
+        self.assertEqual(result['odds']['availability']['eligibleAt'], '2026-11-15T19:20:00Z')
+        self.assertNotIn('not connected', json.dumps(result))
         self.assertEqual(self.provider.calls, [])
 
     def test_pregame_window_allows_nearby_game_with_existing_limits(self):
@@ -120,7 +126,9 @@ class QuotePublicationTests(unittest.TestCase):
         with patch.object(sys, 'argv', args), patch.dict(os.environ, {'ODDS_PUBLISH_ENABLED': '1', 'THE_ODDS_API_KEY': ''}), \
                 patch.object(Provider, 'request') as request, redirect_stdout(io.StringIO()) as out:
             main()
-        self.assertEqual(json.loads(output.read_text()), original)
+        result = json.loads(output.read_text())
+        self.assertEqual(result['board']['events'], original['board']['events'])
+        self.assertEqual(result['odds']['availability']['reason'], 'missing_key')
         self.assertIn('zero odds credits', out.getvalue())
         request.assert_not_called()
 
@@ -166,6 +174,8 @@ class QuotePublicationTests(unittest.TestCase):
         result, _ = self.publish(initialize_state=False)
         self.assertEqual(result['schemaVersion'], 1)
         self.assertEqual(self.provider.calls, [])
+        self.assertEqual(result['odds']['availability']['reason'], 'daily_limit')
+        self.assertEqual(result['odds']['availability']['eligibleAt'], '2026-11-15T00:00:00Z')
 
     def test_monthly_cap_and_fifty_credit_reserve(self):
         self.state.mkdir()
@@ -174,11 +184,14 @@ class QuotePublicationTests(unittest.TestCase):
         result, _ = self.publish(initialize_state=False)
         self.assertEqual(result['schemaVersion'], 1)
         self.assertEqual(self.provider.calls, [])
+        self.assertEqual(result['odds']['availability']['reason'], 'monthly_limit')
+        self.assertEqual(result['odds']['availability']['eligibleAt'], '2026-12-01T00:00:00Z')
         (self.state / 'ledger.json').unlink()
         self.provider.remaining = 53
         result, _ = self.publish()
         self.assertEqual(result['schemaVersion'], 1)
         self.assertEqual(self.provider.calls, [None])
+        self.assertEqual(result['odds']['availability']['reason'], 'protected_reserve')
 
     def test_failed_paid_call_is_reserved_and_never_retried(self):
         self.provider.fail = True

@@ -773,6 +773,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               'Schedule: nflverse · CC BY 4.0\nChecked: ${snapshot == null ? 'Unavailable' : formatEastern(snapshot!.scheduleAt, year: true)}\nPlayer box scores through: ${data?.metadata['cutoff'] ?? 'Unknown'}\nPrices: The Odds API · limited pregame snapshots\nHistorical appearances are not confirmed rosters. General injury listings are unofficial; named NFL.com inactive reports are checked near kickoff. Weather is a forecast, and headlines are attributed reports. Source availability is shown below.',
               style: CoachType.label,
             ),
+            if (snapshot != null) ...[
+              const SizedBox(height: 12),
+              Text(snapshot!.oddsMessage, style: CoachType.body),
+            ],
             if (telemetryError != null)
               Text(
                 telemetryError!,

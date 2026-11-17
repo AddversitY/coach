@@ -68,6 +68,36 @@ Map<String, dynamic> priceSnapshotJson(DateTime at) {
 }
 
 void main() {
+  test('configured price waiting state preserves schedule and ignores provider text', () {
+    final at = DateTime.utc(2026, 11, 17, 18);
+    final raw = snapshotJson(at);
+    raw['odds'] = {
+      'status': 'unavailable',
+      'provider': 'the-odds-api',
+      'availability': {
+        'reason': 'waiting_window',
+        'checkedAt': at.toIso8601String(),
+        'eligibleAt': at.add(const Duration(days: 2)).toIso8601String(),
+        'message': 'UNTRUSTED ERROR',
+      },
+    };
+    final result = PublishedSnapshot.parse(raw, at);
+    expect(result.board.events, hasLength(1));
+    expect(result.hasPrices, false);
+    expect(result.oddsMessage, contains('pregame update window'));
+    expect(result.oddsMessage, contains('not a promised refresh'));
+    expect(result.oddsMessage, isNot(contains('UNTRUSTED')));
+    expect(
+      PublishedSnapshot.parse(
+        raw,
+        at.add(const Duration(hours: 25)),
+      ).oddsMessage,
+      contains('out of date'),
+    );
+    raw['odds']['availability']['reason'] = 'unexpected';
+    expect(() => PublishedSnapshot.parse(raw, at), throwsFormatException);
+  });
+
   test(
     'slate prices validate each game and expire started games independently',
     () {
