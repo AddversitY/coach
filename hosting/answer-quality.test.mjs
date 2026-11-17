@@ -36,3 +36,10 @@ test('break-even arithmetic preserves pushes and never creates an alternate-line
  const result=selectionExplanation({basis:'experimental_score_candidate'},row);assert.equal(result.priceBoundary.minimumDecimal,2);assert.equal(result.judgment.conditionalChance,.5);assert.equal(result.judgment.direction,'balanced');assert.equal(result.priceBoundary.relation,'below_model_threshold');assert.match(result.judgment.text,/Market-based/);
  assert.equal(selectionExplanation({}, {...row,win:0}).priceBoundary,null);assert.equal(selectionExplanation({}, {...row,win:.95,push:.1}).judgment,null);
 });
+test('a lineup concern is not misrepresented as a directional case against the requested side',()=>{
+ const data=source(),report=analyzeGame(data,event,{now});
+ report.context.alerts=[{team:'KC',kind:'offensive_line',text:'KC has a reported line concern.'}];
+ const brief=decisionBrief(report,report.context,{question:'Bills spread line -3.5'});
+ assert.match(brief.decidingFactor,/KC has/);assert.match(brief.counterargument,/selection losing/);assert.match(brief.counterargument,/could change/);
+ assert.notEqual(brief.counterargument,brief.decidingFactor);
+});
