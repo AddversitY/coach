@@ -7,6 +7,39 @@ class CoachConversation {
   SportEvent? event;
   String? playerName, market, side, team, bookId;
   double? point;
+  String? _unsupportedNotice;
+  String? _pendingQuestion;
+
+  void noteClarification(String message, {bool resetSubject = false}) {
+    if (resetSubject) clear();
+    _pendingQuestion = message;
+  }
+
+  static String? unsupportedScope(String text) {
+    if (RegExp(
+      r'\bregulation[- ](?:only|time)\b|\b(?:excluding|without|no)\s+(?:overtime|ot)\b',
+      caseSensitive: false,
+    ).hasMatch(text)) {
+      return 'Regulation-only settlement isn’t verified. An unverified full-game quote cannot substitute for that market.';
+    }
+    if (RegExp(r'\bteam\s*totals?\b', caseSensitive: false).hasMatch(text)) {
+      return 'Team totals aren’t supported yet. A full-game total cannot substitute for a team total.';
+    }
+    if (RegExp(
+      r'\b(?:(?:first|second|third|fourth|1st|2nd|3rd|4th)[-\s]*(?:half|quarter)|[12]h|[1-4]q|[1-4]\s*(?:half|quarter)|half[- ]time)\b',
+      caseSensitive: false,
+    ).hasMatch(text)) {
+      return 'Half and quarter markets aren’t supported yet. The available price comparisons cover full games.';
+    }
+    if (RegExp(
+      r'\blive\s+(?:bet|odds|line|spread|total|prop|moneyline)s?\b|\bin[- ]play\b',
+      caseSensitive: false,
+    ).hasMatch(text)) {
+      return 'Live and in-play bets aren’t supported. Coach uses saved pregame prices.';
+    }
+    return null;
+  }
+
   static bool isTeamPrompt(String text) {
     final q = text
         .toLowerCase()
@@ -69,6 +102,12 @@ class CoachConversation {
     String question,
     DateTime now,
   ) {
+    final scopeNotice = unsupportedScope(question);
+    if (scopeNotice != null) {
+      clear();
+      _unsupportedNotice = scopeNotice;
+      return (query: question, clarification: scopeNotice, game: false);
+    }
     final q = question.toLowerCase().trim().replaceAll(RegExp(r'[?!.]+$'), '');
     final follow = RegExp(
       r'^(?:(?:what|how) about |and |then |instead )?(?:the )?(over|under)(?:\s+(-?\d+(?:\.\d+)?))?$',
@@ -82,7 +121,53 @@ class CoachConversation {
     final bookOnly = RegExp(
       r'^(?:(?:what|how) about |and |at |on )?(draftkings|fanduel|betmgm|caesars|espn bet|fanatics|betrivers|hard rock bet|bally bet|fliff)$',
     ).hasMatch(q);
-    if (follow == null && !marketOnly && !same && !bookOnly) {
+    final pending = _pendingQuestion != null;
+    if (pending && ['why', 'why that', 'why this'].contains(q)) {
+      return (query: question, clarification: _pendingQuestion, game: false);
+    }
+    final numericReply = pending && RegExp(r'^[+-]?\d+(?:\.\d+)?$').hasMatch(q)
+        ? double.tryParse(q)
+        : null;
+    final canCompleteLine =
+        market == 'spread' && team != null ||
+        market == 'game total' && side != null ||
+        playerName != null &&
+            side != null &&
+            [
+              'receptions',
+              'receiving yards',
+              'passing yards',
+              'rushing yards',
+            ].contains(market);
+    if (numericReply != null && !canCompleteLine) {
+      return (query: question, clarification: _pendingQuestion, game: false);
+    }
+    final teamReply =
+        pending &&
+            event != null &&
+            ['spread', 'moneyline'].contains(market) &&
+            (market != 'spread' || point != null)
+        ? [event!.home, event!.away]
+              .where(
+                (name) => [
+                  name.toLowerCase(),
+                  name.split(' ').last.toLowerCase(),
+                  nflTeams[name]?.toLowerCase(),
+                ].contains(q),
+              )
+              .firstOrNull
+        : null;
+    if (_unsupportedNotice != null && (same || follow != null || bookOnly)) {
+      return (query: question, clarification: _unsupportedNotice, game: false);
+    }
+    _unsupportedNotice = null;
+    _pendingQuestion = null;
+    if (follow == null &&
+        !marketOnly &&
+        !same &&
+        !bookOnly &&
+        numericReply == null &&
+        teamReply == null) {
       return (query: question, clarification: null, game: false);
     }
     if (event == null || !event!.startsAt.isAfter(now)) {
@@ -104,8 +189,21 @@ class CoachConversation {
         : marketOnly
         ? marketIn(q)
         : market;
-    var nextPoint = marketOnly || allMarkets ? null : point;
-    var nextSide = marketOnly || allMarkets ? null : side;
+    final completingMarket =
+        pending &&
+        market == null &&
+        playerName != null &&
+        [
+          'receptions',
+          'receiving yards',
+          'passing yards',
+          'rushing yards',
+        ].contains(nextMarket);
+    var nextPoint =
+        numericReply ??
+        (marketOnly && !completingMarket || allMarkets ? null : point);
+    var nextSide = marketOnly && !completingMarket || allMarkets ? null : side;
+    if (teamReply != null) team = teamReply;
     if (follow != null) {
       if (nextMarket == null || ['spread', 'moneyline'].contains(nextMarket)) {
         return (
@@ -115,15 +213,14 @@ class CoachConversation {
         );
       }
       nextPoint = double.tryParse(follow.group(2) ?? '') ?? point;
-      if (nextPoint == null) {
-        return (
-          query: question,
-          clarification:
-              'Which $nextMarket line should I compare? I won’t choose a number for you.',
-          game: false,
-        );
-      }
       nextSide = follow.group(1);
+      if (nextPoint == null) {
+        side = nextSide;
+        final message =
+            'Which $nextMarket line should I compare? I won’t choose a number for you.';
+        noteClarification(message);
+        return (query: question, clarification: message, game: false);
+      }
     }
     final matchup = '${event!.away} at ${event!.home}';
     final subject = allMarkets
@@ -164,16 +261,19 @@ class CoachConversation {
   }
 
   void remember(SportEvent next, String query, {String? player, String? book}) {
-    final nextMarket = marketIn(query);
-    final changed =
-        nextMarket == null ||
-        event?.id != next.id ||
-        player != playerName ||
-        nextMarket != market;
-    if (changed) {
-      point = null;
-      side = null;
+    final scopeNotice = unsupportedScope(query);
+    if (scopeNotice != null) {
+      clear();
+      _unsupportedNotice = scopeNotice;
+      return;
     }
+    _unsupportedNotice = null;
+    _pendingQuestion = null;
+    final nextMarket = marketIn(query);
+    // Follow-ups are expanded into explicit queries by resolve(). A new report
+    // must not keep a prior side/line that its own query did not specify.
+    point = null;
+    side = null;
     final namedTeams = [next.home, next.away]
         .where(
           (t) =>
@@ -190,15 +290,23 @@ class CoachConversation {
     team = namedTeams.length == 1 ? namedTeams.single : null;
     event = next;
     playerName = player;
-    market = nextMarket ?? (changed ? null : market);
+    market = nextMarket;
     bookId = book;
     final selection = RegExp(
-      r'\b(over|under)\s+(-?\d+(?:\.\d+)?)',
+      r'\b(over|under)\b(?:\s+(-?\d+(?:\.\d+)?))?',
       caseSensitive: false,
     ).firstMatch(query);
     if (selection != null) {
       side = selection.group(1)!.toLowerCase();
-      point = double.tryParse(selection.group(2)!);
+      point = double.tryParse(selection.group(2) ?? '');
+    }
+    if (market == 'game total' && point == null) {
+      final clean = query.replaceAll(RegExp(r'\b20\d{2}-\d{2}-\d{2}\b'), '');
+      final total = RegExp(
+        r'\btotal(?:\s+line)?\s+(?:at\s+|of\s+)?(-?\d+(?:\.\d+)?)',
+        caseSensitive: false,
+      ).firstMatch(clean);
+      point = double.tryParse(total?.group(1) ?? '');
     }
     if (market == 'spread') {
       final line = RegExp(
@@ -209,7 +317,9 @@ class CoachConversation {
         point = double.tryParse(line.group(1)!);
       } else {
         final signed = RegExp(r'[+-]\d+(?:\.\d+)?')
-            .allMatches(query)
+            .allMatches(
+              query.replaceAll(RegExp(r'\b20\d{2}-\d{2}-\d{2}\b'), ''),
+            )
             .map((m) => double.parse(m[0]!))
             .where((n) => n.abs() < 100);
         if (signed.isNotEmpty) point = signed.first;
@@ -218,6 +328,8 @@ class CoachConversation {
   }
 
   void clear() {
+    _unsupportedNotice = null;
+    _pendingQuestion = null;
     event = null;
     playerName = null;
     market = null;

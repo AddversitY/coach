@@ -20,3 +20,11 @@ export function requestedMarket(question,{hasPlayer=false,hasTeam=false}={}){
  if(hasTeam&&!hasPlayer&&!side&&spreadHandicap(question)!==null)return 'spreads';
  return null;
 }
+
+export function unsupportedScope(question){
+ if(/\bregulation[- ](?:only|time)\b|\b(?:excluding|without|no)\s+(?:overtime|ot)\b/i.test(question))return 'settlement_rules';
+ if(/\bteam\s*totals?\b/i.test(question))return 'team_total';
+ if(/\b(?:(?:first|second|third|fourth|1st|2nd|3rd|4th)[-\s]*(?:half|quarter)|[12]h|[1-4]q|[1-4]\s*(?:half|quarter)|half[- ]time)\b/i.test(question))return 'partial_game';
+ if(/\blive\s+(?:bet|odds|line|spread|total|prop|moneyline)s?\b|\bin[- ]play\b/i.test(question))return 'in_play';
+ return null;
+}

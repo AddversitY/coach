@@ -1,6 +1,6 @@
 /* Descriptive context never silently becomes an injury/quarterback point model. */
 import {selectionExplanation,answerFollowUps} from './answer-quality.mjs';
-import {spreadHandicap,requestedMarket} from './selection-focus.mjs';
+import {spreadHandicap,requestedMarket,unsupportedScope} from './selection-focus.mjs';
 const LINE=new Set(['C','G','T','OT','OG','OL','LT','RT','LG','RG']);
 const CONCERN=new Set(['questionable','out','doubtful','inactive','injured reserve']);
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
@@ -104,16 +104,20 @@ export function decisionBrief(report,context,{question=''}={}){
   const selectedTeam=mentionedTeams.length===1?mentionedTeams[0]:null;
   const requested=requestedMarket(question,{hasPlayer:names.length>0,hasTeam:!!selectedTeam});
   const side=q.match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/);
+  const sideWord=q.match(/\b(over|under)\b/)?.[1];
   const spreadLine=requested==='spreads'?spreadHandicap(question):null;
   const rows=requested||names.length||side?report.categories.flatMap(c=>c.rows):report.ranked;
   const parlay=/\b(parlay|sgp)\b|same.game.parlay/i.test(q),playerRequest=names.length>0||requested?.startsWith('player_');
-  const missingPlayerMarket=names.length===1&&side&&!requested;
-  const ranked=rows.filter(r=>!missingPlayerMarket&&!parlay&&!r.blocked&&(!playerRequest||names.length===1)&&(!requested||r.selection.market===requested)&&(!selectedTeam||!['spreads','h2h'].includes(r.selection.market)||r.selection.outcome===selectedTeam)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
+  const missingPlayerMarket=names.length===1&&sideWord&&!requested;
+  const unsupported=unsupportedScope(question);
+  const clarification=unsupported?'Coach currently compares pregame full-game markets. This requested period or market scope is not supported; no full-game price will be substituted.':parlay?null:playerRequest&&names.length!==1?'Which recorded player should I use? Give one full player name with the market, side and line.':missingPlayerMarket?'Which player market do you mean: passing yards, rushing yards, receiving yards or receptions?':requested==='spreads'&&!selectedTeam?'Which team is taking that spread? Include its name and signed line.':requested==='spreads'&&spreadLine===null?'Which spread line should I compare? Include the team and signed number.':requested==='h2h'&&!selectedTeam?'Which team’s moneyline should I compare?':requested&&requested!=='h2h'&&requested!=='spreads'&&!side?'Which exact selection should I compare? Include over or under and the numerical line.':null;
+  const ranked=rows.filter(r=>requested&&!clarification&&!parlay&&!r.blocked&&(!playerRequest||names.length===1)&&r.selection.market===requested&&(!selectedTeam||!['spreads','h2h'].includes(r.selection.market)||r.selection.outcome===selectedTeam)&&(!names.length||names.includes(r.selection.participant))&&(!side||r.selection.outcome.toLowerCase()===side[1]&&r.selection.point===Number(side[2]))&&(spreadLine==null||r.selection.point===spreadLine)),best=ranked[0];
   const home=report.event.home,away=report.event.away;
   const lean=report.score.homeWin>(1-report.score.homeWin-report.score.tie)?home:away;
   const priced=!!best;
   const focusedPlayer=names.length>0||requested?.startsWith('player_');
-  const focus=requested||focusedPlayer?'selection':'game';
+  const overview=!requested&&!sideWord;
+  const focus=requested||focusedPlayer||unsupported?'selection':'game';
   const focusTeam=context.teams.find(t=>t.usage.some(p=>names.includes(p.name)))?.code;
   const alerts=focusedPlayer&&focusTeam?context.alerts.filter(a=>a.team===focusTeam):context.alerts;
   const unavailable=context.teams.flatMap(t=>t.lineupReview?.keyAbsences||[]).find(p=>names.includes(p.name));
@@ -121,22 +125,22 @@ export function decisionBrief(report,context,{question=''}={}){
   const wait=!unavailable&&(alerts.length>0||!!uncertain);
   const risk=(alerts.find(a=>a.team===focusTeam&&a.kind==='quarterback')||alerts.find(a=>a.team===focusTeam)||alerts.find(a=>a.kind==='quarterback')||alerts[0])?.text||(focusedPlayer?'Player forecasts are conditional on a recorded appearance; exact-line probabilities and future calibration remain unvalidated.':'The independent score model has not beaten the historical market benchmark; the displayed lean is not a validated betting advantage.');
   const explanation=selectionExplanation(report,requested||names.length?best:null);
-  return {status:unavailable?'officially_unavailable':wait?'wait_for_context':priced?'research_only':'wait_for_prices',
+  return {status:unavailable?'officially_unavailable':unsupported?'unsupported_scope':clarification?'needs_selection':wait?'wait_for_context':overview||priced?'research_only':'wait_for_prices',
     decisionLabel:wait?'Wait':'Pass',
-    clarification:!parlay&&playerRequest&&names.length!==1?'Which recorded player should I use? Give one full player name with the market, side and line.':missingPlayerMarket?'Which player market do you mean: passing yards, rushing yards, receiving yards or receptions?':null,
+    clarification,
     ...explanation,
     followUps:answerFollowUps(report,requested||names.length?best:null),
-    headline:parlay?'Pass — the ticket needs its own analysis':unavailable?`Pass — ${unavailable.name} is officially ${unavailable.status.toLowerCase()}`:wait?'Wait — lineup clarity is missing':priced?'Pass — no demonstrated model edge':'Pass — the matching price is missing',
-    decidingFactor:parlay?'A parlay needs its exact legs, a correlation-aware joint estimate and the sportsbook’s actual ticket price. Single-leg prices cannot substitute for the ticket.':unavailable?`${unavailable.source} lists ${unavailable.name} as ${unavailable.status}. A prior workload does not establish a role in this game.`:uncertain?`${uncertain.name} has an official ${uncertain.status.toLowerCase()} designation; playing time remains unknown.`:alerts.length?risk:priced?'A matching saved quote exists, but future results have not established better probability accuracy than the market.':'A fresh quote for this exact selection is needed before a price comparison is possible.',
+    headline:parlay?'Pass — the ticket needs its own analysis':unavailable?`Pass — ${unavailable.name} is officially ${unavailable.status.toLowerCase()}`:unsupported?'That market scope is not supported yet':clarification?'Which selection should I compare?':wait?'Wait — lineup clarity is missing':overview?focusedPlayer?'Recorded player form':'Matchup research':priced?'Pass — no demonstrated model edge':'Pass — the matching price is missing',
+    decidingFactor:parlay?'A parlay needs its exact legs, a correlation-aware joint estimate and the sportsbook’s actual ticket price. Single-leg prices cannot substitute for the ticket.':unavailable?`${unavailable.source} lists ${unavailable.name} as ${unavailable.status}. A prior workload does not establish a role in this game.`:unsupported?'The charts below use recorded full-game results. They do not answer the requested market scope.':clarification?'The recorded charts remain available. A price comparison needs a complete selection; no saved side or line is chosen for you.':uncertain?`${uncertain.name} has an official ${uncertain.status.toLowerCase()} designation; playing time remains unknown.`:alerts.length?risk:overview?'Review the dated production and context. Choose an exact market, side and line before comparing a sportsbook price.':priced?'A matching saved quote exists, but future results have not established better probability accuracy than the market.':'A fresh quote for this exact selection is needed before a price comparison is possible.',
     whatWouldChange:[
       {kind:'price',state:best?'recheck_saved_quote':'missing_exact_quote',selection:best?.selection||null,text:best?'Refresh this exact selection at the sportsbook. A saved price may no longer be obtainable; the research break-even price is not an approval to bet.':'Provide a fresh sportsbook price matching the requested game, player, side and line; unrelated prices cannot fill the gap.'},
       {kind:'availability',state:'official_confirmation_needed',text:focusedPlayer?'Confirm this player is active and verify the expected role using a current game-specific official source. Historical appearances and unofficial reports do not establish participation.':'Confirm the game’s starting quarterbacks and relevant active players using a current official source. Resolve conflicting listings before reassessing.'},
       {kind:'validation',state:'not_demonstrated',text:'The model needs better probability accuracy than matched market baselines on future games. A lineup update or a more attractive price alone does not establish an edge.'},
     ],
-    action:'pass',focus,reason:unavailable?'officially_unavailable':wait?'context_unresolved':priced?'model_unvalidated':'matching_price_missing',
-    lean:focusedPlayer||requested==='totals'||requested==='spreads'||parlay?null:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
+    action:'pass',focus,reason:unavailable?'officially_unavailable':unsupported?'unsupported_scope':clarification?'selection_incomplete':wait?'context_unresolved':overview?'research_overview':priced?'model_unvalidated':'matching_price_missing',
+    lean:unsupported||focusedPlayer||requested==='totals'||requested==='spreads'||parlay?null:{team:lean,notice:report.basis==='market_anchored'?'Market-anchored outlook, not an independent edge.':'Experimental score-model lean; not a recommendation.'},
     price:best?{selection:best.selection,book:best.book,observedDecimal:best.decimal,minimumDecimal:best.minimumDecimal,sourceAt:best.sourceAt,notice:'Model break-even price only; a larger price does not establish a real betting edge.'}:null,
-    priceNotice:best?'Saved observation only. Recheck this exact line at the sportsbook; the model break-even price is unvalidated.':'No usable saved price matches this question. Other games, players or lines cannot supply its price.',
+    priceNotice:unsupported?'No price is evaluated for this unsupported scope.':best?'Saved observation only. Recheck this exact line at the sportsbook; the model break-even price is unvalidated.':clarification||overview?'No exact selection has been chosen. A saved quote cannot supply a side or line omitted from the question.':'No usable saved price matches this question. Other games, players or lines cannot supply its price.',
     counterargument:explanation.judgment?explanation.judgment.opposingCase+(alerts.length?' Unresolved lineup reports could change this estimate.':''):risk,recheck:alerts.length?'Confirm the listed quarterbacks, relevant availability reports and player roles; then refresh the exact line and price.':'Recheck active players, quarterback continuity, weather at kickoff and the exact sportsbook line and price.',
     hasEdge:false,recommendationsReady:false};
 }

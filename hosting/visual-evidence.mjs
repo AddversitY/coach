@@ -1,5 +1,5 @@
 /* Dated observations for charts. Never turn missing records into zeroes. */
-import {spreadHandicap,requestedMarket} from './selection-focus.mjs';
+import {spreadHandicap,requestedMarket,unsupportedScope} from './selection-focus.mjs';
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 const METRICS={passing_yards:'Passing yards',rushing_yards:'Rushing yards',receiving_yards:'Receiving yards',receptions:'Receptions',attempts:'Pass attempts',carries:'Carries',targets:'Targets'};
 const marketMetric={player_pass_yds:'passing_yards',player_rush_yds:'rushing_yards',player_reception_yds:'receiving_yards',player_receptions:'receptions'};
@@ -9,7 +9,8 @@ export function visualEvidence(source,event,report,question,now,quotes=[]){
  const q=' '+norm(question)+' ';
  const selected=(source.index.players||[]).filter(p=>p.events.includes(event.id)&&q.includes(' '+norm(p.name)+' '));
  const selection=report.decision?.price?.selection;
- const market=requestedMarket(question,{hasPlayer:selected.length>0,hasTeam:true});
+ const unsupported=unsupportedScope(question);
+ const market=unsupported?null:requestedMarket(question,{hasPlayer:selected.length>0,hasTeam:true});
  const explicitMetric=marketMetric[market]||null;
  const explicit=question.match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/i);
  const players=selected.length===1?selected.map(p=>{
@@ -30,7 +31,7 @@ export function visualEvidence(source,event,report,question,now,quotes=[]){
  const selectedTeam=named.length===1?named[0].name:selection?.market==='spreads'?selection.outcome:event.home;
  const mode=!players.length&&market==='spreads'?'margin':!players.length&&market==='totals'?'total':'scoring';
  const handicap=mode==='margin'?spreadHandicap(question):null;
- const spread=handicap??(mode==='margin'&&selection?.market==='spreads'?selection.point:null);
+ const spread=named.length===1||selection?.market==='spreads'?handicap??(mode==='margin'&&selection?.market==='spreads'?selection.point:null):null;
  const totalText=question.replace(/\b20\d{2}-\d{2}-\d{2}\b/g,'').match(/(?:total|line)\s*(?:of\s+|at\s+)?(\d+(?:\.\d+)?)/i)?.[1];
  const totalLine=mode==='total'?(explicit?Number(explicit[2]):totalText!=null?Number(totalText):selection?.market==='totals'?selection.point:null):null;
  for(const team of teams){

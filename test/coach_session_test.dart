@@ -6,21 +6,22 @@ import 'game_research_test.dart' show event, now, fixtureData;
 
 void main() {
   final board = OddsBoard(events: [event], quotes: const [], fetchedAt: now);
-  OddsQuote quote({double line = 245.5, DateTime? at}) => OddsQuote(
-    selection: Selection(
-      eventId: event.id,
-      market: 'player_pass_yds',
-      participant: 'Recorded Quarterback',
-      outcome: 'Over',
-      point: line,
-    ),
-    bookId: 'book',
-    book: 'Book',
-    provider: 'fixture',
-    decimal: 2.1,
-    sourceAt: at ?? now,
-    collectedAt: at ?? now,
-  );
+  OddsQuote quote({double line = 245.5, DateTime? at, String side = 'Over'}) =>
+      OddsQuote(
+        selection: Selection(
+          eventId: event.id,
+          market: 'player_pass_yds',
+          participant: 'Recorded Quarterback',
+          outcome: side,
+          point: line,
+        ),
+        bookId: 'book',
+        book: 'Book',
+        provider: 'fixture',
+        decimal: 2.1,
+        sourceAt: at ?? now,
+        collectedAt: at ?? now,
+      );
   final data = fixtureData();
   CoachAnswer ask(
     CoachSession session,
@@ -63,6 +64,62 @@ void main() {
     final missing = ask(session, 'What about Unknown Person?');
     expect(missing.intent, CoachIntent.clarify);
     expect(missing.player, isNull);
+    for (final question in [
+      'Lakers total over 221.5',
+      'Unknown Receiver receiving yards under 65.5',
+    ]) {
+      final other = ask(session, question);
+      expect(other.intent, CoachIntent.clarify);
+      expect(other.player, isNull);
+      expect(other.event, isNull);
+      expect(other.quotes, isEmpty);
+    }
+    for (final question in [
+      'Brief me',
+      'Show the slate',
+      'Find a player',
+      'Compare prices',
+    ]) {
+      final global = ask(session, question);
+      expect(global.intent, CoachIntent.briefing);
+      expect(global.games, isNotEmpty);
+    }
+  });
+  test(
+    'an explicit team request clears a player selection even in the same game',
+    () {
+      final session = CoachSession();
+      ask(session, 'Recorded Quarterback passing yards over 245.5');
+      final game = ask(session, 'Show Buffalo Bills');
+      expect(game.player, isNull);
+      expect(game.line, isNull);
+      expect(game.players, isNotEmpty);
+      expect(game.quotes, isEmpty);
+    },
+  );
+  test('fresh named requests do not borrow a prior line or the opposite saved side', () {
+    final session = CoachSession();
+    ask(session, 'Recorded Quarterback passing yards over 245.5');
+    final missing = ask(session, 'Recorded Quarterback passing yards under');
+    expect(missing.intent, CoachIntent.clarify);
+    expect(missing.line, isNull);
+    expect(missing.quotes, isEmpty);
+    final under = ask(
+      session,
+      'Recorded Quarterback passing yards under 245.5',
+      quotes: [
+        quote(),
+        quote(side: 'Under'),
+      ],
+    );
+    expect(under.quotes, hasLength(1));
+    expect(under.quotes.single.selection.outcome, 'Under');
+    final overview = ask(session, 'Recorded Quarterback passing yards');
+    expect(overview.line, isNull);
+    final statMissing = ask(session, 'Recorded Receiver under 65.5');
+    expect(statMissing.intent, CoachIntent.clarify);
+    expect(statMissing.title, 'Which player stat should I compare?');
+    expect(statMissing.quotes, isEmpty);
   });
   test('saved prices require exact identity and expire at kickoff', () {
     expect(

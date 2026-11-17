@@ -12,6 +12,22 @@ test('team-only prompts select visual game research without inference or stealin
  for(const q of ['Bills injuries','Bills weather','Unknown Team'])assert.equal(deterministicGameRoute(q,source.index),false);
 });
 
+test('missing subjects, missing player markets and unsupported scopes clarify before any quota or inference call',async()=>{
+ const original=globalThis.fetch;let calls=0;
+ try{
+  resetSourceCacheForTests();
+  globalThis.fetch=async url=>Response.json(String(url).includes('coach-index.json')?{...source.index,schemaVersion:1,retrievedAt:at}:{schemaVersion:1});
+  const env={AI:{run:async()=>{calls++;throw Error('No inference expected');}}};
+  for(const question of ['Lakers total over 221.5','Recorded Player under 245.5','Bills first-half spread -3.5']){
+   const response=await worker.fetch(new Request('https://coach.test/v1/plan',{method:'POST',headers:{Origin:'https://addversity.github.io','Content-Type':'application/json'},body:JSON.stringify({question,context:{eventId:event.id}})}),env);
+   assert.equal(response.status,200);const result=await response.json();assert.equal(result.tool,'clarify');assert.equal(result.query,question);
+  }
+  assert.equal(calls,0);
+  const scoped=await worker.fetch(new Request('https://coach.test/v1/coach',{method:'POST',headers:{Origin:'https://addversity.github.io','Content-Type':'application/json'},body:JSON.stringify({question:'Bills first-half spread -3.5'})}),env);
+  assert.equal(scoped.status,200);assert.equal((await scoped.json()).failureReason,'unsupported_scope');assert.equal(calls,0);
+ }finally{globalThis.fetch=original;resetSourceCacheForTests();}
+});
+
 test('planner cannot invent players, lines, odds or flip sides',()=>{
   assert.throws(()=>validatePlan({tool:'joint_probability',query:'Recorded Player over 250.5 passing yards'},'Recorded Player over 245.5 passing yards',source.index),/number/);
   assert.throws(()=>validatePlan({tool:'joint_probability',query:'Recorded Player under 245.5 passing yards'},'Recorded Player over 245.5 passing yards',source.index),/side/);

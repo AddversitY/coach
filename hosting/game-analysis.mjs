@@ -15,6 +15,20 @@ const BOOKS={draftkings:'DraftKings',fanduel:'FanDuel',betmgm:'BetMGM',williamhi
 const normalize=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
 const fresh=(time,now,age)=>Number.isFinite(Date.parse(time))&&Date.parse(time)<=now&&now-Date.parse(time)<=age;
+const CONTEXT_WORDS=new Set(('a an the this that it same game matchup spread spreads total totals over under moneyline ml line lines odds price prices market markets bet bets selection selections '+
+ 'what why how which when who do does did is are was can could would will should may might about for at on in of to from by with without and or not if then instead '+
+ 'i me my we our you your please analyze analysis compare comparison show look like think tell explain interpret research evidence scenario scenarios option options '+
+ 'better best strongest worth win wins winner lose loses loss tie draw push risk risks against opposing case estimate estimates predict prediction projection probability probabilities chance forecast '+
+ 'quarterback quarterbacks role roles workload workloads efficiency pace rest weather injury injuries availability news status snapshot coverage return profit higher lower more less '+
+ 'fresh current recent old stale updated update next now today tomorrow week tonight sunday monday tuesday wednesday thursday friday saturday nfl '+
+ 'argues could go wrong recorded history performance chart points scored allowed margin score reason reasoning refresh check again '+
+ 'whats whos hows lets dont doesnt isnt arent cant couldnt wouldnt shouldnt thats its still good bad risky solid safer safe take play be being looks feel feels think likely unlikely favor favors favourite favorite underdog confidence consistent consistency floor ceiling variance volatile volatility seems supported support difference changed changes affect affected wind rain temperature').split(/\s+/));
+function contextualGameQuestion(question){
+ let q=question.toLowerCase().replace(/\b20\d{2}-\d{2}-\d{2}\b/g,'');
+ for(const book of Object.values(BOOKS))q=q.replaceAll(book.toLowerCase(),'');
+ const words=normalize(q.replace(/[+-]?\d+(?:\.\d+)?/g,'')).split(/\s+/).filter(Boolean);
+ return words.length>0&&words.every(w=>CONTEXT_WORDS.has(w));
+}
 export function requestedBook(question,context={}){const matched=Object.entries(BOOKS).filter(([,name])=>normalize(question).includes(normalize(name)));return matched.length===1?matched[0][0]:typeof context.bookId==='string'?context.bookId:null;}
 export function quoteId(q){return JSON.stringify([q.bookId,q.selection]);}
 
@@ -26,7 +40,7 @@ export function resolveGame(index,question,context={},now=Date.now()){
   const start=/\bnext week\b/i.test(question)?monday+7*86400000:/\bthis week\b/i.test(question)?monday:null;
   const future=index.events.filter(e=>Date.parse(e.startsAt)>now&&(exact==null||day(e.startsAt)===exact)&&(start==null||day(e.startsAt)>=start&&day(e.startsAt)<start+7*86400000)).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt));
   const q=normalize(question),names=[...new Set([...Object.values(index.clubs||{}),...future.flatMap(e=>[e.home,e.away])])];
-  const matched=names.filter(name=>(' '+q+' ').includes(' '+normalize(name)+' ')||(' '+q+' ').includes(' '+normalize(name.split(' ').at(-1))+' ')||future.some(e=>{const code=e.home===name?e.homeCode:e.awayCode;return [e.home,e.away].includes(name)&&typeof code==='string'&&new RegExp('\\b'+code+'\\b').test(question);}));
+  const matched=names.filter(name=>(' '+q+' ').includes(' '+normalize(name)+' ')||(' '+q+' ').includes(' '+normalize(name.split(' ').at(-1))+' ')||future.some(e=>{const code=e.home===name?e.homeCode:e.awayCode;return [e.home,e.away].includes(name)&&typeof code==='string'&&new RegExp('\\b'+code+'\\b','i').test(question);}));
   const namedPlayers=(index.players||[]).filter(p=>(' '+q+' ').includes(' '+normalize(p.name)+' '));
   if(namedPlayers.length){
     const exactPlayers=namedPlayers.filter(p=>!namedPlayers.some(other=>other.name!==p.name&&normalize(other.name).includes(normalize(p.name))));
@@ -34,7 +48,7 @@ export function resolveGame(index,question,context={},now=Date.now()){
     return options[0]||null;
   }
   if(matched.length){const options=future.filter(e=>matched.every(name=>[e.home,e.away].includes(name)));return options[0]||null;}
-  return future.find(e=>e.id===context.eventId)||null;
+  return contextualGameQuestion(question)?future.find(e=>e.id===context.eventId)||null:null;
 }
 
 export function validQuotes(source,event,now){

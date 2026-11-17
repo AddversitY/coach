@@ -14,7 +14,7 @@ Follow-up links offer a market comparison, the opposing case and matchup evidenc
 
 ## Fixed question suite
 
-`hosting/fixtures/answer-scenarios.json` supplies twenty-seven realistic question forms across spreads, moneylines, totals, receiving yards, receptions, passing yards, rushing yards and parlays. The tests run those questions through the real game-analysis engine, not a mocked answer generator. They verify exact selected market/side/line, preserved follow-up context, explicit unvalidated status and missing-input behavior.
+`hosting/fixtures/answer-scenarios.json` supplies thirty-seven realistic question forms across spreads, moneylines, totals, receiving yards, receptions, passing yards, rushing yards and parlays. The tests run those questions through the real game-analysis engine, not a mocked answer generator. They verify exact selected market/side/line, preserved follow-up context, explicit unvalidated status and missing-input behavior.
 
 Additional checks cover stale/closed prices, requested books with no matching quotes, blocked roles, push-aware threshold arithmetic and invalid probabilities. Phone tests verify judgment, threshold, line-change limitations and follow-up layout; session tests cover typed market switches and mixed spread/odds numbers.
 
@@ -40,3 +40,12 @@ Predictive superiority is a separate, uncompleted research milestone: collect un
 ## Everyday wording and exact intent
 
 The fixed suite now includes signed team spreads without the word spread, ML, game-side over/under wording and rec/pass/rush yds. The server decision and default chart share the same market recognition; app conversation memory retains shorthand selections for follow-ups. American prices and ISO dates cannot become spread handicaps. A named player plus over/under and a line without a stat asks which player market is intended and does not attach that threshold to a default production chart. Deterministic recognized requests do not need planner inference. This expands routing correctness, not predictive skill.
+
+
+## Complete selections, supported scope and clarification replies
+
+A priced judgment now requires an explicit supported market and complete selected side/line (or a named moneyline team). Missing over/under numbers, unspecified spread teams and bare market overviews cannot choose a saved quote. Generic player/matchup research has no silently selected price. Named-player requests in local mode require the recorded full name; surname overlap does not identify a player. A new explicit team request clears a prior player even in the same game. Unknown new subjects cannot inherit the previous game; clear contextual questions and case-insensitive NFL codes still resolve.
+
+Half/quarter, team-total, in-play and regulation-only requests are explicitly unsupported. The app, planner, hosted decision and direct interpretation route do not substitute full-game prices, probabilities, chart thresholds or winner leans. A planner cannot drop the requested scope, switch the requested market or choose a missing player stat. Recognized missing/unsupported selections clarify without an inference reservation. Historical charts returned with an unsupported API scope have no requested selection line.
+
+ISO dates and American odds cannot supply a missing spread. New explicit requests reset prior side/line memory. Clarification replies can supply only the missing number, over/under, player stat or team, preserving the user-specified parts and original game date. Unknown subjects reset context; why follow-ups repeat the unresolved question rather than reviving an unrelated selection. Local research participates in the same conversation memory. No provider request, AI budget increase, predictor change or model adoption was introduced.

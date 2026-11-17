@@ -1,5 +1,5 @@
 import {aiFailure} from './ai-diagnostics.mjs';
-import {requestedMarket} from './selection-focus.mjs';
+import {requestedMarket,unsupportedScope} from './selection-focus.mjs';
 import {collectOfficialInactives} from './official-inactives.mjs';
 import {collectOfficialInjuries} from './official-injuries.mjs';
 import {collectFinals} from './final-results.mjs';
@@ -119,8 +119,21 @@ export function deterministicGameRoute(question,index,context={}){
   const shorthand=requestedMarket(question,{hasPlayer:namedPlayer,hasTeam:true});
   return !/injur|availab|news|weather|sharp|parlay|simulate|stress|robust|rank/i.test(question)&&(teamOnly||prop||shorthand||/\b(analyze|spreads?|totals?|moneyline|matchup|forecast|projection|efficiency|pace|rest|quarterback|roles?|worth|options|best bet|which bet|what bet|which market)\b/i.test(question))&&!!resolveGame(index,question,context);
 }
+export function deterministicPlan(question,index,context={}){
+  const hasPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
+  const market=requestedMarket(question,{hasPlayer,hasTeam:true});
+  if(unsupportedScope(question)||hasPlayer&&/\b(over|under)\b/i.test(question)&&!market||market&&!resolveGame(index,question,context))return {tool:'clarify',query:question,route:'missing_or_unsupported_selection'};
+  return deterministicGameRoute(question,index,context)?{tool:'analyze_game',query:question,route:'deterministic'}:null;
+}
 export function validatePlan(plan,question,index,context={}) {
   if(!plan||!TYPES.has(plan.tool)||typeof plan.query!=='string'||plan.query.length>500)throw new Error('Invalid tool plan');
+  if(unsupportedScope(question)!==unsupportedScope(plan.query))throw new Error('Planner changed market scope');
+  if(plan.tool==='analyze_game'&&!resolveGame(index,question,context)&&resolveGame(index,plan.query,context))return {tool:'clarify',query:question};
+  const hasPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
+  const originalMarket=requestedMarket(question,{hasPlayer,hasTeam:true});
+  const plannedMarket=requestedMarket(plan.query,{hasPlayer,hasTeam:true});
+  if(plan.tool!=='clarify'&&originalMarket?.startsWith('player_')&&!hasPlayer)return {tool:'clarify',query:question};
+  if(plan.tool!=='clarify'&&(originalMarket&&originalMarket!==plannedMarket||hasPlayer&&/\b(over|under)\b/i.test(question)&&!originalMarket&&plannedMarket))throw new Error('Planner changed requested market');
   const originalNumbers=question.match(/\d+(?:\.\d+)?/g)||[];
   const allowed=new Set(originalNumbers);
   if((plan.query.match(/\d+(?:\.\d+)?/g)||[]).some(n=>!allowed.has(n)))throw new Error('Planner invented a number');
@@ -378,6 +391,7 @@ export default {
     if(origin!==allowed)return reply({error:'Origin not allowed'},403);
     try{
       const body=await readRequest(request);const question=validateQuestion(body);
+      if(url.pathname==='/v1/coach'&&unsupportedScope(question))return reply({available:false,failureReason:'unsupported_scope',answer:'Coach currently supports pregame full-game research. The requested period, team-total or settlement scope is not verified; no full-game quote or probability is substituted.',cited:[]},200,allowed);
       const source=await published(env);const context=body.context||{playerId:body.playerEvidence?.[0]?.playerId,eventId:body.teamEvidence?.[0]?.eventId};
       if(url.pathname==='/v1/game-analysis'){
         const event=resolveGame(source.index,question,context);
@@ -387,7 +401,10 @@ export default {
         if(ctx?.waitUntil)ctx.waitUntil(benchmarkForecast(env,request,snapshot));
         return reply({available:true,...report},200,allowed);
       }
-      if(url.pathname==='/v1/plan'&&deterministicGameRoute(question,source.index,context))return reply({tool:'analyze_game',query:question,route:'deterministic'},200,allowed);
+      if(url.pathname==='/v1/plan'){
+        const plan=deterministicPlan(question,source.index,context);
+        if(plan)return reply(plan,200,allowed);
+      }
       if(!await reserve(env,request))return providerQuotaReply(env,allowed);
       if(url.pathname==='/v1/plan'){
         const raw=await model(env,PLAN_SYSTEM,{question,context,knownPlayers:source.index.players.map(p=>({id:p.id,name:p.name})).slice(0,500),knownGames:source.index.events.filter(e=>Date.parse(e.startsAt)>Date.now()).slice(0,30)});

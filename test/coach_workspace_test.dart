@@ -249,6 +249,73 @@ void main() {
     },
   );
 
+  testWidgets(
+    'unsupported scope and unknown subjects never reuse a previous game or spend interpretation calls',
+    (tester) async {
+      var games = 0, calls = 0;
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            games++;
+            return gameOutlookFixture(event, now);
+          },
+          ask: (payload) async {
+            calls++;
+            return AssistantReply.unavailable;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills spread -3.5');
+      expect(games, 1);
+      await send(tester, 'Lakers total over 221.5');
+      expect(games, 1);
+      await send(tester, 'Bills first-half spread -3.5');
+      expect(
+        find.textContaining('Half and quarter markets aren’t supported'),
+        findsOneWidget,
+      );
+      await send(tester, 'Why?');
+      expect(
+        find.textContaining('Half and quarter markets aren’t supported'),
+        findsNWidgets(2),
+      );
+      expect(games, 1);
+      expect(calls, 0);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'a numerical clarification completes the same player selection without an AI planner',
+    (tester) async {
+      Map<String, dynamic>? request;
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            request = payload;
+            return gameOutlookFixture(event, now);
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Recorded Quarterback passing yards under');
+      expect(request, isNull);
+      expect(
+        find.textContaining('Include the numerical under line'),
+        findsOneWidget,
+      );
+      await send(tester, '245.5');
+      expect(request, isNotNull);
+      expect(
+        request!['question'],
+        contains('Recorded Quarterback passing yards under 245.5'),
+      );
+      expect(request!['question'], contains(' on 2026-'));
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets('AI uses retrieved evidence and fails back truthfully', (
     tester,
   ) async {

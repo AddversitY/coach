@@ -4,6 +4,7 @@ import 'nfl_teams.dart';
 import 'odds.dart';
 import 'player_stats.dart';
 import 'research_changes.dart';
+import 'coach_conversation.dart';
 
 enum CoachIntent {
   briefing,
@@ -106,6 +107,18 @@ class CoachSession {
     required Map<String, String> playerIds,
     required DateTime now,
   }) {
+    final scopeNotice = CoachConversation.unsupportedScope(question);
+    if (scopeNotice != null) {
+      eventId = null;
+      playerId = null;
+      metric = null;
+      line = null;
+      return CoachAnswer(
+        title: 'That market scope is not supported yet',
+        text: scopeNotice,
+        intent: CoachIntent.clarify,
+      );
+    }
     final q = question.toLowerCase().trim();
     final upcoming = board.events.where((e) => e.startsAt.isAfter(now)).toList()
       ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
@@ -143,10 +156,7 @@ class CoachSession {
     for (final e in upcoming) {
       for (final p in research[e.id]!.players) {
         final name = p.name.toLowerCase();
-        final last = name.split(' ').last;
-        if (q.contains(name) ||
-            (last.length >= 3 &&
-                RegExp('\\b${RegExp.escape(last)}\\b').hasMatch(q))) {
+        if (RegExp('\\b${RegExp.escape(name)}\\b').hasMatch(q)) {
           matches.add((e, p));
         }
       }
@@ -173,9 +183,24 @@ class CoachSession {
     final namedGames = upcoming
         .where((e) => teams.contains(e.away) || teams.contains(e.home))
         .toList();
+    final contextual = RegExp(
+      r'^(?:what argues against it|what could go wrong|what changed|why(?: this| that)?|challenge(?: it| this)?|explain(?: it| this)?|(?:show|compare|check)(?: me)?(?: the)? (?:evidence|history|recorded games|prices|odds|chart)|check again|refresh|(?:over|under)(?:\s+-?\d+(?:\.\d+)?)?|passing yards|rushing yards|receiving yards|receptions)[?!.]*$',
+    ).hasMatch(q);
+    final globalSourceCommand = RegExp(
+      r'^(?:show(?: me)? |check |get |give me )?(?:the )?(?:latest |current )?(?:nfl |reporter |beat writer )?(?:news|headlines|reports|injury updates|injuries|weather|latest updates)[?!.]*$',
+    ).hasMatch(q);
+    final globalCommand =
+        globalSourceCommand ||
+        const [
+          'brief me',
+          'show the slate',
+          'find a player',
+          'compare prices',
+        ].contains(q);
     if (matches.isEmpty &&
         namedGames.isEmpty &&
-        RegExp(r'\b(what about|analyze|show evidence for)\b').hasMatch(q)) {
+        !contextual &&
+        !globalCommand) {
       return CoachAnswer(
         title: 'I need a matching research subject',
         text: 'I couldn’t match that name to the recorded players in the upcoming NFL slate. Choose a game below; I won’t reuse a different player’s evidence.',
@@ -195,6 +220,9 @@ class CoachSession {
     SportEvent? event = upcoming.where((e) => e.id == eventId).firstOrNull;
     GameResearchPlayer? player;
     if (matches.isNotEmpty) {
+      // A newly named subject is an explicit request. Contextual follow-ups
+      // without a name can retain their line; a fresh named request cannot.
+      line = null;
       final sameGame =
           matches.where((m) => m.$1.id == eventId).firstOrNull ?? matches.first;
       event = sameGame.$1;
@@ -207,17 +235,16 @@ class CoachSession {
       eventId = event.id;
     } else if (namedGames.isNotEmpty) {
       event = namedGames.first;
-      if (eventId != event.id) {
-        playerId = null;
-        metric = null;
-        line = null;
-      }
+      playerId = null;
+      metric = null;
+      line = null;
       eventId = event.id;
     }
     if (q == 'brief me' ||
         q == 'show the slate' ||
         q == 'find a player' ||
-        q == 'compare prices') {
+        q == 'compare prices' ||
+        globalSourceCommand) {
       eventId = null;
       playerId = null;
       metric = null;
@@ -248,15 +275,30 @@ class CoachSession {
         evidenceNotice: snapshot.notice,
       );
     }
-    final requested = q.contains('receptions')
+    final requestedMarket = CoachConversation.marketIn(q);
+    final requested = requestedMarket == 'receptions'
         ? receptionsResearch
-        : q.contains('receiv')
+        : requestedMarket == 'receiving yards'
         ? receivingResearch
-        : q.contains('rush')
+        : requestedMarket == 'rushing yards'
         ? rushingResearch
-        : q.contains('pass')
+        : requestedMarket == 'passing yards'
         ? passingResearch
         : null;
+    if (matches.isNotEmpty &&
+        requested == null &&
+        RegExp(r'\b(over|under)\b').hasMatch(q)) {
+      return CoachAnswer(
+        title: 'Which player stat should I compare?',
+        text:
+            'Include a supported stat, over or under, and its numerical line for ${player.name}.',
+        intent: CoachIntent.clarify,
+        event: event,
+        player: player,
+        metric: player.metrics.first,
+        coverage: snapshot.coverage,
+      );
+    }
     if (requested != null &&
         !player.metrics.any((m) => m.key == requested.key)) {
       return CoachAnswer(
@@ -270,9 +312,22 @@ class CoachSession {
     }
     if (requested != null && requested.key != metric?.key) line = null;
     metric = requested ?? metric ?? player.metrics.first;
-    final lineMatch = RegExp(r'\b(?:over|under|line)\s+(\d+(?:\.\d+)?)\b')
+    final requestedSide = RegExp(r'\b(over|under)\b').firstMatch(q)?.group(1);
+    final lineMatch = RegExp(r'\b(?:over|under|line)\s+(-?\d+(?:\.\d+)?)\b')
         .firstMatch(q);
     if (lineMatch != null) line = double.tryParse(lineMatch.group(1)!);
+    if (requestedSide != null && line == null) {
+      return CoachAnswer(
+        title: 'Which line should I compare?',
+        text:
+            'Include the numerical $requestedSide line for ${player.name} ${metric!.label.toLowerCase()}. I won’t choose a saved line for you.',
+        intent: CoachIntent.clarify,
+        event: event,
+        player: player,
+        metric: metric!,
+        coverage: snapshot.coverage,
+      );
+    }
     final available = deduplicateQuotes(prices.quotes)
         .where(
           (quote) =>
@@ -309,7 +364,12 @@ class CoachSession {
       eventTeams: {event.away, event.home},
     );
     final chosen = available
-        .where((quote) => line == null || quote.selection.point == line)
+        .where(
+          (quote) =>
+              (line == null || quote.selection.point == line) &&
+              (requestedSide == null ||
+                  quote.selection.outcome.toLowerCase() == requestedSide),
+        )
         .toList();
     String text;
     if (q.contains('injur') ||

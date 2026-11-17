@@ -4,6 +4,99 @@ import 'package:odds_edge/domain/coach_conversation.dart';
 import 'game_research_test.dart' show event, now;
 
 void main() {
+  test(
+    'clarification replies supply only the missing line, side, market or team',
+    () {
+      final c = CoachConversation()
+        ..remember(
+          event,
+          'Recorded Quarterback passing yards under',
+          player: 'Recorded Quarterback',
+        );
+      c.noteClarification('Which line?');
+      final line = c.resolve('245.5', now);
+      expect(line.game, true);
+      expect(
+        line.query,
+        contains('Recorded Quarterback passing yards under 245.5'),
+      );
+      expect(line.query, contains(' on 2026-'));
+
+      c.remember(event, 'Game total 45.5');
+      c.noteClarification('Over or under?');
+      expect(c.resolve('Under', now).query, contains('game total under 45.5'));
+
+      c.remember(
+        event,
+        'Recorded Quarterback under 65.5',
+        player: 'Recorded Quarterback',
+      );
+      c.noteClarification('Which stat?');
+      expect(
+        c.resolve('Passing yards', now).query,
+        contains('Recorded Quarterback passing yards under 65.5'),
+      );
+
+      c.remember(event, 'Spread line -3.5');
+      c.noteClarification('Which team?');
+      expect(
+        c.resolve('Chiefs', now).query,
+        startsWith('Kansas City Chiefs spread line -3.5'),
+      );
+
+      c.noteClarification(
+        'No recorded player matches that name.',
+        resetSubject: true,
+      );
+      expect(
+        c.resolve('Why?', now).clarification,
+        'No recorded player matches that name.',
+      );
+      expect(
+        c.resolve('Under 65.5', now).clarification,
+        contains('Which upcoming game'),
+      );
+    },
+  );
+  test('unsupported periods cannot become full-game follow-ups', () {
+    final c = CoachConversation()..remember(event, 'Bills spread -3.5');
+    for (final question in [
+      'Bills first-half spread -3.5',
+      'Bills team total under 45.5',
+      'Bills regulation-only moneyline',
+      'Bills live spread -3.5',
+    ]) {
+      final result = c.resolve(question, now);
+      expect(result.game, false);
+      expect(result.clarification, isNotNull);
+      expect(c.resolve('Why?', now).clarification, result.clarification);
+      expect(c.point, isNull);
+    }
+    expect(
+      c.resolve('Compare the total', now).clarification,
+      contains('Which upcoming game'),
+    );
+    expect(
+      CoachConversation.unsupportedScope('Bills live injury updates'),
+      isNull,
+    );
+  });
+  test('a date and American odds never create a missing spread in follow-up memory', () {
+    final c = CoachConversation()
+      ..remember(event, 'Bills spread on 2026-11-22 at -110');
+    expect(c.market, 'spread');
+    expect(c.point, isNull);
+    final follow = c.resolve('Show the opposing case', now);
+    expect(follow.query, isNot(contains('spread line -11')));
+    expect(follow.query, isNot(contains('spread line -22')));
+    c.remember(event, 'Bills spread -3.5');
+    c.remember(event, 'Chiefs spread on 2026-11-22 at -110');
+    expect(c.point, isNull);
+    expect(
+      c.resolve('Show the opposing case', now).query,
+      isNot(contains('-3.5')),
+    );
+  });
   test('common shorthand preserves market identity and excludes American prices and dates', () {
     expect(CoachConversation.marketIn('Bills -3.5 at -110'), 'spread');
     expect(CoachConversation.marketIn('Chiefs +3.5'), 'spread');

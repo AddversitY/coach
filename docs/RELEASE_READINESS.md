@@ -10,7 +10,7 @@ One light, editorial Coach workspace. A user asks about a matchup, spread, total
 
 | Area | Current evidence | Remaining acceptance condition |
 | --- | --- | --- |
-| Core questions | Twenty-seven fixed requests plus shorthand, follow-up, book, line, date, unknown-player and stale-source regression cases | Hosted shorthand spread and passing-yard requests verified; unknown/ambiguous subjects retain clarification |
+| Core questions | Thirty-seven fixed requests plus shorthand, follow-up, book, line, date, unknown-player and stale-source regression cases | Hosted shorthand spread and passing-yard requests verified; unknown/ambiguous subjects retain clarification |
 | Visual research | Team margin/total/scoring charts, player production/workload, exact book comparisons, raw observations and phone tests | Desktop and 390 × 844 phone review passed for margin and player charts |
 | Price reliability | Free pilot uses saved snapshots, an 18-hour lifetime, six-hour pregame acquisition window and persistent quota reservations | Confirmed on hosted release 9a1e1b5; price acquisition remains intentionally limited |
 | Source context | Dated historical records, weather, unofficial injuries, named official injury/inactive checks and invalidation | Confirm failure states; full active lists and confirmed starters remain unavailable |
@@ -42,3 +42,8 @@ The release verifier makes only bounded public file and health requests. It neve
 ## Free interpretation budget
 
 Standard structured game research no longer makes a second AI request merely to restate the charts and decision. Users can ask why or use Explain this research for an evidence-grounded interpretation. Existing global/per-IP caps, two-baseline automatic daily ceiling and provider cooldown remain unchanged. No inference model was switched. Cloudflare documents the shared [10,000-neuron daily allocation and UTC reset](https://developers.cloudflare.com/workers-ai/platform/pricing/); this is still a limited free prototype allowance, not unlimited public-user capacity. The app keeps its calculated research available when interpretation is unavailable.
+
+
+## Selection-boundary audit
+
+An additional pass reproduces and fixes incomplete side/line selection, unsupported-scope substitution, unknown-subject context reuse, surname identity guesses and date/odds fragments in spread memory. Short clarification replies complete only the missing detail and preserve event dates. The current checks pass 401 app and 138 hosted tests, with clean analysis. Book-preference transitions and follow-ups after joint/global-live research remain targeted conversational audits; they must be checked before claiming the broader conversation experience is complete.

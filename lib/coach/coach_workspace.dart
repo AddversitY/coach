@@ -392,6 +392,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     });
     final at = now;
     final request = conversation.resolve(question, at);
+    if (CoachConversation.unsupportedScope(question) != null) {
+      session.eventId = null;
+      session.playerId = null;
+      session.metric = null;
+      session.line = null;
+    }
     String resolved = request.query;
     String? planned = request.game || CoachConversation.isTeamPrompt(question)
         ? 'analyze_game'
@@ -654,6 +660,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               player: explicitPlayer?.name,
               book: selectedBookId,
             );
+            final clarification =
+                (game.raw['decision'] as Map?)?['clarification'];
+            if (clarification is String) {
+              conversation.noteClarification(clarification);
+            }
             final requestedPlayer = explicitPlayer?.id;
             answer = CoachAnswer(
               title: '${game.event.away} at ${game.event.home}',
@@ -712,6 +723,41 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           coverage: answer.coverage,
         );
       }
+    }
+    if (game == null &&
+        result == null &&
+        answer.intent != CoachIntent.clarify) {
+      if (answer.event != null) {
+        if (answer.player == null ||
+            conversation.event?.id != answer.event!.id ||
+            conversation.playerName != answer.player!.name ||
+            resolved.toLowerCase().contains(
+              answer.player!.name.toLowerCase(),
+            )) {
+          conversation.remember(
+            answer.event!,
+            resolved,
+            player: answer.player?.name,
+            book: selectedBookId,
+          );
+        }
+      } else {
+        conversation.clear();
+      }
+    }
+    if (answer.intent == CoachIntent.clarify && request.clarification == null) {
+      if (answer.event != null) {
+        conversation.remember(
+          answer.event!,
+          resolved,
+          player: answer.player?.name,
+          book: selectedBookId,
+        );
+      }
+      conversation.noteClarification(
+        answer.text,
+        resetSubject: answer.event == null,
+      );
     }
     final turn = _Turn(question, answer, at, researchQuery: resolved)
       ..analysis = result
