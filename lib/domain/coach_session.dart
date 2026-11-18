@@ -5,6 +5,7 @@ import 'odds.dart';
 import 'player_stats.dart';
 import 'research_changes.dart';
 import 'coach_conversation.dart';
+import 'coach_books.dart';
 
 enum CoachIntent {
   briefing,
@@ -106,6 +107,7 @@ class CoachSession {
     required PlayerStatsDataset data,
     required Map<String, String> playerIds,
     required DateTime now,
+    List<String>? bookIds,
   }) {
     final scopeNotice = CoachConversation.unsupportedScope(question);
     if (scopeNotice != null) {
@@ -328,10 +330,12 @@ class CoachSession {
         coverage: snapshot.coverage,
       );
     }
+    final selectedBooks = CoachBooks.parse(question, previous: bookIds);
     final available = deduplicateQuotes(prices.quotes)
         .where(
           (quote) =>
               !prices.demo &&
+              (selectedBooks == null || selectedBooks.contains(quote.bookId)) &&
               !prices.fetchedAt.isAfter(now) &&
               !quote.demo &&
               quote.selection.eventId == event!.id &&

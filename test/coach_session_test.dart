@@ -6,22 +6,26 @@ import 'game_research_test.dart' show event, now, fixtureData;
 
 void main() {
   final board = OddsBoard(events: [event], quotes: const [], fetchedAt: now);
-  OddsQuote quote({double line = 245.5, DateTime? at, String side = 'Over'}) =>
-      OddsQuote(
-        selection: Selection(
-          eventId: event.id,
-          market: 'player_pass_yds',
-          participant: 'Recorded Quarterback',
-          outcome: side,
-          point: line,
-        ),
-        bookId: 'book',
-        book: 'Book',
-        provider: 'fixture',
-        decimal: 2.1,
-        sourceAt: at ?? now,
-        collectedAt: at ?? now,
-      );
+  OddsQuote quote({
+    double line = 245.5,
+    DateTime? at,
+    String side = 'Over',
+    String bookId = 'book',
+  }) => OddsQuote(
+    selection: Selection(
+      eventId: event.id,
+      market: 'player_pass_yds',
+      participant: 'Recorded Quarterback',
+      outcome: side,
+      point: line,
+    ),
+    bookId: bookId,
+    book: 'Book',
+    provider: 'fixture',
+    decimal: 2.1,
+    sourceAt: at ?? now,
+    collectedAt: at ?? now,
+  );
   final data = fixtureData();
   CoachAnswer ask(
     CoachSession session,
@@ -84,6 +88,25 @@ void main() {
       expect(global.intent, CoachIntent.briefing);
       expect(global.games, isNotEmpty);
     }
+  });
+  test('local prices honor explicit one-book and multi-book filters', () {
+    final quotes = [
+      quote(bookId: 'draftkings'),
+      quote(bookId: 'fanduel'),
+      quote(bookId: 'betmgm'),
+    ];
+    final single = ask(
+      CoachSession(),
+      'Recorded Quarterback passing yards over 245.5 at FanDuel',
+      quotes: quotes,
+    );
+    expect(single.quotes.map((q) => q.bookId), ['fanduel']);
+    final pair = ask(
+      CoachSession(),
+      'Recorded Quarterback passing yards over 245.5 at DraftKings and FanDuel',
+      quotes: quotes,
+    );
+    expect(pair.quotes.map((q) => q.bookId).toSet(), {'draftkings', 'fanduel'});
   });
   test(
     'an explicit team request clears a player selection even in the same game',

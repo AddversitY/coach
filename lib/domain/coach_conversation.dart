@@ -1,6 +1,7 @@
 import 'odds.dart';
 import 'eastern.dart';
 import 'nfl_teams.dart';
+import 'coach_books.dart';
 
 /// Session-only context for explicit selections. Never persists personal bets.
 class CoachConversation {
@@ -118,9 +119,7 @@ class CoachConversation {
     final same = RegExp(
       r'^(why|why that|why this|show the opposing case|show the matchup|what argues against it|what could go wrong|compare the options|compare the markets|which looks strongest|what else|refresh|check again)$',
     ).hasMatch(q);
-    final bookOnly = RegExp(
-      r'^(?:(?:what|how) about |and |at |on )?(draftkings|fanduel|betmgm|caesars|espn bet|fanatics|betrivers|hard rock bet|bally bet|fliff)$',
-    ).hasMatch(q);
+    final bookOnly = CoachBooks.isPreferenceOnly(q);
     final pending = _pendingQuestion != null;
     if (pending && ['why', 'why that', 'why this'].contains(q)) {
       return (query: question, clarification: _pendingQuestion, game: false);

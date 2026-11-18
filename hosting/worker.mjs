@@ -7,7 +7,7 @@ import {BENCHMARK_PROTOCOL,benchmarkFacts} from './head-to-head.mjs';
 import {accuracyAudit} from './accuracy-audit.mjs';
 import {productionSnapshot} from './production-forecast.mjs';
 import {workloadSnapshot} from './workload-forecast.mjs';
-import {analyzeGame,resolveGame,requestedBook} from './game-analysis.mjs';
+import {analyzeGame,resolveGame,requestedBookIds} from './game-analysis.mjs';
 import {forecastSnapshot,validateBenchmark,benchmarkTargets} from './forecast-evaluation.mjs';
 import {evaluationState} from './evaluation-state.mjs';
 import {shadowGame,regimeShadowGame,footballShadowGame} from './shadow-forecast.mjs';
@@ -89,9 +89,10 @@ export function retrieve(question, context, source, telemetry, now=Date.now()) {
   // The published mapping is independently validated by the publisher. Match a
   // participant only when the public identity registry agrees exactly.
   const registry=snapshot.odds?.coverage?.players||[];
+  const selectedBooks=requestedBookIds(question,context);
   const allPrices=(snapshot.odds?.testFixture || snapshot.props?.demo || !usableTime(snapshot.props?.fetchedAt,now,18*3600000) ? [] : snapshot.props?.quotes||[]).filter(q=>{
     const id=registry.find(p=>p.name===q.selection?.participant)?.playerId;
-    return q.selection && Date.parse(q.collectedAt)>=Date.parse(q.sourceAt) && Date.parse(q.collectedAt)<=Date.parse(snapshot.props.fetchedAt) && selected.some(p=>p.id===id&&p.name===q.selection.participant)&&q.status==='open'&&!q.demo&&upcoming.some(e=>e.id===q.selection.eventId)&&usableTime(q.sourceAt,now,18*3600000)&&usableTime(q.collectedAt,now,18*3600000);
+    return (!selectedBooks||selectedBooks.includes(q.bookId)) && q.selection && Date.parse(q.collectedAt)>=Date.parse(q.sourceAt) && Date.parse(q.collectedAt)<=Date.parse(snapshot.props.fetchedAt) && selected.some(p=>p.id===id&&p.name===q.selection.participant)&&q.status==='open'&&!q.demo&&upcoming.some(e=>e.id===q.selection.eventId)&&usableTime(q.sourceAt,now,18*3600000)&&usableTime(q.collectedAt,now,18*3600000);
   }).slice(0,16);
   const relevantEvents=upcoming.filter(e=>selected.some(p=>p.events.includes(e.id))||e.id===context?.eventId).slice(0,5);
   const currentTelemetry=telemetry&&usableTime(telemetry.checkedAt,now,5*60000)?telemetry:null;
@@ -132,6 +133,7 @@ export function validatePlan(plan,question,index,context={}) {
   const hasPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
   const originalMarket=requestedMarket(question,{hasPlayer,hasTeam:true});
   const plannedMarket=requestedMarket(plan.query,{hasPlayer,hasTeam:true});
+  if(plan.tool!=='clarify'&&JSON.stringify(requestedBookIds(question,context))!==JSON.stringify(requestedBookIds(plan.query,context)))throw new Error('Planner changed selected books');
   if(plan.tool!=='clarify'&&originalMarket?.startsWith('player_')&&!hasPlayer)return {tool:'clarify',query:question};
   if(plan.tool!=='clarify'&&(originalMarket&&originalMarket!==plannedMarket||hasPlayer&&/\b(over|under)\b/i.test(question)&&!originalMarket&&plannedMarket))throw new Error('Planner changed requested market');
   const originalNumbers=question.match(/\d+(?:\.\d+)?/g)||[];
@@ -396,7 +398,7 @@ export default {
       if(url.pathname==='/v1/game-analysis'){
         const event=resolveGame(source.index,question,context);
         if(!event)return reply({available:false,reason:'choose_game',games:source.index.events.filter(e=>Date.parse(e.startsAt)>Date.now()).slice(0,8)},200,allowed);
-        const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookId:requestedBook(question,context),question});
+        const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookIds:requestedBookIds(question,context),question});
         const snapshot=await captureForecast(env,report,source);
         if(ctx?.waitUntil)ctx.waitUntil(benchmarkForecast(env,request,snapshot));
         return reply({available:true,...report},200,allowed);
@@ -413,7 +415,7 @@ export default {
       const provided=retrieve(question,context,source,await telemetry(env));
       if(context.analysisOverview===true){
         const event=resolveGame(source.index,question,context);
-        if(event){const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookId:requestedBook(question,context),question});
+        if(event){const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookIds:requestedBookIds(question,context),question});
           const focused=source.index.players.filter(p=>person(question).includes(person(p.name))).map(p=>p.id);
           const workloadRows=focused.length?report.workloadTrial.forecasts.filter(p=>focused.includes(p.playerId)):report.workloadTrial.forecasts;
           const productionRows=focused.length?report.productionTrial.forecasts.filter(p=>focused.includes(p.playerId)):report.productionTrial.forecasts;

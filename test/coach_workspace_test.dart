@@ -4,6 +4,7 @@ import 'package:odds_edge/coach/coach_workspace.dart';
 import 'package:odds_edge/data/published_snapshot.dart';
 import 'package:odds_edge/domain/assistant.dart';
 import 'package:odds_edge/domain/coach_telemetry.dart';
+import 'package:odds_edge/domain/coach_books.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
@@ -312,6 +313,65 @@ void main() {
         contains('Recorded Quarterback passing yards under 245.5'),
       );
       expect(request!['question'], contains(' on 2026-'));
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
+    'book transitions replace prior scope and the all-books control does not reapply the old question filter',
+    (tester) async {
+      final scopes = <List<String>?>[];
+      final questions = <String>[];
+      await tester.pumpWidget(
+        frame(
+          gameLoader: (payload) async {
+            final ids = CoachBooks.normalize(
+              (payload['context'] as Map)['bookIds'],
+            );
+            scopes.add(ids);
+            questions.add(payload['question'] as String);
+            final raw = gameOutlookFixture(
+              event,
+              now,
+              bookId: ids?.length == 1 ? ids!.single : null,
+            );
+            raw['bookIds'] = ids;
+            raw['books'] = [
+              for (final id in ['draftkings', 'fanduel', 'betmgm'])
+                {'id': id, 'name': CoachBooks.labels[id]},
+            ];
+            for (final category in raw['categories'] as List) {
+              category['rows'] = (category['rows'] as List)
+                  .where((row) => ids == null || ids.contains(row['bookId']))
+                  .toList();
+              category['totalRows'] = (category['rows'] as List).length;
+            }
+            return raw;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'Analyze Bills spread -3.5 at BetMGM');
+      expect(scopes.last, ['betmgm']);
+      await send(tester, 'Compare DraftKings and FanDuel');
+      expect(scopes.last, ['draftkings', 'fanduel']);
+      await send(tester, 'Show the opposing case');
+      expect(scopes.last, ['draftkings', 'fanduel']);
+      await send(tester, 'All books');
+      expect(scopes.last, isNull);
+      await send(tester, 'At FanDuel');
+      expect(scopes.last, ['fanduel']);
+      await tester.ensureVisible(find.text('Explore the evidence').last);
+      await tester.tap(find.text('Explore the evidence').last);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('All books').last);
+      await tester.tap(find.text('All books').last);
+      await tester.pumpAndSettle();
+      expect(scopes.last, isNull);
+      expect(questions.last, contains('spread line -3.5'));
+      expect(questions.last, contains('all books'));
+      expect(questions.last, isNot(contains('FanDuel')));
+      expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
   );

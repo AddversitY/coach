@@ -4,6 +4,7 @@ import {analyzeGame,outcome,resolveGame,validQuotes,playerProjection} from './ga
 import {forecastSnapshot,gradeForecast,addGrade,evaluationReport,validateBenchmark} from './forecast-evaluation.mjs';
 import {evaluationState} from './evaluation-state.mjs';
 import {shadowGame} from './shadow-forecast.mjs';
+import {requestedBookIds} from './book-preference.mjs';
 
 const now=Date.UTC(2026,10,16,12),at=new Date(now).toISOString();
 const event={id:'nflverse:2026_11_BUF_KC',home:'Kansas City Chiefs',away:'Buffalo Bills',startsAt:new Date(now+3600000).toISOString()};
@@ -31,6 +32,21 @@ test('unpriced score outlook never invents a sportsbook opportunity',()=>{
   const result=report([]);assert.equal(result.basis,'experimental_score_candidate');assert.equal(result.ranked.length,0);
   assert.ok(result.categories.every(c=>c.status==='prices_unavailable'));assert.ok(result.projections.length);
   assert.match(result.summary,/prices are missing/);assert.equal(result.score.homeWin+result.score.tie<=1,true);
+});
+
+test('named-book subsets constrain price rows, comparisons and best-observed flags without changing score forecasts',()=>{
+ const initial=gameQuotes(),data=source(initial.flatMap(q=>[
+  q,{...q,bookId:'fanduel',book:'FanDuel',decimal:q.decimal+.05},{...q,bookId:'betmgm',book:'BetMGM',decimal:q.decimal+.5},
+ ]));
+ const all=analyzeGame(data,data.index.events[0],{now});
+ const ids=requestedBookIds('Compare DraftKings and FanDuel',{bookId:'betmgm'});
+ const selected=analyzeGame(data,data.index.events[0],{now,bookIds:ids,question:'Recorded Receiver receptions over 5.5'});
+ assert.deepEqual(selected.bookIds,['draftkings','fanduel']);assert.equal(selected.bookId,null);assert.deepEqual(selected.score,all.score);
+ for(const row of selected.categories.flatMap(c=>c.rows)){assert.ok(ids.includes(row.bookId));if(row.bookId==='fanduel')assert.equal(row.bestObservedPrice,true);}
+ assert.deepEqual(selected.visualEvidence.priceComparison.offers.map(o=>o.bookId).sort(),['draftkings','fanduel']);
+ const missing=analyzeGame(data,data.index.events[0],{now,bookIds:['williamhill_us']});
+ assert.equal(missing.categories.flatMap(c=>c.rows).length,0);
+ assert.equal(missing.visualEvidence.priceComparison.offers.length,0);
 });
 test('a schedule rebuild is not a new price observation and waiting status reaches the research summary',()=>{
  const data=source([]);data.snapshot.odds={status:'unavailable',provider:'the-odds-api',availability:{reason:'waiting_window',checkedAt:at,eligibleAt:new Date(now+3600000).toISOString()}};

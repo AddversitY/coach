@@ -78,6 +78,14 @@ test('retrieval excludes fixture, future, inconsistent and stale observations',(
   ])assert.equal(prices({...current,snapshot:changed}).length,0);
 });
 
+test('interpretation receives only prices from the current requested book set',()=>{
+ const quote={selection:{eventId:'e',participant:player.name},status:'open',demo:false,sourceAt:at,collectedAt:at};
+ const data={...source,snapshot:{odds:{coverage:{players:[{name:player.name,playerId:'p'}]}},props:{fetchedAt:at,quotes:['draftkings','fanduel','betmgm'].map(bookId=>({...quote,bookId}))}}};
+ const rows=retrieve(player.name,{bookIds:['draftkings','fanduel']},data,null,time).team_evidence[0].savedPrices;
+ assert.deepEqual(rows.map(r=>r.bookId),['draftkings','fanduel']);
+ assert.equal(retrieve(player.name+' all books',{bookIds:['betmgm']},data,null,time).team_evidence[0].savedPrices.length,3);
+});
+
 test('Workers AI JSON mode accepts bounded parsed objects as well as JSON text',()=>{
   const answer={answer:'Recorded evidence only',cited:['team_evidence']};
   assert.deepEqual(parseModel({response:answer}),answer);

@@ -47,3 +47,8 @@ Standard structured game research no longer makes a second AI request merely to 
 ## Selection-boundary audit
 
 An additional pass reproduces and fixes incomplete side/line selection, unsupported-scope substitution, unknown-subject context reuse, surname identity guesses and date/odds fragments in spread memory. Short clarification replies complete only the missing detail and preserve event dates. The current checks pass 401 app and 138 hosted tests, with clean analysis. Book-preference transitions and follow-ups after joint/global-live research remain targeted conversational audits; they must be checked before claiming the broader conversation experience is complete.
+
+
+## Sportsbook transition audit
+
+Specific-to-multiple-to-all-book transitions are now implemented and covered end to end. The visible all-books action replaces the original query’s operator instead of reapplying it. Price tables and interpretation receive only the requested book set; reports reject out-of-scope rows. The current checks pass 406 app and 142 hosted tests with clean app analysis. Remaining audits include joint/global-live conversational follow-ups and additional sportsbook language qualifiers. Future predictive comparisons remain incomplete.

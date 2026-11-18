@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/game_outlook.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/domain/coach_telemetry.dart';
+import 'package:odds_edge/domain/coach_books.dart';
 
 Map<String, dynamic> gameOutlookFixture(
   SportEvent event,
@@ -23,6 +24,8 @@ Map<String, dynamic> gameOutlookFixture(
   'bookId': bookId,
   'books': [
     {'id': 'draftkings', 'name': 'DraftKings'},
+    if (bookId != null && bookId != 'draftkings')
+      {'id': bookId, 'name': CoachBooks.labels[bookId]},
   ],
   'score': {
     'home': 24.0,
@@ -58,8 +61,8 @@ Map<String, dynamic> gameOutlookFixture(
                 point: -3.5,
                 rules: 'game_market_unverified',
               ).toJson(),
-              'book': 'DraftKings',
-              'bookId': 'draftkings',
+              'book': CoachBooks.labels[bookId ?? 'draftkings'],
+              'bookId': bookId ?? 'draftkings',
               'decimal': 1.91,
               'win': .55,
               'push': 0.0,
@@ -195,6 +198,37 @@ Map<String, dynamic> gameOutlookFixture(
 };
 
 void main() {
+  test(
+    'book-scope metadata rejects quotes and offers from an unselected book',
+    () {
+      final event = SportEvent(
+        'event',
+        'Buffalo Bills',
+        'Kansas City Chiefs',
+        DateTime.utc(2026, 11, 22, 18),
+      );
+      final now = DateTime.utc(2026, 11, 17, 18);
+      final raw = gameOutlookFixture(event, now)
+        ..['bookIds'] = ['draftkings', 'fanduel'];
+      expect(GameOutlook.fromJson(raw).raw['bookIds'], [
+        'draftkings',
+        'fanduel',
+      ]);
+      raw['bookIds'] = ['fanduel'];
+      raw['bookId'] = 'fanduel';
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+      raw['bookIds'] = ['draftkings', 'fanduel'];
+      raw['bookId'] = null;
+      raw['visualEvidence'] = {
+        'priceComparison': {
+          'offers': [
+            {'bookId': 'betmgm'},
+          ],
+        },
+      };
+      expect(() => GameOutlook.fromJson(raw), throwsFormatException);
+    },
+  );
   test(
     'research comparison cannot invent a price or promote a betting edge',
     () {

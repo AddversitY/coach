@@ -18,6 +18,7 @@ import '../data/source_link.dart';
 import '../domain/assistant.dart';
 import '../domain/coach_session.dart';
 import '../domain/coach_conversation.dart';
+import '../domain/coach_books.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
 import '../domain/player_stats.dart';
@@ -126,7 +127,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Map<String, dynamic>? analysisValidation;
   bool pollingTelemetry = false;
   Map<String, String> playerNames = {};
-  String? selectedBookId;
+  List<String>? selectedBookIds;
+  String? get selectedBookId =>
+      selectedBookIds?.length == 1 ? selectedBookIds!.single : null;
+  set selectedBookId(String? value) =>
+      selectedBookIds = value == null ? null : [value];
   DateTime? lastSnapshotRefresh;
   final analysisEngine = const CoachAnalysisEngine();
   DateTime get now => widget.clock?.call().toUtc() ?? DateTime.now().toUtc();
@@ -376,7 +381,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _send(String raw) async {
+  Future<void> _send(String raw, {String? displayQuestion}) async {
     final question = raw.trim();
     if (busy ||
         loading ||
@@ -399,6 +404,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       session.line = null;
     }
     String resolved = request.query;
+    selectedBookIds = CoachBooks.parse(resolved, previous: selectedBookIds);
     String? planned = request.game || CoachConversation.isTeamPrompt(question)
         ? 'analyze_game'
         : null;
@@ -421,6 +427,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 'playerId': session.playerId,
                 'eventId': session.eventId,
                 'metric': session.metric?.key,
+                'bookIds': selectedBookIds,
               },
             })
             .timeout(const Duration(seconds: 20));
@@ -630,6 +637,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         data: data!,
         playerIds: snapshot!.playerIdsByName,
         now: at,
+        bookIds: selectedBookIds,
       );
       if (wantsGame && answer.intent != CoachIntent.clarify) {
         try {
@@ -638,6 +646,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             'context': {
               'eventId': answer.event?.id ?? session.eventId,
               'bookId': selectedBookId,
+              'bookIds': selectedBookIds,
             },
           };
           final raw =
@@ -653,7 +662,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     )
                 ? answer.player
                 : null;
-            selectedBookId = game.raw['bookId'] as String? ?? selectedBookId;
+            selectedBookIds = game.raw.containsKey('bookIds')
+                ? CoachBooks.normalize(game.raw['bookIds'])
+                : game.raw['bookId'] == null
+                ? null
+                : [game.raw['bookId'] as String];
             conversation.remember(
               game.event,
               resolved,
@@ -759,11 +772,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         resetSubject: answer.event == null,
       );
     }
-    final turn = _Turn(question, answer, at, researchQuery: resolved)
-      ..analysis = result
-      ..game = game
-      ..evaluation = evaluation
-      ..live = live;
+    final turn =
+        _Turn(displayQuestion ?? question, answer, at, researchQuery: resolved)
+          ..analysis = result
+          ..game = game
+          ..evaluation = evaluation
+          ..live = live;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -799,6 +813,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           'metric': answer.metric.key,
           'analysisOverview': answer.intent == CoachIntent.gameAnalysis,
           'bookId': selectedBookId,
+          'bookIds': selectedBookIds,
         };
         if (result != null) payload['toolEvidence'] = result.toEvidence();
         final reply = await (widget.ask?.call(payload) ?? api!.coach(payload))
@@ -1321,7 +1336,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 onPressed: busy
                     ? null
                     : () => _send(
-                        'Explain the matchup research for ${turn.researchQuery} on ${easternWall(turn.game!.event.startsAt).toIso8601String().substring(0, 10)}',
+                        'Explain the matchup research for ${_bookQuery(turn, _reportBooks(turn.game!.raw))}',
                       ),
               ),
             ),
@@ -1422,6 +1437,51 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     );
   }
 
+  List<String>? _reportBooks(Map<String, dynamic> report) =>
+      report.containsKey('bookIds')
+      ? CoachBooks.normalize(report['bookIds'])
+      : report['bookId'] == null
+      ? null
+      : [report['bookId'] as String];
+
+  String _bookQuery(_Turn turn, List<String>? ids) {
+    final game = turn.game!;
+    final players =
+        (game.raw['visualEvidence'] as Map?)?['players'] as List? ?? [];
+    final namedProjections = (game.raw['projections'] as List? ?? [])
+        .whereType<Map>()
+        .map((p) => p['name'])
+        .whereType<String>()
+        .where(
+          (name) =>
+              turn.researchQuery.toLowerCase().contains(name.toLowerCase()),
+        )
+        .toSet();
+    final player = players.length == 1
+        ? (players.single as Map)['name'] as String?
+        : namedProjections.length == 1
+        ? namedProjections.single
+        : null;
+    final focus = CoachConversation()
+      ..remember(game.event, turn.researchQuery, player: player);
+    final subject =
+        focus.playerName ??
+        focus.team ??
+        '${game.event.away} at ${game.event.home}';
+    final selection = focus.market == 'spread' && focus.point != null
+        ? 'spread line ${focus.point}'
+        : '${focus.market ?? ''} ${focus.side ?? ''} ${focus.point ?? ''}';
+    final books = ids == null
+        ? 'across all books'
+        : 'at ${ids.map((id) => CoachBooks.labels[id]!).join(' and ')}';
+    final date = easternWall(game.event.startsAt)
+        .toIso8601String()
+        .substring(0, 10);
+    return 'Analyze $subject $selection on $date $books'
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
   Widget _gameView(_Turn turn) {
     final comparison = turn.game!.raw['comparison'];
     return Column(
@@ -1518,6 +1578,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Widget _gameEvidenceView(_Turn turn) {
     final game = turn.game!, score = game.score;
     final books = (game.raw['books'] as List? ?? []).whereType<Map>();
+    final selectedBooks = _reportBooks(game.raw);
     String number(dynamic value) =>
         value is num ? value.toStringAsFixed(1) : '—';
     String percentage(dynamic value) =>
@@ -1571,31 +1632,46 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           _priceCoverageView(
             Map<String, dynamic>.from(game.raw['priceCoverage']),
           ),
+        Text(
+          selectedBooks == null
+              ? 'Comparing all saved books'
+              : 'Comparing ${selectedBooks.map((id) => CoachBooks.labels[id]!).join(' · ')}',
+          style: CoachType.label,
+        ),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 6,
           children: [
             ChoiceChip(
               label: const Text('All books'),
-              selected: game.raw['bookId'] == null,
+              selected: selectedBooks == null,
               onSelected: busy
                   ? null
                   : (_) {
                       selectedBookId = null;
                       session.eventId = game.event.id;
-                      _send(turn.researchQuery);
+                      _send(
+                        _bookQuery(turn, null),
+                        displayQuestion:
+                            'Compare this research across all books',
+                      );
                     },
             ),
             for (final book in books)
               ChoiceChip(
                 label: Text('${book['name']}'),
-                selected: game.raw['bookId'] == book['id'],
+                selected: selectedBooks?.contains(book['id']) == true,
                 onSelected: busy
                     ? null
                     : (_) {
                         selectedBookId = book['id'] as String;
                         session.eventId = game.event.id;
-                        _send(turn.researchQuery);
+                        _send(
+                          _bookQuery(turn, [book['id'] as String]),
+                          displayQuestion:
+                              'Compare this research at ${book['name']}',
+                        );
                       },
               ),
           ],
@@ -1630,9 +1706,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   Padding(
                     padding: const EdgeInsets.only(top: 6),
                     child: caption(
-                      game.raw['bookId'] == null
+                      selectedBooks == null
                           ? 'No saved price for this market.'
-                          : 'No saved price at the selected book.',
+                          : 'No saved price at the selected books.',
                     ),
                   ),
                 for (final row in (category['rows'] as List).take(2))

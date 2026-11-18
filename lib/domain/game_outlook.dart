@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'coach_telemetry.dart';
 import 'odds.dart';
+import 'coach_books.dart';
 
 class GameOutlook {
   GameOutlook._(this.raw, this.event, this.createdAt);
@@ -34,6 +35,16 @@ class GameOutlook {
     }
     final event = SportEvent.fromJson(Map<String, dynamic>.from(raw['event']));
     final at = DateTime.parse(raw['createdAt'] as String).toUtc();
+    final selectedBooks = raw.containsKey('bookIds')
+        ? CoachBooks.normalize(raw['bookIds'])
+        : raw['bookId'] == null
+        ? null
+        : CoachBooks.normalize([raw['bookId']]);
+    if (raw.containsKey('bookIds') &&
+        raw['bookId'] !=
+            (selectedBooks?.length == 1 ? selectedBooks!.single : null)) {
+      throw const FormatException('Inconsistent book preference.');
+    }
     final brief = raw['decision'];
     if (brief != null &&
         (brief is! Map ||
@@ -167,6 +178,10 @@ class GameOutlook {
         throw const FormatException('Invalid market coverage');
       }
       for (final row in category['rows']) {
+        if (selectedBooks != null &&
+            (row is! Map || !selectedBooks.contains(row['bookId']))) {
+          throw const FormatException('Quote is outside the selected books.');
+        }
         if (row is! Map ||
             row['selection'] is! Map ||
             row['selection']['eventId'] != event.id ||
@@ -246,6 +261,17 @@ class GameOutlook {
         throw const FormatException(
           'Research priority requires a supported selection',
         );
+      }
+    }
+    if (selectedBooks != null) {
+      final offers =
+          (raw['visualEvidence'] as Map?)?['priceComparison'] as Map?;
+      for (final offer in offers?['offers'] as List? ?? []) {
+        if (offer is! Map || !selectedBooks.contains(offer['bookId'])) {
+          throw const FormatException(
+            'Price comparison is outside the selected books.',
+          );
+        }
       }
     }
     return GameOutlook._(raw, event, at);
