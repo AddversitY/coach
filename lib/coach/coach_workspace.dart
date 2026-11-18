@@ -1199,6 +1199,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Widget _turn(_Turn turn) {
     final a = turn.answer;
     final comparison = turn.game?.raw['comparison'];
+    final decision = turn.game?.raw['decision'];
+    final needsSelection =
+        decision is Map && decision['clarification'] is String;
     final primarySummary =
         comparison is Map &&
         comparison['summary'] is Map &&
@@ -1267,7 +1270,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
           const SizedBox(height: 18),
           Text(a.title, style: CoachType.title.copyWith(fontSize: 22)),
+          if (turn.game != null && turn.invalidation == null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                _reportBooks(turn.game!.raw) == null
+                    ? 'Comparing all saved books'
+                    : 'Comparing ${_reportBooks(turn.game!.raw)!.map((id) => CoachBooks.labels[id]!).join(' · ')}',
+                style: CoachType.label,
+              ),
+            ),
           const SizedBox(height: 12),
+          if (needsSelection && turn.invalidation == null)
+            _decisionView(Map<String, dynamic>.from(decision)),
           if (primarySummary)
             CoachResearchSummary(
               comparison: Map<String, dynamic>.from(comparison),
@@ -1297,7 +1312,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             ),
           if (turn.game?.raw['decision'] is Map &&
               turn.invalidation == null &&
-              !primarySummary)
+              !primarySummary &&
+              !needsSelection)
             _decisionView(
               Map<String, dynamic>.from(turn.game!.raw['decision']),
             ),
@@ -1632,13 +1648,6 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           _priceCoverageView(
             Map<String, dynamic>.from(game.raw['priceCoverage']),
           ),
-        Text(
-          selectedBooks == null
-              ? 'Comparing all saved books'
-              : 'Comparing ${selectedBooks.map((id) => CoachBooks.labels[id]!).join(' · ')}',
-          style: CoachType.label,
-        ),
-        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 6,
@@ -1876,6 +1885,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   }
 
   Widget _decisionView(Map<String, dynamic> brief) {
+    if (brief['clarification'] is String) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Text('${brief['clarification']}', style: CoachType.body),
+      );
+    }
     final lean = brief['lean'] as Map?;
     final price = brief['price'] as Map?;
     final minimum = price?['minimumDecimal'];
