@@ -141,7 +141,7 @@
   "creditsUsed": 0,
   "dataCutoff": "2026-11-16",
   "sourceHashes": {
-    "nfl-player-stats.json": "551f31a69c3785a9342bc134e416d076ece05a340d8ad379be6ecc7fe6a9911d",
-    "nfl-history.json": "8fca745d2bf35d6f54dfbe04256ac1f4430f7415329d84fafec159a0e4b694a9"
+    "nfl-player-stats.json": "007bf48ba012c1775503e15a544758aabc432f4600d02d499a8e0890637f97b3",
+    "nfl-history.json": "a552fff3dcc623d2494dec4b31a06dec1175fb61cfef0a7eb6fef026001ab536"
   }
 }
