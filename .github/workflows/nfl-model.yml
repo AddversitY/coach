@@ -20,7 +20,7 @@ jobs:
   model:
     name: Train and backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -65,6 +65,20 @@ jobs:
 
       - name: Evaluate joint workload and efficiency production forecasts
         run: python model/production_forecast.py --schedule model/.cache/games.csv
+
+      - name: Set up Flutter to check the regenerated reports
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.7"
+          cache: true
+
+      - name: Validate the app against the newly generated reports
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+          flutter build web
 
       - name: Preserve completed public research reports
         uses: actions/upload-artifact@v4

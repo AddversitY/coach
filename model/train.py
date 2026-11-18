@@ -13,7 +13,6 @@ Run from the repository root:
 from __future__ import annotations
 
 import json
-import sys
 import urllib.error
 import urllib.request
 from datetime import date, datetime, timezone
@@ -75,8 +74,8 @@ FIRST_SEASON = 2014
 USER_AGENT = "odds-edge-coach-model"
 
 
-def download(url: str, dest: Path) -> bool:
-    if dest.exists() and dest.stat().st_size > 0:
+def download(url: str, dest: Path, *, force: bool = False) -> bool:
+    if not force and dest.exists() and dest.stat().st_size > 0:
         return True
     dest.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
@@ -109,10 +108,13 @@ def _number(value) -> float | None:
 
 def load_schedule() -> pd.DataFrame:
     path = CACHE / "games.csv"
-    download(
+    available = download(
         "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv",
         path,
+        force=True,
     )
+    if not available:
+        raise SystemExit("Schedule source missing; keeping the published report.")
     frame = pd.read_csv(path, low_memory=False)
     frame["season"] = frame["season"].astype(int)
     frame["week"] = frame["week"].astype(int)
@@ -145,9 +147,8 @@ def load_offense(seasons: list[int]) -> pd.DataFrame:
             "https://github.com/nflverse/nflverse-data/releases/download/pbp/"
             f"play_by_play_{season}.parquet"
         )
-        if not download(url, path):
-            print(f"No play-by-play for {season}", file=sys.stderr)
-            continue
+        if not download(url, path, force=season == max(seasons)):
+            raise SystemExit(f"Play-by-play source missing for {season}; keeping the published report.")
         print(f"Reading play-by-play {season}", flush=True)
         schema = set(pq.read_schema(path).names)
         use = [name for name in columns if name in schema]
@@ -192,7 +193,7 @@ def load_outs(seasons: list[int]) -> pd.DataFrame:
             "https://github.com/nflverse/nflverse-data/releases/download/injuries/"
             f"injuries_{season}.csv"
         )
-        if not download(url, path):
+        if not download(url, path, force=season == max(seasons)):
             continue
         frame = pd.read_csv(path, low_memory=False)
         if "report_status" not in frame.columns or "team" not in frame.columns:
@@ -492,6 +493,9 @@ def build_document(team_games, schedule_frame, outs, result, as_of: date) -> dic
 
 
 def validate(document: dict) -> None:
+    players = document.get("v2", {}).get("players", [])
+    if not 200 < len(players) < 2500:
+        raise SystemExit(f"Expected a complete player list, found {len(players)}. Keeping the published report.")
     backtest = document["backtest"]
     if backtest["decided"] < 500:
         raise SystemExit(f"Backtest scored only {backtest['decided']} games. The download looks short.")
@@ -555,6 +559,7 @@ def version_two(schedule, games, v1) -> dict:
     """Fit version 2 on the same completed games and describe the next week."""
     print("Building version 2 features...", flush=True)
     seasons = list(range(FIRST_SEASON, int(schedule["season"].max()) + 1))
+    snaps = acquire_snaps(seasons)
     extra = _lookup(schedule)
     kept = {game.game_id for game in games}
     print("Reading historical weather...", flush=True)
@@ -563,7 +568,6 @@ def version_two(schedule, games, v1) -> dict:
     print("Weather", counts, flush=True)
     contexts = attach_longitudes(contexts_for(games, extra, weather), extra, CACHE / "weather")
     quarterbacks = load_quarterbacks(CACHE, seasons)
-    snaps = load_snaps(CACHE, seasons)
     detailed_outs = load_out_players(CACHE, seasons)
     built, live = assemble_v2(contexts, quarterbacks, snaps, detailed_outs)
     print(f"Version 2 rows: {len(built)}. Walking forward...", flush=True)
@@ -735,6 +739,34 @@ def version_two(schedule, games, v1) -> dict:
     return block
 
 
+def acquire_snaps(seasons: list[int], cache: Path = CACHE, fetch=download):
+    """Acquire required participation inputs; never fit silently without them."""
+    for season in seasons:
+        path = cache / f"snap_counts_{season}.csv"
+        url = (
+            "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/"
+            f"snap_counts_{season}.csv"
+        )
+        if not fetch(url, path, force=season == max(seasons)):
+            raise SystemExit(f"Snap-count source missing for {season}; keeping the published report.")
+    snaps = load_snaps(cache, seasons)
+    for season in seasons:
+        participants = {(row.team, row.name) for row in snaps if row.season == season}
+        if len(participants) <= 200:
+            raise SystemExit(f"Incomplete snap counts for {season}: {len(participants)} players.")
+    return snaps
+
+
+def write_document(document: dict, output: Path = OUTPUT) -> None:
+    """Validate and serialize before replacing the previous published report."""
+    validate(document)
+    encoded = json.dumps(document, indent=2, allow_nan=False) + "\n"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_suffix(output.suffix + ".part")
+    temporary.write_text(encoded, encoding="utf-8")
+    temporary.replace(output)
+
+
 def main() -> None:
     schedule = load_schedule()
     latest = int(schedule["season"].max())
@@ -750,9 +782,7 @@ def main() -> None:
     document = build_document(team_games, schedule, outs, result, date.today())
     document["v2"] = version_two(schedule, games, result)
     document["version"] = 2
-    validate(document)
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
+    write_document(document)
     backtest = document["backtest"]
     print("Wrote", OUTPUT)
     print("Seasons", backtest["seasons"])

@@ -5,6 +5,21 @@ import 'game_research_test.dart' show event, now;
 
 void main() {
   test(
+    'team under shorthand retains the missing total for a numeric reply',
+    () {
+      final c = CoachConversation()..remember(event, 'Bills under this week');
+      expect(c.market, 'game total');
+      expect(c.side, 'under');
+      expect(c.point, isNull);
+      c.noteClarification('Which line?');
+      final completed = c.resolve('45.5', now);
+      expect(completed.game, true);
+      expect(completed.query, contains('game total under 45.5'));
+      expect(completed.query, contains(' on 2026-'));
+    },
+  );
+
+  test(
     'clarification replies supply only the missing line, side, market or team',
     () {
       final c = CoachConversation()

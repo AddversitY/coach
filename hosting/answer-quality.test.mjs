@@ -57,6 +57,17 @@ test('a player or matchup overview never silently chooses a priced side',()=>{
  }
 });
 
+test('a team under question without a number requests the line rather than giving a winner lean',()=>{
+ const data=source();
+ for(const question of ['Bills under this week','Bills over','What about the under?']){
+  const r=analyzeGame(data,event,{now,question});
+  assert.equal(r.decision.reason,'selection_incomplete');assert.ok(r.decision.clarification);
+  assert.equal(r.decision.price,null);assert.equal(r.decision.lean,null);
+  assert.equal(r.visualEvidence.teamMetric,'total');
+  for(const team of r.visualEvidence.teams)assert.equal(team.series.find(s=>s.metric==='total').line,null);
+ }
+});
+
 test('unsupported scope cannot borrow full-game prices, chart lines or winner leans',()=>{
  const data=source();
  for(const question of ['Bills first-half spread -3.5','Bills team total under 45.5','Recorded Quarterback 1H passing yards under 245.5','Bills regulation-only moneyline','Bills live spread -3.5']){

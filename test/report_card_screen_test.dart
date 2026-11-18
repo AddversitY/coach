@@ -5,6 +5,7 @@ import 'package:odds_edge/coach/stale_board_screen.dart';
 import 'package:odds_edge/data/demo.dart';
 import 'package:odds_edge/data/nfl_assets.dart';
 import 'package:odds_edge/domain/coach_model.dart';
+import 'package:odds_edge/domain/coach_board.dart';
 import 'package:odds_edge/domain/prop_model.dart';
 import 'package:odds_edge/theme/edge_theme.dart';
 
@@ -51,11 +52,15 @@ void main() {
       expect(find.text('Game model: no edge yet'), findsOneWidget);
       expect(find.text('No edge'), findsOneWidget);
       expect(find.byKey(const Key('game-version-chart')), findsOneWidget);
-      expect(find.text('50.8%'), findsOneWidget);
-      expect(find.text('50.5%'), findsOneWidget);
-      expect(find.text('-2.9%'), findsOneWidget);
-      expect(find.text('-3.6%'), findsOneWidget);
-      expect(find.text('2,885 games'), findsOneWidget);
+      for (final report in [model.backtest, model.lineVersion!.report]) {
+        expect(find.text(percentLabel(report.hitRate!)), findsWidgets);
+        expect(find.text(signedPercent(report.roi!)), findsWidgets);
+      }
+      final gameCount = model.backtest.games.toString().replaceAllMapped(
+        RegExp(r'(\d)(?=(\d{3})+$)'),
+        (match) => '${match[1]},',
+      );
+      expect(find.textContaining('$gameCount games'), findsOneWidget);
       expect(find.textContaining('no edge against the market'), findsOneWidget);
       expect(find.byKey(const Key('calibration-chart')), findsOneWidget);
       expect(
@@ -75,11 +80,15 @@ void main() {
         expect(find.text(score.brier!.toStringAsFixed(3)), findsWidgets);
       }
       expect(expected.paired, greaterThan(1000));
-      final countText = tester.widget<Text>(
-        find.textContaining('player-games, same for each version.'),
-      ).data!;
-      expect(countText.replaceAll(',', ''),
-          '${expected.paired} player-games same for each version.');
+      final countText = tester
+          .widget<Text>(
+            find.textContaining('player-games, same for each version.'),
+          )
+          .data!;
+      expect(
+        countText.replaceAll(',', ''),
+        '${expected.paired} player-games same for each version.',
+      );
       expect(
         find.text('Usage model was not scored in this view.'),
         findsNothing,

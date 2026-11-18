@@ -114,7 +114,7 @@ def open_roof(value) -> bool:
     return str(value or "").strip().lower() in {"outdoors", "open"}
 
 
-def _request(url: str, accept: str | None = None, timeout: int = 90) -> dict | None:
+def _request(url: str, accept: str | None = None, timeout: int = 15) -> dict | None:
     headers = {"User-Agent": USER_AGENT}
     if accept:
         headers["Accept"] = accept
@@ -157,13 +157,15 @@ def stadium_point(name: str, cache: Path) -> tuple[float, float] | None:
     return float(point["lat"]), float(point["lon"])
 
 
-def _archive(lat: float, lon: float, cache: Path) -> dict | None:
+def _archive(lat: float, lon: float, cache: Path, *, fetch: bool = True) -> dict | None:
     path = _cache_file(cache, lat, lon)
     if path.exists() and path.stat().st_size > 1000:
         try:
             return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             path.unlink()
+    if not fetch:
+        return None
     query = urllib.parse.urlencode(
         {
             "latitude": f"{lat:.4f}",
@@ -177,8 +179,8 @@ def _archive(lat: float, lon: float, cache: Path) -> dict | None:
         }
     )
     payload = None
-    for attempt in range(3):
-        payload = _request(f"{ARCHIVE}?{query}", timeout=180)
+    for attempt in range(2):
+        payload = _request(f"{ARCHIVE}?{query}", timeout=20)
         if payload and "hourly" in payload:
             break
         time.sleep(1.5 * (attempt + 1))
@@ -247,8 +249,16 @@ def historical_weather(games: list[dict], cache: Path) -> dict[str, WeatherObs]:
             continue
         by_point.setdefault(point, []).append(game)
     found: dict[str, WeatherObs] = {}
+    failed_downloads = 0
     for point, slate in by_point.items():
-        payload = _archive(point[0], point[1], cache)
+        # A provider outage must not spend the whole workflow retrying every
+        # stadium. Cached readings remain usable; missing hours retain their
+        # explicitly labeled schedule fallback or missing state below.
+        payload = _archive(point[0], point[1], cache, fetch=failed_downloads < 3)
+        if payload is None:
+            failed_downloads += 1
+        else:
+            failed_downloads = 0
         indexed = _index_hours(payload) if payload else {}
         del payload
         for game in slate:

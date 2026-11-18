@@ -198,6 +198,26 @@ automatic promotion occurs from a small or favorable run.
 
 ## Reproducible checks
 
+The legacy `nfl-model.json` trainer now explicitly acquires every season's
+snap-count source. A missing source or fewer than 201 distinct participants in
+any training season aborts the fit; an empty live player list cannot replace a
+published report. Schedule and latest-season inputs refresh rather than being
+held indefinitely in the local cache. JSON publication validates the complete
+document and finite numbers before atomically replacing the prior file.
+
+Historical weather retries are bounded. After three consecutive unavailable
+stadium downloads, the remaining stadiums use available same-day caches or the
+existing explicitly labeled nflverse temperature/wind fallback. Unknown weather
+stays missing; fallback precipitation stays unknown. The report records archive,
+fallback and missing coverage separately. This legacy audit does not establish
+an edge or promote any current Coach candidate. The November 17 repair restored
+1,281 current-season participants; its legacy spread and total tests still
+showed no betting edge.
+
+The weekly workflow runs the app analysis, tests and web build against its
+newly generated reports before committing them. Testing the original checkout
+in a separate job cannot validate files generated later by the training job.
+
 ```
 python model/game_forecast.py --schedule path/to/nflverse-games.csv
 python -m unittest discover -s model -t model

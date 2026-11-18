@@ -88,7 +88,7 @@ class CoachConversation {
       ),
     );
     if (hasTeam) {
-      if (RegExp(r'\b(over|under)\s+-?\d').hasMatch(q)) return 'game total';
+      if (RegExp(r'\b(over|under)\b').hasMatch(q)) return 'game total';
       final clean = q.replaceAll(RegExp(r'\b20\d{2}-\d{2}-\d{2}\b'), '');
       if (RegExp(r'[+-]\d+(?:\.\d+)?')
           .allMatches(clean)

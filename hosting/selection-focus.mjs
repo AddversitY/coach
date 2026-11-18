@@ -15,7 +15,7 @@ export function requestedMarket(question,{hasPlayer=false,hasTeam=false}={}){
  if(/\bpassing\b|\bpass\s+(?:yards?|yds?)\b/.test(q))return 'player_pass_yds';
  if(/\brushing\b|\brush\s+(?:yards?|yds?)\b/.test(q))return 'player_rush_yds';
  if(/\btotals?\b|over.?under/.test(q))return 'totals';
- const side=/\b(?:over|under)\s+-?\d/.test(q);
+ const side=/\b(?:over|under)\b/.test(q);
  if(!hasPlayer&&side)return 'totals';
  if(hasTeam&&!hasPlayer&&!side&&spreadHandicap(question)!==null)return 'spreads';
  return null;
