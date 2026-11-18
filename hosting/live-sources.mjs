@@ -108,30 +108,70 @@ export async function collectNews(index,previous,clock,fetchText){
 // groups are excluded, and re-reading a snapshot never manufactures a new move.
 export function marketMovements(snapshot,index,previous=[],clock=Date.now()){
   const groups=new Map();
+  const upcoming = new Set(index.events.filter(event => Date.parse(event.startsAt) > clock).map(event => event.id));
+  const historyWindow = 7 * 24 * HOUR;
   const quotes=snapshot.odds?.testFixture||snapshot.props?.demo||!recent(snapshot.props?.fetchedAt,clock,18*HOUR)?[]:snapshot.props?.quotes||[];
   for(const q of quotes){
     const s=q.selection;
-    if(!s||q.demo||q.status!=='open'||!Number.isFinite(q.decimal)||q.decimal<=1||!recent(q.sourceAt,clock,18*HOUR)||!recent(q.collectedAt,clock,18*HOUR)||Date.parse(q.sourceAt)>Date.parse(q.collectedAt)||Date.parse(q.collectedAt)>Date.parse(snapshot.props.fetchedAt)||!index.events.some(e=>e.id===s.eventId&&Date.parse(e.startsAt)>clock))continue;
-    const key=JSON.stringify([s.eventId,s.market,s.participant||'',s.outcome,q.bookId,q.provider||'']);
+    if(!s||q.demo||q.status!=='open'||!Number.isFinite(q.decimal)||q.decimal<=1||!recent(q.sourceAt,clock,18*HOUR)||!recent(q.collectedAt,clock,18*HOUR)||Date.parse(q.sourceAt)>Date.parse(q.collectedAt)||Date.parse(q.collectedAt)>Date.parse(snapshot.props.fetchedAt)||!upcoming.has(s.eventId))continue;
+    const key=JSON.stringify([s.eventId,s.market,s.participant||'',s.outcome,q.bookId,q.provider||'',s.period??null,s.rules??null]);
     if(!groups.has(key))groups.set(key,[]);groups.get(key).push(q);
   }
   const old=new Map(previous.map(row=>[row[0],row])),state=[],observations=[];
+  const comparable = new Map();
+  for (const [key, rows] of groups) {
+    if (rows.length !== 1) continue;
+    const scope = JSON.parse(key);
+    const comparisonKey = JSON.stringify(scope.filter((_, index) => index !== 4));
+    if (!comparable.has(comparisonKey)) comparable.set(comparisonKey, []);
+    comparable.get(comparisonKey).push(rows[0]);
+  }
   for(const [key,rows] of groups){
     if(rows.length!==1)continue;
     const q=rows[0],s=q.selection;
     if(s.point!=null&&!Number.isFinite(s.point))continue;
     const current=[s.point??null,q.decimal,q.sourceAt,q.collectedAt];
     const prior=old.get(key);
-    const baseline=prior&&recent(prior[1][2],clock,18*HOUR)&&Date.parse(prior[2][2])<=Date.parse(q.sourceAt)?prior[1]:current;
+    const savedIsNewer=prior&&Date.parse(prior[2][2])>Date.parse(q.sourceAt);
+    const baseline=prior&&recent(prior[1][2],clock,historyWindow)?prior[1]:current;
     const latest=prior&&Date.parse(prior[2][2])>=Date.parse(q.sourceAt)?prior[2]:current;
     state.push([key,baseline,latest]);
+    if(savedIsNewer)continue;
     if(baseline[0]===latest[0]&&baseline[1]===latest[1]||Date.parse(latest[2])<=Date.parse(baseline[2]))continue;
     const player=index.players.find(p=>p.name===s.participant&&p.events.includes(s.eventId));
+    // A cross-book alternative is useful only when both its number and
+    // payout are at least as favorable, on closely timed saved quotes.
+    const direction = s.market === 'spreads' || s.market === 'totals' && s.outcome === 'Under'
+      ? 1 : s.market === 'totals' && s.outcome === 'Over' ? -1 : 0;
+    const comparisonKey = JSON.stringify(JSON.parse(key).filter((_, index) => index !== 4));
+    const alternative = direction && Number.isFinite(baseline[0]) &&
+      Number.isFinite(latest[0]) && direction * (baseline[0] - latest[0]) > 0 &&
+      recent(latest[2], clock, 2 * HOUR)
+      ? comparable.get(comparisonKey).filter(other =>
+          other.bookId !== q.bookId &&
+          recent(other.sourceAt, clock, 2 * HOUR) &&
+          Number.isFinite(other.selection.point) &&
+          direction * (other.selection.point - latest[0]) > 0 &&
+          other.decimal >= latest[1])
+        .sort((a, b) => direction * (b.selection.point - a.selection.point) || b.decimal - a.decimal)[0]
+      : null;
     observations.push({id:`movement:${key}`,kind:'market',eventId:s.eventId,...(player?{playerId:player.id}:{}),source:'The Odds API / saved observations',observedAt:latest[3],confirmed:false,
-      value:{market:s.market,participant:s.participant||null,outcome:s.outcome,book:q.book,fromLine:baseline[0],toLine:latest[0],fromDecimal:baseline[1],toDecimal:latest[1],fromSourceAt:baseline[2],toSourceAt:latest[2],notice:'Change between saved observations, not a verified opening line, steam or sharp-money flow. Settlement rules unverified.'}});
+      value:{market:s.market,participant:s.participant||null,outcome:s.outcome,book:q.book,fromLine:baseline[0],toLine:latest[0],fromDecimal:baseline[1],toDecimal:latest[1],fromSourceAt:baseline[2],toSourceAt:latest[2],
+        ...(alternative?{alternative:{book:alternative.book,line:alternative.selection.point,decimal:alternative.decimal,sourceAt:alternative.sourceAt}}:{}),
+        notice:'Change between saved observations, not a verified opening line, steam or sharp-money flow. Settlement rules unverified.'}});
+  }
+  const coverage=state.length;
+  const latestKeys = new Set(state.map(row => row[0]));
+  // Keep earlier observations through missing snapshots or intermittent book
+  // coverage. Only a fresh, unambiguous quote can generate a displayed move.
+  for (const row of previous) {
+    if (state.length >= 2000) break;
+    const scope = JSON.parse(row[0]);
+    if (scope.length === 8 && upcoming.has(scope[0]) && !latestKeys.has(row[0]) &&
+        recent(row[2][2], clock, historyWindow)) state.push(row);
   }
   if(state.length>2000||JSON.stringify(state).length>2000000)throw new Error('Market history exceeds collection limit');
-  return {state,observations,coverage:state.length};
+  return {state,observations,coverage};
 }
 
 // An authenticated adapter for a permitted provider. Aggregate bet/money shares

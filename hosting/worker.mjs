@@ -194,8 +194,19 @@ export async function collectTelemetry(env, previous, clock=Date.now()) {
   const movements=marketMovements(snapshot,index,oldMarket||[],clock);
   const stored=await state(env).fetch(new Request('https://internal/market-update',{method:'POST',body:JSON.stringify(movements.state)}));
   if(!stored.ok)throw new Error('Market state storage unavailable');
-  observations.push(...movements.observations);
-  sources.push({id:'market_movement',state:movements.coverage?'saved_observations':'waiting_for_prices',checkedAt:snapshot.props?.fetchedAt||null,notice:'Observed price/line changes only. Repeated reads spend no odds credits and do not create new moves.'});
+  const byGame = new Map();
+  for (const row of movements.observations) {
+    if (!byGame.has(row.eventId)) byGame.set(row.eventId, []);
+    byGame.get(row.eventId).push(row);
+  }
+  const hasLineChange = row => row.value.fromLine !== row.value.toLine;
+  for (const rows of byGame.values()) {
+    rows.sort((a, b) => Number(Boolean(b.value.alternative)) - Number(Boolean(a.value.alternative)) ||
+      Number(hasLineChange(b)) - Number(hasLineChange(a)) ||
+      b.observedAt.localeCompare(a.observedAt));
+    observations.push(...rows.slice(0, 8));
+  }
+  sources.push({id:'market_movement',state:movements.coverage?'saved_observations':'waiting_for_prices',checkedAt:snapshot.props?.fetchedAt||null,notice:'Up to eight changes per game, prioritizing line changes and better saved numbers. Repeated reads spend no odds credits.'});
   }catch{sources.push({id:'market_movement',state:'unavailable',checkedAt:null,notice:'Market-history refresh failed; other source checks remain independent.'});}
   const splits=await (await state(env).fetch(new Request('https://internal/splits'))).json();
   if(splits&&recent(splits.publishedAt,clock,30*60000)){

@@ -408,6 +408,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     String? planned = request.game || CoachConversation.isTeamPrompt(question)
         ? 'analyze_game'
         : null;
+    if (asksAboutLineMovement(question)) planned = 'market_status';
     final directEvaluation = RegExp(
       r'coach.*perform|forecast results|model results|evaluation|benchmark',
     ).hasMatch(question.toLowerCase());
@@ -3112,6 +3113,16 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             child: Builder(
               builder: (context) {
                 final v = row.value;
+                final offer = v['alternative'];
+                final offerAt = offer is Map
+                    ? DateTime.tryParse('${offer['sourceAt']}')
+                    : null;
+                final alternative = offer is Map &&
+                        offerAt != null &&
+                        !offerAt.isAfter(now) &&
+                        now.difference(offerAt) <= const Duration(hours: 2)
+                    ? '\nBetter saved number · ${offer['book']} ${offer['line']} at ${offer['decimal']} · ${_reportTime(offerAt.toIso8601String())}. Recheck the quote and rules.'
+                    : '';
                 final title = switch (row.kind) {
                   'injury' =>
                     '${playerNames[row.playerId] ?? v['playerName'] ?? 'Player'} · ${v['status']}',
@@ -3141,7 +3152,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     v['signalType'] == 'betting_splits'
                         ? '${v['betPercent']}% of bets · ${v['moneyPercent']}% of money. Provider-reported shares do not identify professional bettors.'
                         : v['fromDecimal'] != null
-                        ? '${v['book'] ?? 'Book'}: ${v['fromLine'] ?? ''} at ${v['fromDecimal']} → ${v['toLine'] ?? ''} at ${v['toDecimal']}\n${_reportTime(v['fromSourceAt'])} → ${_reportTime(v['toSourceAt'])}. Saved observations, not sharp-money flow.'
+                        ? '${v['book'] ?? 'Book'}\nFirst saved · ${v['fromLine'] ?? ''} at ${v['fromDecimal']} · ${_reportTime(v['fromSourceAt'])}\nLatest saved · ${v['toLine'] ?? ''} at ${v['toDecimal']} · ${_reportTime(v['toSourceAt'])}$alternative'
                         : '${v['quoteCount'] ?? 0} saved observations. Original snapshot ${_reportTime(v['snapshotAt'])}.',
                 };
                 return Column(

@@ -4,7 +4,9 @@ Implemented 2026-11-16. Coach remains one conversation, with optional research d
 
 ## Collection within the existing budget
 
-The public publisher now selects the `slate` profile. A free event-index request checks the provider usage counter against the existing private checkpoint. One four-credit reservation covers a bulk NFL h2h/spreads/totals request (at most three credits across the fixed ten bookmakers) and one rotating player-prop market for the earliest exactly matched game (at most one credit). The daily four-credit, monthly 60-credit and protected 50-credit reserve are unchanged. The pregame six-hour collection window, existing scheduled publishing, first-snapshot cache and no-retry rule remain.
+The public publisher selects the `slate` profile. A free event-index request checks the provider usage counter against the existing private checkpoint. One four-credit reservation covers a bulk NFL h2h/spreads/totals request (at most three credits across ten bookmakers) and one rotating prop market for the earliest matched game (at most one credit). The daily four-credit and monthly 60-credit limits and protected 50-credit reserve apply. The slate is eligible for collection within 36 hours of the next kickoff. The existing publishing schedule, cache and no-retry rule govern actual observation times.
+
+Coach retains the first matching pregame observation for up to seven days through gaps in the feed. Displayed changes require a fresh later observation from the same book, provider and market scope. For adverse spread or total moves, another book can appear as a better saved number when its payout is at least as high and both quotes are within two hours. First saved quotes may follow the actual opener. This comparison does not forecast future prices.
 
 Provider contract: https://the-odds-api.com/liveapi/guides/v4/ — the sport odds endpoint covers multiple games; usage is per market and group of ten bookmakers. Player props require the event odds endpoint. This improves breadth, not refresh frequency. There is still no continuous or complete real-time feed.
 

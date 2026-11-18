@@ -71,6 +71,32 @@ test('ambiguous alternate lines, future quotes and fixtures cannot become signal
   const fake=snapshot();fake.odds.testFixture=true;assert.equal(marketMovements(fake,index,[],clock).coverage,0);
 });
 
+test('an early total survives a missed snapshot and compares with the next fresh quote',()=>{
+  const later=clock+27*3600000;
+  const slate={...index,events:[{...e,startsAt:new Date(later+3600000).toISOString()}]};
+  const total=(line,time,rules='game_market_unverified')=>{
+    const data=snapshot(1.91,line,time);
+    data.props.quotes[0].selection={eventId:'game',market:'totals',outcome:'Under',point:line,period:'full_game',rules};
+    return data;
+  };
+  const first=marketMovements(total(43,clock),slate,[],clock);
+  const gap=marketMovements({},slate,first.state,later);
+  assert.equal(gap.coverage,0);
+  assert.deepEqual(gap.state,first.state);
+  const next=marketMovements(total(38,later),slate,gap.state,later);
+  assert.equal(next.observations.length,1);
+  assert.equal(next.observations[0].value.fromLine,43);
+  assert.equal(next.observations[0].value.toLine,38);
+  const crossBook = total(38,later);
+  for (const [bookId,point,decimal] of [['close',42,1.91],['worse-payout',43,1.87],['close2',40,1.94]]) {
+    const original = crossBook.props.quotes[0];
+    crossBook.props.quotes.push({...original,bookId,book:bookId,decimal,selection:{...original.selection,point}});
+  }
+  assert.equal(marketMovements(crossBook,slate,gap.state,later).observations[0].value.alternative?.line,42);
+  assert.equal(marketMovements(total(38,later,'other'),slate,gap.state,later).observations.length,0);
+  assert.equal(marketMovements({},slate,next.state,later+3600000).state.length,0);
+});
+
 test('provider adapter validates attribution, times, percentages and exact upcoming games',()=>{
   const body={kind:'market_splits',provider:'Test provider',sourceUrl:'https://provider.example/public',publishedAt:at,records:[{eventId:'game',market:'spreads',outcome:'Buffalo Bills',line:-3.5,betPercent:40,moneyPercent:60}]};
   const result=marketSplitReports(body,index,clock,['provider.example']);

@@ -552,7 +552,9 @@ def main():
     try:
         result, message = run(schedule, dataset, now, enabled=enabled, key=key,
                               state_dir=args.state_dir, fixture_dir=args.fixture_dir,
-                              initialize_state=args.initialize_state, refresh_window=timedelta(hours=6), profile=args.market_profile)
+                              initialize_state=args.initialize_state,
+                              refresh_window=timedelta(hours=36 if args.market_profile == 'slate' else 6),
+                              profile=args.market_profile)
     except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError):
         # Provider/network/cache failure should retain a valid current schedule.
         validate_schedule(schedule, now)

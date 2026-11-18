@@ -102,6 +102,11 @@ class LiveResearch {
   final List<Map<String, dynamic>> sources;
 }
 
+bool asksAboutLineMovement(String question) => RegExp(
+  r'\b(?:line|odds|total|spread|price)s?\s+(?:movement|moves?|moved|shifted|dropped|rose)\b|\bopening\s+(?:line|total|spread|odds|price)\b',
+  caseSensitive: false,
+).hasMatch(question);
+
 LiveResearch liveResearch({
   required String question,
   required DateTime now,
@@ -113,7 +118,8 @@ LiveResearch liveResearch({
   final kinds = <String>{
     if (RegExp(r'injur|availab|inactive|scratch').hasMatch(q)) 'injury',
     if (RegExp(r'news|reporter|writer|headline').hasMatch(q)) 'news',
-    if (RegExp(r'market|sharp|money|steam|movement|splits').hasMatch(q))
+    if (asksAboutLineMovement(q) ||
+        RegExp(r'market|sharp|money|steam|movement|splits').hasMatch(q))
       'market',
     if (RegExp(r'weather|wind|forecast').hasMatch(q)) 'weather',
   };
@@ -150,7 +156,9 @@ LiveResearch liveResearch({
   final summary = telemetry?.fresh(now) != true
       ? 'Source checks are unavailable or stale. I cannot confirm current reports. Try checking again shortly.'
       : kinds.contains('market')
-      ? 'I can show changes between saved prices when matching observations exist. Price movement and betting splits do not identify professional bettors. Verified sharp-money flow still needs a provider.'
+      ? asksAboutLineMovement(q)
+          ? 'I compare the first saved quote with the latest matching quote from each book. A move shows what changed. It cannot tell us where the line will go next.'
+          : 'Price movement and betting splits do not identify professional bettors. I can compare matching saved quotes when available.'
       : rows.isEmpty
       ? 'No current matching report is available in the connected sources. That does not confirm a player is healthy, active, or starting.'
       : '${rows.length} matching ${rows.length == 1 ? 'report' : 'reports'} from connected sources. Check the original publication time: an injury listing or headline does not confirm availability for the next game.';
