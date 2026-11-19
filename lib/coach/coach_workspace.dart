@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../domain/bet_finder.dart';
 import '../domain/coach_analysis.dart';
 import '../domain/game_outlook.dart';
 import '../domain/coach_telemetry.dart';
@@ -21,10 +22,18 @@ import '../domain/coach_conversation.dart';
 import '../domain/coach_books.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
+import '../domain/market_question.dart';
+import '../domain/nfl_teams.dart';
 import '../domain/player_stats.dart';
+import '../domain/prop_depth.dart';
+import '../domain/team_trends.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
+import 'bet_ideas_view.dart';
+import 'market_answer_view.dart';
+import 'prop_depth_view.dart';
+import 'trends_view.dart';
 
 const _sourceLabels = {
   'injuries': 'Player availability',
@@ -100,6 +109,8 @@ class _Turn {
   Map<String, dynamic>? evaluation;
   LiveResearch? live;
   String? liveNotice;
+  MarketAnswer? market;
+  BetFinderAnswer? bets;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -195,7 +206,21 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         setState(() => loading = false);
         _reviewAnalyses(telemetry);
         unawaited(_pollTelemetry());
+        unawaited(_loadTrendHistory());
       }
+    }
+  }
+
+  /// Closing-line history for game trends. Loads in the background; game
+  /// answers simply omit trends until it is ready.
+  Future<void> _loadTrendHistory() async {
+    if (analysisScores != null) return;
+    try {
+      final games =
+          await (widget.analysisHistoryLoader ?? loadBundledHistoryGames)();
+      if (mounted) setState(() => analysisScores ??= games);
+    } catch (_) {
+      /* Trends stay hidden when the bundled history cannot load. */
     }
   }
 
@@ -445,6 +470,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     GameOutlook? game;
     Map<String, dynamic>? evaluation;
     LiveResearch? live;
+    MarketAnswer? market;
+    BetFinderAnswer? bets;
+    final marketQuery = parseMarketQuestion(
+      question,
+      players: snapshot!.playerIdsByName.keys,
+    );
     late CoachAnswer answer;
     final lower = resolved.toLowerCase();
     final wantsLive =
@@ -496,6 +527,22 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           intent: CoachIntent.clarify,
         );
       }
+    } else if (asksForBetIdeas(question)) {
+      bets = findBets(
+        question,
+        snapshot!.props,
+        at,
+        data: data,
+        playerIds: snapshot!.playerIdsByName,
+        books: selectedBookIds?.toSet(),
+      );
+      answer = CoachAnswer(
+        title: bets.parlay != null
+            ? 'Parlay from saved prices'
+            : 'Best bets from saved prices',
+        text: bets.summary,
+        intent: CoachIntent.prices,
+      );
     } else if (wantsAnalysis) {
       try {
         await _analysisSources();
@@ -630,6 +677,24 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           intent: CoachIntent.clarify,
         );
       }
+    } else if (marketQuery != null) {
+      market = answerMarketQuestion(
+        marketQuery,
+        snapshot!.props,
+        at,
+        books: selectedBookIds?.toSet(),
+      );
+      answer = CoachAnswer(
+        title: const {
+          MarketAsk.bestPrice: 'Best saved prices',
+          MarketAsk.value: 'Prices above the market',
+          MarketAsk.arbitrage: 'Two-book price crosses',
+          MarketAsk.middles: 'Middle windows',
+          MarketAsk.lowHold: 'Lowest sportsbook fee',
+        }[marketQuery.ask]!,
+        text: market.summary,
+        intent: CoachIntent.prices,
+      );
     } else {
       answer = session.respond(
         resolved,
@@ -778,7 +843,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ..analysis = result
           ..game = game
           ..evaluation = evaluation
-          ..live = live;
+          ..live = live
+          ..market = market
+          ..bets = bets;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -1298,6 +1365,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               a.intent != CoachIntent.live &&
               a.intent != CoachIntent.history)
             _chart(a),
+          if (a.player != null &&
+              turn.invalidation == null &&
+              turn.analysis == null &&
+              a.intent != CoachIntent.live)
+            ?_propDepth(a),
           if (turn.game == null ||
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
@@ -1387,6 +1459,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             _DeskLink(
               label: const Text('Refresh game research'),
               onPressed: busy ? null : () => _send(turn.researchQuery),
+            ),
+          if (turn.market != null) MarketAnswerView(answer: turn.market!),
+          if (turn.bets != null)
+            BetIdeasView(
+              answer: turn.bets!,
+              onAsk: busy ? null : (query) => _send(query),
             ),
           if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
@@ -1499,6 +1577,30 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         .trim();
   }
 
+  /// Spread and total records for both teams, from bundled closing lines.
+  Widget? _trends(SportEvent event) {
+    final history = analysisScores;
+    final home = canonicalTeam(event.home), away = canonicalTeam(event.away);
+    if (history == null || home == null || away == null) return null;
+    final spreads = [
+      for (final q in snapshot?.props.quotes ?? const <OddsQuote>[])
+        if (q.selection.eventId == event.id &&
+            q.selection.market == 'spreads' &&
+            q.selection.outcome == event.home &&
+            q.selection.point != null)
+          q.selection.point!,
+    ]..sort();
+    final trends = matchupTrends(
+      history,
+      home: home,
+      away: away,
+      before: event.startsAt,
+      homeSpread: spreads.isEmpty ? null : spreads[spreads.length ~/ 2],
+    );
+    if (trends.games == 0) return null;
+    return TrendsView(trends: trends);
+  }
+
   Widget _gameView(_Turn turn) {
     final comparison = turn.game!.raw['comparison'];
     return Column(
@@ -1506,6 +1608,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       children: [
         if (comparison is Map)
           _comparisonView(Map<String, dynamic>.from(comparison)),
+        ?_trends(turn.game!.event),
         ExpansionTile(
           tilePadding: EdgeInsets.zero,
           title: Text(
@@ -3117,7 +3220,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 final offerAt = offer is Map
                     ? DateTime.tryParse('${offer['sourceAt']}')
                     : null;
-                final alternative = offer is Map &&
+                final alternative =
+                    offer is Map &&
                         offerAt != null &&
                         !offerAt.isAfter(now) &&
                         now.difference(offerAt) <= const Duration(hours: 2)
@@ -3368,6 +3472,63 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
       ],
     );
+  }
+
+  /// Record against the line, matchup and fee-free market view for a player.
+  /// Uses the requested line, else the most quoted saved line for the stat.
+  Widget? _propDepth(CoachAnswer a) {
+    final player = a.player!;
+    final quotes = [
+      for (final q in snapshot?.props.quotes ?? const <OddsQuote>[])
+        if (q.selection.market == a.metric.market &&
+            q.selection.participant == player.name &&
+            (a.event == null || q.selection.eventId == a.event!.id) &&
+            (selectedBookIds == null || selectedBookIds!.contains(q.bookId)) &&
+            now.difference(q.sourceAt) <= const Duration(hours: 18) &&
+            (snapshot!.props.events
+                    .where((e) => e.id == q.selection.eventId)
+                    .firstOrNull
+                    ?.startsAt
+                    .isAfter(now) ??
+                false))
+          q,
+    ];
+    var line = a.line;
+    if (line == null && quotes.isNotEmpty) {
+      final counts = <double, int>{};
+      for (final q in quotes) {
+        if (q.selection.point != null) {
+          counts[q.selection.point!] = (counts[q.selection.point!] ?? 0) + 1;
+        }
+      }
+      if (counts.isNotEmpty) {
+        line =
+            (counts.entries.toList()
+                  ..sort((x, y) => y.value.compareTo(x.value)))
+                .first
+                .key;
+      }
+    }
+    if (line == null || data == null) return null;
+    String? opponent;
+    final event = a.event;
+    if (event != null) {
+      final home = canonicalTeam(event.home), away = canonicalTeam(event.away);
+      opponent = home == player.team
+          ? away
+          : away == player.team
+          ? home
+          : null;
+    }
+    final depth = propDepth(
+      data: data!,
+      playerId: player.id,
+      metric: a.metric.key,
+      line: line,
+      opponent: opponent,
+      quotes: quotes,
+    );
+    return PropDepthView(depth: depth, metricLabel: a.metric.label);
   }
 
   Widget _chart(CoachAnswer a) {

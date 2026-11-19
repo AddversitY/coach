@@ -168,3 +168,21 @@ test('priced comparisons exclude unpriced references and average calibration ins
   assert.ok(row.priceComparison.brierDifference.interval95.every(n=>Number.isFinite(n)));
   assert.equal(row.priceComparison.adopted,false);
 });
+
+test('frozen forecast keeps one best-priced row per selection, independent of book order',()=>{
+  const books=[['ballybet','Bally Bet',1.85],['betmgm','BetMGM',1.87],['draftkings','DraftKings',1.89],['fanduel','FanDuel',1.95]];
+  const quotes=books.flatMap(([bookId,book,decimal])=>gameQuotes().map(q=>({...q,bookId,book,decimal})));
+  const snapshot=forecastSnapshot(report(quotes));
+  const keys=snapshot.rows.map(r=>JSON.stringify(r.selection));assert.equal(new Set(keys).size,keys.length);
+  for(const market of ['spreads','totals','h2h'])assert.equal(snapshot.rows.filter(r=>r.selection.market===market).length,2);
+  assert.ok(snapshot.rows.every(r=>r.book==='FanDuel'));
+});
+test('a book-filtered analysis would freeze a different record, so the worker freezes the all-books view',()=>{
+  const quotes=[...gameQuotes(),...gameQuotes().map(q=>({...q,bookId:'fanduel',book:'FanDuel',decimal:q.decimal-0.05}))];
+  const data=source(quotes);
+  const scoped=forecastSnapshot(analyzeGame(data,data.index.events[0],{now,bookIds:['fanduel']}));
+  const all=forecastSnapshot(analyzeGame(data,data.index.events[0],{now,bookIds:null}));
+  assert.equal(scoped.id,all.id);
+  assert.ok(scoped.rows.every(r=>r.book==='FanDuel'));
+  assert.ok(all.rows.some(r=>r.book==='DraftKings'));
+});

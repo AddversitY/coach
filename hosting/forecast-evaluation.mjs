@@ -8,7 +8,11 @@ const mean=a=>a.length?a.reduce((sum,x)=>sum+x,0)/a.length:null;
 export function forecastSnapshot(report){
   const kick=Date.parse(report.event.startsAt),captured=Date.parse(report.createdAt);
   if(!Number.isFinite(kick)||!Number.isFinite(captured)||captured>=kick||kick-captured>24*3600000)return null;
-  const priced=report.categories.flatMap(c=>[...c.rows].sort((a,b)=>JSON.stringify(a.selection).localeCompare(JSON.stringify(b.selection))||String(a.book).localeCompare(String(b.book))).slice(0,c.market==='props'?18:12));
+  // One frozen row per exact selection (its best saved price), so every side and
+  // every book competes equally instead of alphabetically early books filling the cap.
+  const bestPerSelection=rows=>[...rows.reduce((best,row)=>{const key=JSON.stringify(row.selection),current=best.get(key);
+    if(!current||Number(row.decimal)>Number(current.decimal)||(Number(row.decimal)===Number(current.decimal)&&String(row.book).localeCompare(String(current.book))<0))best.set(key,row);return best;},new Map()).values()];
+  const priced=report.categories.flatMap(c=>bestPerSelection(c.rows).sort((a,b)=>JSON.stringify(a.selection).localeCompare(JSON.stringify(b.selection))).slice(0,c.market==='props'?18:12));
   const rows=priced.length?priced.map(r=>({id:r.id,playerId:r.playerId,threeWay:r.threeWay,selection:r.selection,decimal:r.decimal,win:r.win,push:r.push,baseline:r.baseline,sourceAt:r.sourceAt,collectedAt:r.collectedAt,book:r.book,rulesVerified:false,forecastBasis:r.forecastBasis})):[{
     id:'home-moneyline-no-price',selection:{eventId:report.event.id,market:'h2h',outcome:report.event.home,participant:'',point:null,period:'full_game',rules:'unpriced_research'},decimal:null,win:report.score.homeWin,push:report.score.tie,baseline:report.baselineHomeWin??null,forecastBasis:report.basis,rulesVerified:false,
   }];

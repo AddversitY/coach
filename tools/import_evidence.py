@@ -65,6 +65,20 @@ def _integer(raw: object, field: str, low: int, high: int) -> int:
     return value
 
 
+def _line(raw: object, low: float, high: float) -> float | None:
+    """Optional closing line; blank or out of range stays unknown, never zero."""
+    text = str(raw or "").strip()
+    if not text:
+        return None
+    try:
+        value = float(text)
+    except ValueError:
+        return None
+    if not math.isfinite(value) or not low <= value <= high:
+        return None
+    return value
+
+
 def _text(raw: object, field: str) -> str:
     if not isinstance(raw, str) or not raw.strip() or len(raw) > 240:
         raise ValueError(f"Missing or invalid {field}.")
@@ -120,6 +134,12 @@ def parse_schedule(rows: list[dict[str, str]]) -> dict[str, dict]:
             homeScore=None if not home_raw.strip() else _integer(home_raw, "home score", 0, 150),
             awayScore=None if not away_raw.strip() else _integer(away_raw, "away score", 0, 150),
         )
+        # nflverse closing lines: spread_line is the home margin the market expected.
+        spread, total = _line(row.get("spread_line"), -40, 40), _line(row.get("total_line"), 20, 80)
+        if spread is not None:
+            games[game_id]["spreadLine"] = spread
+        if total is not None:
+            games[game_id]["totalLine"] = total
     if not games:
         raise ValueError("No NFL schedule games are available.")
     return games
@@ -152,7 +172,7 @@ def build_history(schedule: dict[str, dict], as_of: date, season: int,
         sourceSha256=source_sha256, retrievedAt=iso(retrieved_at),
         cutoff=max(row["date"] for row in games), currentSeason=season,
         license="CC BY 4.0", licenseUrl=LICENSE_URL,
-        changes=f"Selected completed {season - 4}–{season} regular-season games on or before {as_of.isoformat()}; retained dates, teams and final scores. No odds. Current week may be incomplete; historical revisions are not point-in-time replay.",
+        changes=f"Selected completed {season - 4}–{season} regular-season games on or before {as_of.isoformat()}; retained dates, teams, final scores and nflverse closing spread/total lines where published (for trend research; no prices). Current week may be incomplete; historical revisions are not point-in-time replay.",
         games=games,
     )
 

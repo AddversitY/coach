@@ -5,6 +5,7 @@ import 'package:odds_edge/data/published_snapshot.dart';
 import 'package:odds_edge/domain/assistant.dart';
 import 'package:odds_edge/domain/coach_telemetry.dart';
 import 'package:odds_edge/domain/coach_books.dart';
+import 'package:odds_edge/domain/history.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
@@ -38,6 +39,7 @@ void main() {
     Future<CoachTelemetry> Function()? telemetryLoader,
     Future<Map<String, dynamic>> Function(Map<String, dynamic>)? gameLoader,
     Future<Map<String, dynamic>> Function()? evaluationLoader,
+    Future<List<HistoricalGame>> Function()? historyLoader,
   }) => MaterialApp(
     theme: coachTheme(),
     home: CoachWorkspace(
@@ -48,6 +50,7 @@ void main() {
       telemetryLoader: telemetryLoader,
       gameAnalysisLoader: gameLoader,
       evaluationLoader: evaluationLoader,
+      analysisHistoryLoader: historyLoader,
     ),
   );
   Future<void> send(WidgetTester tester, String q) async {
@@ -151,6 +154,158 @@ void main() {
     },
   );
 
+  testWidgets('game answers carry spread and total trends with sample size', (
+    tester,
+  ) async {
+    final history = [
+      for (var i = 0; i < 10; i++)
+        HistoricalGame(
+          season: 2026,
+          week: i + 1,
+          date: DateTime.utc(2026, 9, 7).add(Duration(days: 7 * i)),
+          home: 'KC',
+          away: i.isEven ? 'LV' : 'DEN',
+          homeScore: 30,
+          awayScore: 10,
+          spreadLine: 3,
+          totalLine: 45.5,
+        ),
+    ];
+    await tester.pumpWidget(
+      frame(
+        historyLoader: () async => history,
+        gameLoader: (_) async => gameOutlookFixture(event, now),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await send(tester, 'Analyze Bills');
+    await tester.scrollUntilVisible(
+      find.text('Trends against the closing line'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.text(
+        'KC 10-0 cover/no cover against the spread, last 10 (notable, but past covers predict little).',
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'price-shopping questions answer from saved prices without game research or AI',
+    (tester) async {
+      var gameCalls = 0, aiCalls = 0;
+      Selection side(String market, String outcome, double? point) => Selection(
+        eventId: event.id,
+        market: market,
+        outcome: outcome,
+        point: point,
+        rules: 'game_market_unverified',
+      );
+      OddsQuote price(String book, Selection s, double decimal) => OddsQuote(
+        selection: s,
+        bookId: book,
+        book: book,
+        provider: 'test',
+        decimal: decimal,
+        sourceAt: now.subtract(const Duration(minutes: 3)),
+        collectedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final priced = OddsBoard(
+        events: [event],
+        quotes: [
+          price('draftkings', side('h2h', event.home, null), 1.8),
+          price('draftkings', side('h2h', event.away, null), 2.05),
+          price('fanduel', side('h2h', event.home, null), 1.85),
+          price('fanduel', side('h2h', event.away, null), 2.0),
+        ],
+        fetchedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      await tester.pumpWidget(
+        frame(
+          loader: () async => PublishedSnapshot(
+            board: board,
+            props: priced,
+            generatedAt: now,
+            scheduleAt: now,
+            oddsMessage: 'Saved prices',
+          ),
+          gameLoader: (_) async {
+            gameCalls++;
+            return {};
+          },
+          ask: (_) async {
+            aiCalls++;
+            return const AssistantReply(
+              available: false,
+              answer: '',
+              cited: [],
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'best price on the moneyline');
+      expect(find.text('Best saved prices'), findsOneWidget);
+      expect(find.textContaining('1.85'), findsNothing);
+      expect(find.textContaining('fanduel'), findsWidgets);
+      expect(gameCalls, 0);
+      expect(aiCalls, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'a parlay request builds one ticket at one book from saved prices',
+    (tester) async {
+      Selection side(String outcome) => Selection(
+        eventId: event.id,
+        market: 'h2h',
+        outcome: outcome,
+        rules: 'game_market_unverified',
+      );
+      OddsQuote price(String book, String outcome, double decimal) => OddsQuote(
+        selection: side(outcome),
+        bookId: book,
+        book: book,
+        provider: 'test',
+        decimal: decimal,
+        sourceAt: now.subtract(const Duration(minutes: 3)),
+        collectedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final priced = OddsBoard(
+        events: [event],
+        quotes: [
+          price('draftkings', event.home, 1.8),
+          price('draftkings', event.away, 2.05),
+          price('fanduel', event.home, 1.8),
+          price('fanduel', event.away, 2.25),
+        ],
+        fetchedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      await tester.pumpWidget(
+        frame(
+          loader: () async => PublishedSnapshot(
+            board: board,
+            props: priced,
+            generatedAt: now,
+            scheduleAt: now,
+            oddsMessage: 'Saved prices',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'build me a 2 leg parlay');
+      // One game cannot make a two-game ticket; straight bets still show.
+      expect(find.text('Best bets from saved prices'), findsOneWidget);
+      expect(find.textContaining('Not enough separate games'), findsOneWidget);
+      expect(find.text('Straight bets'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'a missing-price player prop still leads with a recorded chart without AI',
     (tester) async {
@@ -160,6 +315,19 @@ void main() {
       expect(find.text('THE PLAYER / RECENT FORM'), findsOneWidget);
       expect(find.text('Requested line'), findsOneWidget);
       expect(find.text('245.5'), findsOneWidget);
+      // The prop card shows the record against the requested line by window.
+      await tester.scrollUntilVisible(
+        find.text('Past results and market prices, not a validated forecast.'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Passing yards over 245.5 · record'), findsOneWidget);
+      expect(find.text('Last 5'), findsOneWidget);
+      expect(find.text('Last 10'), findsOneWidget);
+      expect(
+        find.text('Past results and market prices, not a validated forecast.'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     },
   );
