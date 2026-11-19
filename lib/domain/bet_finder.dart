@@ -51,14 +51,24 @@ class ParlayIdea {
     required this.legs,
     required this.decimal,
     required this.fair,
+    this.sameGame = false,
+    this.correlation = 1,
+    this.sharedGames = 0,
   });
   final String book;
   final List<BetIdea> legs;
+  final bool sameGame;
+
+  /// How much more (above 1) or less often the legs hit together than if
+  /// they were independent, from games the players shared. 1 = independent.
+  final double correlation;
+  final int sharedGames;
 
   /// Legs multiplied at [book]'s own prices.
   final double decimal;
 
-  /// Product of the legs' fee-free chances. Legs are in different games.
+  /// Joint chance: the legs' chances multiplied, times [correlation] for a
+  /// same-game ticket. Cross-game legs are treated as independent.
   final double fair;
   double get edge => fair * decimal - 1;
 }
@@ -78,7 +88,8 @@ class BetFinderAnswer {
   final DateTime snapshotAt;
 }
 
-final _parlay = RegExp(r'\bparlays?\b');
+final _parlay = RegExp(r'\b(parlays?|sgp)\b');
+final _sameGame = RegExp(r'\b(same[- ]game|sgp)\b');
 final _bestBets = RegExp(
   r'\b(best|top|good|strongest|smart(est)?) (straight |prop |player prop |game |longshot |value |parlay )?(bets?|plays?|picks?)\b|\bwhat should i bet\b|\bstraight bets?\b',
 );
@@ -187,20 +198,35 @@ BetFinderAnswer findBets(
       events: board.events,
       fetchedAt: board.fetchedAt,
     );
-    parlay = _buildParlay(
-      scan.markets,
-      [
-        for (final quote in usable)
-          if (inRange(quote.decimal)) quote,
-      ],
-      _legCount(q),
-      data,
-      playerIds,
-      now,
-    );
+    final priced = [
+      for (final quote in usable)
+        if (inRange(quote.decimal)) quote,
+    ];
+    final sameGame = _sameGame.hasMatch(q);
+    parlay = sameGame
+        ? _buildSameGameParlay(
+            scan.markets,
+            priced,
+            q.contains(RegExp(r'\b([2-6]|two|three|four)[- ]?(leg|pick)'))
+                ? _legCount(q)
+                : 2,
+            data,
+            playerIds,
+            now,
+          )
+        : _buildParlay(
+            scan.markets,
+            priced,
+            _legCount(q),
+            data,
+            playerIds,
+            now,
+          );
     if (parlay == null) {
       notes.add(
-        'Not enough separate games with every leg at one book to build that parlay.',
+        sameGame
+            ? 'Not enough player props from one game at one book to build that same-game parlay.'
+            : 'Not enough separate games with every leg at one book to build that parlay.',
       );
     }
   }
@@ -212,8 +238,8 @@ BetFinderAnswer findBets(
         '${query.teams.isEmpty ? '' : ' for ${query.teams.join(' and ')}'}.';
   } else if (parlay != null) {
     summary =
-        '${parlay.legs.length}-leg parlay at ${parlay.book}: ${americanLabel(parlay.decimal)}, '
-        'fee-free chance ${(parlay.fair * 100).toStringAsFixed(1)}%, '
+        '${parlay.legs.length}-leg ${parlay.sameGame ? 'same-game ' : ''}parlay at ${parlay.book}: ${americanLabel(parlay.decimal)}, '
+        '${parlay.sameGame ? 'joint' : 'fee-free'} chance ${(parlay.fair * 100).toStringAsFixed(1)}%, '
         '${parlay.edge >= 0 ? '+' : ''}${(parlay.edge * 100).toStringAsFixed(1)}% per dollar against the market.';
   } else if (positive.isEmpty) {
     summary =
@@ -370,3 +396,128 @@ Set<String> _teams(String question) =>
     parseMarketQuestion('best price $question')?.teams ?? const {};
 
 String? _market(String q) => parseMarketQuestion('best price $q')?.market;
+
+/// Same-game parlay from player props in one game at one book. The joint
+/// chance multiplies the legs and adjusts for how often the players' lines
+/// hit together in games they shared (QB yards with his receiver, etc.).
+ParlayIdea? _buildSameGameParlay(
+  List<PricedMarket> markets,
+  List<OddsQuote> usable,
+  int legs,
+  PlayerStatsDataset? data,
+  Map<String, String> playerIds,
+  DateTime now,
+) {
+  final offers = <String, List<OddsQuote>>{};
+  for (final quote in usable) {
+    (offers[quote.selection.key] ??= []).add(quote);
+  }
+  final groups = <String, List<BetIdea>>{};
+  for (final market in markets) {
+    if (!market.complete || market.booksAveraged < 2) continue;
+    for (final side in market.sides) {
+      final fair = side.fairProbability;
+      if (fair == null || side.selection.participant.isEmpty) continue;
+      for (final quote in offers[side.selection.key] ?? const <OddsQuote>[]) {
+        final idea = _withRecord(
+          BetIdea(
+            market: market,
+            side: side,
+            price: quote,
+            fair: fair,
+            edge: fair * quote.decimal - 1,
+          ),
+          data,
+          playerIds,
+          now,
+        );
+        (groups['${market.eventId}|${quote.bookId}'] ??= []).add(idea);
+      }
+    }
+  }
+  ParlayIdea? best;
+  for (final group in groups.values) {
+    final candidates = [...group]..sort((a, b) => b.edge.compareTo(a.edge));
+    final chosen = <BetIdea>[];
+    final players = <String>{};
+    for (final c in candidates) {
+      if (players.add(c.side.selection.participant)) chosen.add(c);
+      if (chosen.length == legs) break;
+    }
+    if (chosen.length < legs) continue;
+    var decimal = 1.0, independent = 1.0, lift = 1.0, shared = 0;
+    for (final leg in chosen) {
+      decimal *= leg.price.decimal;
+      independent *= leg.estimate;
+    }
+    for (var i = 0; i < chosen.length; i++) {
+      for (var j = i + 1; j < chosen.length; j++) {
+        final pair = _pairLift(chosen[i], chosen[j], data, playerIds, now);
+        lift *= pair.$1;
+        shared = shared == 0 ? pair.$2 : (pair.$2 < shared ? pair.$2 : shared);
+      }
+    }
+    final joint = (independent * lift).clamp(0.0, 0.999);
+    final idea = ParlayIdea(
+      book: chosen.first.price.book,
+      legs: chosen,
+      decimal: decimal,
+      fair: joint,
+      sameGame: true,
+      correlation: lift,
+      sharedGames: shared,
+    );
+    if (best == null || idea.edge > best.edge) best = idea;
+  }
+  return best;
+}
+
+/// (lift, shared games) for two prop legs. The raw lift is how often both
+/// lines cleared together divided by what independence predicts, shrunk
+/// toward 1 with 20 games of weight and kept between 0.5 and 2.
+(double, int) _pairLift(
+  BetIdea a,
+  BetIdea b,
+  PlayerStatsDataset? data,
+  Map<String, String> playerIds,
+  DateTime now,
+) {
+  if (data == null) return (1, 0);
+  final sa = a.side.selection, sb = b.side.selection;
+  final ida = playerIds[sa.participant], idb = playerIds[sb.participant];
+  final ma = _metricFor(sa.market), mb = _metricFor(sb.market);
+  if (ida == null || idb == null || ma == null || mb == null) return (1, 0);
+  if (sa.point == null || sb.point == null) return (1, 0);
+  bool? hit(PlayerGame g, String metric, Selection s) {
+    final v = g.stats[metric];
+    if (v == null || v == s.point) return null;
+    return s.outcome.toLowerCase() == 'over' ? v > s.point! : v < s.point!;
+  }
+
+  final rowsA = {
+    for (final g in data.rows)
+      if (g.playerId == ida && g.seasonType == 'REG' && g.date.isBefore(now))
+        '${g.season}/${g.week}': g,
+  };
+  var n = 0, both = 0, hitsA = 0, hitsB = 0;
+  for (final g in data.rows) {
+    if (g.playerId != idb || g.seasonType != 'REG' || !g.date.isBefore(now)) {
+      continue;
+    }
+    final other = rowsA['${g.season}/${g.week}'];
+    // Same game: teammates, or each other's opponent.
+    if (other == null || !(other.team == g.team || other.opponent == g.team)) {
+      continue;
+    }
+    final ha = hit(other, ma, sa), hb = hit(g, mb, sb);
+    if (ha == null || hb == null) continue;
+    n++;
+    if (ha && hb) both++;
+    if (ha) hitsA++;
+    if (hb) hitsB++;
+  }
+  if (n < 5 || hitsA == 0 || hitsB == 0) return (1, n);
+  final raw = (both / n) / ((hitsA / n) * (hitsB / n));
+  final shrunk = 1 + (raw - 1) * n / (n + 20);
+  return (shrunk.clamp(.5, 2.0), n);
+}

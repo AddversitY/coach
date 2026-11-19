@@ -172,4 +172,91 @@ void main() {
     expect(over.estimate, closeTo(.8 * .5 + .2 * 22 / 24, 1e-9));
     expect(over.edge, greaterThan(0));
   });
+
+  test(
+    'a same-game parlay adjusts the joint chance for legs that move together',
+    () {
+      // A quarterback and his receiver: both clear in the same 12 of 24 games.
+      final rows = <PlayerGame>[
+        for (var w = 1; w <= 24; w++) ...[
+          for (final (id, name, pos, metric, value) in [
+            ('qb', 'Test Passer', 'QB', 'passing_yards', w.isEven ? 300 : 180),
+            (
+              'wr',
+              'Test Catcher',
+              'WR',
+              'receiving_yards',
+              w.isEven ? 100 : 40,
+            ),
+          ])
+            PlayerGame(
+              playerId: id,
+              name: name,
+              position: pos,
+              team: 'BUF',
+              opponent: 'MIA',
+              season: 2025 + (w > 12 ? 1 : 0),
+              week: (w - 1) % 12 + 1,
+              date: DateTime.utc(2025, 9, 1).add(Duration(days: 14 * w)),
+              seasonType: 'REG',
+              stats: {metric: value},
+            ),
+        ],
+      ];
+      OddsQuote prop(
+        String book,
+        String player,
+        String market,
+        String side,
+        double point,
+      ) => OddsQuote(
+        selection: Selection(
+          eventId: 'g1',
+          market: market,
+          outcome: side,
+          participant: player,
+          point: point,
+          rules: 'player_prop_unverified',
+        ),
+        bookId: book,
+        book: book,
+        provider: 'test',
+        decimal: 1.91,
+        sourceAt: now.subtract(const Duration(minutes: 5)),
+        collectedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final board = OddsBoard(
+        events: [game('g1', 'Buffalo Bills', 'Kansas City Chiefs')],
+        quotes: [
+          for (final book in ['a', 'b'])
+            for (final side in ['Over', 'Under']) ...[
+              prop(book, 'Test Passer', 'player_pass_yds', side, 240.5),
+              prop(book, 'Test Catcher', 'player_reception_yds', side, 70.5),
+            ],
+        ],
+        fetchedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final answer = findBets(
+        'same game parlay Bills',
+        board,
+        now,
+        data: PlayerStatsDataset(rows: rows),
+        playerIds: {'Test Passer': 'qb', 'Test Catcher': 'wr'},
+      );
+      final parlay = answer.parlay!;
+      expect(parlay.sameGame, isTrue);
+      expect(
+        parlay.legs.map((l) => l.side.selection.participant).toSet(),
+        hasLength(2),
+      );
+      expect(parlay.sharedGames, 24);
+      // Raw lift: .5 / (.5 * .5) = 2, shrunk with 24 games: 1 + 1 * 24 / 44.
+      expect(parlay.correlation, closeTo(1 + 24 / 44, 1e-9));
+      var independent = 1.0;
+      for (final leg in parlay.legs) {
+        independent *= leg.estimate;
+      }
+      expect(parlay.fair, closeTo(independent * parlay.correlation, 1e-9));
+    },
+  );
 }

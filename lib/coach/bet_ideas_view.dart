@@ -123,8 +123,12 @@ class BetIdeasView extends StatelessWidget {
             [
               for (final leg in parlay.legs) _idea(leg, showBook: false),
               Text(
-                'Market chance ${_pct(parlay.fair)}, ${_signed(parlay.edge)} per dollar. '
-                'One leg per game, so the legs are not correlated. All legs at one book, because a parlay is placed at one book.',
+                parlay.sameGame
+                    ? 'Joint chance ${_pct(parlay.fair)}, ${_signed(parlay.edge)} per dollar against the multiplied price. '
+                          '${parlay.sharedGames < 5 ? 'Too few shared games to measure how these legs move together, so they are treated as independent. ' : 'In ${parlay.sharedGames} shared games these lines hit together ${parlay.correlation >= 1 ? '${((parlay.correlation - 1) * 100).round()}% more' : '${((1 - parlay.correlation) * 100).round()}% less'} often than independent legs would. '}'
+                          'Books price same-game tickets themselves, so check the offered price.'
+                    : 'Market chance ${_pct(parlay.fair)}, ${_signed(parlay.edge)} per dollar. '
+                          'One leg per game, so the legs are not correlated. All legs at one book, because a parlay is placed at one book.',
                 style: CoachType.label.copyWith(fontSize: 11),
               ),
             ],
