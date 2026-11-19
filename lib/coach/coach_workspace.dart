@@ -21,10 +21,13 @@ import '../domain/coach_conversation.dart';
 import '../domain/coach_books.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
+import '../domain/nfl_teams.dart';
 import '../domain/player_stats.dart';
+import '../domain/prop_depth.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
+import 'prop_depth_view.dart';
 
 const _sourceLabels = {
   'injuries': 'Player availability',
@@ -1298,6 +1301,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               a.intent != CoachIntent.live &&
               a.intent != CoachIntent.history)
             _chart(a),
+          if (a.player != null &&
+              turn.invalidation == null &&
+              turn.analysis == null &&
+              a.intent != CoachIntent.live)
+            ?_propDepth(a),
           if (turn.game == null ||
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
@@ -3368,6 +3376,58 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ),
       ],
     );
+  }
+
+  /// Record against the line, matchup and fee-free market view for a player.
+  /// Uses the requested line, else the most quoted saved line for the stat.
+  Widget? _propDepth(CoachAnswer a) {
+    final player = a.player!;
+    final quotes = [
+      for (final q in snapshot?.props.quotes ?? const <OddsQuote>[])
+        if (q.selection.market == a.metric.market &&
+            q.selection.participant == player.name &&
+            (a.event == null || q.selection.eventId == a.event!.id) &&
+            (selectedBookIds == null || selectedBookIds!.contains(q.bookId)) &&
+            now.difference(q.sourceAt) <= const Duration(hours: 18) &&
+            (snapshot!.props.events
+                    .where((e) => e.id == q.selection.eventId)
+                    .firstOrNull
+                    ?.startsAt
+                    .isAfter(now) ??
+                false))
+          q,
+    ];
+    var line = a.line;
+    if (line == null && quotes.isNotEmpty) {
+      final counts = <double, int>{};
+      for (final q in quotes) {
+        if (q.selection.point != null) {
+          counts[q.selection.point!] = (counts[q.selection.point!] ?? 0) + 1;
+        }
+      }
+      if (counts.isNotEmpty) {
+        line = (counts.entries.toList()
+              ..sort((x, y) => y.value.compareTo(x.value)))
+            .first
+            .key;
+      }
+    }
+    if (line == null || data == null) return null;
+    String? opponent;
+    final event = a.event;
+    if (event != null) {
+      final home = canonicalTeam(event.home), away = canonicalTeam(event.away);
+      opponent = home == player.team ? away : away == player.team ? home : null;
+    }
+    final depth = propDepth(
+      data: data!,
+      playerId: player.id,
+      metric: a.metric.key,
+      line: line,
+      opponent: opponent,
+      quotes: quotes,
+    );
+    return PropDepthView(depth: depth, metricLabel: a.metric.label);
   }
 
   Widget _chart(CoachAnswer a) {

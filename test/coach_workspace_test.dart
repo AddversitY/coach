@@ -160,6 +160,19 @@ void main() {
       expect(find.text('THE PLAYER / RECENT FORM'), findsOneWidget);
       expect(find.text('Requested line'), findsOneWidget);
       expect(find.text('245.5'), findsOneWidget);
+      // The prop card shows the record against the requested line by window.
+      await tester.scrollUntilVisible(
+        find.text('Past results and market prices, not a validated forecast.'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Passing yards over 245.5 · record'), findsOneWidget);
+      expect(find.text('Last 5'), findsOneWidget);
+      expect(find.text('Last 10'), findsOneWidget);
+      expect(
+        find.text('Past results and market prices, not a validated forecast.'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     },
   );
