@@ -152,6 +152,70 @@ void main() {
   );
 
   testWidgets(
+    'price-shopping questions answer from saved prices without game research or AI',
+    (tester) async {
+      var gameCalls = 0, aiCalls = 0;
+      Selection side(String market, String outcome, double? point) => Selection(
+        eventId: event.id,
+        market: market,
+        outcome: outcome,
+        point: point,
+        rules: 'game_market_unverified',
+      );
+      OddsQuote price(String book, Selection s, double decimal) => OddsQuote(
+        selection: s,
+        bookId: book,
+        book: book,
+        provider: 'test',
+        decimal: decimal,
+        sourceAt: now.subtract(const Duration(minutes: 3)),
+        collectedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final priced = OddsBoard(
+        events: [event],
+        quotes: [
+          price('draftkings', side('h2h', event.home, null), 1.8),
+          price('draftkings', side('h2h', event.away, null), 2.05),
+          price('fanduel', side('h2h', event.home, null), 1.85),
+          price('fanduel', side('h2h', event.away, null), 2.0),
+        ],
+        fetchedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      await tester.pumpWidget(
+        frame(
+          loader: () async => PublishedSnapshot(
+            board: board,
+            props: priced,
+            generatedAt: now,
+            scheduleAt: now,
+            oddsMessage: 'Saved prices',
+          ),
+          gameLoader: (_) async {
+            gameCalls++;
+            return {};
+          },
+          ask: (_) async {
+            aiCalls++;
+            return const AssistantReply(
+              available: false,
+              answer: '',
+              cited: [],
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'best price on the moneyline');
+      expect(find.text('Best saved prices'), findsOneWidget);
+      expect(find.textContaining('1.85'), findsNothing);
+      expect(find.textContaining('fanduel'), findsWidgets);
+      expect(gameCalls, 0);
+      expect(aiCalls, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'a missing-price player prop still leads with a recorded chart without AI',
     (tester) async {
       await tester.pumpWidget(frame());

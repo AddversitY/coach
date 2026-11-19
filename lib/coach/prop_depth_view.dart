@@ -68,10 +68,7 @@ class PropDepthView extends StatelessWidget {
                   key: ValueKey('prop-window-${w.label}'),
                   children: [
                     Text(w.label, style: CoachType.body),
-                    Text(
-                      '${w.overs}/${w.decided}',
-                      style: CoachType.body,
-                    ),
+                    Text('${w.overs}/${w.decided}', style: CoachType.body),
                     Text(
                       w.decided == 0 ? '—' : _pct(w.overs / w.decided),
                       style: CoachType.body.copyWith(

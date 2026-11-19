@@ -110,19 +110,22 @@ double? _average(List<PlayerGame> games, String metric) {
   return values.reduce((a, b) => a + b) / values.length;
 }
 
-PropWindow _window(String label, List<PlayerGame> games, String metric,
-        double line) =>
-    PropWindow(
-      label: label,
-      over: hitRate(
-        label: label,
-        games: games,
-        metric: metric,
-        line: line,
-        side: LineSide.over,
-      ),
-      average: _average(games, metric),
-    );
+PropWindow _window(
+  String label,
+  List<PlayerGame> games,
+  String metric,
+  double line,
+) => PropWindow(
+  label: label,
+  over: hitRate(
+    label: label,
+    games: games,
+    metric: metric,
+    line: line,
+    side: LineSide.over,
+  ),
+  average: _average(games, metric),
+);
 
 /// Builds the prop view from recorded games and saved prices only.
 ///
@@ -157,7 +160,12 @@ PropDepth propDepth({
   PropWindow? vsOpponent;
   DefenseVsPosition? defense;
   if (opponent != null && opponent.isNotEmpty) {
-    final games = propGames(rows, playerId, opponent: opponent, through: through);
+    final games = propGames(
+      rows,
+      playerId,
+      opponent: opponent,
+      through: through,
+    );
     if (games.isNotEmpty) {
       vsOpponent = _window('vs $opponent', games, metric, line);
     }
@@ -173,7 +181,9 @@ PropDepth propDepth({
     }
   }
   final market = _market(quotes, line);
-  if (all.isEmpty) notes.add('No recorded regular-season games for this player.');
+  if (all.isEmpty) {
+    notes.add('No recorded regular-season games for this player.');
+  }
   if (all.isNotEmpty && all.length < 8) {
     notes.add('Only ${all.length} recorded games, so the rates are thin.');
   }
@@ -193,10 +203,9 @@ PropMarketView? _market(List<OddsQuote> quotes, double line) {
   final atLine = quotes.where((q) => q.selection.point == line).toList();
   if (atLine.isEmpty) return null;
   OddsQuote? best(String side) {
-    final list = atLine
-        .where((q) => q.selection.outcome.toLowerCase() == side)
-        .toList()
-      ..sort((a, b) => b.decimal.compareTo(a.decimal));
+    final list =
+        atLine.where((q) => q.selection.outcome.toLowerCase() == side).toList()
+          ..sort((a, b) => b.decimal.compareTo(a.decimal));
     return list.isEmpty ? null : list.first;
   }
 

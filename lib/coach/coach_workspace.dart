@@ -21,12 +21,14 @@ import '../domain/coach_conversation.dart';
 import '../domain/coach_books.dart';
 import '../domain/eastern.dart';
 import '../domain/odds.dart';
+import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_depth.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
+import 'market_answer_view.dart';
 import 'prop_depth_view.dart';
 
 const _sourceLabels = {
@@ -103,6 +105,7 @@ class _Turn {
   Map<String, dynamic>? evaluation;
   LiveResearch? live;
   String? liveNotice;
+  MarketAnswer? market;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -448,6 +451,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     GameOutlook? game;
     Map<String, dynamic>? evaluation;
     LiveResearch? live;
+    MarketAnswer? market;
+    final marketQuery = parseMarketQuestion(
+      question,
+      players: snapshot!.playerIdsByName.keys,
+    );
     late CoachAnswer answer;
     final lower = resolved.toLowerCase();
     final wantsLive =
@@ -633,6 +641,24 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           intent: CoachIntent.clarify,
         );
       }
+    } else if (marketQuery != null) {
+      market = answerMarketQuestion(
+        marketQuery,
+        snapshot!.props,
+        at,
+        books: selectedBookIds?.toSet(),
+      );
+      answer = CoachAnswer(
+        title: const {
+          MarketAsk.bestPrice: 'Best saved prices',
+          MarketAsk.value: 'Prices above the market',
+          MarketAsk.arbitrage: 'Two-book price crosses',
+          MarketAsk.middles: 'Middle windows',
+          MarketAsk.lowHold: 'Lowest sportsbook fee',
+        }[marketQuery.ask]!,
+        text: market.summary,
+        intent: CoachIntent.prices,
+      );
     } else {
       answer = session.respond(
         resolved,
@@ -781,7 +807,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ..analysis = result
           ..game = game
           ..evaluation = evaluation
-          ..live = live;
+          ..live = live
+          ..market = market;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -1396,6 +1423,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               label: const Text('Refresh game research'),
               onPressed: busy ? null : () => _send(turn.researchQuery),
             ),
+          if (turn.market != null) MarketAnswerView(answer: turn.market!),
           if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
           if (a.player != null &&
@@ -3125,7 +3153,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                 final offerAt = offer is Map
                     ? DateTime.tryParse('${offer['sourceAt']}')
                     : null;
-                final alternative = offer is Map &&
+                final alternative =
+                    offer is Map &&
                         offerAt != null &&
                         !offerAt.isAfter(now) &&
                         now.difference(offerAt) <= const Duration(hours: 2)
@@ -3406,10 +3435,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         }
       }
       if (counts.isNotEmpty) {
-        line = (counts.entries.toList()
-              ..sort((x, y) => y.value.compareTo(x.value)))
-            .first
-            .key;
+        line =
+            (counts.entries.toList()
+                  ..sort((x, y) => y.value.compareTo(x.value)))
+                .first
+                .key;
       }
     }
     if (line == null || data == null) return null;
@@ -3417,7 +3447,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final event = a.event;
     if (event != null) {
       final home = canonicalTeam(event.home), away = canonicalTeam(event.away);
-      opponent = home == player.team ? away : away == player.team ? home : null;
+      opponent = home == player.team
+          ? away
+          : away == player.team
+          ? home
+          : null;
     }
     final depth = propDepth(
       data: data!,
