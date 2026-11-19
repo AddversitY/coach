@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../domain/bet_finder.dart';
 import '../domain/coach_analysis.dart';
 import '../domain/game_outlook.dart';
 import '../domain/coach_telemetry.dart';
@@ -28,6 +29,7 @@ import '../domain/prop_depth.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
+import 'bet_ideas_view.dart';
 import 'market_answer_view.dart';
 import 'prop_depth_view.dart';
 
@@ -106,6 +108,7 @@ class _Turn {
   LiveResearch? live;
   String? liveNotice;
   MarketAnswer? market;
+  BetFinderAnswer? bets;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -452,6 +455,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     Map<String, dynamic>? evaluation;
     LiveResearch? live;
     MarketAnswer? market;
+    BetFinderAnswer? bets;
     final marketQuery = parseMarketQuestion(
       question,
       players: snapshot!.playerIdsByName.keys,
@@ -507,6 +511,22 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           intent: CoachIntent.clarify,
         );
       }
+    } else if (asksForBetIdeas(question)) {
+      bets = findBets(
+        question,
+        snapshot!.props,
+        at,
+        data: data,
+        playerIds: snapshot!.playerIdsByName,
+        books: selectedBookIds?.toSet(),
+      );
+      answer = CoachAnswer(
+        title: bets.parlay != null
+            ? 'Parlay from saved prices'
+            : 'Best bets from saved prices',
+        text: bets.summary,
+        intent: CoachIntent.prices,
+      );
     } else if (wantsAnalysis) {
       try {
         await _analysisSources();
@@ -808,7 +828,8 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ..game = game
           ..evaluation = evaluation
           ..live = live
-          ..market = market;
+          ..market = market
+          ..bets = bets;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -1424,6 +1445,11 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               onPressed: busy ? null : () => _send(turn.researchQuery),
             ),
           if (turn.market != null) MarketAnswerView(answer: turn.market!),
+          if (turn.bets != null)
+            BetIdeasView(
+              answer: turn.bets!,
+              onAsk: busy ? null : (query) => _send(query),
+            ),
           if (turn.evaluation != null) _evaluationView(turn.evaluation!),
           if (turn.live != null) _liveView(turn),
           if (a.player != null &&

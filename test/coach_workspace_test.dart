@@ -216,6 +216,55 @@ void main() {
   );
 
   testWidgets(
+    'a parlay request builds one ticket at one book from saved prices',
+    (tester) async {
+      Selection side(String outcome) => Selection(
+        eventId: event.id,
+        market: 'h2h',
+        outcome: outcome,
+        rules: 'game_market_unverified',
+      );
+      OddsQuote price(String book, String outcome, double decimal) => OddsQuote(
+        selection: side(outcome),
+        bookId: book,
+        book: book,
+        provider: 'test',
+        decimal: decimal,
+        sourceAt: now.subtract(const Duration(minutes: 3)),
+        collectedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      final priced = OddsBoard(
+        events: [event],
+        quotes: [
+          price('draftkings', event.home, 1.8),
+          price('draftkings', event.away, 2.05),
+          price('fanduel', event.home, 1.8),
+          price('fanduel', event.away, 2.25),
+        ],
+        fetchedAt: now.subtract(const Duration(minutes: 1)),
+      );
+      await tester.pumpWidget(
+        frame(
+          loader: () async => PublishedSnapshot(
+            board: board,
+            props: priced,
+            generatedAt: now,
+            scheduleAt: now,
+            oddsMessage: 'Saved prices',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await send(tester, 'build me a 2 leg parlay');
+      // One game cannot make a two-game ticket; straight bets still show.
+      expect(find.text('Best bets from saved prices'), findsOneWidget);
+      expect(find.textContaining('Not enough separate games'), findsOneWidget);
+      expect(find.text('Straight bets'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'a missing-price player prop still leads with a recorded chart without AI',
     (tester) async {
       await tester.pumpWidget(frame());
