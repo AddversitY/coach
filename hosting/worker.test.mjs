@@ -57,6 +57,17 @@ test('durable quota reservations enforce account and per-IP limits atomically',a
   const same=await Promise.all([reserve('one'),reserve('one'),reserve('one')]);assert.deepEqual(same.map(r=>r.status),[200,200,429]);
   assert.equal((await reserve('two')).status,200);assert.equal((await reserve('three')).status,429);
 });
+test('calculated game analysis has its own per-connection and daily caps',async()=>{
+  const values=new Map();let queue=Promise.resolve();
+  const storage={get:async k=>structuredClone(values.get(k)),put:async(k,v)=>{values.set(k,structuredClone(v));},
+    transaction(fn){const next=queue.then(()=>fn(storage));queue=next.catch(()=>{});return next;}};
+  const state=new CoachState({storage},{MAX_ANALYSES_PER_DAY:'3',MAX_ANALYSES_PER_IP_HOUR:'2'});
+  const reserve=ip=>state.fetch(new Request('https://internal/analysis-reserve',{method:'POST',body:JSON.stringify({ip,now:time})}));
+  const same=await Promise.all([reserve('one'),reserve('one'),reserve('one')]);assert.deepEqual(same.map(r=>r.status),[200,200,429]);
+  assert.equal((await reserve('two')).status,200);assert.equal((await reserve('three')).status,429);
+  // The AI quota ledger is separate and untouched.
+  assert.equal(values.get('quota'),undefined);
+});
 test('public model routes reject other origins before inference and do not expose secrets',async()=>{
   let calls=0;
   const result=await worker.fetch(new Request('https://coach.example/v1/coach',{method:'POST',headers:{Origin:'https://evil.example'},body:JSON.stringify({question:'test'})}),{AI:{run(){calls++;}},ALLOWED_ORIGIN:'https://addversity.github.io'});

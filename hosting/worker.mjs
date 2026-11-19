@@ -260,6 +260,19 @@ export class CoachState {
       await this.state.storage.transaction(async txn=>{for(let i=0;i<parts.length;i++)await txn.put('telemetry-observations:'+i,parts[i]);await txn.put('telemetry-header',{...metadata,parts:parts.length});});
       return reply({ok:true});
     }
+    if(path==='/analysis-reserve'){
+      // Calculated game analysis spends no AI, but each request runs the full report and writes storage.
+      const {ip,now}=await request.json();const day=new Date(now).toISOString().slice(0,10),hour=Math.floor(now/3600000);
+      const dailyCap=Math.min(20000,Math.max(1,Number(this.env.MAX_ANALYSES_PER_DAY)||3000));
+      const ipCap=Math.min(600,Math.max(1,Number(this.env.MAX_ANALYSES_PER_IP_HOUR)||90));
+      const allowed=await this.state.storage.transaction(async txn=>{
+        const ledger=await txn.get('analysis-quota')||{day,count:0,hour,ips:{}};
+        if(ledger.day!==day){ledger.day=day;ledger.count=0;}
+        if(ledger.hour!==hour){ledger.hour=hour;ledger.ips={};}
+        if(ledger.count>=dailyCap||(ledger.ips[ip]||0)>=ipCap)return false;
+        ledger.count++;ledger.ips[ip]=(ledger.ips[ip]||0)+1;await txn.put('analysis-quota',ledger);return true;
+      });return reply({allowed},allowed?200:429);
+    }
     if(path==='/reserve'){
       const {ip,now}=await request.json();const provider=await this.state.storage.get('ai-provider-status');if(provider&&Date.parse(provider.blockedUntil)>now)return reply({reason:'provider_daily_limit'},429);const day=new Date(now).toISOString().slice(0,10),hour=Math.floor(now/3600000);
       const dailyCap=Math.min(100,Math.max(1,Number(this.env.MAX_MODEL_CALLS_PER_DAY)||60));
@@ -279,9 +292,9 @@ function state(env){return env.STATE.get(env.STATE.idFromName('coach-research-st
 async function scheduledHealth(env){try{return env.STATE?await (await state(env).fetch(new Request('https://internal/scheduled-status'))).json():null;}catch{return {state:'status_unavailable'};}}
 async function telemetry(env){return (await state(env).fetch(new Request('https://internal/telemetry'))).json();}
 async function storeTelemetry(env,value){return state(env).fetch(new Request('https://internal/update',{method:'POST',body:JSON.stringify(value)}));}
-async function reserve(env,request){
+async function reserve(env,request,path='/reserve'){
   const now=Date.now();const ip=await digest(`${new Date(now).toISOString().slice(0,10)}:${request.headers.get('CF-Connecting-IP')||'unknown'}`);
-  const result=await state(env).fetch(new Request('https://internal/reserve',{method:'POST',body:JSON.stringify({ip,now})}));
+  const result=await state(env).fetch(new Request('https://internal'+path,{method:'POST',body:JSON.stringify({ip,now})}));
   return result.ok;
 }
 async function providerFailure(env,reason){
@@ -407,10 +420,14 @@ export default {
       if(url.pathname==='/v1/coach'&&unsupportedScope(question))return reply({available:false,failureReason:'unsupported_scope',answer:'Coach currently supports pregame full-game research. The requested period, team-total or settlement scope is not verified; no full-game quote or probability is substituted.',cited:[]},200,allowed);
       const source=await published(env);const context=body.context||{playerId:body.playerEvidence?.[0]?.playerId,eventId:body.teamEvidence?.[0]?.eventId};
       if(url.pathname==='/v1/game-analysis'){
+        if(!await reserve(env,request,'/analysis-reserve'))return reply({available:false,failureReason:'analysis_rate_limit',answer:'Too many research requests from this connection. Try again within the hour.'},429,allowed);
         const event=resolveGame(source.index,question,context);
         if(!event)return reply({available:false,reason:'choose_game',games:source.index.events.filter(e=>Date.parse(e.startsAt)>Date.now()).slice(0,8)},200,allowed);
-        const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookIds:requestedBookIds(question,context),question});
-        const snapshot=await captureForecast(env,report,source);
+        const observations=await telemetry(env),scope=requestedBookIds(question,context);
+        const report=analyzeGame(source,event,{telemetry:observations,bookIds:scope,question});
+        // The frozen evaluation record is always the all-books view; a user's book filter only scopes the answer.
+        const frozen=scope==null?report:analyzeGame(source,event,{telemetry:observations,bookIds:null});
+        const snapshot=await captureForecast(env,frozen,source);
         if(ctx?.waitUntil)ctx.waitUntil(benchmarkForecast(env,request,snapshot));
         return reply({available:true,...report},200,allowed);
       }
