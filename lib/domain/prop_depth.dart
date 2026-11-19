@@ -70,6 +70,7 @@ class PropDepth {
     required this.line,
     required this.windows,
     this.vsOpponent,
+    this.lastSeason,
     this.defense,
     this.market,
     required this.notes,
@@ -78,6 +79,9 @@ class PropDepth {
   final double line;
   final List<PropWindow> windows;
   final PropWindow? vsOpponent;
+
+  /// The previous season, shown beside the current windows (Outlier's "LS").
+  final PropWindow? lastSeason;
   final DefenseVsPosition? defense;
   final PropMarketView? market;
   final List<String> notes;
@@ -156,6 +160,18 @@ PropDepth propDepth({
         line,
       ),
   ];
+  PropWindow? lastSeason;
+  if (latestSeason != null) {
+    final games = propGames(
+      rows,
+      playerId,
+      season: latestSeason - 1,
+      through: through,
+    );
+    if (games.isNotEmpty) {
+      lastSeason = _window('${latestSeason - 1} season', games, metric, line);
+    }
+  }
   final notes = <String>[];
   PropWindow? vsOpponent;
   DefenseVsPosition? defense;
@@ -193,6 +209,7 @@ PropDepth propDepth({
     line: line,
     windows: windows,
     vsOpponent: vsOpponent,
+    lastSeason: lastSeason,
     defense: defense,
     market: market,
     notes: notes,

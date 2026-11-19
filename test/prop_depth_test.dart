@@ -66,6 +66,7 @@ void main() {
     expect(byLabel['Last 10']!.overs, 7);
     expect(byLabel['2026 season']!.decided, 10);
     expect(depth.vsOpponent!.overs, 2);
+    expect(depth.lastSeason, isNull);
     // Shrunk toward 50%: (7 + 2) / (10 + 4).
     expect(depth.historyOver, closeTo(9 / 14, 1e-9));
   });

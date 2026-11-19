@@ -17,10 +17,11 @@ class BetIdea {
     required this.price,
     required this.fair,
     required this.edge,
+    double? estimate,
     this.recordRate,
     this.recordSample = 0,
     this.signal = RecordSignal.none,
-  });
+  }) : estimate = estimate ?? fair;
   final PricedMarket market;
   final PricedSide side;
   final OddsQuote price;
@@ -28,7 +29,11 @@ class BetIdea {
   /// Fee-free consensus chance of this side.
   final double fair;
 
-  /// Profit per dollar at [price] if [fair] is right.
+  /// Coach's chance: the market, plus for props up to 30% weight on the
+  /// player's record (more games, more weight).
+  final double estimate;
+
+  /// Profit per dollar at [price] if [estimate] is right.
   final double edge;
 
   /// Shrunk record rate for this side (props only), and the games behind it.
@@ -163,14 +168,7 @@ BetFinderAnswer findBets(
       );
     }
   }
-  double score(BetIdea i) =>
-      i.edge +
-      (i.signal == RecordSignal.agrees
-          ? 0.01
-          : i.signal == RecordSignal.disagrees
-          ? -0.02
-          : 0);
-  ideas.sort((a, b) => score(b).compareTo(score(a)));
+  ideas.sort((a, b) => b.edge.compareTo(a.edge));
   final positive = [
     for (final i in ideas)
       if (i.edge > 0) i,
@@ -232,7 +230,7 @@ BetFinderAnswer findBets(
     );
   }
   notes.add(
-    'The edge is each price against the fee-free average of the other books: shopping value, not a validated forecast.',
+    'The edge is each price against Coach\'s chance: the fee-free average of the books, and for props up to 30% weight on the player\'s record. Not a validated forecast.',
   );
   if (straight.any((i) => i.signal == RecordSignal.disagrees)) {
     notes.add(
@@ -275,12 +273,15 @@ BetIdea _withRecord(
       .lastWhere((w) => w.decided >= 8, orElse: () => depth.windows.last)
       .decided;
   final diff = rate - idea.fair;
+  final weight = .3 * sample / (sample + 10);
+  final estimate = (1 - weight) * idea.fair + weight * rate;
   return BetIdea(
     market: idea.market,
     side: idea.side,
     price: idea.price,
     fair: idea.fair,
-    edge: idea.edge,
+    estimate: estimate,
+    edge: estimate * idea.price.decimal - 1,
     recordRate: rate,
     recordSample: sample,
     signal: sample < 5

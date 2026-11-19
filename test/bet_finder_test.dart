@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/bet_finder.dart';
 import 'package:odds_edge/domain/odds.dart';
+import 'package:odds_edge/domain/player_stats.dart';
 
 final now = DateTime.utc(2026, 11, 19, 12);
 final kickoff = DateTime.utc(2026, 11, 22, 18);
@@ -111,5 +112,64 @@ void main() {
     );
     expect(findBets('best bets', longshot, now).straight, isEmpty);
     expect(findBets('best longshot bets', longshot, now).straight, isNotEmpty);
+  });
+
+  test('a prop estimate leans toward a long record, never past 30% weight', () {
+    final rows = [
+      for (var w = 1; w <= 20; w++)
+        PlayerGame(
+          playerId: 'p1',
+          name: 'Test Receiver',
+          position: 'WR',
+          team: 'BUF',
+          opponent: 'MIA',
+          season: 2026,
+          week: w,
+          // All twenty games played before [now].
+          date: DateTime.utc(2026, 4, 1).add(Duration(days: 7 * w)),
+          seasonType: 'REG',
+          stats: {'receiving_yards': 90},
+        ),
+    ];
+    OddsQuote prop(String book, String side, double decimal) => OddsQuote(
+      selection: Selection(
+        eventId: 'g1',
+        market: 'player_reception_yds',
+        outcome: side,
+        participant: 'Test Receiver',
+        point: 60.5,
+        rules: 'player_prop_unverified',
+      ),
+      bookId: book,
+      book: book,
+      provider: 'test',
+      decimal: decimal,
+      sourceAt: now.subtract(const Duration(minutes: 5)),
+      collectedAt: now.subtract(const Duration(minutes: 1)),
+    );
+    final board = OddsBoard(
+      events: [game('g1', 'Buffalo Bills', 'Kansas City Chiefs')],
+      quotes: [
+        for (final book in ['a', 'b']) ...[
+          prop(book, 'Over', 1.91),
+          prop(book, 'Under', 1.91),
+        ],
+      ],
+      fetchedAt: now.subtract(const Duration(minutes: 1)),
+    );
+    final answer = findBets(
+      'best prop bets',
+      board,
+      now,
+      data: PlayerStatsDataset(rows: rows),
+      playerIds: {'Test Receiver': 'p1'},
+    );
+    final over = answer.straight.first;
+    expect(over.side.selection.outcome, 'Over');
+    expect(over.signal, RecordSignal.agrees);
+    expect(over.estimate, greaterThan(over.fair));
+    // 20 games: weight .3 * 20 / 30 = .2; record (20 + 2) / 24.
+    expect(over.estimate, closeTo(.8 * .5 + .2 * 22 / 24, 1e-9));
+    expect(over.edge, greaterThan(0));
   });
 }

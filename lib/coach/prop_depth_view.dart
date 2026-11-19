@@ -23,7 +23,7 @@ class PropDepthView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rows = [...depth.windows, ?depth.vsOpponent];
+    final rows = [...depth.windows, ?depth.lastSeason, ?depth.vsOpponent];
     final market = depth.market;
     final defense = depth.defense;
     final gap = depth.historyVersusMarket;

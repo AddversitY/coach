@@ -48,7 +48,10 @@ class BetIdeasView extends StatelessWidget {
           Text(
             [
               i.market.matchup,
-              'market ${_pct(i.fair)}',
+              if ((i.estimate - i.fair).abs() >= .0005)
+                'Coach ${_pct(i.estimate)} vs market ${_pct(i.fair)}'
+              else
+                'market ${_pct(i.fair)}',
               '${_signed(i.edge)} per dollar',
               ?record,
             ].join(' · '),
