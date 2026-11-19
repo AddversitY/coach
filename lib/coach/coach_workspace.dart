@@ -26,12 +26,14 @@ import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_depth.dart';
+import '../domain/team_trends.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
 import 'bet_ideas_view.dart';
 import 'market_answer_view.dart';
 import 'prop_depth_view.dart';
+import 'trends_view.dart';
 
 const _sourceLabels = {
   'injuries': 'Player availability',
@@ -204,7 +206,21 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         setState(() => loading = false);
         _reviewAnalyses(telemetry);
         unawaited(_pollTelemetry());
+        unawaited(_loadTrendHistory());
       }
+    }
+  }
+
+  /// Closing-line history for game trends. Loads in the background; game
+  /// answers simply omit trends until it is ready.
+  Future<void> _loadTrendHistory() async {
+    if (analysisScores != null) return;
+    try {
+      final games =
+          await (widget.analysisHistoryLoader ?? loadBundledHistoryGames)();
+      if (mounted) setState(() => analysisScores ??= games);
+    } catch (_) {
+      /* Trends stay hidden when the bundled history cannot load. */
     }
   }
 
@@ -1561,6 +1577,30 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         .trim();
   }
 
+  /// Spread and total records for both teams, from bundled closing lines.
+  Widget? _trends(SportEvent event) {
+    final history = analysisScores;
+    final home = canonicalTeam(event.home), away = canonicalTeam(event.away);
+    if (history == null || home == null || away == null) return null;
+    final spreads = [
+      for (final q in snapshot?.props.quotes ?? const <OddsQuote>[])
+        if (q.selection.eventId == event.id &&
+            q.selection.market == 'spreads' &&
+            q.selection.outcome == event.home &&
+            q.selection.point != null)
+          q.selection.point!,
+    ]..sort();
+    final trends = matchupTrends(
+      history,
+      home: home,
+      away: away,
+      before: event.startsAt,
+      homeSpread: spreads.isEmpty ? null : spreads[spreads.length ~/ 2],
+    );
+    if (trends.games == 0) return null;
+    return TrendsView(trends: trends);
+  }
+
   Widget _gameView(_Turn turn) {
     final comparison = turn.game!.raw['comparison'];
     return Column(
@@ -1568,6 +1608,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       children: [
         if (comparison is Map)
           _comparisonView(Map<String, dynamic>.from(comparison)),
+        ?_trends(turn.game!.event),
         ExpansionTile(
           tilePadding: EdgeInsets.zero,
           title: Text(

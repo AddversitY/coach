@@ -5,6 +5,7 @@ import 'package:odds_edge/data/published_snapshot.dart';
 import 'package:odds_edge/domain/assistant.dart';
 import 'package:odds_edge/domain/coach_telemetry.dart';
 import 'package:odds_edge/domain/coach_books.dart';
+import 'package:odds_edge/domain/history.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/theme/coach_theme.dart';
 import 'package:odds_edge/main.dart' as app;
@@ -38,6 +39,7 @@ void main() {
     Future<CoachTelemetry> Function()? telemetryLoader,
     Future<Map<String, dynamic>> Function(Map<String, dynamic>)? gameLoader,
     Future<Map<String, dynamic>> Function()? evaluationLoader,
+    Future<List<HistoricalGame>> Function()? historyLoader,
   }) => MaterialApp(
     theme: coachTheme(),
     home: CoachWorkspace(
@@ -48,6 +50,7 @@ void main() {
       telemetryLoader: telemetryLoader,
       gameAnalysisLoader: gameLoader,
       evaluationLoader: evaluationLoader,
+      analysisHistoryLoader: historyLoader,
     ),
   );
   Future<void> send(WidgetTester tester, String q) async {
@@ -150,6 +153,45 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('game answers carry spread and total trends with sample size', (
+    tester,
+  ) async {
+    final history = [
+      for (var i = 0; i < 10; i++)
+        HistoricalGame(
+          season: 2026,
+          week: i + 1,
+          date: DateTime.utc(2026, 9, 7).add(Duration(days: 7 * i)),
+          home: 'KC',
+          away: i.isEven ? 'LV' : 'DEN',
+          homeScore: 30,
+          awayScore: 10,
+          spreadLine: 3,
+          totalLine: 45.5,
+        ),
+    ];
+    await tester.pumpWidget(
+      frame(
+        historyLoader: () async => history,
+        gameLoader: (_) async => gameOutlookFixture(event, now),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await send(tester, 'Analyze Bills');
+    await tester.scrollUntilVisible(
+      find.text('Trends against the closing line'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.text(
+        'KC 10-0 cover/no cover against the spread, last 10 (notable, but past covers predict little).',
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'price-shopping questions answer from saved prices without game research or AI',

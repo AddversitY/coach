@@ -7,10 +7,17 @@ class HistoricalGame {
     required this.away,
     required this.homeScore,
     required this.awayScore,
+    this.spreadLine,
+    this.totalLine,
   });
   final int season, homeScore, awayScore, week;
   final DateTime date;
   final String home, away;
+
+  /// nflverse closing line: the home margin the market expected. Null when
+  /// the schedule did not publish one.
+  final double? spreadLine;
+  final double? totalLine;
   factory HistoricalGame.fromJson(Map<String, dynamic> j) => HistoricalGame(
     season: j['season'],
     week: j['week'],
@@ -19,6 +26,8 @@ class HistoricalGame {
     away: j['away'],
     homeScore: j['homeScore'],
     awayScore: j['awayScore'],
+    spreadLine: (j['spreadLine'] as num?)?.toDouble(),
+    totalLine: (j['totalLine'] as num?)?.toDouble(),
   );
 }
 

@@ -96,6 +96,17 @@ class TransformTests(unittest.TestCase):
         self.assertEqual(bundle["sourceSha256"], "abc")
         self.assertNotIn("gameType", bundle["games"][0])
 
+    def test_history_keeps_closing_lines_and_leaves_missing_lines_unknown(self):
+        schedule = parse_schedule([
+            {**game("lined", "10", "2026-11-10"), "spread_line": "-3.5", "total_line": "44.5"},
+            {**game("unlined", "9", "2026-11-03"), "spread_line": "", "total_line": "nan"},
+        ])
+        history = build_history(schedule, date(2026, 11, 12), 2026, datetime(2026, 11, 12, tzinfo=timezone.utc), "x")
+        rows = {row["id"]: row for row in history["games"]}
+        self.assertEqual((rows["lined"]["spreadLine"], rows["lined"]["totalLine"]), (-3.5, 44.5))
+        self.assertNotIn("spreadLine", rows["unlined"])
+        self.assertNotIn("totalLine", rows["unlined"])
+
     def test_history_retains_zero_score_as_completed(self):
         schedule = parse_schedule([{**game(), "away_score": "0"}])
         bundle = build_history(schedule, AS_OF, 2026, NOW, "abc")
