@@ -10,12 +10,26 @@ enum UnitKey { pass, run, wr, te, rb, sack }
 
 /// Walk-forward on the no-price path, November 20, 2026.
 ///
-/// Weight 0.25 beat the current projection on 2025 and on 2026, on Brier
-/// and log loss, with more than 1,000 games each year. The test did not
-/// have a closing total, so this weight is used only when the screen has
-/// no spread and no total. A priced prop keeps the previous factors.
+/// Weight 0.25 beat the stacked projection on 2025 and on 2026, on Brier
+/// and log loss, with more than 1,000 games each year. It is the served
+/// weight whenever the screen has no spread or no total.
 const matchupAdjustmentAdopted = true;
 const matchupRecencyWeight = 0.25;
+
+/// Priced path, same date. The line is the previous season's median. The
+/// closing spread and total come from the schedule file.
+///
+/// Dropping both the team-total scale and the raw defense-yards scale, and
+/// using one opponent unit factor plus the shrunk sensitivity, beat the
+/// stacked path and beat "keep the total, then multiply by the unit."
+/// Both years, Brier and log loss, more than 1,000 games. The numbers are
+/// in docs/MATCHUPS.md. This is not a profit test.
+const pricedPathDropsStackedScales = true;
+
+/// November 20, 2026. A unit-versus-unit nudge, with and without recent
+/// closing-line form, did not beat the closing spread, moneyline, or total
+/// on both 2025 and 2026. Served game numbers stay on version 2.
+const gameUnitAdjustmentAdopted = false;
 
 enum UnitTier { elite, average, weak, unavailable }
 
@@ -196,7 +210,11 @@ class RatingBook {
   }
 
   /// Ratings that could have been known before [season] week [week].
-  UnitSnapshot before({required int season, required int week, DateTime? date}) {
+  UnitSnapshot before({
+    required int season,
+    required int week,
+    DateTime? date,
+  }) {
     final day = date == null
         ? null
         : DateTime.utc(date.year, date.month, date.day);
@@ -206,7 +224,8 @@ class RatingBook {
         for (final row in _weeks)
           if (day != null
               ? row.date.isBefore(day)
-              : row.season < season || (row.season == season && row.week < week))
+              : row.season < season ||
+                    (row.season == season && row.week < week))
             row,
       ];
       return _snapshot(prior);
@@ -236,32 +255,56 @@ UnitSnapshot _snapshot(List<_TeamWeek> weeks) {
 
   add(
     UnitKey.pass,
-    _fit(weeks, (row) => row.attempts >= 10 ? (row.passYds, row.attempts) : null, 100),
+    _fit(
+      weeks,
+      (row) => row.attempts >= 10 ? (row.passYds, row.attempts) : null,
+      100,
+    ),
     lowerDefenseIsBetter: true,
   );
   add(
     UnitKey.run,
-    _fit(weeks, (row) => row.carries >= 8 ? (row.rushYds, row.carries) : null, 50),
+    _fit(
+      weeks,
+      (row) => row.carries >= 8 ? (row.rushYds, row.carries) : null,
+      50,
+    ),
     lowerDefenseIsBetter: true,
   );
   add(
     UnitKey.wr,
-    _fit(weeks, (row) => row.wrTargets >= 3 ? (row.wrYds, row.wrTargets) : null, 25),
+    _fit(
+      weeks,
+      (row) => row.wrTargets >= 3 ? (row.wrYds, row.wrTargets) : null,
+      25,
+    ),
     lowerDefenseIsBetter: true,
   );
   add(
     UnitKey.te,
-    _fit(weeks, (row) => row.teTargets >= 2 ? (row.teYds, row.teTargets) : null, 20),
+    _fit(
+      weeks,
+      (row) => row.teTargets >= 2 ? (row.teYds, row.teTargets) : null,
+      20,
+    ),
     lowerDefenseIsBetter: true,
   );
   add(
     UnitKey.rb,
-    _fit(weeks, (row) => row.rbTargets >= 2 ? (row.rbYds, row.rbTargets) : null, 16),
+    _fit(
+      weeks,
+      (row) => row.rbTargets >= 2 ? (row.rbYds, row.rbTargets) : null,
+      16,
+    ),
     lowerDefenseIsBetter: true,
   );
   add(
     UnitKey.sack,
-    _fit(weeks, (row) => row.attempts >= 10 ? (row.sacks, row.attempts) : null, 80),
+    _fit(
+      weeks,
+      (row) => row.attempts >= 10 ? (row.sacks, row.attempts) : null,
+      80,
+    ),
     lowerDefenseIsBetter: false,
   );
   return UnitSnapshot(ratings);
@@ -276,7 +319,9 @@ _Fit? _fit(
   for (final row in weeks) {
     final value = read(row);
     if (value == null || value.$2 <= 0) continue;
-    observations.add(_Obs(row.team, row.opponent, value.$1 / value.$2, value.$2));
+    observations.add(
+      _Obs(row.team, row.opponent, value.$1 / value.$2, value.$2),
+    );
   }
   if (observations.length < 8) return null;
   var weight = 0.0, weighted = 0.0;
@@ -334,15 +379,18 @@ void _place(
 }) {
   final values = offense ? fit.offense : fit.defense;
   final games = offense ? fit.offenseGames : fit.defenseGames;
-  final eligible = [
-    for (final team in values.keys)
-      if ((games[team] ?? 0) >= 3) team,
-  ]..sort((a, b) {
-    final left = values[a]!;
-    final right = values[b]!;
-    final order = lowerIsBetter ? left.compareTo(right) : right.compareTo(left);
-    return order != 0 ? order : a.compareTo(b);
-  });
+  final eligible =
+      [
+        for (final team in values.keys)
+          if ((games[team] ?? 0) >= 3) team,
+      ]..sort((a, b) {
+        final left = values[a]!;
+        final right = values[b]!;
+        final order = lowerIsBetter
+            ? left.compareTo(right)
+            : right.compareTo(left);
+        return order != 0 ? order : a.compareTo(b);
+      });
   final count = eligible.length;
   if (count == 0) return;
   final eliteCut = count >= 24 ? 8 : (count / 4).ceil().clamp(1, count);
@@ -425,17 +473,18 @@ PlayerSplits? playerSplits({
   required int beforeSeason,
   required int beforeWeek,
 }) {
-  final prior = [
-    for (final game in games)
-      if (game.seasonType == 'REG' &&
-          (game.season < beforeSeason ||
-              (game.season == beforeSeason && game.week < beforeWeek)) &&
-          game.stats[metric] != null)
-        game,
-  ]..sort((a, b) {
-    final season = a.season.compareTo(b.season);
-    return season != 0 ? season : a.week.compareTo(b.week);
-  });
+  final prior =
+      [
+        for (final game in games)
+          if (game.seasonType == 'REG' &&
+              (game.season < beforeSeason ||
+                  (game.season == beforeSeason && game.week < beforeWeek)) &&
+              game.stats[metric] != null)
+            game,
+      ]..sort((a, b) {
+        final season = a.season.compareTo(b.season);
+        return season != 0 ? season : a.week.compareTo(b.week);
+      });
   if (prior.isEmpty) return null;
   final position = prior.last.position;
   final unit = switch (metric) {
@@ -450,9 +499,7 @@ PlayerSplits? playerSplits({
     _ => null,
   };
   if (unit == null) return null;
-  final buckets = {
-    for (final tier in UnitTier.values) tier: <PlayerGame>[],
-  };
+  final buckets = {for (final tier in UnitTier.values) tier: <PlayerGame>[]};
   var total = 0.0, counted = 0;
   for (final game in prior) {
     final value = game.stats[metric]!.toDouble();
@@ -499,7 +546,10 @@ PlayerSplits? playerSplits({
     split(UnitTier.average),
     split(UnitTier.weak),
   ];
-  final asked = tiers.firstWhere((row) => row.games > 0, orElse: () => tiers.first);
+  final asked = tiers.firstWhere(
+    (row) => row.games > 0,
+    orElse: () => tiers.first,
+  );
   final lineText = line == null
       ? ''
       : ' Against ${line.toStringAsFixed(1)}: ${asked.overs} over, ${asked.unders} under'
@@ -516,20 +566,27 @@ PlayerSplits? playerSplits({
   );
 }
 
-/// One multiplier for the opponent, never both a team-total scale and a
-/// raw yards-allowed scale. [pricesOpponent] is true when a market total is
-/// already on the screen, because that total already includes the defense.
+/// One multiplier for the opponent. The served card uses [unitFactor] and
+/// [sensitivity] in place of a team-total scale plus a raw yards-allowed
+/// scale. [priceUnit] is the rejected experiment that kept the team total
+/// and also multiplied by [unitFactor].
 class MatchupEnvironment {
   const MatchupEnvironment({
     required this.known,
     required this.unitFactor,
     required this.sensitivity,
     required this.detail,
+    this.priceUnit = false,
   });
 
   final bool known;
 
-  /// Applied only when the market total is absent, in place of the old
+  /// Also multiply by [unitFactor] while keeping the team-total scale.
+  /// The fair-line test did not adopt this. The served card leaves it false
+  /// and drops the team-total scale instead.
+  final bool priceUnit;
+
+  /// Opponent unit rating. The served card uses this in place of the old
   /// defense multiplier and the points-scored script.
   final double unitFactor;
 
@@ -543,6 +600,14 @@ class MatchupEnvironment {
     unitFactor: 1,
     sensitivity: 1,
     detail: 'Matchup adjustment unavailable.',
+  );
+
+  MatchupEnvironment copyWith({bool? priceUnit}) => MatchupEnvironment(
+    known: known,
+    unitFactor: unitFactor,
+    sensitivity: sensitivity,
+    detail: detail,
+    priceUnit: priceUnit ?? this.priceUnit,
   );
 }
 
@@ -589,7 +654,9 @@ MatchupEnvironment matchupEnvironment({
     date: beforeDate,
   );
   final defense = now.lookup(opponent, unit, offense: false);
-  if (defense == null || defense.versusLeague == null || defense.leagueRate == null) {
+  if (defense == null ||
+      defense.versusLeague == null ||
+      defense.leagueRate == null) {
     return MatchupEnvironment.unused;
   }
   final league = defense.leagueRate!;
@@ -698,7 +765,11 @@ bool _earlierGame(
   DateTime? date,
 }) {
   if (date != null) {
-    final gameDay = DateTime.utc(game.date.year, game.date.month, game.date.day);
+    final gameDay = DateTime.utc(
+      game.date.year,
+      game.date.month,
+      game.date.day,
+    );
     final limit = DateTime.utc(date.year, date.month, date.day);
     return gameDay.isBefore(limit);
   }
@@ -752,12 +823,15 @@ double _recency({
   }
 
   final seasonValues = [for (final game in prior) ?residual(game)];
-  final recentGames = prior.length <= 5 ? prior : prior.sublist(prior.length - 5);
+  final recentGames = prior.length <= 5
+      ? prior
+      : prior.sublist(prior.length - 5);
   final recentValues = [for (final game in recentGames) ?residual(game)];
   if (seasonValues.length < 5 || recentValues.length < 3) return 1;
   final seasonMean = seasonValues.reduce((a, b) => a + b) / seasonValues.length;
   final recentMean = recentValues.reduce((a, b) => a + b) / recentValues.length;
-  final blended = 1 + weight.clamp(0.0, 1.0) * ((recentMean - seasonMean) / league);
+  final blended =
+      1 + weight.clamp(0.0, 1.0) * ((recentMean - seasonMean) / league);
   if (!blended.isFinite) return 1;
   return blended.clamp(0.9, 1.1).toDouble();
 }

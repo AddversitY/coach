@@ -449,13 +449,15 @@ PropProjection? projectProp({
         defenseOn: false,
         matesOn: true,
       );
-      final adjusted = withMates * environment.sensitivity;
+      final unit = environment.priceUnit ? environment.unitFactor : 1.0;
+      final adjusted = withMates * unit * environment.sensitivity;
       defenseDelta = 0;
       matesDelta = withMates - afterScript;
       matchupDelta = adjusted - withMates;
       mean = adjusted;
-      matchupDetail =
-          'team total kept; raw defense yards not stacked; ${environment.detail}';
+      matchupDetail = environment.priceUnit
+          ? 'team total kept; raw defense yards not stacked; unit rating and sensitivity applied; ${environment.detail}'
+          : 'team total kept; raw defense yards not stacked; ${environment.detail}';
     } else {
       final withMates = meanAt(
         snapOn: true,

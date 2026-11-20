@@ -37,6 +37,21 @@ class BriefingView extends StatelessWidget {
               ],
             ],
           ),
+          if (brief.ratings.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final rating in brief.ratings.take(4))
+                    _TierBadge(
+                      tier: rating.tier,
+                      label: '${rating.team} ${rating.tierLabel}',
+                    ),
+                ],
+              ),
+            ),
           if (brief.change != null) _change(brief.change!),
           if (brief.splits != null) _splits(),
           if (brief.ratings.length > 1 || brief.formNotes.isNotEmpty)
@@ -93,23 +108,34 @@ class BriefingView extends StatelessWidget {
 
   Widget _splits() {
     final splits = brief.splits!;
-    return ExpansionTile(
-      tilePadding: EdgeInsets.zero,
-      title: Text('Splits by defense tier', style: CoachType.label),
-      children: [
-        Text(splits.summary, style: CoachType.label),
-        for (final row in splits.tiers)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              '${row.tier.name}: ${row.games} games, '
-              '${row.rawAverage?.toStringAsFixed(1) ?? '—'} raw'
-              '${row.shrunkAverage == null ? '' : ', ${row.shrunkAverage!.toStringAsFixed(1)} shrunk'}'
-              '${splits.line == null ? '' : ', ${row.overs} over of ${row.games}'}',
-              style: CoachType.body,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text('Elite, average, and weak', style: CoachType.label),
+          for (final row in splits.tiers)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _TierBadge(tier: row.tier, label: row.tier.name),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${row.games} games, '
+                      '${row.rawAverage?.toStringAsFixed(1) ?? '—'} raw'
+                      '${row.shrunkAverage == null ? '' : ', ${row.shrunkAverage!.toStringAsFixed(1)} shrunk'}'
+                      '${splits.line == null ? '' : ', ${row.overs} over of ${row.games}'}',
+                      style: CoachType.body,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

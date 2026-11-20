@@ -1,6 +1,6 @@
 # Matchups and what changed
 
-Checked November 20, 2026. The numbers below come from the files Coach loads. They are not typed in as a story.
+Checked November 20, 2026. The numbers below come from the files Coach loads. They are not typed in as a story. Player-prop prices are not in those files, so the prop test uses last season's median as the line.
 
 ## Unit ratings
 
@@ -14,21 +14,38 @@ A player's splits use the opponent's tier at the time of each earlier game. A ti
 
 ## Projections
 
-The served prop chance is still the usage model. A matchup environment is optional.
+The served prop chance is the usage model with one opponent adjustment. The adjustment is the opponent's unit rating, clamped between 0.85 and 1.15, times the player's own elite-to-weak sensitivity, shrunk toward no extra response and clamped between 0.94 and 1.06. Recent form uses weight 0.25. The team-total scale and the raw defense-yards scale are not applied on top of that. Passing `environment: null` still keeps the old stacked factors, and the projection tests cover that path. The card does not claim a betting edge.
 
-- When a market spread and total are on the screen, the environment keeps the team-total scale and sets the raw defense-yards factor to 1. The market total already prices the opponent. Only a shrunk player-sensitivity residual is applied, and it is clamped between 0.94 and 1.06.
-- When no market total is on the screen, the points script and the raw defense-yards factor are both replaced by one opponent unit factor, clamped between 0.85 and 1.15, plus that same sensitivity.
+There is no historical file of player-prop prices. The walk-forward uses last season's median as the line. Where a game has a closing spread and total, those are available to the formula. "Stacked" keeps the team-total scale and the defense-yards scale. "Keep total" turns the defense-yards scale off and then multiplies by the unit rating and the sensitivity. "Unit only" drops both scales and uses the unit rating and the sensitivity. The chance below is pulled toward even, the same way the card does it.
 
-Passing `environment: null` keeps the previous stacked factors. The existing projection tests cover that path. The card does not claim a betting edge.
+| Path | 2025 games | 2025 Brier | 2025 log loss | 2025 chance on over | 2025 actual over | 2025 mean / line | 2026 games | 2026 Brier | 2026 log loss | 2026 chance on over | 2026 actual over | 2026 mean / line |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Stacked | 6,924 | 0.2348 | 0.6623 | 0.494 | 0.402 | 1.240 | 3,948 | 0.2400 | 0.6728 | 0.499 | 0.446 | 1.268 |
+| Keep total, add unit | 6,924 | 0.2344 | 0.6613 | 0.491 | 0.402 | 1.225 | 3,948 | 0.2398 | 0.6724 | 0.498 | 0.446 | 1.257 |
+| Unit only | 6,924 | 0.2331 | 0.6588 | 0.487 | 0.402 | 1.207 | 3,948 | 0.2391 | 0.6709 | 0.494 | 0.446 | 1.251 |
 
-The walk-forward uses the same player-games as the prop model and no closing total, because the prop file does not have one. On that no-price path, recency weight 0.25 beat the current projection on both 2025 and 2026:
+Unit only is the served path for a priced card and for a card with no line. It is better on Brier and log loss in both seasons than the stacked path and better than keeping the team total. The unshrunk chance was on the over for 43.7% of 2025 lines and 47.1% of 2026 lines. The stacked path was 47.1% and 49.1%. Players cleared the fair line 40.2% of the time in 2025 and 44.6% in 2026.
+
+This sample does not reproduce a 73% over rate or a mean 1.47 times the line. Against last season's median, the stacked mean was 1.24 times the line in 2025 and 1.27 times in 2026. The served mean is 1.21 and 1.25. The chance on the card stays near even because 32 games at the book's price are mixed in. The mean is still above the median, which is what a right-skewed counting stat does, and players still finished under that median more often than over. The comparison is not a profit test and not a pick.
+
+An earlier no-price check, without the closing spread and total, picked the same weight 0.25:
 
 | Path | 2025 games | 2025 Brier | 2025 log loss | 2026 games | 2026 Brier | 2026 log loss |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Current projection | 6,924 | 0.2335 | 0.6596 | 3,948 | 0.2395 | 0.6719 |
+| Stacked, no closing total | 6,924 | 0.2335 | 0.6596 | 3,948 | 0.2395 | 0.6719 |
 | Unit factor, weight 0.25 | 6,924 | 0.2331 | 0.6588 | 3,948 | 0.2390 | 0.6709 |
 
-Weights 0 and 0.5 also improved both scores. 0.25 was the best 2026 Brier in that set, so that is the served weight. It is applied only when the screen has no spread and no total. A priced prop still uses the previous factors. There is no historical closing total in this test, so dropping the defense multiplier on top of a market total was not adopted. The comparison is not a profit test and not a pick.
+## Game lines
+
+Spreads, totals and moneylines were scored the same way. For each game, the feature is the home club's pass and run offense against the away club's pass and run defense, minus the reverse. Defense yards below the league rate count as a tougher defense. A second feature is recent form: the last three games' margin, or points, minus what the closing line of those games expected, compared with the season residual. Ratings and form use only earlier games. The fit for a week uses only earlier weeks, shrunk toward no effect.
+
+| Path | 2025 covers | 2025 cover Brier | 2025 cover log loss | 2025 moneyline Brier | 2025 moneyline log loss | 2025 total Brier | 2025 total log loss | 2026 covers | 2026 cover Brier | 2026 cover log loss | 2026 moneyline Brier | 2026 moneyline log loss | 2026 total Brier | 2026 total log loss |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Closing line | 271 | 0.2500 | 0.6931 | 0.2126 | 0.6118 | 0.2500 | 0.6931 | 144 | 0.2500 | 0.6931 | 0.2147 | 0.6207 | 0.2500 | 0.6931 |
+| Unit versus unit | 271 | 0.2503 | 0.6938 | 0.2128 | 0.6123 | 0.2501 | 0.6934 | 144 | 0.2502 | 0.6935 | 0.2149 | 0.6212 | 0.2501 | 0.6933 |
+| Unit plus recent form | 271 | 0.2511 | 0.6953 | 0.2140 | 0.6150 | 0.2494 | 0.6919 | 144 | 0.2509 | 0.6949 | 0.2153 | 0.6219 | 0.2508 | 0.6948 |
+
+Neither adjustment beat the closing line on covers, moneylines and totals in both seasons. Recent form improved the 2025 total and lost on the 2026 total. Served spreads, totals and moneylines stay on version 2. The tier badge is still shown on the game answer. Version 2's published cover Brier is 0.2502 on a longer sample and it does not claim an edge.
 
 ## What changed, including a rematch
 

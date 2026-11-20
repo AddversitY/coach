@@ -248,17 +248,32 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   }
 
   CoachBrief? _contextBrief(CoachAnswer answer) {
+    final rows = data?.rows;
+    if (ratingBook == null && rows != null && rows.isNotEmpty) {
+      ratingBook = RatingBook.build(rows);
+    }
     final event = answer.event ?? conversation.event;
-    if (event == null) return null;
-    return contextBrief(
-      players: data,
+    final player = answer.player;
+    if (event != null) {
+      return contextBrief(
+        players: data,
+        ratings: ratingBook,
+        evidence: recentEvidence,
+        home: event.home,
+        away: event.away,
+        playerName: player?.name ?? conversation.playerName,
+        season: event.startsAt.year,
+        week: _weekGuess(event.startsAt),
+        line: answer.line,
+        metric: answer.metric.key,
+      );
+    }
+    if (player == null) return null;
+    return playerContextBrief(
       ratings: ratingBook,
-      evidence: recentEvidence,
-      home: event.home,
-      away: event.away,
-      playerName: answer.player?.name ?? conversation.playerName,
-      season: event.startsAt.year,
-      week: _weekGuess(event.startsAt),
+      player: player,
+      metric: answer.metric.key,
+      line: answer.line,
     );
   }
 
@@ -1465,18 +1480,18 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
             if (turn.brief != null) BriefingView(brief: turn.brief!),
-            SelectableText(
-              turn.invalidation ??
-                  turn.liveNotice ??
-                  (turn.lockedEvidence
-                      ? a.text
-                      : turn.game != null
-                      ? a.text
-                      : turn.generated?.answer ??
-                            turn.analysis?.summary ??
-                            a.text),
-              style: CoachType.body,
-            ),
+          SelectableText(
+            turn.invalidation ??
+                turn.liveNotice ??
+                (turn.lockedEvidence
+                    ? a.text
+                    : turn.game != null
+                    ? a.text
+                    : turn.generated?.answer ??
+                          turn.analysis?.summary ??
+                          a.text),
+            style: CoachType.body,
+          ),
           if (turn.game?.raw['decision'] is Map &&
               turn.invalidation == null &&
               !primarySummary &&

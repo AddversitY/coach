@@ -188,7 +188,7 @@ ShownProp showProp({
       item.id == card.id ? (opponent ?? '') : (opponentFor(item, looked) ?? ''),
     );
     MatchupEnvironment? environment;
-    if (matchupAdjustmentAdopted && (itemSpread == null || itemTotal == null)) {
+    if (matchupAdjustmentAdopted) {
       cache.ratings ??= RatingBook.build(players.data.rows);
       environment = matchupEnvironment(
         book: cache.ratings!,
@@ -204,6 +204,8 @@ ShownProp showProp({
         recencyWeight: matchupRecencyWeight,
       );
     }
+    final knownEnvironment = environment != null && environment.known;
+    final dropStacked = pricedPathDropsStackedScales && knownEnvironment;
     final projection = projectProp(
       index: usage,
       playerId: id,
@@ -215,9 +217,9 @@ ShownProp showProp({
       beforeDate: cutoff,
       team: looked?.team,
       opponent: item.id == card.id ? opponent : opponentFor(item, looked),
-      teamSpread: itemSpread,
-      total: itemTotal,
-      environment: environment != null && environment.known ? environment : null,
+      teamSpread: dropStacked ? null : itemSpread,
+      total: dropStacked ? null : itemTotal,
+      environment: knownEnvironment ? environment : null,
       market: market,
       teammateOuts: item.id == card.id
           ? outs

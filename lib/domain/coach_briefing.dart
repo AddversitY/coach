@@ -1,4 +1,5 @@
 import 'coach_books.dart';
+import 'game_research.dart';
 import 'matchup.dart';
 import 'nfl_teams.dart';
 import 'odds.dart';
@@ -82,8 +83,10 @@ CoachBrief? interpretQuestion({
   String? contextPlayer,
 }) {
   final q = question.toLowerCase();
-  final why = _whySwing.hasMatch(q) &&
-      RegExp(r'\b(beat|blew|blow|changed|well|worse|better|badly)\b').hasMatch(q);
+  final why =
+      _whySwing.hasMatch(q) &&
+      RegExp(r'\b(beat|blew|blow|changed|well|worse|better|badly)\b')
+          .hasMatch(q);
   final namedClubs = _codes(question).length >= 2;
   if (_rematch.hasMatch(q) || why || (_whatChanged.hasMatch(q) && namedClubs)) {
     return _rematchBrief(
@@ -112,8 +115,10 @@ CoachBrief? interpretQuestion({
   if (_props.hasMatch(q)) {
     return _propBrief(question, props);
   }
-  if (RegExp(r'\b(team total|game prop|team prop)\b', caseSensitive: false)
-      .hasMatch(q)) {
+  if (RegExp(
+    r'\b(team total|game prop|team prop)\b',
+    caseSensitive: false,
+  ).hasMatch(q)) {
     return _teamProps(props);
   }
   return null;
@@ -139,8 +144,7 @@ CoachBrief _ladder(OddsBoard? board) {
   if (ladders.isEmpty) {
     return const CoachBrief(
       title: 'Alternate lines',
-      text:
-          'Alternate lines are unavailable. The free snapshot is the main line.',
+      text: 'Alternate lines are unavailable. The free snapshot is the main line.',
       handlesQuestion: true,
     );
   }
@@ -164,8 +168,7 @@ CoachBrief _teamProps(OddsBoard? board) {
   if (markets.intersection(wanted).isEmpty) {
     return const CoachBrief(
       title: 'Team and game props',
-      text:
-          'Team and game props are unavailable. The free snapshot does not include those markets.',
+      text: 'Team and game props are unavailable. The free snapshot does not include those markets.',
       handlesQuestion: true,
     );
   }
@@ -182,6 +185,8 @@ CoachBrief? contextBrief({
   String? playerName,
   int? season,
   int? week,
+  double? line,
+  String? metric,
 }) {
   if (ratings == null || season == null || week == null) return null;
   final homeCode = home == null ? null : _code(home);
@@ -189,16 +194,19 @@ CoachBrief? contextBrief({
   if (homeCode == null || awayCode == null) return null;
   final snap = ratings.before(season: season, week: week);
   final cards = <UnitRating>[
-    ?snap.lookup(homeCode, UnitKey.pass, offense: false),
+    ?snap.lookup(homeCode, UnitKey.pass, offense: true),
     ?snap.lookup(awayCode, UnitKey.pass, offense: false),
-    ?snap.lookup(homeCode, UnitKey.run, offense: false),
+    ?snap.lookup(awayCode, UnitKey.pass, offense: true),
+    ?snap.lookup(homeCode, UnitKey.pass, offense: false),
+    ?snap.lookup(homeCode, UnitKey.run, offense: true),
     ?snap.lookup(awayCode, UnitKey.run, offense: false),
+    ?snap.lookup(awayCode, UnitKey.run, offense: true),
+    ?snap.lookup(homeCode, UnitKey.run, offense: false),
   ];
   if (cards.isEmpty) return null;
-  final lead = cards.first;
   return CoachBrief(
     title: 'Matchup',
-    text: lead.sentence,
+    text: _pairSentence(cards),
     handlesQuestion: false,
     ratings: cards,
     formNotes: _formNotes(evidence, homeCode, awayCode, week),
@@ -208,9 +216,57 @@ CoachBrief? contextBrief({
       name: playerName,
       season: season,
       week: week,
-      line: null,
+      line: line,
+      metric: metric,
     ),
   );
+}
+
+/// Splits for a player answer that is not attached to a game.
+///
+/// The badge is the last opponent's unit, labeled as the last opponent.
+/// The elite, average and weak rows are the player's earlier games.
+CoachBrief? playerContextBrief({
+  required RatingBook? ratings,
+  required GameResearchPlayer player,
+  required String metric,
+  double? line,
+}) {
+  if (ratings == null || player.games.isEmpty) return null;
+  final latest = player.latest;
+  final beforeWeek = latest.week + 1;
+  final splits = playerSplits(
+    book: ratings,
+    games: player.games,
+    metric: metric,
+    line: line,
+    beforeSeason: latest.season,
+    beforeWeek: beforeWeek,
+  );
+  if (splits == null) return null;
+  final defense = ratings
+      .before(season: latest.season, week: beforeWeek)
+      .lookup(latest.opponent, splits.unit, offense: false);
+  final last = defense == null
+      ? ''
+      : ' Last opponent ${defense.team}: ${defense.sentence}';
+  return CoachBrief(
+    title: 'Matchup',
+    text: '${_allTiers(splits)}$last',
+    handlesQuestion: false,
+    ratings: [?defense],
+    splits: splits,
+  );
+}
+
+String _pairSentence(List<UnitRating> cards) {
+  if (cards.length < 2) return cards.first.sentence;
+  final offense = cards[0];
+  final defense = cards[1];
+  if (!offense.ranked || !defense.ranked) {
+    return '${offense.sentence} ${defense.sentence}';
+  }
+  return '${offense.team} ${offense.tierLabel.toLowerCase()} pass offense against ${defense.team} ${defense.tierLabel.toLowerCase()} pass defense.';
 }
 
 CoachBrief _rematchBrief({
@@ -249,8 +305,7 @@ CoachBrief _rematchBrief({
   if (report == null) {
     return CoachBrief(
       title: 'What changed',
-      text:
-          'Those clubs do not have two completed meetings in the loaded schedule. A later result that is not in the file is not described.',
+      text: 'Those clubs do not have two completed meetings in the loaded schedule. A later result that is not in the file is not described.',
       handlesQuestion: true,
     );
   }
@@ -279,7 +334,9 @@ CoachBrief _matchupBrief({
     );
   }
   final season = evidence?.games.isNotEmpty == true
-      ? evidence!.games.map((game) => game.season).reduce((a, b) => a > b ? a : b)
+      ? evidence!.games
+            .map((game) => game.season)
+            .reduce((a, b) => a > b ? a : b)
       : 2026;
   final week = _nextWeek(evidence) ?? 12;
   final name = _playerName(question, players) ?? contextPlayer;
@@ -317,12 +374,29 @@ CoachBrief _matchupBrief({
     splits: splits,
     ratings: cards,
     formNotes: [
-      for (final code in codes.take(2)) ..._formNotes(evidence, code, null, week),
+      for (final code in codes.take(2))
+        ..._formNotes(evidence, code, null, week),
     ],
   );
 }
 
-String _splitSentence(PlayerSplits splits, UnitTier focus, List<TierSplit>? rows) {
+String _allTiers(PlayerSplits splits) {
+  final parts = [
+    for (final row in splits.tiers)
+      if (row.games > 0)
+        '${row.tier.name} ${row.games} games, ${row.rawAverage?.toStringAsFixed(1) ?? '—'} per game',
+  ];
+  if (parts.isEmpty) {
+    return '${splits.player} has no earlier games against a ranked defense.';
+  }
+  return '${splits.player}: ${parts.join('; ')}.';
+}
+
+String _splitSentence(
+  PlayerSplits splits,
+  UnitTier focus,
+  List<TierSplit>? rows,
+) {
   final row = rows == null || rows.isEmpty ? null : rows.first;
   if (row == null || row.games == 0) {
     return '${splits.player} has no recorded games in the ${focus.name} tier before this week. ${splits.summary}';
@@ -352,8 +426,15 @@ CoachBrief _propBrief(String question, OddsBoard? board) {
   final books = CoachBooks.parse(question);
   final book = books != null && books.length == 1 ? books.first : null;
   final overs = RegExp(r'\bovers?\b', caseSensitive: false).hasMatch(question);
-  final unders = RegExp(r'\bunders?\b', caseSensitive: false).hasMatch(question);
-  final side = overs ? 'over' : unders ? 'under' : null;
+  final unders = RegExp(
+    r'\bunders?\b',
+    caseSensitive: false,
+  ).hasMatch(question);
+  final side = overs
+      ? 'over'
+      : unders
+      ? 'under'
+      : null;
   final rows = <PropBoardRow>[];
   for (final quote in board.quotes) {
     final market = quote.selection.market;
@@ -409,6 +490,7 @@ PlayerSplits? _splitsForName({
   required int season,
   required int week,
   required double? line,
+  String? metric,
 }) {
   if (players == null || ratings == null || name == null || name.isEmpty) {
     return null;
@@ -418,15 +500,17 @@ PlayerSplits? _splitsForName({
       if (game.name.toLowerCase() == name.toLowerCase()) game,
   ];
   if (rows.isEmpty) return null;
-  final metric = rows.last.position == 'QB'
-      ? 'passing_yards'
-      : rows.last.position == 'RB'
-      ? 'rushing_yards'
-      : 'receiving_yards';
+  final chosen =
+      metric ??
+      (rows.last.position == 'QB'
+          ? 'passing_yards'
+          : rows.last.position == 'RB'
+          ? 'rushing_yards'
+          : 'receiving_yards');
   return playerSplits(
     book: ratings,
     games: rows,
-    metric: metric,
+    metric: chosen,
     line: line,
     beforeSeason: season,
     beforeWeek: week,
@@ -448,7 +532,9 @@ List<String> _formNotes(
         game,
   ]..sort((a, b) => a.week.compareTo(b.week));
   if (games.length < 3) {
-    return ['$team does not have three earlier 2026 games in the schedule file.'];
+    return [
+      '$team does not have three earlier 2026 games in the schedule file.',
+    ];
   }
   String record(Iterable<RecentGame> slice) {
     var w = 0, l = 0, t = 0;
