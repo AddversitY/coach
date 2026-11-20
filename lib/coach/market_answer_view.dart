@@ -4,7 +4,9 @@ import '../domain/eastern.dart';
 import '../domain/market_math.dart';
 import '../domain/market_question.dart';
 import '../domain/odds.dart';
+import '../domain/stake_split.dart';
 import '../theme/coach_theme.dart';
+import 'stake_calculator.dart';
 
 /// Price shopping inside the conversation: best prices, fee-free market
 /// chances, two-book crosses and middle windows from the saved snapshot.
@@ -28,7 +30,22 @@ class MarketAnswerView extends StatelessWidget {
     ),
   );
 
-  Widget _market(PricedMarket m) => _card([
+  void _explain(BuildContext context, String text) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(text, style: CoachType.body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _market(BuildContext context, PricedMarket m) => _card([
     Text(
       '${m.matchup} · ${m.detail}',
       style: CoachType.label.copyWith(fontWeight: FontWeight.w600),
@@ -58,6 +75,17 @@ class MarketAnswerView extends StatelessWidget {
       ].join(' · '),
       style: CoachType.label.copyWith(fontSize: 11),
     ),
+    if (m.sides.isNotEmpty && m.sides.first.best != null)
+      Align(
+        alignment: Alignment.centerLeft,
+        child: TextButton(
+          onPressed: () => _explain(
+            context,
+            impliedProbabilityNote(m.sides.first.best!.decimal),
+          ),
+          child: const Text('What implied probability means'),
+        ),
+      ),
     if (m.rulesUnverified)
       Text(
         'House rules not independently verified.',
@@ -81,6 +109,16 @@ class MarketAnswerView extends StatelessWidget {
       'Return ${_pct(a.roi)} if both bets are accepted at these prices. Not guaranteed: prices move and books can limit or void bets.',
       style: CoachType.label.copyWith(fontSize: 11),
     ),
+    StakeCalculator(
+      legs: [
+        for (final leg in a.legs)
+          (
+            label: leg.quote.selection.outcome,
+            book: leg.quote.book,
+            decimal: leg.quote.decimal,
+          ),
+      ],
+    ),
   ]);
 
   Widget _middle(MiddleOpportunity m) => _card([
@@ -94,6 +132,20 @@ class MarketAnswerView extends StatelessWidget {
       style: CoachType.body,
     ),
     Text(middlePayoffSummary(m), style: CoachType.label.copyWith(fontSize: 11)),
+    StakeCalculator(
+      legs: [
+        (
+          label: '${m.first.selection.outcome} ${m.first.selection.point ?? ''}',
+          book: m.first.book,
+          decimal: m.first.decimal,
+        ),
+        (
+          label: '${m.second.selection.outcome} ${m.second.selection.point ?? ''}',
+          book: m.second.book,
+          decimal: m.second.decimal,
+        ),
+      ],
+    ),
   ]);
 
   @override
@@ -110,7 +162,7 @@ class MarketAnswerView extends StatelessWidget {
             fontSize: 11,
           ),
         ),
-        for (final m in a.markets) _market(m),
+        for (final m in a.markets) _market(context, m),
         for (final arb in a.arbitrage) _arb(arb),
         for (final m in a.middles) _middle(m),
         if (empty && a.emptyReason != null)

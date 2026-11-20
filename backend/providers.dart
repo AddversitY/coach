@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:odds_edge/domain/book_link.dart';
 import 'package:odds_edge/domain/nfl_teams.dart';
 import 'package:odds_edge/domain/odds.dart';
 import 'package:odds_edge/data/demo.dart';
@@ -119,6 +120,8 @@ class TheOddsApiProvider implements OddsProvider {
     'markets': markets.join(','),
     'oddsFormat': 'decimal',
     'dateFormat': 'iso',
+    'includeLinks': 'true',
+    'includeSids': 'true',
   });
 
   /// Kickoff list. The Odds API does not charge credits for `/events`.
@@ -257,6 +260,7 @@ class TheOddsApiProvider implements OddsProvider {
                 final rules = verified
                     ? 'includes_overtime_push_on_tie'
                     : 'unverified';
+                final rawLink = outcome['link'];
                 quotes.add(
                   OddsQuote(
                     selection: Selection(
@@ -275,6 +279,9 @@ class TheOddsApiProvider implements OddsProvider {
                     sourceAt: sourceAt,
                     collectedAt: collectedAt,
                     status: verified ? 'open' : 'unverified',
+                    link: rawLink is String
+                        ? permittedBookLink(rawLink, bookId)
+                        : null,
                   ),
                 );
               } catch (_) {

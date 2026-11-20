@@ -4,6 +4,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import '../domain/bet_finder.dart';
+import '../domain/coach_briefing.dart';
+import '../domain/matchup.dart';
+import '../domain/recent_evidence.dart';
+import '../domain/unit_ratings.dart';
 import '../domain/coach_analysis.dart';
 import '../domain/game_outlook.dart';
 import '../domain/coach_telemetry.dart';
@@ -31,6 +35,7 @@ import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
 import 'bet_ideas_view.dart';
+import 'briefing_view.dart';
 import 'market_answer_view.dart';
 import 'prop_depth_view.dart';
 import 'trends_view.dart';
@@ -111,6 +116,8 @@ class _Turn {
   String? liveNotice;
   MarketAnswer? market;
   BetFinderAnswer? bets;
+  CoachBrief? brief;
+  bool lockedEvidence = false;
 }
 
 class _CoachWorkspaceState extends State<CoachWorkspace> {
@@ -136,6 +143,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   CoachAnalysis? lastAnalysis;
   List<HistoricalGame>? analysisScores;
   Map<String, dynamic>? analysisValidation;
+  RecentEvidence? recentEvidence;
+  MatchupContext? matchupContext;
+  RatingBook? ratingBook;
   bool pollingTelemetry = false;
   Map<String, String> playerNames = {};
   List<String>? selectedBookIds;
@@ -207,7 +217,76 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         _reviewAnalyses(telemetry);
         unawaited(_pollTelemetry());
         unawaited(_loadTrendHistory());
+        unawaited(_loadMatchupContext());
       }
+    }
+  }
+
+  CoachBrief? _askedBrief(String question) {
+    return interpretQuestion(
+      question: question,
+      evidence: recentEvidence,
+      players: data,
+      ratings: ratingBook,
+      snaps: matchupContext?.snaps ?? const [],
+      injuries: [
+        for (final row in matchupContext?.injuries ?? const <ListedInjury>[])
+          InjuryNote(
+            week: row.week,
+            team: row.team,
+            player: row.player,
+            position: row.position,
+            status: row.status,
+            injury: row.injury,
+          ),
+      ],
+      props: snapshot?.props,
+      contextHome: conversation.event?.home,
+      contextAway: conversation.event?.away,
+      contextPlayer: conversation.playerName,
+    );
+  }
+
+  CoachBrief? _contextBrief(CoachAnswer answer) {
+    final event = answer.event ?? conversation.event;
+    if (event == null) return null;
+    return contextBrief(
+      players: data,
+      ratings: ratingBook,
+      evidence: recentEvidence,
+      home: event.home,
+      away: event.away,
+      playerName: answer.player?.name ?? conversation.playerName,
+      season: event.startsAt.year,
+      week: _weekGuess(event.startsAt),
+    );
+  }
+
+  int _weekGuess(DateTime kickoff) {
+    final games = recentEvidence?.games ?? const <RecentGame>[];
+    RecentGame? nearest;
+    for (final game in games) {
+      if (nearest == null ||
+          (game.date.difference(kickoff).inDays.abs() <
+              nearest.date.difference(kickoff).inDays.abs())) {
+        nearest = game;
+      }
+    }
+    return nearest?.week ?? 1;
+  }
+
+  Future<void> _loadMatchupContext() async {
+    try {
+      final recent = await loadBundledRecentEvidence();
+      final matchup = await loadBundledMatchup();
+      if (!mounted) return;
+      setState(() {
+        recentEvidence = recent;
+        matchupContext = matchup;
+        ratingBook ??= RatingBook.build(data?.rows ?? const []);
+      });
+    } catch (_) {
+      /* Matchup cards stay hidden when a bundle cannot load. */
     }
   }
 
@@ -437,7 +516,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     final directEvaluation = RegExp(
       r'coach.*perform|forecast results|model results|evaluation|benchmark',
     ).hasMatch(question.toLowerCase());
+    final askedBrief = _askedBrief(question);
     if (api != null &&
+        askedBrief == null &&
         !directEvaluation &&
         planned == null &&
         !RegExp(
@@ -502,7 +583,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
             RegExp(
               r'\b(what about|how about|worth|options|recommend|look at|spreads?|totals?|moneyline|matchup|breakdown|analyze|explore|best bet|strongest|game outlook|efficiency|pace|rest|quarterback|roles?|workloads?|forecast|projection|predict|wins?|winner|bet|bets)\b',
             ).hasMatch(lower));
-    if (request.clarification != null) {
+    if (askedBrief != null) {
+      answer = CoachAnswer(
+        title: askedBrief.title,
+        text: askedBrief.text,
+        intent: CoachIntent.evidence,
+        event: conversation.event,
+      );
+    } else if (request.clarification != null) {
       answer = CoachAnswer(
         title: 'Let’s make that specific',
         text: request.clarification!,
@@ -845,7 +933,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           ..evaluation = evaluation
           ..live = live
           ..market = market
-          ..bets = bets;
+          ..bets = bets
+          ..brief = askedBrief ?? _contextBrief(answer)
+          ..lockedEvidence = askedBrief != null;
     if (result != null) {
       final issue = checkAnalysis(
         analysis: result,
@@ -867,6 +957,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       caseSensitive: false,
     ).hasMatch(question);
     if (aiConnected &&
+        !turn.lockedEvidence &&
         (game == null || requestedInterpretation) &&
         answer.intent != CoachIntent.clarify &&
         turn.invalidation == null &&
@@ -1373,10 +1464,13 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
           if (turn.game == null ||
               turn.invalidation != null ||
               turn.game!.raw['decision'] is! Map)
+            if (turn.brief != null) BriefingView(brief: turn.brief!),
             SelectableText(
               turn.invalidation ??
                   turn.liveNotice ??
-                  (turn.game != null
+                  (turn.lockedEvidence
+                      ? a.text
+                      : turn.game != null
                       ? a.text
                       : turn.generated?.answer ??
                             turn.analysis?.summary ??

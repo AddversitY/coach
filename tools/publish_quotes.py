@@ -209,6 +209,32 @@ def valid_selection(selection, event, directory, markets):
     return name in directory and side in ('Over','Under') and point>=0 and selection.get('rules')=='player_prop_unverified'
 
 
+_LINK_HOSTS = {
+    'fanduel': ('fanduel.com',),
+    'draftkings': ('draftkings.com',),
+    'betmgm': ('betmgm.com',),
+    'williamhill_us': ('caesars.com', 'williamhill.com'),
+    'espnbet': ('espnbet.com', 'thescore.bet'),
+    'fanatics': ('fanatics.com',),
+    'betrivers': ('betrivers.com',),
+    'hardrockbet': ('hardrock.bet', 'hardrocksportsbook.com'),
+    'ballybet': ('ballybet.com',),
+    'fliff': ('fliff.com',),
+}
+
+
+def _book_link(raw, book_id):
+    if not isinstance(raw, str) or not raw.startswith('https://') or '@' in raw[:raw.find('/', 8) if '/' in raw[8:] else len(raw)]:
+        return None
+    parsed = urllib.parse.urlparse(raw)
+    if parsed.scheme != 'https' or parsed.username or parsed.password or not parsed.hostname:
+        return None
+    host = parsed.hostname.lower()
+    if any(host == suffix or host.endswith('.' + suffix) for suffix in _LINK_HOSTS.get(book_id, ())):
+        return raw
+    return None
+
+
 def normalize_quotes(raw, event, provider_event, directory, now, markets=MARKETS):
     if (raw.get('id') != provider_event['id'] or raw.get('sport_key') != 'americanfootball_nfl' or
             canonical(raw.get('home_team')) != event['home'] or canonical(raw.get('away_team')) != event['away'] or
@@ -232,7 +258,10 @@ def normalize_quotes(raw, event, provider_event, directory, now, markets=MARKETS
                 if identity in seen:raise ValueError('Duplicate exact quote identity.')
                 seen.add(identity)
                 if selection['participant']:identities[selection['participant']]=directory[selection['participant']]
-                quotes.append(dict(selection=selection,bookId=book_id,book=BOOKS[book_id],provider=PROVIDER,decimal=float(price),sourceAt=iso(source),collectedAt=iso(now),status='open',demo=False))
+                quote=dict(selection=selection,bookId=book_id,book=BOOKS[book_id],provider=PROVIDER,decimal=float(price),sourceAt=iso(source),collectedAt=iso(now),status='open',demo=False)
+                link=_book_link(outcome.get('link'), book_id)
+                if link: quote['link']=link
+                quotes.append(quote)
     quotes.sort(key=lambda q:(q['selection']['participant'],q['selection']['market'],q['selection']['point'] or 0,q['selection']['outcome'],q['bookId']))
     if len(quotes)>2000:raise ValueError('Unexpected pilot observation count.')
     return quotes,[identities[name] for name in sorted(identities)]
@@ -276,12 +305,12 @@ class Provider:
         params = {'dateFormat': 'iso'}
         if slate:
             path = '/v4/sports/americanfootball_nfl/odds'
-            params.update(bookmakers=','.join(BOOKS), markets=','.join(GAME_MARKETS), oddsFormat='decimal')
+            params.update(bookmakers=','.join(BOOKS), markets=','.join(GAME_MARKETS), oddsFormat='decimal', includeLinks='true', includeSids='true')
         elif event_id:
             if not re.fullmatch(r'[a-f0-9]{32}', event_id):
                 raise ValueError('Invalid provider event id.')
             path += '/' + event_id + '/odds'
-            params.update(bookmakers=','.join(BOOKS), markets=','.join(self.markets), oddsFormat='decimal')
+            params.update(bookmakers=','.join(BOOKS), markets=','.join(self.markets), oddsFormat='decimal', includeLinks='true', includeSids='true')
         url = 'https://api.the-odds-api.com' + path + '?' + urllib.parse.urlencode(params)
         request = urllib.request.Request(url, headers={'x-api-key': self.key, 'User-Agent': 'OddsEdge publication pilot'})
         class NoRedirect(urllib.request.HTTPRedirectHandler):

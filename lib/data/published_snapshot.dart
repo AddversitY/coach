@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../domain/book_link.dart';
 import '../domain/odds.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/eastern.dart';
@@ -343,6 +344,7 @@ class PublishedSnapshot {
         'collectedAt',
         'status',
         'demo',
+        'link',
       });
       keys(q['selection'] as Map, {
         'eventId',
@@ -398,6 +400,12 @@ class PublishedSnapshot {
                 validPoint &&
                 point >= 0 &&
                 selection.rules == 'player_prop_unverified';
+      final rawLink = q['link'];
+      if (q.containsKey('link') &&
+          (rawLink is! String ||
+              permittedBookLink(rawLink, quote.bookId) != rawLink)) {
+        throw const FormatException('Invalid exact public quote identity.');
+      }
       if (quote.demo ||
           quote.status != 'open' ||
           quote.provider != 'the-odds-api' ||
