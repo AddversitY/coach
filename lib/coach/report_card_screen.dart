@@ -8,6 +8,7 @@ import '../domain/coach_board.dart';
 import '../domain/coach_model.dart';
 import '../domain/hit_rate.dart';
 import '../domain/odds.dart';
+import '../domain/over_rate.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_clv.dart';
 import '../domain/prop_history.dart';
@@ -87,6 +88,11 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
       final liveCalibrator = propLiveChance == PropLiveChance.calibrated
           ? next.calibrator
           : null;
+      final postShrink = servedOverCalibrator(
+        data.rows,
+        scores: scores,
+        matchup: matchup,
+      );
       final index = usageIndexFor(data.rows, scores: scores, matchup: matchup);
       final closing = propClosingValue(
         widget.lineHistory,
@@ -105,6 +111,10 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
             beforeDate: at,
             market: earlier,
             calibrator: liveCalibrator,
+            postShrinkCalibrator: postShrink,
+            lognormalYards:
+                overRateCalibrationAdopted &&
+                servedOverCalibration == 'lognormal',
           )?.chance;
         },
       );
