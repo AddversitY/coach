@@ -30,6 +30,7 @@ import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/play_units.dart';
 import '../domain/player_stats.dart';
+import '../domain/price_history.dart';
 import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
 import '../theme/coach_theme.dart';
@@ -146,6 +147,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Map<String, dynamic>? analysisValidation;
   RecentEvidence? recentEvidence;
   PlayBook? playBook;
+  SelfGradeReport? selfGrade;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
   bool pollingTelemetry = false;
@@ -247,6 +249,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       contextHome: conversation.event?.home,
       contextAway: conversation.event?.away,
       contextPlayer: conversation.playerName,
+      grades: selfGrade,
     );
   }
 
@@ -303,11 +306,18 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         plays = null;
       }
+      SelfGradeReport? grades;
+      try {
+        grades = await loadBundledSelfGrade();
+      } catch (_) {
+        grades = null;
+      }
       if (!mounted) return;
       setState(() {
         recentEvidence = recent;
         matchupContext = matchup;
         playBook = plays;
+        selfGrade = grades;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });
     } catch (_) {

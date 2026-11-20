@@ -5,6 +5,7 @@ import 'nfl_teams.dart';
 import 'odds.dart';
 import 'play_units.dart';
 import 'player_stats.dart';
+import 'price_history.dart';
 import 'recent_evidence.dart';
 import 'rematch.dart';
 import 'unit_ratings.dart';
@@ -83,7 +84,17 @@ CoachBrief? interpretQuestion({
   String? contextHome,
   String? contextAway,
   String? contextPlayer,
+  SelfGradeReport? grades,
 }) {
+  if (asksForGrade(question)) {
+    final market = gradeMarketForQuestion(question);
+    final report = grades ?? SelfGradeReport.empty;
+    return CoachBrief(
+      title: 'Report card',
+      text: selfGradeSentence(report, market),
+      handlesQuestion: true,
+    );
+  }
   final q = question.toLowerCase();
   final why =
       _whySwing.hasMatch(q) &&

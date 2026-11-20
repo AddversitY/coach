@@ -1,0 +1,52 @@
+name: Price history
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Thursday, Sunday and Monday, around afternoon and evening kickoffs.
+    - cron: '15 17 * * 0,1,4'
+    - cron: '15 21 * * 0,1,4'
+    - cron: '45 0 * * 1,2,5'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: price-history
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save published prices and try public sportsbook pages
+        run: |
+          python tools/price_history.py \
+            --history assets/price-history.json \
+            --grade-output assets/self-grade.json \
+            --snapshot-url https://addversity.github.io/coach/data/snapshot.json \
+            --scrape \
+            --grade
+      - name: Commit new prices only
+        run: |
+          git config user.name "odds-edge-evidence"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/price-history.json assets/self-grade.json
+          if git diff --cached --quiet; then
+            echo "Price history unchanged."
+          else
+            git commit -m "Save public price snapshots and closing lines"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi

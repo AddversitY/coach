@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/history.dart';
 import 'package:odds_edge/domain/hit_rate.dart';
 import 'package:odds_edge/domain/player_stats.dart';
+import 'package:odds_edge/domain/price_history.dart';
 import 'package:odds_edge/domain/prop_projection.dart';
 import 'package:odds_edge/domain/prop_report.dart';
 import 'package:odds_edge/domain/unit_ratings.dart';
@@ -26,6 +27,7 @@ void main() {
     final index = UsageIndex.build(players, scores: history);
     final book = RatingBook.build(players);
     final lines = _lines(history);
+    final prices = _prices();
     final modes = <String, Map<int, _Board>>{
       for (final mode in ['stacked', 'sensitivity', 'unit', 'noprice'])
         mode: _score(
@@ -33,9 +35,16 @@ void main() {
           index: index,
           book: book,
           lines: lines,
+          prices: prices,
           mode: mode,
         ),
     };
+    for (final metric in propCloseMarkets.values) {
+      // ignore: avoid_print
+      print(
+        'close-gate $metric saved=${prices.closesFor(metric)} need=$savedCloseGate',
+      );
+    }
     for (final mode in modes.keys) {
       for (final season in [2025, 2026]) {
         final board = modes[mode]![season]!;
@@ -94,6 +103,14 @@ Map<String, ({double spread, double total})> _lines(
   return lines;
 }
 
+PriceHistory _prices() {
+  final file = File('assets/price-history.json');
+  if (!file.existsSync()) return const PriceHistory(observations: [], closes: []);
+  final decoded = jsonDecode(file.readAsStringSync().replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return const PriceHistory(observations: [], closes: []);
+  return PriceHistory.fromJson(Map<String, dynamic>.from(decoded));
+}
+
 List<HistoricalGame> _history() {
   final decoded = jsonDecode(
     File('assets/nfl-history.json')
@@ -121,6 +138,7 @@ Map<int, _Board> _score({
   required UsageIndex index,
   required RatingBook book,
   required Map<String, ({double spread, double total})> lines,
+  required PriceHistory prices,
   required String mode,
 }) {
   final scores = <int, _Board>{2025: _Board(), 2026: _Board()};
@@ -148,8 +166,10 @@ Map<int, _Board> _score({
         final values = [
           for (final game in previous) game.stats[metric]!.toDouble(),
         ]..sort();
-        final line = values[values.length ~/ 2];
-        if (line < (propReportMinimumLine[metric] ?? 0)) continue;
+        final median = values[values.length ~/ 2];
+        final marketKey = propCloseMarkets[metric];
+        final closes = marketKey == null ? 0 : prices.closesFor(marketKey);
+        if (median < (propReportMinimumLine[metric] ?? 0)) continue;
         final history = <PlayerGame>[
           for (final earlier in seasons.take(indexSeason))
             ...bySeason[earlier]!,
@@ -160,6 +180,20 @@ Map<int, _Board> _score({
         }
         for (final week in (weeks.keys.toList()..sort())) {
           for (final game in weeks[week]!) {
+            final stored = marketKey == null
+                ? null
+                : prices.closeLine(
+                    market: marketKey,
+                    season: season,
+                    week: week,
+                    team: game.team,
+                    player: game.name,
+                  );
+            final line = walkForwardTestLine(
+              median: median,
+              close: stored,
+              closesForMarket: closes,
+            );
             final value = game.stats[metric]!.toDouble();
             if (value == line) continue;
             final closing = lines['${game.season}|${game.week}|${game.team}'];

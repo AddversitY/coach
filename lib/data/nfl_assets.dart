@@ -8,6 +8,7 @@ import '../domain/history.dart';
 import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
 import '../domain/play_units.dart';
+import '../domain/price_history.dart';
 import '../domain/recent_evidence.dart';
 
 /// `compute` never replies while a widget test holds the root isolate.
@@ -36,6 +37,13 @@ Future<MatchupContext> loadBundledMatchup() async {
 MatchupContext _decodeMatchup(String json) => MatchupContext.fromJson(
   Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
 );
+
+Future<SelfGradeReport> loadBundledSelfGrade() async {
+  final json = await rootBundle.loadString('assets/self-grade.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return SelfGradeReport.empty;
+  return SelfGradeReport.fromJson(Map<String, dynamic>.from(decoded));
+}
 
 Future<RecentEvidence> loadBundledRecentEvidence() async {
   final json = await rootBundle.loadString('assets/nfl-recent-evidence.json');

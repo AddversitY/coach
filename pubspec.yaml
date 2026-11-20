@@ -67,6 +67,7 @@ flutter:
     - assets/nfl-recent-evidence.json
     - assets/play-units.json
     - assets/parlay-calibration.json
+    - assets/self-grade.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
