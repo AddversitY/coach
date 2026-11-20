@@ -1,4 +1,5 @@
 import 'matchup.dart';
+import 'play_units.dart';
 import 'player_stats.dart';
 import 'recent_evidence.dart';
 
@@ -38,6 +39,7 @@ ChangeReport? rematchReport({
   required String teamB,
   List<SnapShare> snaps = const [],
   List<InjuryNote> earlierInjuries = const [],
+  PlayBook? plays,
 }) {
   final a = teamA.toUpperCase();
   final b = teamB.toUpperCase();
@@ -57,10 +59,9 @@ ChangeReport? rematchReport({
   final unavailable = <String>[
     'Front-office and general-manager changes are unavailable. These files do not name a general manager or a firing.',
     'A trade tape is unavailable. A player who snaps for a different club later is a snap-count team change, not a recorded transaction.',
-    'Third-down rate is unavailable. The team weekly file has no third-down attempts.',
-    'Pass rate over expected is unavailable. The pass rate below is attempts divided by attempts plus carries.',
-    'Down-to-down success rate is unavailable. Passing and rushing EPA are the efficiency numbers the team file does publish.',
   ];
+  _playLines(plays, earlier, details, unavailable);
+  _playLines(plays, later, details, unavailable);
   final earlyWeeks = _weeks(evidence, earlier.id);
   final lateWeeks = _weeks(evidence, later.id);
   final turnover = _turnoverRead(earlier, later, earlyWeeks, lateWeeks);
@@ -135,6 +136,58 @@ String _lineSentence(RecentGame game) {
   }
   final favorite = line > 0 ? game.home : game.away;
   return 'Week ${game.week} closing home margin ${line > 0 ? '+' : ''}$line, so $favorite was favored by ${line.abs()}. $totalText';
+}
+
+void _playLines(
+  PlayBook? book,
+  RecentGame game,
+  List<String> details,
+  List<String> unavailable,
+) {
+  final home = book?.game(game.id, game.home);
+  final away = book?.game(game.id, game.away);
+  if (home != null && away != null && home.thirdPlays > 0 && away.thirdPlays > 0) {
+    details.add(
+      'Week ${game.week} third downs, converted of converted plus failed, with a no-play excluded: '
+      '${game.home} ${home.thirdConverted} of ${home.thirdPlays}, '
+      '${game.away} ${away.thirdConverted} of ${away.thirdPlays}.',
+    );
+  } else {
+    unavailable.add(
+      'Week ${game.week} third-down rate is unavailable. The play file has no converted and failed third downs for both clubs.',
+    );
+  }
+  if (home != null && away != null && home.plays > 0 && away.plays > 0) {
+    details.add(
+      'Week ${game.week} success rate, successful plays of pass and run plays: '
+      '${game.home} ${home.successes} of ${home.plays}, '
+      '${game.away} ${away.successes} of ${away.plays}.',
+    );
+  } else {
+    unavailable.add(
+      'Week ${game.week} down-to-down success rate is unavailable. Passing and rushing EPA are still in the team file.',
+    );
+  }
+  if (home != null && away != null && home.passOePlays > 0 && away.passOePlays > 0) {
+    String rate(PlayGame row) =>
+        (row.passOeSum / row.passOePlays).toStringAsFixed(1);
+    details.add(
+      'Week ${game.week} pass rate over expected: '
+      '${game.home} ${rate(home)}, ${game.away} ${rate(away)}.',
+    );
+  } else {
+    unavailable.add(
+      'Week ${game.week} pass rate over expected is unavailable. The pass rate below is attempts divided by attempts plus carries.',
+    );
+  }
+  if (home != null && away != null && home.dropbacks > 0 && away.dropbacks > 0) {
+    String rate(PlayGame row) =>
+        '${row.sacks + row.hits} of ${row.dropbacks}';
+    details.add(
+      'Week ${game.week} pressure, sacks plus quarterback hits of dropbacks: '
+      '${game.home} ${rate(home)}, ${game.away} ${rate(away)}.',
+    );
+  }
 }
 
 Map<String, TeamWeek> _weeks(RecentEvidence evidence, String gameId) => {

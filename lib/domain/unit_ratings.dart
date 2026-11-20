@@ -4,8 +4,9 @@ import 'player_stats.dart';
 ///
 /// A rating for a week uses only games from earlier weeks. Yards per attempt,
 /// yards per carry, yards per target and sacks per dropback are the inputs.
-/// Play-by-play EPA and down-to-down success rate are not in these rows, so
-/// they are not invented here. Pass rush is sacks, not pressures.
+/// Play-by-play EPA, success, pressure, third downs and pass rate over
+/// expected are in assets/play-units.json. A walk-forward did not beat this
+/// rating, so they are not multiplied in. Pass rush here is sacks, not pressures.
 enum UnitKey { pass, run, wr, te, rb, sack }
 
 /// Walk-forward on the no-price path, November 20, 2026.

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:odds_edge/domain/coach_briefing.dart';
 import 'package:odds_edge/domain/matchup.dart';
+import 'package:odds_edge/domain/play_units.dart';
 import 'package:odds_edge/domain/player_stats.dart';
 import 'package:odds_edge/domain/recent_evidence.dart';
 import 'package:odds_edge/domain/rematch.dart';
@@ -29,12 +30,28 @@ void main() {
           injury: row.injury,
         ),
     ];
+    final withoutPlays = rematchReport(
+      evidence: evidence,
+      teamA: 'HOU',
+      teamB: 'IND',
+      snaps: matchup.snaps,
+      earlierInjuries: injuries,
+    );
+    expect(
+      withoutPlays!.allText.toLowerCase(),
+      contains('third-down rate is unavailable'),
+    );
+    final plays = PlayBook.fromJson(
+      jsonDecode(File('assets/play-units.json').readAsStringSync())
+          as Map<String, dynamic>,
+    );
     final report = rematchReport(
       evidence: evidence,
       teamA: 'HOU',
       teamB: 'IND',
       snaps: matchup.snaps,
       earlierInjuries: injuries,
+      plays: plays,
     );
     expect(report, isNotNull);
     final earlier = report!.earlier;
@@ -67,9 +84,28 @@ void main() {
     expect(lateWeeks['HOU']!.giveaways, lateWeeks['IND']!.giveaways);
     expect(text.toLowerCase(), contains('turnover result'));
     expect(text, contains('Passing EPA'));
-    expect(text, isNot(contains('8/14')));
-    expect(text, isNot(contains('1/11')));
-    expect(text.toLowerCase(), contains('third-down rate is unavailable'));
+    final homePlay = plays.game(later.id, later.home);
+    final awayPlay = plays.game(later.id, later.away);
+    expect(homePlay, isNotNull);
+    expect(awayPlay, isNotNull);
+    expect(
+      text,
+      contains(
+        '${later.home} ${homePlay!.thirdConverted} of ${homePlay.thirdPlays}',
+      ),
+    );
+    expect(
+      text,
+      contains(
+        '${later.away} ${awayPlay!.thirdConverted} of ${awayPlay.thirdPlays}',
+      ),
+    );
+    expect(later.id, '2026_11_IND_HOU');
+    expect(plays.game(later.id, 'HOU')!.thirdConverted, 8);
+    expect(plays.game(later.id, 'HOU')!.thirdPlays, 14);
+    expect(plays.game(later.id, 'IND')!.thirdConverted, 1);
+    expect(plays.game(later.id, 'IND')!.thirdPlays, 11);
+    expect(text.toLowerCase(), isNot(contains('third-down rate is unavailable')));
     expect(text.toLowerCase(), contains('general manager'));
     expect(text.toLowerCase(), isNot(contains('ballard')));
     expect(text.toLowerCase(), isNot(contains('fired')));
@@ -94,7 +130,10 @@ void main() {
       ratings: null,
       snaps: matchup.snaps,
       injuries: injuries,
+      plays: plays,
     );
+    expect(brief?.change?.allText, contains('8 of 14'));
+    expect(brief?.change?.allText, contains('1 of 11'));
     expect(brief?.handlesQuestion, isTrue);
     expect(brief!.text.toLowerCase(), contains('week ${later.week}'));
     expect(brief.text.toLowerCase(), isNot(contains('ballard')));
