@@ -74,11 +74,11 @@ Play-by-play rates were then added beside that unit edge. Each rate uses only ea
 
 The sample is 271 games in 2025 and 144 in 2026. EPA and the blend improved the 2026 total and lost on covers. Sack rate improved the 2025 cover and lost in 2026. None beat the closing line on all three markets in both seasons. Served game numbers stay on version 2.
 
-The same rates were tried on the served prop chance. The mean is multiplied by a fixed factor: one typical step is 15 percent, held inside 0.85 to 1.15, with no coefficient fit on the score. The line is still last season's median.
+The same rates were tried on the unit-only prop chance, the path that was served before the lognormal curve. The mean is multiplied by a fixed factor: one typical step is 15 percent, held inside 0.85 to 1.15, with no coefficient fit on the score. The line is still last season's median.
 
 | Prop adjustment | 2025 games | 2025 Brier | 2025 log loss | 2026 games | 2026 Brier | 2026 log loss |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Unit only, served | 6,924 | 0.2331 | 0.6588 | 3,948 | 0.2391 | 0.6709 |
+| Unit only, before lognormal | 6,924 | 0.2331 | 0.6588 | 3,948 | 0.2391 | 0.6709 |
 | EPA allowed | 6,924 | 0.2330 | 0.6586 | 3,948 | 0.2395 | 0.6719 |
 | Success rate allowed | 6,924 | 0.2330 | 0.6586 | 3,948 | 0.2398 | 0.6724 |
 | Third-down rate allowed | 6,924 | 0.2335 | 0.6596 | 3,948 | 0.2392 | 0.6713 |
@@ -87,7 +87,7 @@ The same rates were tried on the served prop chance. The mean is multiplied by a
 | Opponent pass rate over expected | 6,924 | 0.2334 | 0.6592 | 3,948 | 0.2393 | 0.6713 |
 | Blend of the five defensive rates | 6,924 | 0.2332 | 0.6590 | 3,948 | 0.2397 | 0.6722 |
 
-EPA allowed is a hair better in 2025 and worse in 2026. Nothing beat the served chance on both scores in both seasons, so the prop card does not use these rates.
+EPA allowed is a hair better in 2025 and worse in 2026. Nothing beat that unit-only chance on both scores in both seasons. The card stays on the lognormal chance and does not use these rates.
 
 ## What changed, including a rematch
 
