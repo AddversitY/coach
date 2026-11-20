@@ -17,7 +17,7 @@ Checked November 20, 2026. Coach stays a paper-and-graphite chat. It does not co
 | Expected lineup | Not built. | Needs a license | Rotowire-style expected lineups are not in the free files and are not copied. |
 | EV, Kelly, boosts, DFS, prediction markets | Not added. The stake box is a calculator only. | Needs a paid feed or a license | Those products are outside the free snapshot. No bankroll, unit, or bet log was added for them. |
 | NBA and other leagues | Not added. | Needs a paid feed | The same 500 credits would be spent faster. NBA stays off. |
-| Matchup-adjusted prop chance | Priced and unpriced props both use the opponent unit factor and the shrunk sensitivity. The team-total scale and the raw defense-yards scale are not stacked on top. After the shrink, an isotonic map from earlier weeks pulls the over rate toward the rate players cleared. See `docs/MATCHUPS.md`. | Partial | The fair line is last season's median, not a historical prop price. Game spreads, totals and moneylines were tested and left on version 2. |
+| Matchup-adjusted prop chance | Priced and unpriced props both use the opponent unit factor and the shrunk sensitivity. The team-total scale and the raw defense-yards scale are not stacked on top. Yards use a lognormal curve before the shrink, which pulls the over rate down and keeps the chance inside the existing gap. See `docs/MATCHUPS.md`. | Partial | The fair line is last season's median, not a historical prop price. Game spreads, totals and moneylines were tested and left on version 2. |
 
 ## Blockers
 

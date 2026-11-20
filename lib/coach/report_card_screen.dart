@@ -112,6 +112,9 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
             market: earlier,
             calibrator: liveCalibrator,
             postShrinkCalibrator: postShrink,
+            lognormalYards:
+                overRateCalibrationAdopted &&
+                servedOverCalibration == 'lognormal',
           )?.chance;
         },
       );

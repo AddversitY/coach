@@ -32,6 +32,8 @@ void main() {
           season: row.season,
           week: row.week,
           served: row.chance,
+          raw: row.raw,
+          games: row.games,
           lognormal: () {
             final raw = row.metric == 'receptions'
                 ? row.raw
@@ -72,13 +74,27 @@ void main() {
         for (final row in prior) (raw: row.served, hit: row.hit),
       ]);
       for (final event in weeks[key]!) {
-        _add(boards['served']![event.season]!, event.served, event.hit);
-        _add(boards['lognormal']![event.season]!, event.lognormal, event.hit);
-        _add(boards['platt']![event.season]!, platt.apply(event.served), event.hit);
-        _add(boards['shift']![event.season]!, shift.apply(event.served), event.hit);
+        double shown(double chance) => limitChanceGap(
+          chance: chance,
+          raw: event.raw,
+          observed: event.games,
+          market: propReportMarketProxy,
+        );
+        _add(boards['served']![event.season]!, shown(event.served), event.hit);
+        _add(boards['lognormal']![event.season]!, shown(event.lognormal), event.hit);
+        _add(
+          boards['platt']![event.season]!,
+          shown(platt.apply(event.served)),
+          event.hit,
+        );
+        _add(
+          boards['shift']![event.season]!,
+          shown(shift.apply(event.served)),
+          event.hit,
+        );
         _add(
           boards['isotonic']![event.season]!,
-          isotonic.apply(event.served),
+          shown(isotonic.apply(event.served)),
           event.hit,
         );
       }
@@ -156,12 +172,14 @@ class _Event {
     required this.season,
     required this.week,
     required this.served,
+    required this.raw,
+    required this.games,
     required this.lognormal,
     required this.hit,
   });
 
-  final int season, week;
-  final double served, lognormal;
+  final int season, week, games;
+  final double served, raw, lognormal;
   final bool hit;
 }
 

@@ -131,6 +131,25 @@ double? shrinkProjectedChance({
   return chance;
 }
 
+/// Pull a chance back inside the same gap the shrink uses.
+///
+/// A map fit on earlier weeks can move a chance past that gap. The card
+/// still has to stay inside it.
+double limitChanceGap({
+  required double chance,
+  required double raw,
+  required int observed,
+  required double market,
+}) {
+  if (!chance.isFinite || !market.isFinite || market <= 0 || market >= 1) {
+    return chance;
+  }
+  final cap = propEdgeCapForRate(raw: raw, observed: observed, market: market);
+  final limited = market + (chance - market).clamp(-cap, cap);
+  if (!limited.isFinite || limited <= 0 || limited >= 1) return chance;
+  return limited.toDouble();
+}
+
 String propChanceNote({
   required int hits,
   required int observed,

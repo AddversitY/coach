@@ -230,6 +230,8 @@ ShownProp showProp({
           : _teammateOuts(currentInjuries, looked?.team, item.player),
       calibrator: calibrator,
       postShrinkCalibrator: postShrink,
+      lognormalYards:
+          overRateCalibrationAdopted && servedOverCalibration == 'lognormal',
     );
     cache.projections[key] = projection;
     return projection;

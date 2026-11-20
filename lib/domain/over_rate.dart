@@ -136,8 +136,8 @@ List<ServedForecast> servedUnitForecasts({
 Object? _cachedRows;
 PropCalibrator? _cachedMap;
 
-/// The isotonic map for the card. Fit once on the served chances above.
-/// The identity until the flag is on, and until 200 earlier forecasts exist.
+/// Isotonic map, used only when that map is the adopted adjustment.
+/// The identity for the lognormal card, and until 200 earlier forecasts exist.
 PropCalibrator servedOverCalibrator(
   List<PlayerGame> rows, {
   List<HistoricalGame> scores = const [],

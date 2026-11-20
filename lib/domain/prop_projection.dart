@@ -319,6 +319,7 @@ PropProjection? projectProp({
   List<({String name, String position})> teammateOuts = const [],
   PropCalibrator? calibrator,
   PropCalibrator? postShrinkCalibrator,
+  bool lognormalYards = false,
   MatchupEnvironment? environment,
 }) {
   final cut = _Cut(season: beforeSeason, week: beforeWeek, date: beforeDate);
@@ -488,6 +489,7 @@ PropProjection? projectProp({
     sd: sd,
     line: line,
     side: side,
+    lognormal: lognormalYards && metric != 'receptions',
   );
   final adjusted = _recalibrate(raw, side, calibrator);
   final shrunk = shrinkProjectedChance(
@@ -495,7 +497,7 @@ PropProjection? projectProp({
     observed: prior.length,
     market: market,
   );
-  final shown = shrunk == null
+  var shown = shrunk == null
       ? null
       : _recalibrate(shrunk, side, postShrinkCalibrator);
   final anchor = market;
@@ -509,6 +511,16 @@ PropProjection? projectProp({
         (prior.length * adjusted + propPriorGames * anchor) /
         (prior.length + propPriorGames);
     capped = (blended - shrunk).abs() > 1e-9;
+    if (shown != null) {
+      final limited = limitChanceGap(
+        chance: shown,
+        raw: adjusted,
+        observed: prior.length,
+        market: anchor,
+      );
+      capped = capped || (limited - shown).abs() > 1e-9;
+      shown = limited;
+    }
   }
   final shareLabel = metric == 'rushing_yards'
       ? '${_pct(usage.share)} of carries'
@@ -922,11 +934,36 @@ double sideChance({
   required double sd,
   required double line,
   required LineSide side,
+  bool lognormal = false,
 }) {
   if (metric == 'receptions') {
     return _negativeBinomialSide(mean: mean, sd: sd, line: line, side: side);
   }
+  if (lognormal) {
+    return _lognormalSide(mean: mean, sd: sd, line: line, side: side);
+  }
   return _normalSide(mean: mean, sd: sd, line: line, side: side);
+}
+
+double _lognormalSide({
+  required double mean,
+  required double sd,
+  required double line,
+  required LineSide side,
+}) {
+  final center = mean <= 0.5 ? 0.5 : mean;
+  final width = sd <= 0 ? 1.0 : sd;
+  final sigma2 = math.log(1 + (width * width) / (center * center));
+  final mu = math.log(center) - sigma2 / 2;
+  final sigma = math.sqrt(sigma2);
+  final boundary = _whole(line)
+      ? (side == LineSide.over ? line + 0.5 : line - 0.5)
+      : line;
+  if (boundary <= 0) return side == LineSide.over ? 1 - 1e-4 : 1e-4;
+  final z = (math.log(boundary) - mu) / sigma;
+  final cdf = normalCdf(z);
+  final chance = side == LineSide.over ? 1 - cdf : cdf;
+  return chance.clamp(1e-4, 1 - 1e-4);
 }
 
 double _normalSide({

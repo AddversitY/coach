@@ -26,17 +26,17 @@ There is no historical file of player-prop prices. The walk-forward uses last se
 
 Unit only is better on Brier and log loss in both seasons than the stacked path and better than keeping the team total. The unshrunk chance was on the over for 43.7% of 2025 lines and 47.1% of 2026 lines. The stacked path was 47.1% and 49.1%. Players cleared the fair line 40.2% of the time in 2025 and 44.6% in 2026.
 
-The card now applies one more step. After the 32-game shrink, an isotonic map moves the chance toward the rate players actually cleared in earlier weeks. The map for a week is fit only on weeks before it, and it stays the identity until 200 of those chances exist. Four candidates beat unit only on both Brier and log loss in both seasons. The adopted map is the one with the lowest combined Brier.
+The card now uses a lognormal curve for yards, then the same 32-game shrink. The shrink keeps the chance inside the existing gap: 10 points, or 15 after a long one-sided record. Receptions stay on the negative binomial. Four candidates beat unit only on both Brier and log loss in both seasons once that gap is applied. Lognormal has the lowest combined Brier, so it is the served chance. Each week in the table is scored with earlier weeks only.
 
 | Path | 2025 games | 2025 Brier | 2025 log loss | 2025 mean chance | 2025 share above 0.5 | 2026 games | 2026 Brier | 2026 log loss | 2026 mean chance | 2026 share above 0.5 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Unit only, before | 6,924 | 0.2331 | 0.6588 | 0.487 | 0.437 | 3,948 | 0.2391 | 0.6709 | 0.494 | 0.471 |
-| Lognormal, then shrink | 6,924 | 0.2293 | 0.6509 | 0.464 | 0.317 | 3,948 | 0.2362 | 0.6652 | 0.469 | 0.327 |
-| Platt, after shrink | 6,924 | 0.2244 | 0.6394 | 0.403 | 0.214 | 3,948 | 0.2373 | 0.6674 | 0.419 | 0.266 |
-| One-number shift, after shrink | 6,924 | 0.2268 | 0.6451 | 0.405 | 0.160 | 3,948 | 0.2379 | 0.6683 | 0.416 | 0.169 |
-| Isotonic, after shrink | 6,924 | 0.2234 | 0.6366 | 0.402 | 0.242 | 3,948 | 0.2370 | 0.6672 | 0.421 | 0.285 |
+| Lognormal, then shrink | 6,924 | 0.2295 | 0.6515 | 0.467 | 0.317 | 3,948 | 0.2361 | 0.6650 | 0.471 | 0.327 |
+| Platt, after shrink | 6,924 | 0.2296 | 0.6516 | 0.441 | 0.214 | 3,948 | 0.2368 | 0.6664 | 0.456 | 0.266 |
+| One-number shift, after shrink | 6,924 | 0.2310 | 0.6545 | 0.432 | 0.160 | 3,948 | 0.2385 | 0.6699 | 0.437 | 0.169 |
+| Isotonic, after shrink | 6,924 | 0.2296 | 0.6516 | 0.443 | 0.242 | 3,948 | 0.2369 | 0.6667 | 0.452 | 0.285 |
 
-Isotonic is the served chance. Its mean chance matches the 2025 clear rate (0.402) and is closer to the 2026 clear rate (0.446) than the unit-only mean. The share of chances above one half falls below the clear rate because the probabilities sit near 0.40. The same comparison is not a profit test and not a pick. The live card refits that map on every completed game in the file. The table above does not: each week is scored with earlier weeks only.
+The 2025 mean chance moves from 0.487 to 0.467. Players cleared the line 40.2% of the time in 2025 and 44.6% in 2026. The same comparison is not a profit test and not a pick.
 
 This sample does not reproduce a 73% over rate or a mean 1.47 times the line. Against last season's median, the stacked mean was 1.24 times the line in 2025 and 1.27 times in 2026. The served mean is 1.21 and 1.25. The chance on the card stays near even because 32 games at the book's price are mixed in. The mean is still above the median, which is what a right-skewed counting stat does, and players still finished under that median more often than over. The comparison is not a profit test and not a pick.
 
