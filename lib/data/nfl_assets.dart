@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import '../domain/history.dart';
 import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
+import '../domain/recent_evidence.dart';
 
 /// `compute` never replies while a widget test holds the root isolate.
 bool get _decodeInline {
@@ -32,6 +33,16 @@ Future<MatchupContext> loadBundledMatchup() async {
 }
 
 MatchupContext _decodeMatchup(String json) => MatchupContext.fromJson(
+  Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
+);
+
+Future<RecentEvidence> loadBundledRecentEvidence() async {
+  final json = await rootBundle.loadString('assets/nfl-recent-evidence.json');
+  if (_decodeInline) return _decodeRecent(json);
+  return compute(_decodeRecent, json);
+}
+
+RecentEvidence _decodeRecent(String json) => RecentEvidence.fromJson(
   Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
 );
 

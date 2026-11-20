@@ -18,6 +18,7 @@ import '../domain/prop_evidence.dart';
 import '../domain/prop_model.dart';
 import '../domain/prop_projection.dart';
 import '../domain/prop_value.dart';
+import '../domain/unit_ratings.dart';
 import '../domain/value_check.dart';
 
 /// How the one-line matchup reads. Rank 1 allows the least.
@@ -80,6 +81,7 @@ class ShownProp {
 class PropPricingMemo {
   final windows = <String, PropWindows>{};
   final projections = <String, PropProjection?>{};
+  RatingBook? ratings;
 }
 
 ScriptLeg? scriptLegFor(ShownProp shown) {
@@ -173,6 +175,35 @@ ShownProp showProp({
         team != canonicalTeam(event.away)) {
       return null;
     }
+    final cutoff = easternWall(
+      event != null && event.startsAt.isBefore(now) ? event.startsAt : now,
+    );
+    final itemSpread = item.id == card.id
+        ? spread
+        : teamSpreadFor(item, looked, board);
+    final itemTotal = item.event == null
+        ? null
+        : readMarketLine(item.event!, board.quotes).total;
+    final itemOpponent = boxScoreTeam(
+      item.id == card.id ? (opponent ?? '') : (opponentFor(item, looked) ?? ''),
+    );
+    MatchupEnvironment? environment;
+    if (matchupAdjustmentAdopted && (itemSpread == null || itemTotal == null)) {
+      cache.ratings ??= RatingBook.build(players.data.rows);
+      environment = matchupEnvironment(
+        book: cache.ratings!,
+        playerGames: [
+          for (final row in players.data.rows)
+            if (row.playerId == id) row,
+        ],
+        metric: metric,
+        opponent: itemOpponent,
+        beforeSeason: 10000,
+        beforeWeek: 1,
+        beforeDate: cutoff,
+        recencyWeight: matchupRecencyWeight,
+      );
+    }
     final projection = projectProp(
       index: usage,
       playerId: id,
@@ -181,17 +212,12 @@ ShownProp showProp({
       side: item.lineSide,
       beforeSeason: 10000,
       beforeWeek: 1,
-      beforeDate: easternWall(
-        event != null && event.startsAt.isBefore(now) ? event.startsAt : now,
-      ),
+      beforeDate: cutoff,
       team: looked?.team,
       opponent: item.id == card.id ? opponent : opponentFor(item, looked),
-      teamSpread: item.id == card.id
-          ? spread
-          : teamSpreadFor(item, looked, board),
-      total: item.event == null
-          ? null
-          : readMarketLine(item.event!, board.quotes).total,
+      teamSpread: itemSpread,
+      total: itemTotal,
+      environment: environment != null && environment.known ? environment : null,
       market: market,
       teammateOuts: item.id == card.id
           ? outs

@@ -6,6 +6,7 @@ import 'matchup.dart';
 import 'player_stats.dart';
 import 'prop_calibration.dart';
 import 'prop_chance.dart';
+import 'unit_ratings.dart';
 
 /// Neutral pass attempts. Rush attempts sit beside them, so the pass
 /// rate is attempts divided by attempts plus carries.
@@ -317,6 +318,7 @@ PropProjection? projectProp({
   DateTime? beforeDate,
   List<({String name, String position})> teammateOuts = const [],
   PropCalibrator? calibrator,
+  MatchupEnvironment? environment,
 }) {
   final cut = _Cut(season: beforeSeason, week: beforeWeek, date: beforeDate);
   final games = index.byPlayer[playerId];
@@ -420,13 +422,59 @@ PropProjection? projectProp({
     defenseOn: true,
     matesOn: false,
   );
-  final mean = meanAt(
+  final stackedMean = meanAt(
     snapOn: true,
     passOn: true,
     scriptOn: true,
     defenseOn: true,
     matesOn: true,
   );
+  var mean = stackedMean;
+  var scriptDelta = afterScript - afterPass;
+  var defenseDelta = afterDefense - afterScript;
+  var matesDelta = stackedMean - afterDefense;
+  var matchupDelta = 0.0;
+  var matchupDetail = 'not applied';
+  final marketScript =
+      teamSpread != null &&
+      total != null &&
+      teamSpread.isFinite &&
+      total.isFinite;
+  if (environment != null && environment.known) {
+    if (marketScript) {
+      final withMates = meanAt(
+        snapOn: true,
+        passOn: true,
+        scriptOn: true,
+        defenseOn: false,
+        matesOn: true,
+      );
+      final adjusted = withMates * environment.sensitivity;
+      defenseDelta = 0;
+      matesDelta = withMates - afterScript;
+      matchupDelta = adjusted - withMates;
+      mean = adjusted;
+      matchupDetail =
+          'team total kept; raw defense yards not stacked; ${environment.detail}';
+    } else {
+      final withMates = meanAt(
+        snapOn: true,
+        passOn: true,
+        scriptOn: false,
+        defenseOn: false,
+        matesOn: true,
+      );
+      final adjusted =
+          withMates * environment.unitFactor * environment.sensitivity;
+      scriptDelta = 0;
+      defenseDelta = 0;
+      matesDelta = withMates - afterPass;
+      matchupDelta = adjusted - withMates;
+      mean = adjusted;
+      matchupDetail =
+          'one unit factor instead of a points script plus defense yards; ${environment.detail}';
+    }
+  }
   final values = [
     for (final game in prior) game.stats[metric]!.toDouble(),
   ];
@@ -488,17 +536,22 @@ PropProjection? projectProp({
       PropFactor(
         label: 'Team total',
         detail: script.detail,
-        delta: afterScript - afterPass,
+        delta: scriptDelta,
       ),
       PropFactor(
         label: 'Defense',
         detail: defense.detail,
-        delta: afterDefense - afterScript,
+        delta: defenseDelta,
       ),
       PropFactor(
         label: 'Teammates out',
         detail: mates.detail,
-        delta: mean - afterDefense,
+        delta: matesDelta,
+      ),
+      PropFactor(
+        label: 'Matchup',
+        detail: matchupDetail,
+        delta: matchupDelta,
       ),
     ],
   );

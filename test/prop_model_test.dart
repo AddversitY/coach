@@ -10,6 +10,7 @@ import 'package:odds_edge/domain/prop_chance.dart';
 import 'package:odds_edge/domain/prop_clv.dart';
 import 'package:odds_edge/domain/prop_model.dart';
 import 'package:odds_edge/domain/prop_projection.dart';
+import 'package:odds_edge/domain/unit_ratings.dart';
 import 'package:odds_edge/domain/public_sharp.dart';
 
 PlayerGame box({
@@ -84,6 +85,7 @@ PropProjection projectReceiver(
   int beforeSeason = 2025,
   int beforeWeek = 1,
   List<({String name, String position})> teammateOuts = const [],
+  MatchupEnvironment? environment,
 }) {
   final index = UsageIndex.build(rows);
   final face = projectProp(
@@ -100,6 +102,7 @@ PropProjection projectReceiver(
     total: total,
     market: 0.5,
     teammateOuts: teammateOuts,
+    environment: environment,
   );
   expect(face, isNotNull);
   return face!;
@@ -268,6 +271,87 @@ void main() {
     expect(
       missing.factors.singleWhere((factor) => factor.label == 'Teammates out').detail,
       '1 out',
+    );
+  });
+
+  test('an explicit matchup environment does not stack defense on a total', () {
+    final rows = receiverSeason(season: 2024, weeks: 8);
+    final padded = [
+      ...rows,
+      for (var week = 1; week <= 4; week++) ...[
+        box(
+          id: 'soft-qb',
+          name: 'Soft Passer',
+          position: 'QB',
+          team: 'CLE',
+          opponent: 'SOFT',
+          season: 2024,
+          week: week,
+          stats: {'attempts': 40, 'passing_yards': 320},
+        ),
+        box(
+          id: 'soft-wr',
+          name: 'Soft Catcher',
+          position: 'WR',
+          team: 'CLE',
+          opponent: 'SOFT',
+          season: 2024,
+          week: week,
+          stats: {'targets': 12, 'receptions': 8, 'receiving_yards': 280},
+        ),
+      ],
+    ];
+    const environment = MatchupEnvironment(
+      known: true,
+      unitFactor: 1.2,
+      sensitivity: 1,
+      detail: 'test unit',
+    );
+    final open = projectReceiver(
+      padded,
+      opponent: 'SOFT',
+      environment: environment,
+    );
+    expect(
+      open.factors.singleWhere((factor) => factor.label == 'Defense').delta,
+      0,
+    );
+    expect(
+      open.factors.singleWhere((factor) => factor.label == 'Team total').delta,
+      0,
+    );
+    expect(
+      open.factors.map((factor) => factor.delta).reduce((a, b) => a + b),
+      closeTo(open.mean, 1e-6),
+    );
+    final priced = projectReceiver(
+      padded,
+      opponent: 'SOFT',
+      teamSpread: 1,
+      total: 45,
+      environment: environment,
+    );
+    expect(
+      priced.factors.singleWhere((factor) => factor.label == 'Defense').delta,
+      0,
+    );
+    expect(
+      priced.factors
+          .singleWhere((factor) => factor.label == 'Team total')
+          .delta
+          .abs(),
+      greaterThan(0),
+    );
+    expect(
+      priced.factors
+          .singleWhere((factor) => factor.label == 'Matchup')
+          .delta
+          .abs(),
+      lessThan(1e-6),
+    );
+    expect(
+      priced.factors.map((factor) => factor.delta).reduce((a, b) => a + b),
+      closeTo(priced.mean, 1e-6),
     );
   });
 

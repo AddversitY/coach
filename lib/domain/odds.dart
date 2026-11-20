@@ -124,6 +124,7 @@ class OddsQuote {
     required this.collectedAt,
     this.status = 'open',
     this.demo = false,
+    this.link,
   }) {
     impliedProbability(decimal);
     if (selection.point != null && !selection.point!.isFinite) {
@@ -135,6 +136,10 @@ class OddsQuote {
   final double decimal;
   final DateTime sourceAt, collectedAt;
   final bool demo;
+
+  /// A sportsbook URL from the price snapshot, already checked against the
+  /// book host. Null when the snapshot did not include one.
+  final String? link;
   String freshness(DateTime now, {bool inPlay = false}) {
     if (status != 'open') return status;
     if (sourceAt.isAfter(now.add(const Duration(seconds: 5))) ||
@@ -160,6 +165,7 @@ class OddsQuote {
     'collectedAt': collectedAt.toUtc().toIso8601String(),
     'status': status,
     'demo': demo,
+    if (link != null) 'link': link,
   };
   factory OddsQuote.fromJson(Map<String, dynamic> j) => OddsQuote(
     selection: Selection.fromJson(j['selection']),
@@ -171,6 +177,7 @@ class OddsQuote {
     collectedAt: DateTime.parse(j['collectedAt']),
     status: j['status'],
     demo: j['demo'] ?? false,
+    link: j['link'] as String?,
   );
 }
 
