@@ -21,6 +21,17 @@ enum PropLiveChance { record, usage, calibrated }
 
 const propLiveChance = PropLiveChance.usage;
 
+/// November 20, 2026. Isotonic bins, fit on earlier weeks of the served
+/// chance and applied after the 32-game shrink, beat that chance on Brier
+/// and log loss in both 2025 and 2026. Lognormal yards, Platt and a
+/// one-number shift also beat it. Isotonic had the lowest combined Brier.
+/// The numbers are in docs/MATCHUPS.md. This is not a betting edge.
+const overRateCalibrationAdopted = true;
+
+/// The map that beat the others on the sum of the two seasons' Brier
+/// scores, after each one had beaten the served chance on both seasons.
+const servedOverCalibration = 'isotonic';
+
 /// True when the card uses a usage chance rather than the record.
 const propV2Adopted = propLiveChance != PropLiveChance.record;
 

@@ -318,6 +318,7 @@ PropProjection? projectProp({
   DateTime? beforeDate,
   List<({String name, String position})> teammateOuts = const [],
   PropCalibrator? calibrator,
+  PropCalibrator? postShrinkCalibrator,
   MatchupEnvironment? environment,
 }) {
   final cut = _Cut(season: beforeSeason, week: beforeWeek, date: beforeDate);
@@ -494,6 +495,9 @@ PropProjection? projectProp({
     observed: prior.length,
     market: market,
   );
+  final shown = shrunk == null
+      ? null
+      : _recalibrate(shrunk, side, postShrinkCalibrator);
   final anchor = market;
   var capped = false;
   if (shrunk != null &&
@@ -518,7 +522,7 @@ PropProjection? projectProp({
     distribution: metric == 'receptions' ? 'negative binomial' : 'normal',
     rawChance: raw,
     adjustedChance: adjusted,
-    chance: shrunk,
+    chance: shown,
     market: market,
     capped: capped,
     games: prior.length,
@@ -555,6 +559,14 @@ PropProjection? projectProp({
         detail: matchupDetail,
         delta: matchupDelta,
       ),
+      if (shown != null &&
+          shrunk != null &&
+          (shown - shrunk).abs() > 1e-6)
+        PropFactor(
+          label: 'Earlier weeks',
+          detail: 'chance moved toward the rate players cleared',
+          delta: 0,
+        ),
     ],
   );
 }

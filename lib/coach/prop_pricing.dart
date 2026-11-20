@@ -15,6 +15,7 @@ import '../domain/injury_report.dart';
 import '../domain/prop_chance.dart';
 import '../domain/prop_history.dart';
 import '../domain/prop_evidence.dart';
+import '../domain/over_rate.dart';
 import '../domain/prop_model.dart';
 import '../domain/prop_projection.dart';
 import '../domain/prop_value.dart';
@@ -153,6 +154,9 @@ ShownProp showProp({
   final calibrator = propLiveChance == PropLiveChance.calibrated && rows != null
       ? cachedPropComparison(rows, scores: scores, matchup: context).calibrator
       : null;
+  final postShrink = rows == null
+      ? null
+      : servedOverCalibrator(rows, scores: scores, matchup: context);
   final asOf = card.event != null && card.event!.startsAt.isBefore(now)
       ? card.event!.startsAt
       : now;
@@ -225,6 +229,7 @@ ShownProp showProp({
           ? outs
           : _teammateOuts(currentInjuries, looked?.team, item.player),
       calibrator: calibrator,
+      postShrinkCalibrator: postShrink,
     );
     cache.projections[key] = projection;
     return projection;
