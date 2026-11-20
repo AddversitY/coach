@@ -28,6 +28,7 @@ import '../domain/eastern.dart';
 import '../domain/odds.dart';
 import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
+import '../domain/play_units.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
@@ -144,6 +145,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   List<HistoricalGame>? analysisScores;
   Map<String, dynamic>? analysisValidation;
   RecentEvidence? recentEvidence;
+  PlayBook? playBook;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
   bool pollingTelemetry = false;
@@ -229,6 +231,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       players: data,
       ratings: ratingBook,
       snaps: matchupContext?.snaps ?? const [],
+      plays: playBook,
       injuries: [
         for (final row in matchupContext?.injuries ?? const <ListedInjury>[])
           InjuryNote(
@@ -294,10 +297,17 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     try {
       final recent = await loadBundledRecentEvidence();
       final matchup = await loadBundledMatchup();
+      PlayBook? plays;
+      try {
+        plays = await loadBundledPlayUnits();
+      } catch (_) {
+        plays = null;
+      }
       if (!mounted) return;
       setState(() {
         recentEvidence = recent;
         matchupContext = matchup;
+        playBook = plays;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });
     } catch (_) {

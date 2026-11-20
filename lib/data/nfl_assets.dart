@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import '../domain/history.dart';
 import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
+import '../domain/play_units.dart';
 import '../domain/recent_evidence.dart';
 
 /// `compute` never replies while a widget test holds the root isolate.
@@ -43,6 +44,16 @@ Future<RecentEvidence> loadBundledRecentEvidence() async {
 }
 
 RecentEvidence _decodeRecent(String json) => RecentEvidence.fromJson(
+  Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
+);
+
+Future<PlayBook> loadBundledPlayUnits() async {
+  final json = await rootBundle.loadString('assets/play-units.json');
+  if (_decodeInline) return _decodePlayUnits(json);
+  return compute(_decodePlayUnits, json);
+}
+
+PlayBook _decodePlayUnits(String json) => PlayBook.fromJson(
   Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
 );
 

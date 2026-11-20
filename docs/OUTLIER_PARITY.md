@@ -22,7 +22,7 @@ Checked November 20, 2026. Coach stays a paper-and-graphite chat. It does not co
 ## Blockers
 
 - No front-office or transaction feed. Snap-count team changes are not trades.
-- No third-down column in the team weekly file.
+- Third-down rate, success rate, pressure and pass rate over expected for a rematch come from `assets/play-units.json`. They are not in the team weekly file. The prop card and the game line do not use them: the walk-forward did not beat the served chance or the closing line in both seasons. See `docs/MATCHUPS.md`.
 - No week 11, 2026 snap counts in `assets/nfl-matchup.json`.
 - Deep links appear only after a snapshot is published with the new request flags.
 - Alternate lines, team props, live EV, boosts, DFS and prediction markets need one of the paid plans named above.

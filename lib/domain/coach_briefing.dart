@@ -3,6 +3,7 @@ import 'game_research.dart';
 import 'matchup.dart';
 import 'nfl_teams.dart';
 import 'odds.dart';
+import 'play_units.dart';
 import 'player_stats.dart';
 import 'recent_evidence.dart';
 import 'rematch.dart';
@@ -77,6 +78,7 @@ CoachBrief? interpretQuestion({
   required RatingBook? ratings,
   List<SnapShare> snaps = const [],
   List<InjuryNote> injuries = const [],
+  PlayBook? plays,
   OddsBoard? props,
   String? contextHome,
   String? contextAway,
@@ -94,6 +96,7 @@ CoachBrief? interpretQuestion({
       evidence: evidence,
       snaps: snaps,
       injuries: injuries,
+      plays: plays,
       contextHome: contextHome,
       contextAway: contextAway,
     );
@@ -274,6 +277,7 @@ CoachBrief _rematchBrief({
   required RecentEvidence? evidence,
   required List<SnapShare> snaps,
   required List<InjuryNote> injuries,
+  PlayBook? plays,
   String? contextHome,
   String? contextAway,
 }) {
@@ -301,6 +305,7 @@ CoachBrief _rematchBrief({
     teamB: pair[1],
     snaps: snaps,
     earlierInjuries: injuries,
+    plays: plays,
   );
   if (report == null) {
     return CoachBrief(

@@ -7,6 +7,7 @@ import 'package:odds_edge/domain/coach_line_v2.dart';
 import 'package:odds_edge/domain/history.dart';
 import 'package:odds_edge/domain/matchup.dart';
 import 'package:odds_edge/domain/player_stats.dart';
+import 'package:odds_edge/domain/play_units.dart';
 import 'package:odds_edge/domain/unit_ratings.dart';
 
 /// Prints market versus unit-versus-unit game scores. Served spreads,
@@ -22,10 +23,15 @@ void main() {
     ).rows;
     final history = _history();
     final book = RatingBook.build(players);
-    final rows = _rows(history, book);
+    final plays = PlayBook.fromJson(
+      jsonDecode(
+        File('assets/play-units.json').readAsStringSync().replaceFirst('\uFEFF', ''),
+      ) as Map<String, dynamic>,
+    );
+    final rows = _rows(history, book, plays);
     final scored = _walk(rows);
     for (final season in [2025, 2026]) {
-      for (final name in ['market', 'unit', 'unitForm']) {
+      for (final name in ['market', 'unit', 'unitForm', ..._playNames]) {
         final board = scored[name]![season]!;
         // ignore: avoid_print
         print(
@@ -65,8 +71,35 @@ void main() {
       won,
       reason: 'Served spreads, totals and moneylines follow this result.',
     );
+    String? playWinner;
+    var best = double.infinity;
+    for (final name in _playNames) {
+      if (!beatsMarket(name)) continue;
+      var sum = 0.0;
+      for (final season in [2025, 2026]) {
+        final board = scored[name]![season]!;
+        sum += board.coverBrier + board.mlBrier + board.totalBrier;
+      }
+      if (sum < best) {
+        best = sum;
+        playWinner = name.substring('play:'.length);
+      }
+    }
+    expect(playUnitOnGamesAdopted, playWinner != null);
+    expect(servedPlayGameFeature, playWinner ?? 'none');
   });
 }
+
+const _playFeatures = [
+  'epa',
+  'success',
+  'third',
+  'pressure',
+  'sack',
+  'proe',
+  'blend',
+];
+final _playNames = [for (final feature in _playFeatures) 'play:$feature'];
 
 List<HistoricalGame> _history() {
   final decoded = jsonDecode(
@@ -88,6 +121,8 @@ class _GameRow {
     required this.formEdge,
     required this.totalEdge,
     required this.formTotal,
+    required this.playMargin,
+    required this.playTotal,
     required this.spread,
     required this.totalLine,
     required this.margin,
@@ -96,6 +131,7 @@ class _GameRow {
 
   final int season, week;
   final double marginEdge, formEdge, totalEdge, formTotal;
+  final Map<String, double> playMargin, playTotal;
   final double spread;
   final double? totalLine;
   final double margin, points;
@@ -152,7 +188,11 @@ class _Board {
   }
 }
 
-List<_GameRow> _rows(List<HistoricalGame> history, RatingBook book) {
+List<_GameRow> _rows(
+  List<HistoricalGame> history,
+  RatingBook book,
+  PlayBook plays,
+) {
   final rows = <_GameRow>[];
   for (final game in history) {
     final spread = game.spreadLine;
@@ -162,12 +202,33 @@ List<_GameRow> _rows(List<HistoricalGame> history, RatingBook book) {
     final snap = book.before(season: game.season, week: game.week);
     final edge = _edge(snap, home, away);
     if (edge == null) continue;
+    final prior = plays.before(season: game.season, week: game.week);
+    final playMargin = <String, double>{};
+    final playTotal = <String, double>{};
+    for (final feature in _playFeatures) {
+      final homeBoost = playRelative(
+        feature,
+        prior.offense(home),
+        prior.defense(away),
+        prior.league,
+      );
+      final awayBoost = playRelative(
+        feature,
+        prior.offense(away),
+        prior.defense(home),
+        prior.league,
+      );
+      playMargin[feature] = (homeBoost ?? 0) - (awayBoost ?? 0);
+      playTotal[feature] = (homeBoost ?? 0) + (awayBoost ?? 0);
+    }
     rows.add(
       _GameRow(
         season: game.season,
         week: game.week,
         marginEdge: edge.$1,
         totalEdge: edge.$2,
+        playMargin: playMargin,
+        playTotal: playTotal,
         formEdge:
             _form(history, home, game.season, game.week, points: false) -
             _form(history, away, game.season, game.week, points: false),
@@ -248,7 +309,7 @@ double _form(
 Map<String, Map<int, _Board>> _walk(List<_GameRow> rows) {
   final seasons = [2025, 2026];
   final boards = {
-    for (final name in ['market', 'unit', 'unitForm'])
+    for (final name in ['market', 'unit', 'unitForm', ..._playNames])
       name: {for (final season in seasons) season: _Board()},
   };
   final weeks = <String, List<_GameRow>>{};
@@ -299,6 +360,24 @@ Map<String, Map<int, _Board>> _walk(List<_GameRow> rows) {
       (row) => row.formTotal,
       (row) => row.totalLine == null ? null : row.points - row.totalLine!,
     );
+    final playMarginFit = {
+      for (final feature in _playFeatures)
+        feature: _fit(
+          train,
+          (row) => row.marginEdge,
+          (row) => row.playMargin[feature] ?? 0,
+          (row) => row.margin - row.spread,
+        ),
+    };
+    final playTotalFit = {
+      for (final feature in _playFeatures)
+        feature: _fit(
+          train,
+          (row) => row.totalEdge,
+          (row) => row.playTotal[feature] ?? 0,
+          (row) => row.totalLine == null ? null : row.points - row.totalLine!,
+        ),
+    };
     final marginSd = _sd([for (final row in train) row.margin])
         .clamp(8.0, 20.0);
     final coverSd = _sd([for (final row in train) row.margin - row.spread])
@@ -315,6 +394,11 @@ Map<String, Map<int, _Board>> _walk(List<_GameRow> rows) {
         'market': 0.0,
         'unit': marginUnit.predict(row.marginEdge, 0),
         'unitForm': marginBoth.predict(row.marginEdge, row.formEdge),
+        for (final feature in _playFeatures)
+          'play:$feature': playMarginFit[feature]!.predict(
+            row.marginEdge,
+            row.playMargin[feature] ?? 0,
+          ),
       };
       for (final name in nudges.keys) {
         final board = boards[name]![season]!;
@@ -333,7 +417,12 @@ Map<String, Map<int, _Board>> _walk(List<_GameRow> rows) {
               ? 0.0
               : name == 'unit'
               ? totalUnit.predict(row.totalEdge, 0)
-              : totalBoth.predict(row.totalEdge, row.formTotal);
+              : name == 'unitForm'
+              ? totalBoth.predict(row.totalEdge, row.formTotal)
+              : playTotalFit[name.substring('play:'.length)]!.predict(
+                  row.totalEdge,
+                  row.playTotal[name.substring('play:'.length)] ?? 0,
+                );
           final p = name == 'market' ? 0.5 : normalCdf(totalNudge / totalSd);
           board.total(p, row.points > row.totalLine!);
         }
