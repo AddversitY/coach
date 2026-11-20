@@ -6,7 +6,7 @@ Checked November 20, 2026. Coach stays a paper-and-graphite chat. It does not co
 | --- | --- | --- | --- |
 | Prop board with a book filter and an over/under filter | "NFL props at FanDuel" and "best overs" read the saved snapshot. Implied probability is the price as a percentage, fee included. | Partial | A fuller board needs the prop markets in the snapshot. The free Odds API plan is 500 credits/month. Props stay inside the existing daily and monthly caps. |
 | Hit-rate sentences against a defense rank | Splits by Elite, Average and Weak, with the game count, from box scores before the week in question. | Partial | The tiers are yards and sacks, not a paid opponent-rank feed. Small samples are shrunk and labeled. |
-| One matchup sentence and a tier badge | The briefing card leads with one sentence and a badge. Ratings and splits open underneath. | Matched for NFL box scores | Other leagues are not loaded. |
+| One matchup sentence and a tier badge | Every player answer and every game answer leads with one sentence and a tier badge. Elite, average and weak rows are on the card. The longer unit list opens underneath. | Matched for NFL box scores | Other leagues are not loaded. |
 | Alternate-line ladder | If the snapshot has more than one spread point, they are listed. Otherwise the answer says the free snapshot is the main line. | Partial | Alternates are a paid or extra-credit market. The Odds API paid plans, as recorded in `docs/PROVIDERS.md`, start at $30/month for 20K credits, then $59/100K, $119/5M and $249/15M. |
 | Team and game props | The answer says they are unavailable when the snapshot has no team-total market. | Needs a paid feed | Same Odds API plans, or SportsGameOdds Pro at $299/month, BoltOdds Pro at $349/month, TheRundown Pro at $149/month or Ultra at $399/month. OpticOdds is a custom quote. |
 | Stake calculator for a middle or a two-book cross | A dollar amount splits by implied probability. It is not saved. It does not say the profit is guaranteed. | Matched as a calculator | Live middles still need a faster paid feed. |
@@ -17,7 +17,7 @@ Checked November 20, 2026. Coach stays a paper-and-graphite chat. It does not co
 | Expected lineup | Not built. | Needs a license | Rotowire-style expected lineups are not in the free files and are not copied. |
 | EV, Kelly, boosts, DFS, prediction markets | Not added. The stake box is a calculator only. | Needs a paid feed or a license | Those products are outside the free snapshot. No bankroll, unit, or bet log was added for them. |
 | NBA and other leagues | Not added. | Needs a paid feed | The same 500 credits would be spent faster. NBA stays off. |
-| Matchup-adjusted prop chance | Live only when the card has no spread and no total. Weight 0.25. A priced prop is unchanged. See `docs/MATCHUPS.md`. | Partial | The priced path was not changed. The walk-forward had no closing total, so stacking a market total with defense yards was left as it is. |
+| Matchup-adjusted prop chance | Priced and unpriced props both use the opponent unit factor and the shrunk sensitivity. The team-total scale and the raw defense-yards scale are not stacked on top. See `docs/MATCHUPS.md`. | Partial | The fair line is last season's median, not a historical prop price. Game spreads, totals and moneylines were tested and left on version 2. |
 
 ## Blockers
 
