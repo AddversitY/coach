@@ -4,16 +4,16 @@
   "method": "Rank-normal Gaussian copula; n/(n+40) shrink, 0.65 cap, 12-pair minimum, PSD repair. Two-leg validation integrates the fitted copula analytically; live simulation uses 10,000 seeded draws.",
   "scope": "Dependence-layer test only, conditional on participants with recorded box scores. Not validation of live usage marginals or sportsbook profitability.",
   "correlated": {
-    "count": 1014,
-    "brier": 0.2029583359027378,
-    "logLoss": 0.5962986705231874
+    "count": 1016,
+    "brier": 0.20270253085181386,
+    "logLoss": 0.5957444602380289
   },
   "independent": {
-    "count": 1014,
-    "brier": 0.20344775967562495,
-    "logLoss": 0.5975859488068255
+    "count": 1016,
+    "brier": 0.2031626339583111,
+    "logLoss": 0.5969552047454797
   },
-  "uniqueGames": 640,
+  "uniqueGames": 641,
   "adopted": false,
   "hasEdge": false,
   "omitted": 1460,
@@ -51,14 +51,14 @@
       "season": 2026,
       "trainedThrough": 2025,
       "correlated": {
-        "count": 244,
-        "brier": 0.2344229733991282,
-        "logLoss": 0.6646245794075167
+        "count": 246,
+        "brier": 0.2331106676807077,
+        "logLoss": 0.6617801506778839
       },
       "independent": {
-        "count": 244,
-        "brier": 0.2380012075868794,
-        "logLoss": 0.6739615897667736
+        "count": 246,
+        "brier": 0.23654269285267882,
+        "logLoss": 0.6707356253430049
       }
     }
   ],
@@ -80,9 +80,9 @@
     {
       "from": 0.2,
       "to": 0.30000000000000004,
-      "count": 1014,
-      "meanChance": 0.2582433617583658,
-      "observed": 0.28106508875739644
+      "count": 1016,
+      "meanChance": 0.25826638271420876,
+      "observed": 0.28051181102362205
     },
     {
       "from": 0.3,
@@ -139,9 +139,9 @@
     "nflverse bundled final scores"
   ],
   "creditsUsed": 0,
-  "dataCutoff": "2026-11-16",
+  "dataCutoff": "2026-11-19",
   "sourceHashes": {
-    "nfl-player-stats.json": "c5a4ec241d0a6be8495e35b8d40e7e4df894bde62c0e2aae5caac236f130f910",
-    "nfl-history.json": "8f44b8b6258c57dbee14bd755674529700e79df3224ba0c752c49c8505e7516a"
+    "nfl-player-stats.json": "1a295de1562886add7525051848ab60d5d951c001ab6943f1a108ec37c2eabb0",
+    "nfl-history.json": "42282e0b4dd4b3b562b751aa41b754222ccc5bea0a1253a6ef7329926e687c8b"
   }
 }
