@@ -112,10 +112,9 @@ class PlayRates {
 class PlayPrior {
   const PlayPrior({
     required this.league,
-    required Map<String, PlayRates> offense,
-    required Map<String, PlayRates> defense,
-  }) : _offense = offense,
-       _defense = defense;
+    required this._offense,
+    required this._defense,
+  });
 
   final PlayRates league;
   final Map<String, PlayRates> _offense, _defense;
