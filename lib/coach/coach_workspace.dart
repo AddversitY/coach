@@ -20,6 +20,7 @@ import '../data/nfl_assets.dart';
 import '../data/published_snapshot.dart';
 import '../data/repository.dart';
 import '../data/source_link.dart';
+import '../domain/accuracy_scorecard.dart';
 import '../domain/assistant.dart';
 import '../domain/coach_session.dart';
 import '../domain/coach_conversation.dart';
@@ -36,6 +37,7 @@ import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
 import '../domain/trades.dart';
 import '../theme/coach_theme.dart';
+import 'accuracy_scorecard_screen.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
 import 'bet_ideas_view.dart';
@@ -152,6 +154,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   TradeBook? trades;
   SelfGradeReport? selfGrade;
   BookPriceCoverage? bookPrices;
+  AccuracyScorecard? scorecard;
   LineMoveBook? lineMoves;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
@@ -256,6 +259,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       contextAway: conversation.event?.away,
       contextPlayer: conversation.playerName,
       grades: selfGrade,
+      scorecard: scorecard,
       moves: lineMoves,
       bookPrices: bookPrices,
     );
@@ -332,6 +336,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         moves = null;
       }
+      AccuracyScorecard? accuracy;
+      try {
+        accuracy = await loadBundledAccuracyScorecard();
+      } catch (_) {
+        accuracy = null;
+      }
       TradeBook? tape;
       try {
         tape = await loadBundledTrades();
@@ -346,6 +356,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         trades = tape;
         selfGrade = grades;
         bookPrices = prices;
+        scorecard = accuracy;
         lineMoves = moves;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });
@@ -1079,6 +1090,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     }
   });
 
+  void _openScorecard() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => AccuracyScorecardScreen(scorecard: scorecard),
+      ),
+    );
+  }
+
   void _sources() => showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
@@ -1170,6 +1189,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                   onPressed: _sources,
                   icon: const Icon(Icons.info_outline, size: 20),
                 ),
+                _ScorecardEntry(onPressed: _openScorecard),
                 IconButton(
                   key: const Key('coach-new-chat'),
                   tooltip: 'New conversation',
@@ -3895,6 +3915,37 @@ class _DeskLink extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _ScorecardEntry extends StatelessWidget {
+  const _ScorecardEntry({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final wide = MediaQuery.sizeOf(context).width >= 480;
+    final comfortable = MediaQuery.textScalerOf(context).scale(14) < 20;
+    if (wide || comfortable) {
+      return TextButton(
+        key: const Key('coach-scorecard'),
+        style: TextButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          minimumSize: const Size(0, 40),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        onPressed: onPressed,
+        child: const Text('Scorecard', maxLines: 1, softWrap: false),
+      );
+    }
+    return IconButton(
+      key: const Key('coach-scorecard'),
+      tooltip: 'Scorecard',
+      onPressed: onPressed,
+      icon: const Icon(Icons.fact_check_outlined, size: 20),
+    );
+  }
 }
 
 class _CoachMark extends StatelessWidget {

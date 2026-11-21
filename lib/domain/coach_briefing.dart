@@ -6,6 +6,7 @@ import 'nfl_teams.dart';
 import 'odds.dart';
 import 'play_units.dart';
 import 'player_stats.dart';
+import 'accuracy_scorecard.dart';
 import 'price_history.dart';
 import 'recent_evidence.dart';
 import 'rematch.dart';
@@ -90,7 +91,16 @@ CoachBrief? interpretQuestion({
   SelfGradeReport? grades,
   LineMoveBook? moves,
   BookPriceCoverage? bookPrices,
+  AccuracyScorecard? scorecard,
 }) {
+  if (asksForAccuracy(question)) {
+    final card = scorecard ?? AccuracyScorecard.empty;
+    return CoachBrief(
+      title: 'Accuracy',
+      text: card.answer(question),
+      handlesQuestion: true,
+    );
+  }
   if (asksForGrade(question)) {
     final market = gradeMarketForQuestion(question);
     final report = grades ?? SelfGradeReport.empty;

@@ -9,6 +9,7 @@ import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
 import '../domain/play_units.dart';
 import '../domain/line_movement.dart';
+import '../domain/accuracy_scorecard.dart';
 import '../domain/price_history.dart';
 import '../domain/recent_evidence.dart';
 import '../domain/prop_context.dart';
@@ -53,6 +54,13 @@ Future<BookPriceCoverage> loadBundledBookPrices() async {
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
   if (decoded is! Map) return BookPriceCoverage.empty;
   return BookPriceCoverage.fromJson(Map<String, dynamic>.from(decoded));
+}
+
+Future<AccuracyScorecard> loadBundledAccuracyScorecard() async {
+  final json = await rootBundle.loadString('assets/accuracy-scorecard.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return AccuracyScorecard.empty;
+  return AccuracyScorecard.fromJson(Map<String, dynamic>.from(decoded));
 }
 
 Future<LineMoveBook> loadBundledLineMoves() async {
