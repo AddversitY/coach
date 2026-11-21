@@ -8,6 +8,7 @@ import 'player_stats.dart';
 import 'price_history.dart';
 import 'recent_evidence.dart';
 import 'rematch.dart';
+import 'trades.dart';
 import 'unit_ratings.dart';
 
 /// One answer card: a sentence on top, the table one tap down.
@@ -80,6 +81,7 @@ CoachBrief? interpretQuestion({
   List<SnapShare> snaps = const [],
   List<InjuryNote> injuries = const [],
   PlayBook? plays,
+  TradeBook? trades,
   OddsBoard? props,
   String? contextHome,
   String? contextAway,
@@ -108,6 +110,7 @@ CoachBrief? interpretQuestion({
       snaps: snaps,
       injuries: injuries,
       plays: plays,
+      trades: trades,
       contextHome: contextHome,
       contextAway: contextAway,
     );
@@ -289,6 +292,7 @@ CoachBrief _rematchBrief({
   required List<SnapShare> snaps,
   required List<InjuryNote> injuries,
   PlayBook? plays,
+  TradeBook? trades,
   String? contextHome,
   String? contextAway,
 }) {
@@ -317,6 +321,7 @@ CoachBrief _rematchBrief({
     snaps: snaps,
     earlierInjuries: injuries,
     plays: plays,
+    trades: trades,
   );
   if (report == null) {
     return CoachBrief(

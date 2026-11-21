@@ -33,6 +33,7 @@ import '../domain/player_stats.dart';
 import '../domain/price_history.dart';
 import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
+import '../domain/trades.dart';
 import '../theme/coach_theme.dart';
 import 'coach_evidence_visuals.dart';
 import 'coach_research_summary.dart';
@@ -147,6 +148,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   Map<String, dynamic>? analysisValidation;
   RecentEvidence? recentEvidence;
   PlayBook? playBook;
+  TradeBook? trades;
   SelfGradeReport? selfGrade;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
@@ -234,6 +236,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       ratings: ratingBook,
       snaps: matchupContext?.snaps ?? const [],
       plays: playBook,
+      trades: trades,
       injuries: [
         for (final row in matchupContext?.injuries ?? const <ListedInjury>[])
           InjuryNote(
@@ -312,11 +315,18 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         grades = null;
       }
+      TradeBook? tape;
+      try {
+        tape = await loadBundledTrades();
+      } catch (_) {
+        tape = null;
+      }
       if (!mounted) return;
       setState(() {
         recentEvidence = recent;
         matchupContext = matchup;
         playBook = plays;
+        trades = tape;
         selfGrade = grades;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });

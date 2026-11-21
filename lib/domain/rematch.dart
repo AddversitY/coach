@@ -2,6 +2,7 @@ import 'matchup.dart';
 import 'play_units.dart';
 import 'player_stats.dart';
 import 'recent_evidence.dart';
+import 'trades.dart';
 
 /// What can be said about two meetings from the files in hand.
 class ChangeReport {
@@ -40,6 +41,7 @@ ChangeReport? rematchReport({
   List<SnapShare> snaps = const [],
   List<InjuryNote> earlierInjuries = const [],
   PlayBook? plays,
+  TradeBook? trades,
 }) {
   final a = teamA.toUpperCase();
   final b = teamB.toUpperCase();
@@ -58,7 +60,9 @@ ChangeReport? rematchReport({
   ];
   final unavailable = <String>[
     'Front-office and general-manager changes are unavailable. These files do not name a general manager or a firing.',
-    'A trade tape is unavailable. A player who snaps for a different club later is a snap-count team change, not a recorded transaction.',
+    trades == null
+        ? 'The trade file is unavailable, so a snap-count club change is not called a trade.'
+        : 'A snap-count club change is called a trade only when the nflverse trades file names that player, the two clubs, and a date strictly between the meetings.',
   ];
   _playLines(plays, earlier, details, unavailable);
   _playLines(plays, later, details, unavailable);
@@ -87,7 +91,7 @@ ChangeReport? rematchReport({
   details.addAll(
     _returns(injuries, evidence.players, snaps, earlier, later, {a, b}),
   );
-  details.addAll(_snapMoves(snaps, earlier, later, {a, b}));
+  details.addAll(_snapMoves(snaps, earlier, later, {a, b}, trades));
   details.addAll(_passRate(earlyWeeks, lateWeeks));
   final summary = _summary(earlier, later, earlyWeeks, lateWeeks);
   return ChangeReport(
@@ -440,6 +444,7 @@ List<String> _snapMoves(
   RecentGame earlier,
   RecentGame later,
   Set<String> clubs,
+  TradeBook? trades,
 ) {
   if (snaps.isEmpty) return const ['Snap counts were not loaded.'];
   final byPlayer = <String, List<SnapShare>>{};
@@ -463,9 +468,19 @@ List<String> _snapMoves(
     }
     if (moved == null) continue;
     final share = moved.share;
+    final trade = trades?.between(
+      name: entry.key,
+      from: origin.team,
+      to: moved.team,
+      after: earlier.date,
+      before: later.date,
+    );
+    final recorded = trade == null
+        ? 'The nflverse trades file has no matching row, so this is not called a trade.'
+        : trade.sentence;
     lines.add(
       '${entry.key} snapped for ${origin.team} in week ${earlier.week} and for ${moved.team} in week ${moved.week}'
-      '${share == null ? '' : ' (${(share * 100).round()}% of snaps)'}. This is a snap-count team change. The file does not say whether it was a trade.',
+      '${share == null ? '' : ' (${(share * 100).round()}% of snaps)'}. This is a snap-count team change. $recorded',
     );
   }
   lines.sort();
