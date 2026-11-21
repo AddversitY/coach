@@ -1,10 +1,10 @@
 # Prop chance
 
-The chance on a player-prop card is not the raw hit rate. Yards use the lognormal curve in `docs/MATCHUPS.md`, with the recent-game weight in `docs/PROP_SPECIALIST.md`. An anytime touchdown uses the count in that same file. Five clears in five games is not a 100% chance, and it is not shown as a 26-point edge. Coach's Line, the team number in [MODEL.md](MODEL.md), is a different estimate and is not used here.
+The chance on a player-prop card is not the raw hit rate. Yards use the lognormal curve in `docs/MATCHUPS.md`, with the recent-game weight in `docs/PROP_SPECIALIST.md`. An anytime touchdown chance is unavailable. The count that was tried sat near 40 percent while players scored far less often, and the recalibrated count did not beat the position-anchored record. Five clears in five games is not a 100% chance, and it is not shown as a 26-point edge. Coach's Line, the team number in [MODEL.md](MODEL.md), is a different estimate and is not used here.
 
 ## What is mixed in
 
-The anchor is the book's no-vig chance for that side. When the best open price and the other side of the same line are both posted by that book, the fee is taken off that pair. Otherwise the anchor is the books' consensus no-vig. A missing anchor does not get invented: the chance falls back to an even shrink, `(hits + 2) / (observed + 4)`, and there is then no edge to show.
+The anchor is the book's no-vig chance for that side. When the best open price and the other side of the same line are both posted by that book, the fee is taken off that pair. Otherwise the anchor is the books' consensus no-vig. A missing anchor does not get invented: the chance falls back to an even shrink, `(hits + 2) / (observed + 4)`, and there is then no edge to show. Anytime touchdowns do not use that fallback. The card says the chance is unavailable.
 
 Fewer than four recorded games stays blank. A missing stat is skipped, the same way the hit-rate windows already work.
 
