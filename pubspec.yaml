@@ -69,6 +69,8 @@ flutter:
     - assets/parlay-calibration.json
     - assets/self-grade.json
     - assets/nfl-trades.json
+    - assets/line-moves.json
+    - assets/line-movement-backtest.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

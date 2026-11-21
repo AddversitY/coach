@@ -85,6 +85,18 @@ The close itself was then tested as a probability, on the nflverse schedule from
 
 The key-number spot beat the flat prior and the closing price in 2025 and lost both in 2026. Adding rest and weather beat both in 2025 and 2026, and lost both in 2024. That fit is not stacked on version 2, because version 2 already moves the close for rest and weather, and this test did not replay version 2's quarterback and injury pieces. The same spot on the total was worse than a flat 50 percent in both seasons (2025 Brier 0.2511, 2026 Brier 0.2521). A moneyline read off the closing price beat a normal curve drawn through the spread in both seasons (2025 Brier 0.2121 against 0.2126, 2026 Brier 0.2110 against 0.2136). That price is the market, not a new model, and the spot moneyline did not beat it in both seasons. None of these paths is served. Version 2 stays the game number. This is not a profit test and not a pick.
 
+A separate file, the public Sportsbook Review odds archive, does have an opening spread and total and one moneyline, through the 2021-22 season (`assets/line-movement-backtest.json`). 3,674 games parsed. Favorites covered the close 48.71 percent of the time on 3,519 decided games, which is the check that the spread sign was read the right way. One 2013 row labeled only "NewYork," against St. Louis, was skipped because the page does not say Giants or Jets. Rows that mix a spread and a total in the same open and close cells were skipped rather than repaired. EndzoneAPI's public pages advertise a free key and player-prop opens and closes since 2023. No account was created, and those historical game opens were not downloaded. The archive has no 2025 or 2026 opening line, so a comparison with version 2 on those two seasons is unavailable.
+
+The movement chance uses the open-to-close spread move and whether that move passed 3 or 7. Totals use the open-to-close total move. A week is fit only on earlier weeks. Covers and totals are compared with a flat 50 percent. Moneylines are compared with the no-vig closing price. It would be served only if covers, totals, and moneylines were all better on Brier and log loss in both 2025 and 2026, with at least 100 games in each. Those seasons are not in the file.
+
+| Archive season | Cover games | Cover Brier | Cover log loss | Flat cover Brier | Total Brier | Flat total Brier | Moneyline Brier | Closing-price Brier |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2019 | 225 | 0.2507 | 0.6946 | 0.2500 | 0.2508 | 0.2500 | 0.2115 | 0.2112 |
+| 2020 | 240 | 0.2504 | 0.6938 | 0.2500 | 0.2498 | 0.2500 | 0.2012 | 0.1970 |
+| 2021 | 246 | 0.2500 | 0.6932 | 0.2500 | 0.2514 | 0.2500 | 0.2148 | 0.2175 |
+
+The 2020 total was a little better than a flat 50 percent, and the 2021 moneyline was a little better than the closing price. Covers were not better than a flat 50 percent in any of these three seasons. No season here was better on all three markets. Version 2's published cover score is still Brier 0.250187 and log loss 0.693524 on 2,899 games from 2015 through 2026. That number stays the one Coach serves. The chat can still say how a saved line moved. That sentence is a comparison, not a pick.
+
 The same rates were tried on the unit-only prop chance, the path that was served before the lognormal curve. The mean is multiplied by a fixed factor: one typical step is 15 percent, held inside 0.85 to 1.15, with no coefficient fit on the score. The line is still last season's median.
 
 | Prop adjustment | 2025 games | 2025 Brier | 2025 log loss | 2026 games | 2026 Brier | 2026 log loss |

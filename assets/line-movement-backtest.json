@@ -1,0 +1,530 @@
+{
+  "schema": "coach-line-movement-backtest-v1",
+  "adopted": false,
+  "source": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nfl/nfloddsarchives.htm",
+  "seasonsPresent": [
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+  ],
+  "gamesParsed": 3674,
+  "rowsSkipped": 371,
+  "unknownTeams": [
+    "NewYork"
+  ],
+  "favoriteCoverRate": 0.4871,
+  "favoriteDecided": 3519,
+  "testSeasons": [
+    2025,
+    2026
+  ],
+  "testSeasonOpens": "unavailable",
+  "lateMove": "unavailable",
+  "bookDisagreement": "unavailable",
+  "againstPublic": "unavailable",
+  "steam": "unavailable",
+  "endzone": "EndzoneAPI advertises a free key and, on the public pages read without an account, player-prop opens and closes since 2023. Historical game opens were not downloaded. No account was created.",
+  "servedVersion2": {
+    "source": "assets/nfl-model.json v2.backtest",
+    "games": 2899,
+    "coverBrier": 0.250187,
+    "coverLogLoss": 0.693524,
+    "seasons": "2015-2026",
+    "hasEdge": false
+  },
+  "note": "The movement chance is fit week by week on earlier weeks only. Covers and totals are compared with a flat 50 percent, which is the closing number when the file has no spread price or total price. Moneylines are compared with the no-vig closing price. 2025 and 2026 opening lines are not in this archive, so the movement chance is not served. Version 2 stays the game number. This is not a pick.",
+  "seasons": {
+    "2007": {
+      "coverModel": {
+        "n": 36,
+        "brier": 0.2548,
+        "logLoss": 0.703
+      },
+      "coverFlat": {
+        "n": 36,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 37,
+        "brier": 0.2627,
+        "logLoss": 0.9082
+      },
+      "totalFlat": {
+        "n": 37,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 37,
+        "brier": 0.1951,
+        "logLoss": 0.5703
+      },
+      "moneyPrice": {
+        "n": 37,
+        "brier": 0.1873,
+        "logLoss": 0.5483
+      }
+    },
+    "2008": {
+      "coverModel": {
+        "n": 249,
+        "brier": 0.2505,
+        "logLoss": 0.6941
+      },
+      "coverFlat": {
+        "n": 249,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 249,
+        "brier": 0.2551,
+        "logLoss": 0.7033
+      },
+      "totalFlat": {
+        "n": 249,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 255,
+        "brier": 0.2114,
+        "logLoss": 0.611
+      },
+      "moneyPrice": {
+        "n": 255,
+        "brier": 0.209,
+        "logLoss": 0.6053
+      }
+    },
+    "2009": {
+      "coverModel": {
+        "n": 243,
+        "brier": 0.2483,
+        "logLoss": 0.6898
+      },
+      "coverFlat": {
+        "n": 243,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 245,
+        "brier": 0.2539,
+        "logLoss": 0.7009
+      },
+      "totalFlat": {
+        "n": 245,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 251,
+        "brier": 0.1965,
+        "logLoss": 0.5788
+      },
+      "moneyPrice": {
+        "n": 251,
+        "brier": 0.1963,
+        "logLoss": 0.5773
+      }
+    },
+    "2010": {
+      "coverModel": {
+        "n": 247,
+        "brier": 0.2515,
+        "logLoss": 0.6962
+      },
+      "coverFlat": {
+        "n": 247,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 251,
+        "brier": 0.2468,
+        "logLoss": 0.6867
+      },
+      "totalFlat": {
+        "n": 251,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 253,
+        "brier": 0.2195,
+        "logLoss": 0.6298
+      },
+      "moneyPrice": {
+        "n": 253,
+        "brier": 0.2193,
+        "logLoss": 0.6293
+      }
+    },
+    "2011": {
+      "coverModel": {
+        "n": 238,
+        "brier": 0.2509,
+        "logLoss": 0.695
+      },
+      "coverFlat": {
+        "n": 238,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 243,
+        "brier": 0.2514,
+        "logLoss": 0.6959
+      },
+      "totalFlat": {
+        "n": 243,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 248,
+        "brier": 0.205,
+        "logLoss": 0.5975
+      },
+      "moneyPrice": {
+        "n": 248,
+        "brier": 0.1995,
+        "logLoss": 0.5841
+      }
+    },
+    "2012": {
+      "coverModel": {
+        "n": 242,
+        "brier": 0.2499,
+        "logLoss": 0.6929
+      },
+      "coverFlat": {
+        "n": 242,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 245,
+        "brier": 0.251,
+        "logLoss": 0.6952
+      },
+      "totalFlat": {
+        "n": 245,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 248,
+        "brier": 0.2075,
+        "logLoss": 0.6027
+      },
+      "moneyPrice": {
+        "n": 248,
+        "brier": 0.2056,
+        "logLoss": 0.5962
+      }
+    },
+    "2013": {
+      "coverModel": {
+        "n": 223,
+        "brier": 0.2501,
+        "logLoss": 0.6934
+      },
+      "coverFlat": {
+        "n": 223,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 230,
+        "brier": 0.2508,
+        "logLoss": 0.6948
+      },
+      "totalFlat": {
+        "n": 230,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 232,
+        "brier": 0.2018,
+        "logLoss": 0.5914
+      },
+      "moneyPrice": {
+        "n": 232,
+        "brier": 0.1969,
+        "logLoss": 0.5807
+      }
+    },
+    "2014": {
+      "coverModel": {
+        "n": 239,
+        "brier": 0.2504,
+        "logLoss": 0.6939
+      },
+      "coverFlat": {
+        "n": 239,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 239,
+        "brier": 0.2522,
+        "logLoss": 0.6976
+      },
+      "totalFlat": {
+        "n": 239,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 242,
+        "brier": 0.2057,
+        "logLoss": 0.599
+      },
+      "moneyPrice": {
+        "n": 242,
+        "brier": 0.2034,
+        "logLoss": 0.5921
+      }
+    },
+    "2015": {
+      "coverModel": {
+        "n": 229,
+        "brier": 0.2514,
+        "logLoss": 0.696
+      },
+      "coverFlat": {
+        "n": 229,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 238,
+        "brier": 0.2527,
+        "logLoss": 0.6985
+      },
+      "totalFlat": {
+        "n": 238,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 240,
+        "brier": 0.2247,
+        "logLoss": 0.6399
+      },
+      "moneyPrice": {
+        "n": 240,
+        "brier": 0.2241,
+        "logLoss": 0.6394
+      }
+    },
+    "2016": {
+      "coverModel": {
+        "n": 231,
+        "brier": 0.2505,
+        "logLoss": 0.6942
+      },
+      "coverFlat": {
+        "n": 231,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 236,
+        "brier": 0.2493,
+        "logLoss": 0.6917
+      },
+      "totalFlat": {
+        "n": 236,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 236,
+        "brier": 0.2135,
+        "logLoss": 0.6157
+      },
+      "moneyPrice": {
+        "n": 236,
+        "brier": 0.2116,
+        "logLoss": 0.6101
+      }
+    },
+    "2017": {
+      "coverModel": {
+        "n": 233,
+        "brier": 0.2498,
+        "logLoss": 0.6928
+      },
+      "coverFlat": {
+        "n": 233,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 242,
+        "brier": 0.2521,
+        "logLoss": 0.6973
+      },
+      "totalFlat": {
+        "n": 242,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 244,
+        "brier": 0.2036,
+        "logLoss": 0.5953
+      },
+      "moneyPrice": {
+        "n": 244,
+        "brier": 0.1994,
+        "logLoss": 0.5848
+      }
+    },
+    "2018": {
+      "coverModel": {
+        "n": 235,
+        "brier": 0.2505,
+        "logLoss": 0.6941
+      },
+      "coverFlat": {
+        "n": 235,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 241,
+        "brier": 0.2516,
+        "logLoss": 0.6963
+      },
+      "totalFlat": {
+        "n": 241,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 243,
+        "brier": 0.2107,
+        "logLoss": 0.6109
+      },
+      "moneyPrice": {
+        "n": 243,
+        "brier": 0.2093,
+        "logLoss": 0.6072
+      }
+    },
+    "2019": {
+      "coverModel": {
+        "n": 225,
+        "brier": 0.2507,
+        "logLoss": 0.6946
+      },
+      "coverFlat": {
+        "n": 225,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 233,
+        "brier": 0.2508,
+        "logLoss": 0.6947
+      },
+      "totalFlat": {
+        "n": 233,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 234,
+        "brier": 0.2115,
+        "logLoss": 0.6109
+      },
+      "moneyPrice": {
+        "n": 234,
+        "brier": 0.2112,
+        "logLoss": 0.6103
+      }
+    },
+    "2020": {
+      "coverModel": {
+        "n": 240,
+        "brier": 0.2504,
+        "logLoss": 0.6938
+      },
+      "coverFlat": {
+        "n": 240,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 240,
+        "brier": 0.2498,
+        "logLoss": 0.6928
+      },
+      "totalFlat": {
+        "n": 240,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 244,
+        "brier": 0.2012,
+        "logLoss": 0.59
+      },
+      "moneyPrice": {
+        "n": 244,
+        "brier": 0.197,
+        "logLoss": 0.5796
+      }
+    },
+    "2021": {
+      "coverModel": {
+        "n": 246,
+        "brier": 0.25,
+        "logLoss": 0.6932
+      },
+      "coverFlat": {
+        "n": 246,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "totalModel": {
+        "n": 247,
+        "brier": 0.2514,
+        "logLoss": 0.6959
+      },
+      "totalFlat": {
+        "n": 247,
+        "brier": 0.25,
+        "logLoss": 0.6931
+      },
+      "moneyModel": {
+        "n": 247,
+        "brier": 0.2148,
+        "logLoss": 0.6169
+      },
+      "moneyPrice": {
+        "n": 247,
+        "brier": 0.2175,
+        "logLoss": 0.6225
+      }
+    }
+  }
+}

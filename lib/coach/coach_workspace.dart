@@ -30,6 +30,7 @@ import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
 import '../domain/play_units.dart';
 import '../domain/player_stats.dart';
+import '../domain/line_movement.dart';
 import '../domain/price_history.dart';
 import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
@@ -150,6 +151,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   PlayBook? playBook;
   TradeBook? trades;
   SelfGradeReport? selfGrade;
+  LineMoveBook? lineMoves;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
   bool pollingTelemetry = false;
@@ -253,6 +255,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       contextAway: conversation.event?.away,
       contextPlayer: conversation.playerName,
       grades: selfGrade,
+      moves: lineMoves,
     );
   }
 
@@ -315,6 +318,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         grades = null;
       }
+      LineMoveBook? moves;
+      try {
+        moves = await loadBundledLineMoves();
+      } catch (_) {
+        moves = null;
+      }
       TradeBook? tape;
       try {
         tape = await loadBundledTrades();
@@ -328,6 +337,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         playBook = plays;
         trades = tape;
         selfGrade = grades;
+        lineMoves = moves;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });
     } catch (_) {
@@ -970,6 +980,15 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         answer.text,
         resetSubject: answer.event == null,
       );
+    }
+    if (askedBrief == null && answer.intent != CoachIntent.clarify) {
+      final note = lineMoves?.sentenceFor(
+        home: answer.event?.home ?? conversation.event?.home,
+        away: answer.event?.away ?? conversation.event?.away,
+        question: resolved,
+        onlyWhenMeasured: true,
+      );
+      if (note != null) answer = answer.withAddedText(note);
     }
     final turn =
         _Turn(displayQuestion ?? question, answer, at, researchQuery: resolved)

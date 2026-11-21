@@ -8,6 +8,7 @@ import '../domain/history.dart';
 import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
 import '../domain/play_units.dart';
+import '../domain/line_movement.dart';
 import '../domain/price_history.dart';
 import '../domain/recent_evidence.dart';
 import '../domain/trades.dart';
@@ -44,6 +45,13 @@ Future<SelfGradeReport> loadBundledSelfGrade() async {
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
   if (decoded is! Map) return SelfGradeReport.empty;
   return SelfGradeReport.fromJson(Map<String, dynamic>.from(decoded));
+}
+
+Future<LineMoveBook> loadBundledLineMoves() async {
+  final json = await rootBundle.loadString('assets/line-moves.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return LineMoveBook.empty;
+  return LineMoveBook.fromJson(Map<String, dynamic>.from(decoded));
 }
 
 Future<RecentEvidence> loadBundledRecentEvidence() async {
