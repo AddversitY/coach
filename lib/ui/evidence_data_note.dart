@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../domain/eastern.dart';
 import '../domain/injury_report.dart';
 import '../domain/matchup.dart';
+import '../domain/report_stamp.dart';
 import '../theme/edge_theme.dart';
 
 /// Independent provenance for the evidence beneath a prop. The schedule's
@@ -74,6 +75,19 @@ class EvidenceDataNote extends StatelessWidget {
               fontSize: 12,
               color: future ? EdgeColors.warn : EdgeColors.textSecondary,
             ),
+          ),
+        ),
+        Text(
+          injuryReportStamp(
+            checkedAt: injuries == null
+                ? null
+                : (injuries!.checkedAt ?? injuries!.fetchedAt),
+            now: now,
+            live: injuries?.live ?? false,
+          ).sentence,
+          style: EdgeType.label.copyWith(
+            fontSize: 12,
+            color: EdgeColors.textSecondary,
           ),
         ),
         if (matchup != null)

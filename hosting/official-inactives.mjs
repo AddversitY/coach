@@ -38,7 +38,8 @@ export async function collectOfficialInactives(index,previous,clock,fetchText){
  const nearby=index.events.filter(e=>Date.parse(e.startsAt)>clock&&Date.parse(e.startsAt)-clock<=3*3600000);
  if(!nearby.length)return {observations:[],source:{...base,state:'outside_game_day_window',checkedAt:null}};
  const before=previous?.sources?.find(s=>s.id===base.id),old=(previous?.observations||[]).filter(o=>o.source===SOURCE&&fresh(o.observedAt,clock,12*60000)&&nearby.some(e=>e.id===o.eventId));
- if(fresh(before?.attemptedAt||before?.checkedAt,clock,10*60000))return {observations:old,source:before};
+ const soon=nearby.some(e=>Date.parse(e.startsAt)-clock<=90*60000);
+ if(fresh(before?.attemptedAt||before?.checkedAt,clock,soon?2*60000:10*60000))return {observations:old,source:before};
  try{
    const hub=await fetchText(HUB,1000000),links=[...hub.matchAll(/href=["']((?:https:\/\/www\.nfl\.com)?\/news\/[a-z0-9-]*inactiv[a-z0-9-]*)["']/g)].map(m=>new URL(m[1],HUB).href);
    const candidates=[...new Set(links)].filter(url=>nearby.some(e=>{const m=e.id.match(/^nflverse:(20\d{2})_(\d{2})_/);return m&&url.includes(m[1])&&new RegExp('week-'+Number(m[2])+'(?:-|$)').test(url);})).slice(0,2);

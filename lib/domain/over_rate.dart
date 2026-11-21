@@ -15,6 +15,9 @@ class ServedForecast {
     required this.week,
     required this.games,
     required this.metric,
+    required this.playerId,
+    required this.team,
+    required this.position,
     required this.chance,
     required this.raw,
     required this.mean,
@@ -24,7 +27,7 @@ class ServedForecast {
   });
 
   final int season, week, games;
-  final String metric;
+  final String metric, playerId, team, position;
   final double chance, raw, mean, sd, line;
   final bool hit;
 }
@@ -116,6 +119,9 @@ List<ServedForecast> servedUnitForecasts({
                 week: week,
                 games: played,
                 metric: metric,
+                playerId: game.playerId,
+                team: game.team,
+                position: game.position,
                 chance: chance,
                 raw: raw,
                 mean: mean,

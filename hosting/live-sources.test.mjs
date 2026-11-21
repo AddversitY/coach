@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {injuryReports,collectInjuries,newsReports,collectNews,marketMovements,marketSplitReports} from './live-sources.mjs';
+import {injuryReports,collectInjuries,injuryInterval,newsReports,collectNews,marketMovements,marketSplitReports} from './live-sources.mjs';
 
 const clock=Date.UTC(2026,10,16,12),at=new Date(clock).toISOString();
 const e={id:'game',home:'Buffalo Bills',away:'Kansas City Chiefs',startsAt:new Date(clock+3_600_000).toISOString()};
@@ -21,14 +21,25 @@ test('injury scope is the next game only, with original report time and no parti
 test('injury polling permits the large feed but caches it; failure preserves timestamps and retries with backoff',async()=>{
   let calls=0;
   const fetch=async(_,limit)=>{calls++;assert.equal(limit,16_000_000);return raw;};
-  const first=await collectInjuries(index,null,clock,fetch);
+  const later={...index,events:index.events.map(event=>({...event,startsAt:new Date(clock+3*3600000).toISOString()}))};
+  const first=await collectInjuries(later,null,clock,fetch);
   const saved={observations:first.observations,sources:[first.source]};
-  await collectInjuries(index,saved,clock+60000,fetch);assert.equal(calls,1);
-  const failed=await collectInjuries(index,saved,clock+11*60000,async()=>{throw Error('offline');});
+  await collectInjuries(later,saved,clock+60000,fetch);assert.equal(calls,1);
+  const failed=await collectInjuries(later,saved,clock+11*60000,async()=>{throw Error('offline');});
   assert.equal(failed.source.state,'unavailable');assert.equal(failed.source.checkedAt,at);assert.equal(failed.observations[0].observedAt,at);
-  const stale=await collectInjuries(index,{observations:failed.observations,sources:[failed.source]},clock+14*60000,async()=>{assert.fail('Backoff prevents another download');});
+  const stale=await collectInjuries(later,{observations:failed.observations,sources:[failed.source]},clock+14*60000,async()=>{assert.fail('Backoff prevents another download');});
   // Source failure cannot turn an older status into a fresh report.
   assert.equal(stale.source.checkedAt,at);assert.equal(stale.observations.length,0);
+});
+
+test('a kickoff inside 90 minutes refreshes the injury list on the two-minute cron',async()=>{
+  assert.equal(injuryInterval(index,clock),2*60000);
+  let calls=0;const fetch=async()=>{calls++;return raw;};
+  const first=await collectInjuries(index,null,clock,fetch);
+  await collectInjuries(index,{observations:first.observations,sources:[first.source]},clock+60000,fetch);
+  assert.equal(calls,1);
+  await collectInjuries(index,{observations:first.observations,sources:[first.source]},clock+3*60000,fetch);
+  assert.equal(calls,2);
 });
 
 test('RSS retains author, original link/date, refuses external URLs, entities and future stories',()=>{

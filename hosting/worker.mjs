@@ -157,30 +157,80 @@ async function sourceText(url,limit){
   return boundedText(await fetch(url,{redirect:'manual',signal:AbortSignal.timeout(12_000),headers:{'User-Agent':'Coach/1.0 (https://github.com/AddversitY/coach)','Accept':'text/html,application/rss+xml,text/xml'}}),limit);
 }
 
+export function weatherRefreshMs(startsAt, clock) {
+  const delta = Date.parse(startsAt) - clock;
+  if (delta > 0 && delta <= 90 * 60 * 1000) return 10 * 60 * 1000;
+  return 30 * 60 * 1000;
+}
+
+export function readOpenMeteo(body, event, clock) {
+  const times = body?.hourly?.time;
+  const temps = body?.hourly?.temperature_2m;
+  const winds = body?.hourly?.wind_speed_10m;
+  if (!Array.isArray(times) || !Array.isArray(temps)) throw new Error('Kickoff forecast unavailable');
+  const kick = Date.parse(event.startsAt);
+  let best = -1;
+  let bestGap = Infinity;
+  for (let i = 0; i < times.length; i++) {
+    const stamp = Date.parse(String(times[i]).endsWith('Z') ? times[i] : `${times[i]}Z`);
+    const gap = Math.abs(stamp - kick);
+    if (Number.isFinite(gap) && gap < bestGap) {
+      bestGap = gap;
+      best = i;
+    }
+  }
+  if (best < 0 || bestGap > 90 * 60 * 1000 || !Number.isFinite(temps[best])) throw new Error('Kickoff forecast unavailable');
+  return {id:`weather:${event.id}`,kind:'weather',eventId:event.id,source:'Open-Meteo forecast',observedAt:new Date(clock).toISOString(),confirmed:false,
+    value:{forecastFor:times[best],temperature:temps[best],unit:'F',windSpeed:Array.isArray(winds)&&Number.isFinite(winds[best])?`${winds[best]} mph`:null,notice:'Forecast only; no automatic prop adjustment. Open-Meteo.com.'}};
+}
+
 export async function weatherFor(event,clock=Date.now()) {
   if(!Number.isFinite(event.latitude)||!Number.isFinite(event.longitude))throw new Error('Venue coordinates unavailable');
   if(['dome','closed'].includes(event.roof))return {id:`weather:${event.id}`,kind:'weather',eventId:event.id,source:'nflverse schedule roof metadata',observedAt:new Date(clock).toISOString(),confirmed:false,value:{roof:event.roof,notice:'Outdoor forecast not applied; roof metadata is not live confirmation'}};
-  const point=await sourceJson(`https://api.weather.gov/points/${event.latitude},${event.longitude}`,100000);
-  const url=point.properties?.forecastHourly;
-  if(typeof url!=='string'||new URL(url).hostname!=='api.weather.gov')throw new Error('Invalid weather endpoint');
-  const forecast=await sourceJson(url,500000);
-  const kickoff=Date.parse(event.startsAt);
-  const period=forecast.properties?.periods?.find(p=>Date.parse(p.startTime)<=kickoff&&kickoff<Date.parse(p.endTime));
-  if(!period||!Number.isFinite(period.temperature))throw new Error('Kickoff forecast unavailable');
-  return {id:`weather:${event.id}`,kind:'weather',eventId:event.id,source:'National Weather Service hourly forecast',observedAt:new Date(clock).toISOString(),confirmed:false,
-    value:{forecastFor:period.startTime,temperature:period.temperature,unit:period.temperatureUnit,windSpeed:String(period.windSpeed).slice(0,50),forecast:String(period.shortForecast).slice(0,160),notice:'Forecast only; no automatic prop adjustment or roof inference'}};
+  try {
+    const point=await sourceJson(`https://api.weather.gov/points/${event.latitude},${event.longitude}`,100000);
+    const url=point.properties?.forecastHourly;
+    if(typeof url!=='string'||new URL(url).hostname!=='api.weather.gov')throw new Error('Invalid weather endpoint');
+    const forecast=await sourceJson(url,500000);
+    const kickoff=Date.parse(event.startsAt);
+    const period=forecast.properties?.periods?.find(p=>Date.parse(p.startTime)<=kickoff&&kickoff<Date.parse(p.endTime));
+    if(!period||!Number.isFinite(period.temperature))throw new Error('Kickoff forecast unavailable');
+    return {id:`weather:${event.id}`,kind:'weather',eventId:event.id,source:'National Weather Service hourly forecast',observedAt:new Date(clock).toISOString(),confirmed:false,
+      value:{forecastFor:period.startTime,temperature:period.temperature,unit:period.temperatureUnit,windSpeed:String(period.windSpeed).slice(0,50),forecast:String(period.shortForecast).slice(0,160),notice:'Forecast only; no automatic prop adjustment or roof inference'}};
+  } catch {
+    const query=new URL('https://api.open-meteo.com/v1/forecast');
+    query.searchParams.set('latitude', String(event.latitude));
+    query.searchParams.set('longitude', String(event.longitude));
+    query.searchParams.set('hourly', 'temperature_2m,wind_speed_10m');
+    query.searchParams.set('temperature_unit', 'fahrenheit');
+    query.searchParams.set('wind_speed_unit', 'mph');
+    query.searchParams.set('forecast_days', '3');
+    query.searchParams.set('timezone', 'UTC');
+    return readOpenMeteo(await sourceJson(query.toString(), 500000), event, clock);
+  }
 }
 
 export async function collectTelemetry(env, previous, clock=Date.now()) {
   const {index,snapshot}=await published(env,clock);const at=new Date(clock).toISOString();const observations=[],sources=[];
   const [injuries,news,official,designations]=await Promise.all([collectInjuries(index,previous,clock,sourceJson),collectNews(index,previous,clock,sourceText),collectOfficialInactives(index,previous,clock,sourceText),collectOfficialInjuries(index,previous,clock,sourceText)]);
   observations.push(...injuries.observations,...news.observations,...official.observations,...designations.observations);sources.push(injuries.source,news.source,official.source,designations.source);
-  const oldWeather=(previous?.observations||[]).filter(o=>o.kind==='weather'&&usableTime(o.observedAt,clock,30*60000));
-  const nearby=index.events.filter(e=>Date.parse(e.startsAt)>clock&&Date.parse(e.startsAt)-clock<48*3600000).slice(0,3);
+  const oldWeather=(previous?.observations||[]).filter(o=>o.kind==='weather');
+  const nearby=index.events.filter(e=>Date.parse(e.startsAt)>clock&&Date.parse(e.startsAt)-clock<48*3600000).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt));
+  let fetched=0;
   for(const event of nearby){
     const cached=oldWeather.find(o=>o.eventId===event.id);
-    if(cached){observations.push(cached);continue;}
-    try{observations.push(await weatherFor(event,clock));}catch{sources.push({id:`weather:${event.id}`,state:'unavailable',checkedAt:null});}
+    const window=weatherRefreshMs(event.startsAt, clock);
+    if(cached&&usableTime(cached.observedAt,clock,window)){observations.push(cached);continue;}
+    if(fetched>=8){
+      if(cached)observations.push(cached);
+      sources.push({id:`weather:${event.id}`,state:cached?'stale':'unavailable',checkedAt:cached?.observedAt||null});
+      continue;
+    }
+    try{observations.push(await weatherFor(event,clock));fetched++;}
+    catch{
+      if(cached&&usableTime(cached.observedAt,clock,35*60000))observations.push(cached);
+      sources.push({id:`weather:${event.id}`,state:cached?'stale':'unavailable',checkedAt:cached?.observedAt||null});
+    }
   }
   if(observations.some(o=>o.kind==='weather'))sources.push({id:'weather',state:'forecast_only',checkedAt:at});
   const quotes=snapshot.props?.quotes||[];

@@ -9,9 +9,9 @@ links open the publisher; native clients offer copying the link.
 
 | Source | Check cadence | What it means |
 | --- | --- | --- |
-| [ESPN NFL injury listings](https://www.espn.com/nfl/injuries) | Ten minutes, shared across users | Unofficial player status; only exact name/team matches to recorded QB/RB/WR/TE participants. Not complete roster coverage or confirmation for the next matchup. |
+| [ESPN NFL injury listings](https://www.espn.com/nfl/injuries) | Ten minutes, or two minutes when a kickoff is inside 90 minutes | Unofficial player status; only exact name/team matches to recorded QB/RB/WR/TE participants. Not complete roster coverage or confirmation for the next matchup. The answer names the check time, or says unavailable or stale. |
 | [ESPN NFL RSS](https://www.espn.com/espn/rss/nfl/news) | Thirty minutes, respecting the feed's TTL | Published headlines, supplied author bylines, original publication dates and source links. No article bodies, private posts, or comprehensive social stream. |
-| National Weather Service | Thirty minutes | Hourly forecast at the indexed venue, when available. Roof metadata is not live roof confirmation. |
+| National Weather Service, then [Open-Meteo](https://open-meteo.com/) | Thirty minutes, or ten minutes inside the last 90 minutes before kickoff | Hourly forecast at the indexed venue, attached to that game and to a prop question about that game. Roof metadata is not live roof confirmation. A failed check says unavailable or stale. The forecast does not change the chance. |
 | Published Odds API observations | Existing quota-controlled publication cadence | Saved pregame observations and changes between comparable snapshots. No extra provider requests or increased credit caps. |
 
 The coordinator checks every two minutes, while each provider retains its own
