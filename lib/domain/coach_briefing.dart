@@ -1,4 +1,5 @@
 import 'coach_books.dart';
+import 'line_movement.dart';
 import 'game_research.dart';
 import 'matchup.dart';
 import 'nfl_teams.dart';
@@ -87,6 +88,7 @@ CoachBrief? interpretQuestion({
   String? contextAway,
   String? contextPlayer,
   SelfGradeReport? grades,
+  LineMoveBook? moves,
 }) {
   if (asksForGrade(question)) {
     final market = gradeMarketForQuestion(question);
@@ -94,6 +96,19 @@ CoachBrief? interpretQuestion({
     return CoachBrief(
       title: 'Report card',
       text: selfGradeSentence(report, market),
+      handlesQuestion: true,
+    );
+  }
+  if (asksAboutSavedMovement(question)) {
+    final book = moves ?? LineMoveBook.empty;
+    return CoachBrief(
+      title: 'Line movement',
+      text: book.sentenceFor(
+            home: contextHome,
+            away: contextAway,
+            question: question,
+          ) ??
+          'Line movement is unavailable. This is a comparison, not a pick.',
       handlesQuestion: true,
     );
   }

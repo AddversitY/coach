@@ -50,6 +50,26 @@ class CoachAnswer {
   final double? line;
   final String? evidenceNotice;
 
+  CoachAnswer withAddedText(String extra) {
+    final note = extra.trim();
+    if (note.isEmpty) return this;
+    return CoachAnswer(
+      title: title,
+      text: '$text\n\n$note',
+      intent: intent,
+      event: event,
+      player: player,
+      metric: metric,
+      games: games,
+      players: players,
+      quotes: quotes,
+      changes: changes,
+      coverage: coverage,
+      line: line,
+      evidenceNotice: evidenceNotice,
+    );
+  }
+
   Map<String, dynamic> modelPayload(String question, DateTime now) => {
     'question': question,
     'mode': intent == CoachIntent.challenge ? 'challenge' : 'explain',

@@ -9,12 +9,16 @@ strictly before kickoff. Reading a snapshot does not spend an Odds API credit.
 """
 
 import json
+import os
 import re
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+import line_timing
 
 SCHEMA = 'coach-price-history-v1'
 GRADE_SCHEMA = 'coach-self-grade-v1'
@@ -71,6 +75,10 @@ def empty_history():
         'sources': [],
         'observations': [],
         'closes': [],
+        'opens': [],
+        'moves': [],
+        'cadence': [],
+        'budget': None,
         'cards': [],
     }
 
@@ -219,7 +227,7 @@ def add_observations(history, rows):
     if added == 0:
         return 0
     _trim(history)
-    recompute_closes(history)
+    refresh_derived(history)
     history['updatedAt'] = _iso(_now())
     return added
 
@@ -274,6 +282,17 @@ def recompute_closes(history):
     ]
     history['observations'].sort(key=lambda row: (row['at'], row['book'], row['eventId'], row['market'], row['player'], row['outcome']))
     return closes
+
+
+def refresh_derived(history, now=None):
+    """Opens, closes, and movement rows. Does not set updatedAt or spend a credit."""
+    now = now or _now()
+    recompute_closes(history)
+    line_timing.recompute_opens(history)
+    line_timing.ensure_budget(history, now)
+    history['moves'] = line_timing.build_moves(history.get('observations') or [])
+    history.setdefault('cadence', [])
+    return history
 
 
 def record_source(history, source, status, detail):
@@ -475,7 +494,11 @@ def load_history(path):
     data.setdefault('sources', [])
     data.setdefault('observations', [])
     data.setdefault('closes', [])
+    data.setdefault('opens', [])
+    data.setdefault('moves', [])
+    data.setdefault('cadence', [])
     data.setdefault('cards', [])
+    data.setdefault('budget', None)
     return data
 
 
@@ -484,20 +507,25 @@ def save_json(path, payload):
 
 
 class FetchResult:
-    def __init__(self, status, body):
+    def __init__(self, status, body, headers=None):
         self.status = status
         self.body = body
+        self.headers = {str(key).lower(): value for key, value in (headers or {}).items()}
 
 
 def http_fetch(url, headers):
     request = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
-            return FetchResult(response.status, response.read(2_000_000).decode('utf-8', 'replace'))
+            return FetchResult(
+                response.status,
+                response.read(2_000_000).decode('utf-8', 'replace'),
+                response.headers,
+            )
     except urllib.error.HTTPError as error:
-        return FetchResult(error.code, '')
+        return FetchResult(error.code, '', getattr(error, 'headers', None))
     except Exception:
-        return FetchResult(0, '')
+        return FetchResult(0, '', {})
 
 
 def _headers(extra=None):
@@ -839,17 +867,191 @@ def _american_row(book, event, event_id, market, outcome, player):
     }
 
 
+def _api_key():
+    return (os.environ.get('THE_ODDS_API_KEY') or os.environ.get('ODDS_API_KEY') or '').strip()
+
+
+def _api_get(path, params, fetch, key):
+    query = dict(params)
+    query['apiKey'] = key
+    url = 'https://api.the-odds-api.com/v4/' + path + '?' + urllib.parse.urlencode(query)
+    return fetch(url, _headers())
+
+
+def capture_dense(history, snapshot, fetch=http_fetch, pause=time.sleep, now=None, key=''):
+    """Scrape when a pre-kickoff slot is due. Spend Odds API credits only inside the cap.
+
+    The key is used on the request and is not written to the history.
+    """
+    now = now or _now()
+    key = (key or '').strip()
+    summary = {'slots': 0, 'scraped': False, 'gameCredits': 0, 'propCredits': 0}
+    if key and line_timing.season_months(now):
+        events = _api_get(
+            'sports/americanfootball_nfl/events',
+            {'dateFormat': 'iso'},
+            fetch,
+            key,
+        )
+        if events.status == 200:
+            event_payload = _json(events.body)
+            remaining = line_timing.header_int(events.headers, 'x-requests-remaining')
+            budget = line_timing.ensure_budget(history, now)
+            # A missing header is not a number. Do not keep an older one.
+            budget['requestsRemaining'] = remaining
+        else:
+            record_source(
+                history,
+                'the-odds-api-events',
+                'unavailable',
+                line_timing.redact(f'events HTTP {events.status or "none"}', key),
+            )
+            event_payload = None
+            budget = line_timing.ensure_budget(history, now)
+            budget['requestsRemaining'] = None
+    else:
+        event_payload = None
+        remaining = (history.get('budget') or {}).get('requestsRemaining')
+
+    # Fold free-event kickoffs into the due check by stashing them on a
+    # temporary list the planner already understands: observation kickoffs.
+    # A kickoff without a price is not an observation. Keep them beside cadence.
+    if event_payload:
+        history['eventKickoffs'] = []
+        for event in event_payload:
+            if not isinstance(event, dict) or not event.get('commence_time'):
+                continue
+            history['eventKickoffs'].append({
+                'id': str(event.get('id') or ''),
+                'kickoff': event.get('commence_time'),
+                'home': line_timing._abbr(event.get('home_team')),
+                'away': line_timing._abbr(event.get('away_team')),
+            })
+    work = _due_with_events(history, snapshot, now)
+    if not work:
+        history.pop('eventKickoffs', None)
+        return summary
+    summary['slots'] = len(work)
+    if line_timing.season_months(now) or work:
+        scrape_public_books(history, fetch=fetch, pause=pause)
+        summary['scraped'] = True
+    for cluster, slot, _kickoff in work:
+        line_timing.record_attempt(history, cluster, slot, 'checked', now)
+    budget = line_timing.ensure_budget(history, now)
+    remaining = budget.get('requestsRemaining')
+    needs_game = any(
+        not line_timing.slot_covered(history, cluster, slot, now)
+        for cluster, slot, _kickoff in work
+    )
+    in_season = line_timing.season_months(now)
+    if key and in_season and needs_game:
+        allowed, reason = line_timing.allow_spend(budget, 'game', remaining)
+        if not allowed:
+            record_source(history, 'the-odds-api-dense', 'unavailable', reason)
+        else:
+            result = _api_get(
+                'sports/americanfootball_nfl/odds',
+                {
+                    'bookmakers': ','.join(line_timing.GAME_BOOKS),
+                    'markets': 'h2h,spreads,totals',
+                    'oddsFormat': 'decimal',
+                    'dateFormat': 'iso',
+                },
+                fetch,
+                key,
+            )
+            charged = line_timing.charged_amount(result.headers, line_timing.GAME_LINE_COST, result.status)
+            remaining = line_timing.header_int(result.headers, 'x-requests-remaining')
+            line_timing.record_spend(budget, 'game', charged, remaining)
+            summary['gameCredits'] = charged
+            rows = line_timing.parse_odds_api(_json(result.body), line_timing._iso(now)) if result.status == 200 else []
+            if rows:
+                add_observations(history, rows)
+            record_source(
+                history,
+                'the-odds-api-dense',
+                'ok' if rows else 'unavailable',
+                line_timing.redact(
+                    f'{len(rows)} game prices, {charged} credits' if rows else f'HTTP {result.status or "none"}',
+                    key,
+                ),
+            )
+    needs_prop = any(line_timing.SLOT_MINUTES[slot] <= 6 * 60 for _cluster, slot, _kickoff in work)
+    event_id = line_timing.earliest_prop_event(event_payload, now) if event_payload else None
+    if key and in_season and needs_prop and event_id and not any(
+        line_timing.prop_slot_covered(history, event_id, slot) for _cluster, slot, _kickoff in work
+    ):
+        budget = line_timing.ensure_budget(history, now)
+        remaining = budget.get('requestsRemaining')
+        allowed, reason = line_timing.allow_spend(budget, 'prop', remaining)
+        if not allowed:
+            record_source(history, 'the-odds-api-props', 'unavailable', reason)
+        else:
+            market = line_timing.rotating_prop_market(budget.get('propSpent') or 0)
+            result = _api_get(
+                f'sports/americanfootball_nfl/events/{urllib.parse.quote(event_id)}/odds',
+                {
+                    'bookmakers': ','.join(line_timing.GAME_BOOKS),
+                    'markets': market,
+                    'oddsFormat': 'decimal',
+                    'dateFormat': 'iso',
+                },
+                fetch,
+                key,
+            )
+            charged = line_timing.charged_amount(result.headers, line_timing.PROP_COST, result.status)
+            remaining = line_timing.header_int(result.headers, 'x-requests-remaining')
+            line_timing.record_spend(budget, 'prop', charged, remaining)
+            summary['propCredits'] = charged
+            rows = line_timing.parse_odds_api(_json(result.body), line_timing._iso(now)) if result.status == 200 else []
+            if rows:
+                add_observations(history, rows)
+            record_source(
+                history,
+                'the-odds-api-props',
+                'ok' if rows else 'unavailable',
+                line_timing.redact(
+                    f'{len(rows)} {market} prices, {charged} credits' if rows else f'HTTP {result.status or "none"}',
+                    key,
+                ),
+            )
+    history.pop('eventKickoffs', None)
+    refresh_derived(history, now)
+    return summary
+
+
+def _due_with_events(history, snapshot, now):
+    """Due slots from the snapshot, saved prices, and the free events list."""
+    work = line_timing.due_work(history, snapshot, now)
+    seen = {(cluster, slot) for cluster, slot, _kickoff in work}
+    for event in history.get('eventKickoffs') or []:
+        parsed = line_timing._parse(event.get('kickoff'))
+        if parsed is None or parsed <= now or (parsed - now) > timedelta(hours=26):
+            continue
+        cluster = line_timing._iso(line_timing.cluster_kickoff(parsed))
+        minutes = (parsed - now).total_seconds() / 60
+        for slot in line_timing.slots_to_capture(minutes, line_timing.attempted_slots(history, cluster)):
+            if (cluster, slot) in seen:
+                continue
+            seen.add((cluster, slot))
+            work.append((cluster, slot, parsed))
+    return work
+
+
 def main(argv):
     import argparse
     parser = argparse.ArgumentParser(description='Update Coach price history without a new paid feed.')
     parser.add_argument('--history', default='assets/price-history.json')
     parser.add_argument('--grade-output', default='assets/self-grade.json')
+    parser.add_argument('--moves-output', default='assets/line-moves.json')
     parser.add_argument('--snapshot')
     parser.add_argument('--snapshot-url')
     parser.add_argument('--scrape', action='store_true')
+    parser.add_argument('--dense', action='store_true', help='Scrape and maybe spend credits only when a pre-kickoff slot is due.')
     parser.add_argument('--grade', action='store_true')
     args = parser.parse_args(argv)
     history = load_history(args.history)
+    snapshot = None
     if args.snapshot or args.snapshot_url:
         if args.snapshot_url:
             result = http_fetch(args.snapshot_url, _headers())
@@ -864,11 +1066,15 @@ def main(argv):
             record_source(history, 'the-odds-api', 'ok', 'local published snapshot')
         if snapshot:
             ingest_snapshot(history, snapshot)
-    if args.scrape:
+    if args.dense:
+        capture_dense(history, snapshot, key=_api_key())
+    elif args.scrape:
         scrape_public_books(history)
-    if args.grade or args.scrape or args.snapshot or args.snapshot_url:
+    refresh_derived(history)
+    if args.grade or args.scrape or args.dense or args.snapshot or args.snapshot_url:
         save_json(args.history, history)
         save_json(args.grade_output, build_grade(history))
+        save_json(args.moves_output, line_timing.moves_document(history))
     return 0
 
 

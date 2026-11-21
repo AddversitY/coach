@@ -3,10 +3,10 @@ name: Price history
 on:
   workflow_dispatch:
   schedule:
-    # Thursday, Sunday and Monday, around afternoon and evening kickoffs.
-    - cron: '15 17 * * 0,1,4'
-    - cron: '15 21 * * 0,1,4'
-    - cron: '45 0 * * 1,2,5'
+    # Every 30 minutes. The script scrapes only when a game is at
+    # T-24h, T-6h, T-3h, T-90m, T-30m, or about 10 minutes before kickoff.
+    # Odds API credits are spent only inside the cap in tools/line_timing.py.
+    - cron: '*/30 * * * *'
 
 permissions:
   contents: read
@@ -30,18 +30,21 @@ jobs:
         with:
           python-version: '3.12'
       - name: Save published prices and try public sportsbook pages
+        env:
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
         run: |
           python tools/price_history.py \
             --history assets/price-history.json \
             --grade-output assets/self-grade.json \
+            --moves-output assets/line-moves.json \
             --snapshot-url https://addversity.github.io/coach/data/snapshot.json \
-            --scrape \
+            --dense \
             --grade
       - name: Commit new prices only
         run: |
           git config user.name "odds-edge-evidence"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/price-history.json assets/self-grade.json
+          git add assets/price-history.json assets/self-grade.json assets/line-moves.json
           if git diff --cached --quiet; then
             echo "Price history unchanged."
           else
