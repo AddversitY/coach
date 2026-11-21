@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'coach_analysis.dart';
 import 'odds.dart';
 import 'player_stats.dart';
+import 'report_stamp.dart';
 
 class TelemetryObservation {
   const TelemetryObservation({
@@ -162,6 +163,12 @@ LiveResearch liveResearch({
       : rows.isEmpty
       ? 'No current matching report is available in the connected sources. That does not confirm a player is healthy, active, or starting.'
       : '${rows.length} matching ${rows.length == 1 ? 'report' : 'reports'} from connected sources. Check the original publication time: an injury listing or headline does not confirm availability for the next game.';
+  final stamped = '$summary ${_reportSentences(
+    kinds: kinds,
+    telemetry: telemetry,
+    now: now,
+    eventId: eventId,
+  )}'.trim();
   final sourceIds = <String>{
     if (kinds.contains('injury')) ...{'injuries', 'official_inactives'},
     if (kinds.contains('news')) 'beat_writers',
@@ -174,7 +181,7 @@ LiveResearch liveResearch({
   };
   return LiveResearch(
     title: title,
-    summary: summary,
+    summary: stamped,
     rows: rows,
     sources: [
       for (final source in telemetry?.sources ?? <Map<String, dynamic>>[])
@@ -184,6 +191,61 @@ LiveResearch liveResearch({
           source,
     ],
   );
+}
+
+String _reportSentences({
+  required Set<String> kinds,
+  required CoachTelemetry? telemetry,
+  required DateTime now,
+  required String? eventId,
+}) {
+  final parts = <String>[];
+  final onGame = eventId != null;
+  if (kinds.contains('injury') || onGame) {
+    parts.add(
+      _oneStamp(
+        injury: true,
+        telemetry: telemetry,
+        now: now,
+        eventId: eventId,
+      ).sentence,
+    );
+  }
+  if (kinds.contains('weather') || onGame) {
+    parts.add(
+      _oneStamp(
+        injury: false,
+        telemetry: telemetry,
+        now: now,
+        eventId: eventId,
+      ).sentence,
+    );
+  }
+  return parts.join(' ');
+}
+
+ReportStamp _oneStamp({
+  required bool injury,
+  required CoachTelemetry? telemetry,
+  required DateTime now,
+  required String? eventId,
+}) {
+  if (telemetry == null || !telemetry.fresh(now)) {
+    return ReportStamp(
+      ReportFreshness.stale,
+      injury ? 'Injury report stale.' : 'Forecast stale.',
+    );
+  }
+  DateTime? latest;
+  final kind = injury ? 'injury' : 'weather';
+  for (final item in telemetry.observations) {
+    if (item.kind != kind) continue;
+    if (eventId != null && item.eventId != eventId) continue;
+    if (latest == null || item.observedAt.isAfter(latest)) latest = item.observedAt;
+  }
+  return injury
+      ? injuryReportStamp(checkedAt: latest, now: now)
+      : forecastStamp(checkedAt: latest, now: now);
 }
 
 class AnalysisInvalidation {

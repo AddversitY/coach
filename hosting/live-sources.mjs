@@ -2,6 +2,11 @@ import {XMLParser, XMLValidator} from 'fast-xml-parser';
 
 const MINUTE=60_000, HOUR=60*MINUTE;
 export const INJURY_INTERVAL=10*MINUTE;
+export const LATE_WINDOW=90*MINUTE;
+export function injuryInterval(index,clock){
+  const soon=(index.events||[]).some(event=>{const delta=Date.parse(event.startsAt)-clock;return delta>0&&delta<=LATE_WINDOW;});
+  return soon?2*MINUTE:INJURY_INTERVAL;
+}
 export const NEWS_INTERVAL=30*MINUTE; // The publisher's RSS ttl is 30 minutes.
 const normalize=s=>String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 const teams={ARI:'Cardinals',ATL:'Falcons',BAL:'Ravens',BUF:'Bills',CAR:'Panthers',CHI:'Bears',CIN:'Bengals',CLE:'Browns',DAL:'Cowboys',DEN:'Broncos',DET:'Lions',GB:'Packers',HOU:'Texans',IND:'Colts',JAX:'Jaguars',KC:'Chiefs',LAC:'Chargers',LAR:'Rams',LV:'Raiders',MIA:'Dolphins',MIN:'Vikings',NE:'Patriots',NO:'Saints',NYG:'Giants',NYJ:'Jets',PHI:'Eagles',PIT:'Steelers',SEA:'Seahawks',SF:'49ers',TB:'Buccaneers',TEN:'Titans',WAS:'Commanders'};
@@ -48,7 +53,8 @@ export async function collectInjuries(index,previous,clock,fetchJson){
   const scopeVersion=(index.contextPlayers||[]).length?'recorded-offense-v2':'recorded-skill-v1',scopeCutoff=index.roleContext?.cutoff||null,scopePlayers=(index.contextPlayers||[]).length;
   const sameScope=before?.scopeVersion===scopeVersion&&before?.scopeCutoff===scopeCutoff&&before?.scopePlayers===scopePlayers;
   const source={scopeVersion,scopeCutoff,scopePlayers,id:'injuries',attribution:'ESPN',url:'https://www.espn.com/nfl/injuries',refreshMinutes:10,expiresAfterMinutes:12,notice:'Exact-name/team matches to recorded offensive participants, recent QB/line snap records and unconfirmed schedule QB listings; not complete NFL roster coverage.'};
-  if(sameScope&&(before?.state==='reported_unofficial'&&recent(before.checkedAt,clock,INJURY_INTERVAL)||before?.state==='unavailable'&&recent(before.attemptedAt,clock,INJURY_INTERVAL)))return {observations:old.filter(o=>recent(o.observedAt,clock,12*MINUTE)),source:before};
+  const interval=injuryInterval(index,clock);
+  if(sameScope&&(before?.state==='reported_unofficial'&&recent(before.checkedAt,clock,interval)||before?.state==='unavailable'&&recent(before.attemptedAt,clock,interval)))return {observations:old.filter(o=>recent(o.observedAt,clock,12*MINUTE)),source:before};
   try{
     // ESPN's expanded athlete data currently exceeds 8 MB. Bound it, then keep
     // only exact-name/team status facts. Never store the full provider response.
