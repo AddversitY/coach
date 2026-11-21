@@ -56,6 +56,35 @@ class PropBoard {
   final String? empty;
 }
 
+/// Per-book rows for a prop answer. No saved observation stays unavailable.
+PropBoard propBoardForBookPrices(
+  BookPriceCoverage coverage, {
+  String question = '',
+  String? player,
+}) {
+  final rows = bookPricesFor(coverage, question: question, player: player);
+  if (rows.isEmpty) {
+    return const PropBoard(
+      summary: 'The price on this page is unavailable.',
+      rows: [],
+    );
+  }
+  return PropBoard(
+    summary: 'Logged-out prices. This is a comparison, not a pick.',
+    rows: [
+      for (final row in rows.take(8))
+        PropBoardRow(
+          label:
+              '${row.player} ${row.outcome} ${row.line?.toString() ?? 'unavailable line'}',
+          book: bookDisplayName(row.book),
+          bookId: row.book,
+          price: americanLabel(row.decimal),
+          implied: '${(100 / row.decimal).toStringAsFixed(1)}%',
+        ),
+    ],
+  );
+}
+
 final _rematch = RegExp(
   r"\b(since (they|the|we) (last|first)|rematch|blowout|beat the|playing so well)\b",
   caseSensitive: false,
@@ -120,6 +149,11 @@ CoachBrief? interpretQuestion({
         player: contextPlayer,
       ),
       handlesQuestion: true,
+      props: propBoardForBookPrices(
+        coverage,
+        question: question,
+        player: contextPlayer,
+      ),
     );
   }
   if (asksAboutSavedMovement(question)) {

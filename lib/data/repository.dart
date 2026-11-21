@@ -78,6 +78,21 @@ class BackendRepository {
   Future<OddsBoard> board({bool refresh = false}) async =>
       OddsBoard.fromJson(await _get('/v1/odds${refresh ? '?refresh=1' : ''}'));
 
+  /// Logged-out prop prices from the Worker. A failed read is null so the
+  /// caller can keep the bundled counts and say the number is unavailable.
+  Future<Map<String, dynamic>?> loggedOutBookPrices() async {
+    try {
+      final decoded = await _get('/v1/book-prices');
+      if (decoded is! Map) return null;
+      final live = Map<String, dynamic>.from(decoded);
+      if (live['available'] == false) return live;
+      if (live['observations'] is! List) return null;
+      return live;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Cached player-prop prices. Refresh may spend a few free-tier credits
   /// and is refused once the daily prop budget is used.
   Future<OddsBoard> props({bool refresh = false}) async =>

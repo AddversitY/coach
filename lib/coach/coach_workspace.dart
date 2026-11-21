@@ -330,6 +330,9 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         prices = null;
       }
+      if (prices != null && api != null) {
+        prices = mergeLiveBookPrices(prices, await api!.loggedOutBookPrices());
+      }
       LineMoveBook? moves;
       try {
         moves = await loadBundledLineMoves();
@@ -3568,12 +3571,51 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
     ),
   );
 
+  List<OddsQuote> _loggedOutQuotes(CoachAnswer answer) {
+    final coverage = bookPrices;
+    final player = answer.player;
+    if (coverage == null || player == null) return const [];
+    final rows = bookPricesFor(
+      coverage,
+      player: player.name,
+      market: answer.metric.market,
+      eventId: answer.event?.id,
+    );
+    final quotes = <OddsQuote>[];
+    for (final row in rows) {
+      final at = DateTime.tryParse(row.at ?? '');
+      final eventId = row.eventId;
+      if (at == null || eventId == null || eventId.isEmpty) continue;
+      quotes.add(
+        OddsQuote(
+          selection: Selection(
+            eventId: eventId,
+            market: row.market,
+            outcome: row.outcome,
+            participant: row.player,
+            point: row.line,
+          ),
+          bookId: row.book,
+          book: bookDisplayName(row.book),
+          provider: 'logged-out',
+          decimal: row.decimal,
+          sourceAt: at.toUtc(),
+          collectedAt: at.toUtc(),
+        ),
+      );
+    }
+    return quotes;
+  }
+
   Widget _priceCards(CoachAnswer answer) {
     final groups = <String, List<OddsQuote>>{};
-    for (final q in answer.quotes) {
+    for (final q in [...answer.quotes, ..._loggedOutQuotes(answer)]) {
+      final limit = q.provider == 'logged-out'
+          ? const Duration(hours: 30)
+          : const Duration(hours: 18);
       if (answer.event!.startsAt.isAfter(now) &&
-          now.difference(q.sourceAt) <= const Duration(hours: 18) &&
-          now.difference(q.collectedAt) <= const Duration(hours: 18)) {
+          now.difference(q.sourceAt) <= limit &&
+          now.difference(q.collectedAt) <= limit) {
         (groups[q.selection.key] ??= []).add(q);
       }
     }
@@ -3678,6 +3720,10 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
                     ?.startsAt
                     .isAfter(now) ??
                 false))
+          q,
+      for (final q in _loggedOutQuotes(a))
+        if ((selectedBookIds == null || selectedBookIds!.contains(q.bookId)) &&
+            now.difference(q.sourceAt) <= const Duration(hours: 30))
           q,
     ];
     var line = a.line;
