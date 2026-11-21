@@ -280,6 +280,7 @@ ShownProp showProp({
       shareBook: tune.shares ? PropPricingMemo.usage : null,
       closingSpread: tune.scriptMix || tune.scriptVolume ? itemSpread : null,
       closingTotal: tune.scriptMix || tune.scriptVolume ? itemTotal : null,
+      marketWeight: propModelWeight,
     );
     cache.projections[key] = projection;
     return projection;

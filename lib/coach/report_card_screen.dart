@@ -10,6 +10,7 @@ import '../domain/hit_rate.dart';
 import '../domain/odds.dart';
 import '../domain/over_rate.dart';
 import '../domain/player_stats.dart';
+import '../domain/prop_chance.dart';
 import '../domain/prop_clv.dart';
 import '../domain/prop_history.dart';
 import '../domain/prop_model.dart';
@@ -115,6 +116,7 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
             lognormalYards:
                 overRateCalibrationAdopted &&
                 servedOverCalibration == 'lognormal',
+            marketWeight: propModelWeight,
           )?.chance;
         },
       );

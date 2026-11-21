@@ -317,7 +317,7 @@ ValueInput _input({
         : usingProjection
         ? propLiveChance == PropLiveChance.calibrated
               ? 'Projected from recent usage, shifted by earlier games, then pulled toward the book\'s no-vig chance and capped.'
-              : 'Projected from recent usage, the matchup, and the team total, then pulled toward the book\'s no-vig chance and capped.'
+              : 'Projected from recent usage, the matchup, and the team total, then held close to the book\'s no-vig chance, because on real closing prices the projection added little.'
         : _chanceNote(rate, anchor),
   );
 }
