@@ -1,0 +1,125 @@
+{
+  "schema": "coach-self-grade-v1",
+  "updatedAt": "2026-11-20T14:14:58.105650Z",
+  "propCloses": 0,
+  "realCloseGate": 1000,
+  "sources": [
+    {
+      "source": "betmgm-public",
+      "status": "unavailable",
+      "detail": "the public page had no logged-out feed",
+      "checkedAt": "2026-11-20T14:15:02.749701Z"
+    },
+    {
+      "source": "draftkings-public",
+      "status": "unavailable",
+      "detail": "HTTP 403",
+      "checkedAt": "2026-11-20T14:14:58.201024Z"
+    },
+    {
+      "source": "fanduel-public",
+      "status": "unavailable",
+      "detail": "HTTP 400",
+      "checkedAt": "2026-11-20T14:15:00.363313Z"
+    },
+    {
+      "source": "pinnacle-public",
+      "status": "unavailable",
+      "detail": "HTTP 403",
+      "checkedAt": "2026-11-20T14:15:05.076879Z"
+    },
+    {
+      "source": "the-odds-api",
+      "status": "ok",
+      "detail": "published snapshot",
+      "checkedAt": "2026-11-20T14:14:58.096992Z"
+    }
+  ],
+  "markets": {
+    "player_pass_yds": {
+      "market": "player_pass_yds",
+      "label": "passing yards props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_rush_yds": {
+      "market": "player_rush_yds",
+      "label": "rushing yards props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_reception_yds": {
+      "market": "player_reception_yds",
+      "label": "receiving yards props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_receptions": {
+      "market": "player_receptions",
+      "label": "reception props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "h2h": {
+      "market": "h2h",
+      "label": "moneylines",
+      "savedPrices": 296,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "spreads": {
+      "market": "spreads",
+      "label": "spreads",
+      "savedPrices": 296,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "totals": {
+      "market": "totals",
+      "label": "totals",
+      "savedPrices": 296,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    }
+  },
+  "notice": "A grade compares a card Coach saved before a later price. Missing chances and missing closes stay unavailable. This is a record of those cards, not a pick and not a betting edge."
+}

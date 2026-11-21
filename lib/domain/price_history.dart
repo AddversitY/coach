@@ -1,0 +1,330 @@
+/// Saved sportsbook prices and the last price before kickoff.
+///
+/// A number that was not in the file is unavailable. The report describes
+/// graded cards. It does not claim a betting edge.
+class PriceObservation {
+  const PriceObservation({
+    required this.at,
+    required this.source,
+    required this.book,
+    required this.eventId,
+    required this.market,
+    required this.outcome,
+    required this.player,
+    required this.decimal,
+    this.kickoff,
+    this.season,
+    this.week,
+    this.away,
+    this.home,
+    this.line,
+  });
+
+  final String at, source, book, eventId, market, outcome, player;
+  final double decimal;
+  final String? kickoff, away, home;
+  final int? season, week;
+  final double? line;
+
+  bool get beforeKickoff {
+    final start = kickoff;
+    if (start == null || start.isEmpty) return false;
+    return at.compareTo(start) < 0;
+  }
+}
+
+class PriceSourceStatus {
+  const PriceSourceStatus({
+    required this.source,
+    required this.status,
+    required this.detail,
+  });
+
+  final String source, status, detail;
+  bool get unavailable => status != 'ok';
+}
+
+class GradeMarket {
+  const GradeMarket({
+    required this.market,
+    required this.label,
+    required this.savedPrices,
+    required this.cards,
+    required this.graded,
+    required this.hits,
+    required this.pushes,
+    required this.chanceSum,
+    required this.clvSum,
+    required this.clvCount,
+  });
+
+  final String market, label;
+  final int savedPrices, cards, graded, hits, pushes, clvCount;
+  final double? chanceSum, clvSum;
+
+  double? get meanChance =>
+      graded == 0 || chanceSum == null ? null : chanceSum! / graded;
+
+  double? get meanClv =>
+      clvCount == 0 || clvSum == null ? null : clvSum! / clvCount;
+}
+
+class SelfGradeReport {
+  const SelfGradeReport({
+    required this.propCloses,
+    required this.realCloseGate,
+    required this.sources,
+    required this.markets,
+    required this.notice,
+  });
+
+  final int propCloses, realCloseGate;
+  final List<PriceSourceStatus> sources;
+  final Map<String, GradeMarket> markets;
+  final String notice;
+
+  static const empty = SelfGradeReport(
+    propCloses: 0,
+    realCloseGate: savedCloseGate,
+    sources: [],
+    markets: {},
+    notice:
+        'The grade file has not loaded. The report is unavailable.',
+  );
+
+  factory SelfGradeReport.fromJson(Map<String, dynamic> json) {
+    final markets = <String, GradeMarket>{};
+    final rawMarkets = json['markets'];
+    if (rawMarkets is Map) {
+      for (final entry in rawMarkets.entries) {
+        final row = entry.value;
+        if (row is! Map) continue;
+        markets[entry.key.toString()] = GradeMarket(
+          market: row['market'] as String? ?? entry.key.toString(),
+          label: row['label'] as String? ?? entry.key.toString(),
+          savedPrices: _int(row['savedPrices']),
+          cards: _int(row['cards']),
+          graded: _int(row['graded']),
+          hits: _int(row['hits']),
+          pushes: _int(row['pushes']),
+          clvCount: _int(row['clvCount']),
+          chanceSum: (row['chanceSum'] as num?)?.toDouble(),
+          clvSum: (row['clvSum'] as num?)?.toDouble(),
+        );
+      }
+    }
+    final sources = <PriceSourceStatus>[];
+    final rawSources = json['sources'];
+    if (rawSources is List) {
+      for (final row in rawSources) {
+        if (row is! Map) continue;
+        sources.add(
+          PriceSourceStatus(
+            source: row['source'] as String? ?? '',
+            status: row['status'] as String? ?? 'unavailable',
+            detail: row['detail'] as String? ?? '',
+          ),
+        );
+      }
+    }
+    return SelfGradeReport(
+      propCloses: _int(json['propCloses']),
+      realCloseGate: json['realCloseGate'] == null
+          ? savedCloseGate
+          : _int(json['realCloseGate']),
+      sources: sources,
+      markets: markets,
+      notice: json['notice'] as String? ?? '',
+    );
+  }
+}
+
+class PriceHistory {
+  const PriceHistory({required this.observations, required this.closes});
+
+  final List<PriceObservation> observations, closes;
+
+  factory PriceHistory.fromJson(Map<String, dynamic> json) {
+    List<PriceObservation> read(String key) {
+      final rows = json[key];
+      if (rows is! List) return const [];
+      return [
+        for (final row in rows)
+          if (row is Map) _observation(Map<String, dynamic>.from(row)),
+      ].whereType<PriceObservation>().toList();
+    }
+
+    return PriceHistory(observations: read('observations'), closes: read('closes'));
+  }
+
+  int closesFor(String market) =>
+      closes.where((row) => row.market == market).length;
+
+  /// Median line of the saved closes for one player, club and week.
+  /// Books that disagree contribute their own line. No close is null.
+  double? closeLine({
+    required String market,
+    required int season,
+    required int week,
+    required String team,
+    required String player,
+  }) {
+    final club = team.toUpperCase();
+    final name = player.toLowerCase();
+    final lines = <double>[
+      for (final row in closes)
+        if (row.market == market &&
+            row.season == season &&
+            row.week == week &&
+            row.line != null &&
+            (row.home == club || row.away == club) &&
+            row.player.toLowerCase().contains(name) &&
+            name.isNotEmpty)
+          row.line!,
+    ];
+    if (lines.isEmpty) return null;
+    lines.sort();
+    return lines[lines.length ~/ 2];
+  }
+}
+
+PriceObservation? _observation(Map<String, dynamic> json) {
+  final decimal = (json['decimal'] as num?)?.toDouble();
+  final at = json['at'] as String?;
+  final market = json['market'] as String?;
+  final book = json['book'] as String?;
+  final eventId = json['eventId'] as String?;
+  final outcome = json['outcome'] as String?;
+  if (decimal == null ||
+      decimal <= 1 ||
+      at == null ||
+      market == null ||
+      book == null ||
+      eventId == null ||
+      outcome == null) {
+    return null;
+  }
+  return PriceObservation(
+    at: at,
+    source: json['source'] as String? ?? 'saved',
+    book: book,
+    eventId: eventId,
+    market: market,
+    outcome: outcome,
+    player: json['player'] as String? ?? '',
+    decimal: decimal,
+    kickoff: json['kickoff'] as String?,
+    season: (json['season'] as num?)?.toInt(),
+    week: (json['week'] as num?)?.toInt(),
+    away: json['away'] as String?,
+    home: json['home'] as String?,
+    line: (json['line'] as num?)?.toDouble(),
+  );
+}
+
+int _int(Object? value) => value is num ? value.toInt() : 0;
+
+/// How many real closing prop prices a market needs before they replace
+/// last season's median in the walk-forward. Set before any of those
+/// closes existed.
+const savedCloseGate = 1000;
+
+/// Odds API market keys for the four prop stats the walk-forward scores.
+const propCloseMarkets = <String, String>{
+  'passing_yards': 'player_pass_yds',
+  'rushing_yards': 'player_rush_yds',
+  'receiving_yards': 'player_reception_yds',
+  'receptions': 'player_receptions',
+};
+
+/// The test line. [median] is last season's median. [close] is used only
+/// when that market already has [realCloseGate] saved closing prices.
+double walkForwardTestLine({
+  required double median,
+  required double? close,
+  required int closesForMarket,
+}) {
+  if (close != null && close.isFinite && closesForMarket >= savedCloseGate) {
+    return close;
+  }
+  return median;
+}
+
+/// Plain-English report for one market. A market with no graded card says
+/// the report is unavailable.
+String selfGradeSentence(SelfGradeReport report, String market) {
+  final row = report.markets[market];
+  final label = row?.label ?? _fallbackLabel(market);
+  if (row == null || row.graded == 0) {
+    final saved = row?.savedPrices ?? 0;
+    final sources = _sourceSentence(report);
+    return 'Coach has not graded any $label yet. Saved prices for that market: $saved. '
+        'A grade needs a card that stored Coach\'s chance and side before kickoff, then the final result and a later closing price. '
+        'Until those exist, this report is unavailable. $sources'
+        'This is a record of the cards, not a pick and not a betting edge.';
+  }
+  final decided = row.graded - row.pushes;
+  final hits = row.hits;
+  final chance = row.meanChance;
+  final clv = row.meanClv;
+  final chanceText = chance == null
+      ? 'The average chance on those cards is unavailable.'
+      : 'The chance on the card averaged ${(chance * 100).toStringAsFixed(1)} percent.';
+  final resultText = decided == 0
+      ? 'Every graded card pushed.'
+      : 'The side on the card happened $hits of $decided times, with ${row.pushes} pushes.';
+  final clvText = clv == null
+      ? 'Closing-line value is unavailable because a later price was not saved.'
+      : clv >= 0
+      ? 'Against the closing price, the card\'s price was ${(clv * 100).toStringAsFixed(1)} cents better on average.'
+      : 'Against the closing price, the card\'s price was ${(clv.abs() * 100).toStringAsFixed(1)} cents shorter on average.';
+  return 'Coach has graded ${row.graded} $label. $chanceText $resultText $clvText '
+      'That is the record of those cards. It is not a pick and it does not claim a betting edge.';
+}
+
+String gradeMarketForQuestion(String question) {
+  final text = question.toLowerCase();
+  if (text.contains('receiving') && text.contains('yard')) {
+    return 'player_reception_yds';
+  }
+  if (text.contains('reception')) return 'player_receptions';
+  if (text.contains('rush')) return 'player_rush_yds';
+  if (text.contains('pass')) return 'player_pass_yds';
+  if (text.contains('total')) return 'totals';
+  if (text.contains('spread')) return 'spreads';
+  if (text.contains('moneyline') || text.contains('money line')) return 'h2h';
+  return 'player_reception_yds';
+}
+
+bool asksForGrade(String question) {
+  final grade = RegExp(
+    r'how good|report card|closing[- ]line value|\bclv\b',
+    caseSensitive: false,
+  ).hasMatch(question);
+  if (!grade) return false;
+  return RegExp(
+    r'coach|prop|receiving|reception|rush|pass|spread|total|moneyline|report card|\bclv\b',
+    caseSensitive: false,
+  ).hasMatch(question);
+}
+
+String _fallbackLabel(String market) => switch (market) {
+  'player_reception_yds' => 'receiving yards props',
+  'player_receptions' => 'reception props',
+  'player_rush_yds' => 'rushing yards props',
+  'player_pass_yds' => 'passing yards props',
+  'spreads' => 'spreads',
+  'totals' => 'totals',
+  'h2h' => 'moneylines',
+  _ => market,
+};
+
+String _sourceSentence(SelfGradeReport report) {
+  if (report.sources.isEmpty) return '';
+  final blocked = [
+    for (final source in report.sources)
+      if (source.unavailable) source.source,
+  ];
+  if (blocked.isEmpty) return '';
+  return 'Checked and unavailable: ${blocked.join(', ')}. ';
+}
