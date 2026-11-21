@@ -22,17 +22,19 @@ Pass attempts and completions came from BetRivers and Bovada. FanDuel's passing 
 
 ## How often
 
-The GitHub Action still runs every 30 minutes and only requests books when a game is at one of the six pre-kickoff windows: 24 hours, 6 hours, 3 hours, 90 minutes, 30 minutes, and about 10 minutes. This check was one of those windows. A later window saves another snapshot of about this size for the games in that window. The close moves to the newest pre-kickoff price. It does not add a second close.
+The Worker cron is the live collector. It runs every two minutes and only requests books when a game is inside one of the six pre-kickoff windows: 24 hours, 6 hours, 3 hours, 90 minutes, 30 minutes, and about 10 minutes. Each run reads one slice, so the requests stay a few minutes apart. The close moves to the newest pre-kickoff price. It does not add a second close.
 
-Requests go one book at a time, with two seconds between books and about a second between games. At most 16 games are read in one run.
+The GitHub Action still runs every 30 minutes for the public counts. It does not push prices unless its ingest secret is set.
 
 ## Where the prices are
 
-Normalized prices are in `backend/data/book-props.json`. That directory is gitignored. GitHub Actions keeps the file in its cache between runs, so the history survives the next cron. Raw book responses are not stored.
+The live numbers are in the Worker durable object and are served by `GET /v1/book-prices`. The app reads that route and, if the read fails, keeps the public counts and says the number is unavailable.
 
-`assets/book-price-coverage.json` is the public count. It has no prices. The app says a number is unavailable until a saved price is actually loaded. Asking for a FanDuel or BetRivers prop price uses that file.
+The Worker's existing two-minute cron collects only while a game is inside one of the six pre-kickoff windows. Each run asks for one slice: Bovada's coupon, then a few BetRivers games, then one FanDuel game. That stays inside the free-plan subrequest cap. A short window may refresh Bovada and only part of the other two. The last saved price before kickoff remains the close. Raw book responses are not stored.
 
-The Worker can hold the latest snapshot in its existing durable object and serve `GET /v1/book-prices`. A post to that path requires `BOOK_PROPS_INGEST_SECRET`, which is not in the repo. Until that secret is set and the Worker is deployed, the public app has the counts and not the numbers. The Odds API path is unchanged and spends no extra credits.
+`assets/book-price-coverage.json` is the public count from the GitHub Action. It has no prices. The Action still skips its Worker push when `BOOK_PROPS_INGEST_SECRET` is empty. The Odds API path is unchanged and spends no extra credits.
+
+Checked from a Cloudflare Worker on November 21, 2026: BetRivers, Bovada, and FanDuel each returned HTTP 200. Bovada's coupon parsed. The other seven books are still unavailable.
 
 ## The consensus
 

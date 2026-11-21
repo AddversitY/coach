@@ -13,6 +13,7 @@ import {evaluationState} from './evaluation-state.mjs';
 import {shadowGame,regimeShadowGame,footballShadowGame} from './shadow-forecast.mjs';
 import {gameContext,contextEvidence} from './game-context.mjs';
 import {collectInjuries,collectNews,injuryReports,marketMovements,marketSplitReports,recent} from './live-sources.mjs';
+import {collectSlice,dueCohort,mergeObservations} from './book-collect.mjs';
 /* Coach's bounded hosted interpreter and telemetry coordinator. No bookmaker
  * credential is needed here: reading published observations spends no odds credits. */
 export const VERSION = 'coach-live-sources-v2';
@@ -302,6 +303,13 @@ export class CoachState {
     if(path==='/scheduled-status')return reply(await this.state.storage.get('scheduled-status')||null);
     if(path==='/scheduled-status-update'){const body=await request.json();await this.state.storage.put('scheduled-status',body);return reply({ok:true});}
     if(path==='/book-prices'&&request.method==='GET')return reply(await this.state.storage.get('book-prices')||null);
+    if(path==='/book-collect'&&request.method==='GET')return reply(await this.state.storage.get('book-collect')||null);
+    if(path==='/book-collect'&&request.method==='POST'){
+      const body=await request.json();
+      if(!body||JSON.stringify(body).length>100000)return reply({error:'Book collection cursor too large'},413);
+      await this.state.storage.put('book-collect',body);
+      return reply({ok:true});
+    }
     if(path==='/book-prices'&&request.method==='POST'){
       const body=await request.json();
       if(!body||!Array.isArray(body.observations)||JSON.stringify(body).length>1500000)return reply({error:'Book prices too large'},413);
@@ -449,6 +457,26 @@ async function recordResearch(env,source){
   if(results.length)await state(env).fetch(new Request('https://internal/grade-batch',{method:'POST',body:JSON.stringify({hash:await digest(JSON.stringify(fingerprint)),results})}));
 }
 
+async function refreshBookPrices(env){
+  if(!env.STATE)return;
+  const source=await published(env);
+  const cursor=await (await state(env).fetch(new Request('https://internal/book-collect'))).json();
+  const cohort=dueCohort(source.index?.events,Date.now(),cursor);
+  if(!cohort)return;
+  const slice=await collectSlice(cursor,cohort,source.index?.players,source.index?.events,async(url,init)=>{
+    const response=await fetch(url,{...init,signal:AbortSignal.timeout(12_000)});
+    return {status:response.status,async text(){return boundedText(response,8_000_000);}};
+  });
+  if(slice.rows.length){
+    const current=await (await state(env).fetch(new Request('https://internal/book-prices'))).json();
+    const cleaned=cleanBookPrices(mergeObservations(current,slice.rows,Date.now()));
+    if(!cleaned)return;
+    const stored=await state(env).fetch(new Request('https://internal/book-prices',{method:'POST',body:JSON.stringify(cleaned)}));
+    if(!stored.ok)return;
+  }
+  await state(env).fetch(new Request('https://internal/book-collect',{method:'POST',body:JSON.stringify(slice.cursor)}));
+}
+
 export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);const origin=request.headers.get('Origin');const allowed=env.ALLOWED_ORIGIN||'https://addversity.github.io';
@@ -564,6 +592,8 @@ export default {
       await status({state:'running',stage});const previous=await telemetry(env);
       stage='source_collection';const next=await collectTelemetry(env,previous);const saved=await storeTelemetry(env,next);if(!saved.ok)throw new Error('Telemetry state storage unavailable');
       stage='forecast_capture';await status({state:'running',stage});await recordResearch(env,await published(env));
+      stage='book_prices';await status({state:'running',stage});
+      try{await refreshBookPrices(env);}catch{/* The last saved book prices stay. */}
       await status({state:'complete',stage:'complete',completedAt:new Date().toISOString()});
     }catch(error){
       const message=String(error?.message||'');const reason=/telemetry.*limit/i.test(message)?'telemetry_limit':/market state/i.test(message)?'state_storage':/fetch|source|response|JSON|HTTP/i.test(message)?'source_unavailable':'refresh_error';

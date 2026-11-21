@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:odds_edge/data/repository.dart';
 import 'package:odds_edge/domain/coach_briefing.dart';
 import 'package:odds_edge/domain/price_history.dart';
 
@@ -166,6 +171,82 @@ void main() {
       bookPrices: coverage,
     );
     expect(brief!.title, 'Book prices');
+    expect(brief.props, isNotNull);
+    expect(brief.props!.rows, isNotEmpty);
+    expect(brief.props!.rows.first.book, 'Bovada');
+    expect(brief.props!.rows.first.price, '-110');
+    expect(brief.props!.summary, contains('comparison, not a pick'));
+
+    final bundled = BookPriceCoverage.fromJson({
+      'books': [
+        {'book': 'fanduel', 'status': 'ok', 'prices': 12, 'closes': 4},
+      ],
+      'consensusAdopted': false,
+      'consensusReason': 'Two-sided closes are unavailable for 2025.',
+      'notice': 'This is a comparison, not a pick.',
+    });
+    expect(mergeLiveBookPrices(bundled, null).prices, isEmpty);
+    expect(
+      mergeLiveBookPrices(bundled, {'available': false, 'prices': 'unavailable'}).prices,
+      isEmpty,
+    );
+    final merged = mergeLiveBookPrices(bundled, {
+      'observations': [
+        {
+          'book': 'fanduel',
+          'market': 'player_pass_yds',
+          'outcome': 'Over',
+          'player': 'C.J. Stroud',
+          'eventId': 'nflverse:2026_12_IND_HOU',
+          'at': '2026-11-21T22:00:00Z',
+          'line': 242.5,
+          'decimal': 1.91,
+        },
+      ],
+    });
+    expect(merged.prices.single.book, 'fanduel');
+    expect(merged.prices.single.decimal, 1.91);
+    expect(merged.books.single.prices, 12);
+    expect(merged.consensusAdopted, isFalse);
+    final missed = propBoardForBookPrices(
+      bundled,
+      question: 'FanDuel passing yards price',
+    );
+    expect(missed.rows, isEmpty);
+    expect(missed.summary, contains('unavailable'));
+  });
+
+  test('a failed book-price read stays unavailable', () async {
+    final client = MockClient((request) async {
+      expect(request.url.path, '/v1/book-prices');
+      return http.Response('nope', 503);
+    });
+    final repo = BackendRepository('https://coach.example', client: client);
+    expect(await repo.loggedOutBookPrices(), isNull);
+    repo.close();
+
+    final ok = MockClient(
+      (_) async => http.Response(
+        jsonEncode({
+          'observations': [
+            {
+              'book': 'betrivers',
+              'market': 'player_rush_yds',
+              'outcome': 'Over',
+              'player': 'Jonathan Taylor',
+              'line': 75.5,
+              'decimal': 1.87,
+            },
+          ],
+        }),
+        200,
+      ),
+    );
+    final live = BackendRepository('https://coach.example', client: ok);
+    final body = await live.loggedOutBookPrices();
+    expect(body, isNotNull);
+    expect((body!['observations'] as List).single['player'], 'Jonathan Taylor');
+    live.close();
   });
 }
 

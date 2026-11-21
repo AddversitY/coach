@@ -342,13 +342,22 @@ class SavedBookPrice {
     required this.decimal,
     this.line,
     this.playerId,
+    this.eventId,
+    this.at,
   });
 
   final String book, market, outcome, player;
   final double decimal;
   final double? line;
-  final String? playerId;
+  final String? playerId, eventId, at;
 }
+
+String bookDisplayName(String book) => switch (book) {
+  'fanduel' => 'FanDuel',
+  'bovada' => 'Bovada',
+  'betrivers' => 'BetRivers',
+  _ => book,
+};
 
 class BookPriceCoverage {
   const BookPriceCoverage({
@@ -404,6 +413,8 @@ class BookPriceCoverage {
             decimal: decimal,
             line: (row['line'] as num?)?.toDouble(),
             playerId: row['playerId'] as String?,
+            eventId: row['eventId'] as String?,
+            at: row['at'] as String?,
           ),
         );
       }
@@ -416,6 +427,47 @@ class BookPriceCoverage {
       prices: prices,
     );
   }
+}
+
+/// Live observations replace the bundled numbers. A failed or empty read
+/// keeps the bundled coverage, whose missing numbers stay unavailable.
+BookPriceCoverage mergeLiveBookPrices(
+  BookPriceCoverage bundled,
+  Map<String, dynamic>? live,
+) {
+  if (live == null || live['available'] == false) return bundled;
+  final raw = live['observations'];
+  if (raw is! List || raw.isEmpty) return bundled;
+  final parsed = BookPriceCoverage.fromJson(live);
+  if (parsed.prices.isEmpty) return bundled;
+  return BookPriceCoverage(
+    books: parsed.books.isEmpty ? bundled.books : parsed.books,
+    consensusAdopted: bundled.consensusAdopted,
+    consensusReason: bundled.consensusReason,
+    notice: live['notice'] is String ? live['notice'] as String : bundled.notice,
+    prices: parsed.prices,
+  );
+}
+
+List<SavedBookPrice> bookPricesFor(
+  BookPriceCoverage coverage, {
+  String question = '',
+  String? player,
+  String? market,
+  String? eventId,
+}) {
+  final wanted = (player ?? '').toLowerCase();
+  final asked = market ?? _questionMarket(question);
+  return [
+    for (final row in coverage.prices)
+      if ((wanted.isEmpty || row.player.toLowerCase().contains(wanted)) &&
+          (asked == null || row.market == asked) &&
+          (eventId == null ||
+              eventId.isEmpty ||
+              row.eventId == null ||
+              row.eventId == eventId))
+        row,
+  ];
 }
 
 bool asksForBookPrices(String question) {
@@ -459,18 +511,10 @@ String bookPriceSentence(
 }
 
 String? _matchingPrices(BookPriceCoverage coverage, String question, String? player) {
-  if (coverage.prices.isEmpty) return null;
-  final wanted = (player ?? '').toLowerCase();
-  final market = _questionMarket(question);
-  final rows = [
-    for (final row in coverage.prices)
-      if ((wanted.isEmpty || row.player.toLowerCase().contains(wanted)) &&
-          (market == null || row.market == market))
-        row,
-  ];
+  final rows = bookPricesFor(coverage, question: question, player: player);
   if (rows.isEmpty) return null;
   final shown = rows.take(6).map((row) {
-    final line = row.line == null ? 'unavailable line' : row.line.toString();
+    final line = row.line?.toString() ?? 'unavailable line';
     return '${row.book} ${row.player} ${row.outcome} $line at ${row.decimal}';
   });
   final extra = rows.length > 6 ? ' ${rows.length - 6} more saved prices are not listed here.' : '';
