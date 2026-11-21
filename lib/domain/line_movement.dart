@@ -273,7 +273,7 @@ bool asksAboutSavedMovement(String question) {
   ).hasMatch(question);
 }
 
-String _market(String question) {
+String? _market(String question) {
   final text = question.toLowerCase();
   if (text.contains('receiving') && text.contains('yard')) {
     return 'player_reception_yds';
@@ -284,7 +284,7 @@ String _market(String question) {
   if (text.contains('total')) return 'totals';
   if (text.contains('moneyline') || text.contains('money line')) return 'h2h';
   if (text.contains('spread') || text.contains('line')) return 'spreads';
-  return '';
+  return null;
 }
 
 String _points(double value) {
