@@ -338,6 +338,7 @@ PropProjection? projectProp({
   UsageBook? shareBook,
   double? closingSpread,
   double? closingTotal,
+  double? marketWeight,
 }) {
   final cut = _Cut(season: beforeSeason, week: beforeWeek, date: beforeDate);
   final games = index.byPlayer[playerId];
@@ -606,6 +607,19 @@ PropProjection? projectProp({
       );
       capped = capped || (limited - shown).abs() > 1e-9;
       shown = limited;
+    }
+    // A served card with a real price leans on the market. The backtests
+    // pass an even proxy as the market and leave [marketWeight] null.
+    if (marketWeight != null && shown != null) {
+      final pooled = poolWithMarket(
+        model: adjusted,
+        market: anchor,
+        weight: marketWeight,
+      );
+      if (pooled != null) {
+        capped = capped || (pooled - shown).abs() > 1e-9;
+        shown = pooled;
+      }
     }
   }
   final shareLabel = metric == 'rushing_yards'

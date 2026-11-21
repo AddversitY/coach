@@ -60,6 +60,20 @@ The calibrated counts land within 2 points of the rate players scored. None of t
 
 On these 909 props, our chance sat 0.64 points below the closing no-vig on average. The closing no-vig scored better. The consensus is not used as the card's anchor. One season of prices cannot pass the both-seasons rule, and 2025 two-sided closes are unavailable.
 
+## Leaning on the market
+
+Checked November 21, 2026 in `test/market_blend_test.dart`. The question was whether the projection adds anything on top of the closing no-vig. The pooled chance is the close moved toward the projection in log odds, by a weight. On the same 909 props:
+
+| Chance | Brier | Log loss |
+| --- | ---: | ---: |
+| Closing no-vig | 0.2513 | 0.6958 |
+| Old card: projection pulled toward that price with 32 games, capped | 0.2541 | 0.7017 |
+| Projection alone | 0.2775 | 0.7785 |
+| Pooled, weight fit on the other week only (0 and 0.1) | 0.2516 | 0.6963 |
+| Pooled, weight 0.05 (the card now) | 0.2512 | 0.6956 |
+
+The best weight on all 909 was 0.05, so the projection's disagreement with the close carries little information. The old 32-game pull scored worse than the close, which means it was showing gaps the result did not back up. The card now serves the pooled chance whenever a real no-vig price exists (`propModelWeight` in `lib/domain/prop_chance.dart`). Gaps against the price are now usually under a point, so fewer props show as value. The season backtests above still pass the even proxy and are unchanged. Two weeks of one season is a small sample; the weight should be refit once more two-sided closes are saved.
+
 The Odds Gap free CSV has one side, so the vig cannot be removed. That comparison is unavailable. The Bovada 2021 and 2022 files were read locally and not committed. The bundled box scores start in 2023, so those seasons cannot be scored. That comparison is unavailable.
 
 `assets/price-history.json` still has no prop prices. Yards and receptions in the season tables above still use last season's median.

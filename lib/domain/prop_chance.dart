@@ -20,6 +20,38 @@ const propStrongSample = 30;
 /// Standard error, in probability, that still counts as a tight record.
 const propStrongError = 0.08;
 
+/// Weight on the model's disagreement with the book's no-vig chance.
+///
+/// Fit on 909 real 2026 props with two-sided closes
+/// (`assets/prop-closes.json`, `test/market_blend_test.dart`). The weight
+/// that scored best was 0.05; fit on the other week only it was 0 and 0.1.
+/// The model adds almost nothing on top of the close, so the served chance
+/// sits close to the market. The older 32-game shrink scored worse than the
+/// close (log loss 0.7017 against 0.6958); this pool scored 0.6956.
+const propModelWeight = 0.05;
+
+/// The book's no-vig chance, moved toward [model] by [weight] in log odds.
+double? poolWithMarket({
+  required double model,
+  required double market,
+  double weight = propModelWeight,
+}) {
+  if (!model.isFinite || !market.isFinite) return null;
+  if (market <= 0 || market >= 1) return null;
+  double logit(double p) {
+    final q = p.clamp(1e-4, 1 - 1e-4).toDouble();
+    return math.log(q / (1 - q));
+  }
+
+  final x = logit(market) + weight * (logit(model) - logit(market));
+  final chance = 1 / (1 + math.exp(-x));
+  if (!chance.isFinite || chance <= 0 || chance >= 1) return null;
+  return chance;
+}
+
+const propPooledSource =
+    "the book's no-vig chance, moved slightly toward a usage projection";
+
 const propChanceSource =
     "the recorded games, pulled toward the book's no-vig chance";
 
@@ -110,8 +142,7 @@ double? shrinkProjectedChance({
   if (observed < 4) return null;
   if (!projected.isFinite || projected <= 0 || projected >= 1) return null;
   final anchor = market;
-  final open =
-      anchor != null && anchor.isFinite && anchor > 0 && anchor < 1;
+  final open = anchor != null && anchor.isFinite && anchor > 0 && anchor < 1;
   if (!open) {
     final blended = (observed * projected + 2) / (observed + 4);
     if (!blended.isFinite || blended <= 0 || blended >= 1) return null;
