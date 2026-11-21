@@ -74,6 +74,17 @@ Play-by-play rates were then added beside that unit edge. Each rate uses only ea
 
 The sample is 271 games in 2025 and 144 in 2026. EPA and the blend improved the 2026 total and lost on covers. Sack rate improved the 2025 cover and lost in 2026. None beat the closing line on all three markets in both seasons. Served game numbers stay on version 2.
 
+The close itself was then tested as a probability, on the nflverse schedule from 2015 through the latest scored week (`assets/closing-lines.json`). A week is fit only on earlier weeks. The spot model uses key numbers 3 and 7, a favorite of 10 or more, which side is favored, a divisional game, and whether the total is under 41 or at least 52. A second fit adds rest, a dome or closed roof, wind, and cold. That second fit is not eligible to replace version 2, because version 2 already uses rest and weather. The schedule file has no opening number, so a move from the open to the close is unavailable.
+
+| Cover chance | 2025 games | 2025 Brier | 2025 log loss | 2026 games | 2026 Brier | 2026 log loss |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Flat 50 percent | 271 | 0.2500 | 0.6931 | 145 | 0.2500 | 0.6931 |
+| Closing price, no vig | 271 | 0.2496 | 0.6923 | 145 | 0.2497 | 0.6926 |
+| Key-number spot | 271 | 0.2477 | 0.6885 | 145 | 0.2507 | 0.6946 |
+| Spot plus rest and weather | 271 | 0.2479 | 0.6889 | 145 | 0.2488 | 0.6908 |
+
+The key-number spot beat the flat prior and the closing price in 2025 and lost both in 2026. Adding rest and weather beat both in 2025 and 2026, and lost both in 2024. That fit is not stacked on version 2, because version 2 already moves the close for rest and weather, and this test did not replay version 2's quarterback and injury pieces. The same spot on the total was worse than a flat 50 percent in both seasons (2025 Brier 0.2511, 2026 Brier 0.2521). A moneyline read off the closing price beat a normal curve drawn through the spread in both seasons (2025 Brier 0.2121 against 0.2126, 2026 Brier 0.2110 against 0.2136). That price is the market, not a new model, and the spot moneyline did not beat it in both seasons. None of these paths is served. Version 2 stays the game number. This is not a profit test and not a pick.
+
 The same rates were tried on the unit-only prop chance, the path that was served before the lognormal curve. The mean is multiplied by a fixed factor: one typical step is 15 percent, held inside 0.85 to 1.15, with no coefficient fit on the score. The line is still last season's median.
 
 | Prop adjustment | 2025 games | 2025 Brier | 2025 log loss | 2026 games | 2026 Brier | 2026 log loss |
