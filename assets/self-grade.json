@@ -1,6 +1,6 @@
 {
   "schema": "coach-self-grade-v1",
-  "updatedAt": "2026-11-20T14:14:58.105650Z",
+  "updatedAt": "2026-11-21T21:34:25.637227Z",
   "propCloses": 0,
   "realCloseGate": 1000,
   "sources": [
@@ -33,6 +33,12 @@
       "status": "ok",
       "detail": "published snapshot",
       "checkedAt": "2026-11-20T14:14:58.096992Z"
+    },
+    {
+      "source": "the-odds-api-dense",
+      "status": "ok",
+      "detail": "1002 game prices, 3 credits",
+      "checkedAt": "2026-11-21T21:34:25.637387Z"
     }
   ],
   "markets": {
@@ -87,7 +93,7 @@
     "h2h": {
       "market": "h2h",
       "label": "moneylines",
-      "savedPrices": 296,
+      "savedPrices": 630,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -99,7 +105,7 @@
     "spreads": {
       "market": "spreads",
       "label": "spreads",
-      "savedPrices": 296,
+      "savedPrices": 630,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -111,7 +117,7 @@
     "totals": {
       "market": "totals",
       "label": "totals",
-      "savedPrices": 296,
+      "savedPrices": 630,
       "cards": 0,
       "graded": 0,
       "hits": 0,
