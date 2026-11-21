@@ -38,6 +38,17 @@ class HitSample {
   final String outcome;
 }
 
+/// Rushing plus receiving touchdowns. Passing touchdowns are thrown, not
+/// scored, so they are not part of an anytime-touchdown count. A missing
+/// side is treated as none only when the other side is recorded. Both
+/// missing stays null.
+num? anytimeTouchdowns(PlayerGame game) {
+  final rush = game.stats['rushing_tds'];
+  final receiving = game.stats['receiving_tds'];
+  if (rush == null && receiving == null) return null;
+  return (rush ?? 0) + (receiving ?? 0);
+}
+
 /// Counts clears inside [games]. Games are not reordered or dropped.
 /// A missing stat is skipped, never treated as a zero or a miss.
 HitRate hitRate({
@@ -51,7 +62,9 @@ HitRate hitRate({
   var hits = 0, misses = 0, pushes = 0, missing = 0;
   final samples = <HitSample>[];
   for (final game in games) {
-    final value = game.stats[metric];
+    final value = metric == 'anytime_td'
+        ? anytimeTouchdowns(game)
+        : game.stats[metric];
     if (value == null) {
       missing++;
       samples.add(HitSample(game: game, value: null, outcome: 'missing'));

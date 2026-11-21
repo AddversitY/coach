@@ -6,6 +6,8 @@ import 'matchup.dart';
 import 'player_stats.dart';
 import 'prop_calibration.dart';
 import 'prop_chance.dart';
+import 'prop_context.dart';
+import 'prop_distributions.dart';
 import 'unit_ratings.dart';
 
 /// Neutral pass attempts. Rush attempts sit beside them, so the pass
@@ -53,7 +55,8 @@ class PropProjection {
   final double mean;
   final double sd;
 
-  /// `normal` for yards. `negative binomial` for receptions.
+  /// `lognormal` or `gamma` for yards. `negative binomial` or
+  /// `zero-inflated negative binomial` for receptions.
   final String distribution;
 
   /// Chance for [side] from the curve, before recalibration.
@@ -137,46 +140,54 @@ class UsageIndex {
       final week = int.parse(parts[1]);
       final team = parts[2];
       final off = entry.value;
-      plays.putIfAbsent(team, () => []).add(
-        _Tagged(season, week, off.date, off.attempts, off.carries, 0, 0),
-      );
+      plays
+          .putIfAbsent(team, () => [])
+          .add(
+            _Tagged(season, week, off.date, off.attempts, off.carries, 0, 0),
+          );
       if (off.opponent.isEmpty) continue;
-      defense.putIfAbsent(off.opponent, () => []).add(
-        _Tagged(
-          season,
-          week,
-          off.date,
-          off.passYds,
-          off.rushYds,
-          off.recYds,
-          off.receptions,
-        ),
-      );
+      defense
+          .putIfAbsent(off.opponent, () => [])
+          .add(
+            _Tagged(
+              season,
+              week,
+              off.date,
+              off.passYds,
+              off.rushYds,
+              off.recYds,
+              off.receptions,
+            ),
+          );
     }
     final points = <String, List<_Tagged>>{};
     for (final game in scores) {
-      points.putIfAbsent(game.home, () => []).add(
-        _Tagged(
-          game.season,
-          game.week,
-          game.date,
-          game.homeScore.toDouble(),
-          game.awayScore.toDouble(),
-          0,
-          0,
-        ),
-      );
-      points.putIfAbsent(game.away, () => []).add(
-        _Tagged(
-          game.season,
-          game.week,
-          game.date,
-          game.awayScore.toDouble(),
-          game.homeScore.toDouble(),
-          0,
-          0,
-        ),
-      );
+      points
+          .putIfAbsent(game.home, () => [])
+          .add(
+            _Tagged(
+              game.season,
+              game.week,
+              game.date,
+              game.homeScore.toDouble(),
+              game.awayScore.toDouble(),
+              0,
+              0,
+            ),
+          );
+      points
+          .putIfAbsent(game.away, () => [])
+          .add(
+            _Tagged(
+              game.season,
+              game.week,
+              game.date,
+              game.awayScore.toDouble(),
+              game.homeScore.toDouble(),
+              0,
+              0,
+            ),
+          );
     }
     for (final list in [...defense.values, ...plays.values, ...points.values]) {
       list.sort(_tagOrder);
@@ -321,6 +332,12 @@ PropProjection? projectProp({
   PropCalibrator? postShrinkCalibrator,
   bool lognormalYards = false,
   MatchupEnvironment? environment,
+  PropTune tune = const PropTune(),
+  PositionSpread? spreads,
+  ScriptBook? scripts,
+  UsageBook? shareBook,
+  double? closingSpread,
+  double? closingTotal,
 }) {
   final cut = _Cut(season: beforeSeason, week: beforeWeek, date: beforeDate);
   final games = index.byPlayer[playerId];
@@ -338,10 +355,36 @@ PropProjection? projectProp({
       ? prior.last.opponent
       : opponent;
   final window = prior.length <= 8 ? prior : prior.sublist(prior.length - 8);
-  final usage = _usage(index, window, metric, position);
-  if (usage == null) return null;
+  final baseUsage = _usage(
+    index,
+    window,
+    metric,
+    position,
+    recency: tune.recency,
+  );
+  if (baseUsage == null) return null;
+  final tilt = tune.shares
+      ? shareBook?.tilt(playerId, beforeSeason, beforeWeek)
+      : null;
+  final played = _Usage(
+    _blendShare(metric, baseUsage.share, tilt),
+    baseUsage.efficiency,
+  );
 
-  final passRate = _passRate(index, club, cut);
+  var passRate = _passRate(index, club, cut);
+  final closing = _closingPoint(
+    tune: tune,
+    team: club,
+    season: beforeSeason,
+    week: beforeWeek,
+    teamSpread: closingSpread ?? teamSpread,
+    total: closingTotal ?? total,
+    scripts: scripts,
+  );
+  if (tune.scriptMix && closing != null) {
+    final mix = (1 - 0.01 * closing.margin).clamp(0.85, 1.15);
+    passRate = (passRate * mix).clamp(0.35, 0.75);
+  }
   final defense = _defense(index, foe, metric, cut, beforeSeason);
   final script = _script(
     index,
@@ -351,13 +394,24 @@ PropProjection? projectProp({
     teamSpread: teamSpread,
     total: total,
   );
-  final snap = _snap(
-    index,
-    prior.last.name,
-    position,
-    cut,
-    beforeSeason,
-  );
+  var snap = _snap(index, prior.last.name, position, cut, beforeSeason);
+  if (tune.shares && tilt != null && !snap.known) {
+    final pct = tilt.snap;
+    if (pct != null && pct > 0) {
+      final factor = (pct / _typicalSnap(position)).clamp(0.75, 1.25);
+      snap = _SnapRead(true, pct, factor);
+    } else if (tilt.route != null) {
+      final typical = shareBook?.positionRoute(
+        position,
+        beforeSeason,
+        beforeWeek,
+      );
+      if (typical != null && typical > 0.05) {
+        final factor = (tilt.route! / typical).clamp(0.75, 1.25);
+        snap = _SnapRead(true, tilt.route!, factor);
+      }
+    }
+  }
   final mates = _teammates(
     index,
     selfId: playerId,
@@ -378,9 +432,9 @@ PropProjection? projectProp({
   }) {
     return _statMean(
       metric: metric,
-      share: usage.share,
+      share: played.share,
       passRate: passOn ? passRate : leaguePassRate,
-      efficiency: usage.efficiency,
+      efficiency: played.efficiency,
       defense: defenseOn ? defense.factor : 1,
       scale: scriptOn ? script.scale : 1,
       snapFactor: snapOn && snap.known ? snap.factor : 1,
@@ -432,6 +486,8 @@ PropProjection? projectProp({
     matesOn: true,
   );
   var mean = stackedMean;
+  var scriptVolumeDelta = 0.0;
+  var scriptVolumeDetail = 'not applied';
   var scriptDelta = afterScript - afterPass;
   var defenseDelta = afterDefense - afterScript;
   var matesDelta = stackedMean - afterDefense;
@@ -479,17 +535,47 @@ PropProjection? projectProp({
           'one unit factor instead of a points script plus defense yards; ${environment.detail}';
     }
   }
-  final values = [
-    for (final game in prior) game.stats[metric]!.toDouble(),
-  ];
-  final sd = _spread(values, _sdPrior(metric), _sdFloor(metric));
+  if (tune.scriptVolume && closing != null && closing.implied > 0) {
+    final volume = (closing.implied / _leaguePoints).clamp(0.90, 1.10);
+    final next = mean * volume;
+    scriptVolumeDelta = next - mean;
+    mean = next;
+    scriptVolumeDetail =
+        '${closing.implied.toStringAsFixed(1)} implied, volume ${volume.toStringAsFixed(2)}';
+  }
+  final values = [for (final game in prior) game.stats[metric]!.toDouble()];
+  final positionSd = tune.positionVariance
+      ? spreads?.sd(
+          position: position,
+          metric: metric,
+          season: beforeSeason,
+          week: beforeWeek,
+        )
+      : null;
+  final sd = _spread(values, positionSd ?? _sdPrior(metric), _sdFloor(metric));
+  final positionZero = tune.zeroInflated && metric == 'receptions'
+      ? spreads?.zeroRate(
+          position: position,
+          metric: metric,
+          season: beforeSeason,
+          week: beforeWeek,
+        )
+      : null;
+  double? zeroRate;
+  if (positionZero != null) {
+    final zeros = values.where((value) => value <= 0).length.toDouble();
+    zeroRate = (zeros + 8 * positionZero) / (values.length + 8);
+  }
+  final useGamma = tune.gamma && metric != 'receptions';
   final raw = sideChance(
     metric: metric,
     mean: mean,
     sd: sd,
     line: line,
     side: side,
-    lognormal: lognormalYards && metric != 'receptions',
+    lognormal: lognormalYards && !useGamma && metric != 'receptions',
+    gamma: useGamma,
+    zeroRate: zeroRate,
   );
   final adjusted = _recalibrate(raw, side, calibrator);
   final shrunk = shrinkProjectedChance(
@@ -523,15 +609,19 @@ PropProjection? projectProp({
     }
   }
   final shareLabel = metric == 'rushing_yards'
-      ? '${_pct(usage.share)} of carries'
+      ? '${_pct(played.share)} of carries'
       : metric == 'passing_yards'
-      ? '${_pct(usage.share)} of dropbacks'
-      : '${_pct(usage.share)} of targets';
+      ? '${_pct(played.share)} of dropbacks'
+      : '${_pct(played.share)} of targets';
   return PropProjection(
     metric: metric,
     mean: mean,
     sd: sd,
-    distribution: metric == 'receptions' ? 'negative binomial' : 'normal',
+    distribution: metric == 'receptions'
+        ? (zeroRate != null
+              ? 'zero-inflated negative binomial'
+              : 'negative binomial')
+        : (useGamma ? 'gamma' : (lognormalYards ? 'lognormal' : 'normal')),
     rawChance: raw,
     adjustedChance: adjusted,
     chance: shown,
@@ -556,24 +646,20 @@ PropProjection? projectProp({
         detail: script.detail,
         delta: scriptDelta,
       ),
-      PropFactor(
-        label: 'Defense',
-        detail: defense.detail,
-        delta: defenseDelta,
-      ),
+      PropFactor(label: 'Defense', detail: defense.detail, delta: defenseDelta),
       PropFactor(
         label: 'Teammates out',
         detail: mates.detail,
         delta: matesDelta,
       ),
-      PropFactor(
-        label: 'Matchup',
-        detail: matchupDetail,
-        delta: matchupDelta,
-      ),
-      if (shown != null &&
-          shrunk != null &&
-          (shown - shrunk).abs() > 1e-6)
+      PropFactor(label: 'Matchup', detail: matchupDetail, delta: matchupDelta),
+      if (scriptVolumeDelta.abs() > 1e-9)
+        PropFactor(
+          label: 'Game script',
+          detail: scriptVolumeDetail,
+          delta: scriptVolumeDelta,
+        ),
+      if (shown != null && shrunk != null && (shown - shrunk).abs() > 1e-6)
         PropFactor(
           label: 'Earlier weeks',
           detail: 'chance moved toward the rate players cleared',
@@ -588,40 +674,78 @@ class _Usage {
   final double share, efficiency;
 }
 
+double _blendShare(String metric, double share, ShareTilt? tilt) {
+  if (tilt == null) return share;
+  final cap = metric == 'passing_yards' ? 0.98 : 0.60;
+  if ((metric == 'receiving_yards' || metric == 'receptions') &&
+      tilt.air != null) {
+    return (0.7 * share + 0.3 * tilt.air!).clamp(0.01, cap);
+  }
+  if (metric == 'rushing_yards' && tilt.redZone != null) {
+    return (0.85 * share + 0.15 * tilt.redZone!).clamp(0.01, cap);
+  }
+  return share;
+}
+
+ScriptPoint? _closingPoint({
+  required PropTune tune,
+  required String team,
+  required int season,
+  required int week,
+  required double? teamSpread,
+  required double? total,
+  required ScriptBook? scripts,
+}) {
+  if (!tune.scriptMix && !tune.scriptVolume) return null;
+  if (teamSpread != null && total != null) {
+    final priced = ScriptPoint.fromBetting(
+      teamSpread: teamSpread,
+      total: total,
+    );
+    if (priced != null) return priced;
+  }
+  return scripts?.lookup(season: season, week: week, team: team);
+}
+
 _Usage? _usage(
   UsageIndex index,
   List<PlayerGame> window,
   String metric,
-  String position,
-) {
+  String position, {
+  bool recency = false,
+}) {
   var stat = 0.0, volume = 0.0, efficiencyDen = 0.0, teamDenom = 0.0;
   var counted = 0;
-  for (final game in window) {
+  for (var i = 0; i < window.length; i++) {
+    final game = window[i];
     final value = game.stats[metric];
     if (value == null) continue;
     final off = index._offense[_key(game.season, game.week, game.team)];
     if (off == null) continue;
+    final weight = recency
+        ? math.pow(0.8, window.length - 1 - i).toDouble()
+        : 1.0;
     counted++;
-    stat += value.toDouble();
+    stat += weight * value.toDouble();
     switch (metric) {
       case 'passing_yards':
         final attempts = game.stats['attempts']?.toDouble() ?? 0;
-        volume += attempts;
-        efficiencyDen += attempts;
-        teamDenom += off.attempts;
+        volume += weight * attempts;
+        efficiencyDen += weight * attempts;
+        teamDenom += weight * off.attempts;
         break;
       case 'rushing_yards':
         final carries = game.stats['carries']?.toDouble() ?? 0;
-        volume += carries;
-        efficiencyDen += carries;
-        teamDenom += off.carries;
+        volume += weight * carries;
+        efficiencyDen += weight * carries;
+        teamDenom += weight * off.carries;
         break;
       case 'receiving_yards':
       case 'receptions':
         final targets = game.stats['targets']?.toDouble() ?? 0;
-        volume += targets;
-        efficiencyDen += targets;
-        teamDenom += off.attempts;
+        volume += weight * targets;
+        efficiencyDen += weight * targets;
+        teamDenom += weight * off.attempts;
         break;
     }
   }
@@ -806,12 +930,11 @@ _Mates _teammates(
 }) {
   final listed = <({String name, String position})>[
     ...extra,
-    if (beforeSeason == index.matchupSeason && cut.date == null)
-      ...[
-        for (final row
-            in index._outs['$beforeSeason|$beforeWeek|$team'] ?? const <_Out>[])
-          (name: row.player, position: row.position),
-      ],
+    if (beforeSeason == index.matchupSeason && cut.date == null) ...[
+      for (final row
+          in index._outs['$beforeSeason|$beforeWeek|$team'] ?? const <_Out>[])
+        (name: row.player, position: row.position),
+    ],
   ];
   if (listed.isEmpty) return const _Mates(0, 0, 'none out');
   var qb = 0.0, skill = 0.0, count = 0;
@@ -895,11 +1018,30 @@ double _statMean({
   final rush = (1 - passRate) / (1 - leaguePassRate);
   final mean = switch (metric) {
     'passing_yards' =>
-      leaguePassAttempts * pass * scale * boosted * snapFactor * efficiency * defense * penalty,
+      leaguePassAttempts *
+          pass *
+          scale *
+          boosted *
+          snapFactor *
+          efficiency *
+          defense *
+          penalty,
     'rushing_yards' =>
-      leagueRushAttempts * rush * scale * boosted * snapFactor * efficiency * defense,
+      leagueRushAttempts *
+          rush *
+          scale *
+          boosted *
+          snapFactor *
+          efficiency *
+          defense,
     _ =>
-      leaguePassAttempts * pass * scale * snapFactor * boosted * efficiency * defense,
+      leaguePassAttempts *
+          pass *
+          scale *
+          snapFactor *
+          boosted *
+          efficiency *
+          defense,
   };
   final ceiling = switch (metric) {
     'passing_yards' => 450.0,
@@ -935,9 +1077,23 @@ double sideChance({
   required double line,
   required LineSide side,
   bool lognormal = false,
+  bool gamma = false,
+  double? zeroRate,
 }) {
   if (metric == 'receptions') {
+    if (zeroRate != null) {
+      return zeroInflatedSideChance(
+        mean: mean,
+        sd: sd,
+        line: line,
+        side: side,
+        zeroRate: zeroRate,
+      );
+    }
     return _negativeBinomialSide(mean: mean, sd: sd, line: line, side: side);
+  }
+  if (gamma) {
+    return gammaSideChance(mean: mean, sd: sd, line: line, side: side);
   }
   if (lognormal) {
     return _lognormalSide(mean: mean, sd: sd, line: line, side: side);
@@ -1010,8 +1166,7 @@ double normalCdf(double z) {
   const b4 = -1.821255978;
   const b5 = 1.330274429;
   final density = math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi);
-  final tail =
-      density * (((((b5 * t + b4) * t + b3) * t + b2) * t + b1) * t);
+  final tail = density * (((((b5 * t + b4) * t + b3) * t + b2) * t + b1) * t);
   final cdf = z >= 0 ? 1 - tail : tail;
   if (cdf < 0) return 0;
   if (cdf > 1) return 1;

@@ -11,6 +11,7 @@ const propStatMetrics = <String, String>{
   'player_receptions': 'receptions',
   'player_reception_yds': 'receiving_yards',
   'player_reception_tds': 'receiving_tds',
+  'player_anytime_td': 'anytime_td',
 };
 
 const propMarketLabels = <String, String>{
@@ -21,6 +22,7 @@ const propMarketLabels = <String, String>{
   'player_receptions': 'Receptions',
   'player_reception_yds': 'Receiving yards',
   'player_reception_tds': 'Receiving touchdowns',
+  'player_anytime_td': 'Anytime touchdown',
 };
 
 /// Season clear rate minus the books' fee-free chance.

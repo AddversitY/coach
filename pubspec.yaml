@@ -71,6 +71,8 @@ flutter:
     - assets/nfl-trades.json
     - assets/line-moves.json
     - assets/line-movement-backtest.json
+    - assets/prop-usage.json
+    - assets/prop-closes.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

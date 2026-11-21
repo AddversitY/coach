@@ -11,6 +11,7 @@ import '../domain/play_units.dart';
 import '../domain/line_movement.dart';
 import '../domain/price_history.dart';
 import '../domain/recent_evidence.dart';
+import '../domain/prop_context.dart';
 import '../domain/trades.dart';
 
 /// `compute` never replies while a widget test holds the root isolate.
@@ -87,6 +88,13 @@ Future<List<HistoricalGame>> loadBundledHistoryGames() async {
   return compute(_decodeHistory, json);
 }
 
+Future<UsageBook> loadBundledPropUsage() async {
+  final json = await rootBundle.loadString('assets/prop-usage.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return UsageBook.fromJson(const {});
+  return UsageBook.fromJson(Map<String, dynamic>.from(decoded));
+}
+
 List<HistoricalGame> _decodeHistory(String json) {
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
   if (decoded is! Map) return const [];
@@ -94,7 +102,6 @@ List<HistoricalGame> _decodeHistory(String json) {
   if (games is! List) return const [];
   return [
     for (final row in games)
-      if (row is Map)
-        HistoricalGame.fromJson(Map<String, dynamic>.from(row)),
+      if (row is Map) HistoricalGame.fromJson(Map<String, dynamic>.from(row)),
   ];
 }

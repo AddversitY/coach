@@ -262,6 +262,9 @@ String _math(
   double? profit,
 ) {
   final parts = <String>[
+    if (input.chanceNote != null &&
+        (input.hits == null || input.observed == null))
+      input.chanceNote!,
     if (input.hits != null && input.observed != null)
       input.chanceNote ??
           'Recorded ${input.hits} of ${input.observed}. Two wins and two losses are mixed in before that becomes our chance, so a short run cannot look certain.',
