@@ -22,7 +22,7 @@ Checked November 20, 2026. Coach stays a paper-and-graphite chat. It does not co
 
 ## Blockers
 
-- No front-office or transaction feed. Snap-count team changes are not trades.
+- No front-office feed. The public ESPN transactions list returned no rows, so a general-manager change stays unavailable. A snap-count club change is a trade only when `assets/nfl-trades.json` names the player, both clubs, and a date between the meetings.
 - The nflverse schedule has the kickoff spread and total, not the opening number. Open-to-close movement is unavailable. The key-number test did not beat version 2. See `docs/MATCHUPS.md`.
 - Third-down rate, success rate, pressure and pass rate over expected for a rematch come from `assets/play-units.json`. They are not in the team weekly file. The prop card and the game line do not use them: the walk-forward did not beat the unit-only chance or the closing line in both seasons. The card stays on the lognormal chance. See `docs/MATCHUPS.md`.
 - No week 11, 2026 snap counts in `assets/nfl-matchup.json`.

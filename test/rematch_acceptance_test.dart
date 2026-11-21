@@ -8,6 +8,7 @@ import 'package:odds_edge/domain/play_units.dart';
 import 'package:odds_edge/domain/player_stats.dart';
 import 'package:odds_edge/domain/recent_evidence.dart';
 import 'package:odds_edge/domain/rematch.dart';
+import 'package:odds_edge/domain/trades.dart';
 
 void main() {
   test('the Texans and Colts rematch is read from the files', () {
@@ -45,6 +46,10 @@ void main() {
       jsonDecode(File('assets/play-units.json').readAsStringSync())
           as Map<String, dynamic>,
     );
+    final trades = TradeBook.fromJson(
+      jsonDecode(File('assets/nfl-trades.json').readAsStringSync())
+          as Map<String, dynamic>,
+    );
     final report = rematchReport(
       evidence: evidence,
       teamA: 'HOU',
@@ -52,6 +57,7 @@ void main() {
       snaps: matchup.snaps,
       earlierInjuries: injuries,
       plays: plays,
+      trades: trades,
     );
     expect(report, isNotNull);
     final earlier = report!.earlier;
@@ -131,6 +137,7 @@ void main() {
       snaps: matchup.snaps,
       injuries: injuries,
       plays: plays,
+      trades: trades,
     );
     expect(brief?.change?.allText, contains('8 of 14'));
     expect(brief?.change?.allText, contains('1 of 11'));

@@ -10,6 +10,7 @@ import '../domain/player_stats.dart';
 import '../domain/play_units.dart';
 import '../domain/price_history.dart';
 import '../domain/recent_evidence.dart';
+import '../domain/trades.dart';
 
 /// `compute` never replies while a widget test holds the root isolate.
 bool get _decodeInline {
@@ -64,6 +65,13 @@ Future<PlayBook> loadBundledPlayUnits() async {
 PlayBook _decodePlayUnits(String json) => PlayBook.fromJson(
   Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
 );
+
+Future<TradeBook> loadBundledTrades() async {
+  final json = await rootBundle.loadString('assets/nfl-trades.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return TradeBook.empty;
+  return TradeBook.fromJson(Map<String, dynamic>.from(decoded));
+}
 
 Future<List<HistoricalGame>> loadBundledHistoryGames() async {
   final json = await rootBundle.loadString('assets/nfl-history.json');

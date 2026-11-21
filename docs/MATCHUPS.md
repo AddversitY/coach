@@ -110,13 +110,14 @@ Net yards are passing yards plus the file's sack-yard figure plus rushing yards.
 
 ## What the files can and cannot name
 
-The injury report and the later player row can show a player who was Out, then has a counting stat. Snap counts can show a player whose club changed between the meetings. The Texans–Colts card uses those two tests. It calls a club change a snap-count team change.
+The injury report and the later player row can show a player who was Out, then has a counting stat. Snap counts can show a player whose club changed between the meetings. The Texans–Colts card uses those two tests. It calls a club change a snap-count team change. It calls that change a trade only when `assets/nfl-trades.json` names the player, the two clubs, and a date strictly between the meetings. The file is the nflverse trades list (CC BY 4.0). A snap change with no row stays "not a trade."
 
-These files do not name a general manager, a firing, or a transaction. They cannot say that Chris Ballard was fired or that a player was traded. A sentence that needs a trade recap from Colts.com, an ESPN transaction note, or an NFL game book stays unavailable. Snap share is the evidence that can be detected. Head coaches come from the nflverse schedule. Both meetings in the loaded 2026 file list the same two head coaches.
+These files do not name a general manager or a firing. The public ESPN transactions list returned no rows, so a front-office change stays unavailable. They cannot say that Chris Ballard was fired. Head coaches come from the nflverse schedule. Both meetings in the loaded 2026 file list the same two head coaches.
 
 Practice participation without a game status is not called an inactive designation. Questionable is not called Out.
 
 ## Sources
 
 - nflverse schedules, team stats, player stats, injuries and snap counts, CC BY 4.0, via the generator and `assets/nfl-matchup.json`.
-- NFL game books, ESPN transaction notes and Colts.com trade recaps are not in the free files. They are not quoted, and the answer does not invent them.
+- nflverse trades, CC BY 4.0, in `assets/nfl-trades.json`. A pick with no player name is left out.
+- NFL game books and Colts.com trade recaps are not in the free files. They are not quoted. The public ESPN transactions list returned no rows.
