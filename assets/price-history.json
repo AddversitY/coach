@@ -49072,7 +49072,7 @@
     "month": "2026-11",
     "gameLineSpent": 0,
     "propSpent": 0,
-    "requestsRemaining": null,
+    "requestsRemaining": 480,
     "note": "The free plan is 500 credits a month. The backend already plans about 240 for moneylines, spreads and totals, at most 60 for props, and at most 36 for Pinnacle, and it holds 50 in reserve. This capture may spend 48 on game lines (16 calls of 3 credits) and 16 on one prop market (16 calls of 1 credit). 240+60+36+48+16=400, and the 50 reserve is not spent by this job. A call is skipped when remaining credits are unknown or below 50 plus the call, or when this job's own cap is used up. Logged-out sportsbook pages cost nothing. This is not a pick."
   }
 }
