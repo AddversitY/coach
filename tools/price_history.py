@@ -39,6 +39,10 @@ PROP_MARKETS = {
     'player_rush_yds': 'rushing yards props',
     'player_reception_yds': 'receiving yards props',
     'player_receptions': 'reception props',
+    'player_pass_attempts': 'pass attempt props',
+    'player_pass_completions': 'pass completion props',
+    'player_pass_tds': 'passing touchdown props',
+    'player_anytime_td': 'anytime touchdown props',
 }
 GAME_MARKETS = {
     'h2h': 'moneylines',
@@ -183,7 +187,7 @@ def _observation(row):
     player = str(row.get('player') or '').strip()
     kickoff = _iso(row.get('kickoff')) if row.get('kickoff') else None
     parts = _event_parts(event_id)
-    return {
+    parsed = {
         'at': at,
         'source': str(row.get('source') or 'saved'),
         'book': book,
@@ -200,6 +204,10 @@ def _observation(row):
         'decimal': round(decimal, 6),
         'status': str(row.get('status') or 'open'),
     }
+    player_id = str(row.get('playerId') or '').strip()
+    if re.fullmatch(r'00-\d{7}', player_id):
+        parsed['playerId'] = player_id
+    return parsed
 
 
 def _key(row):
@@ -516,10 +524,10 @@ class FetchResult:
 def http_fetch(url, headers):
     request = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
+        with urllib.request.urlopen(request, timeout=25) as response:
             return FetchResult(
                 response.status,
-                response.read(2_000_000).decode('utf-8', 'replace'),
+                response.read(8_000_000).decode('utf-8', 'replace'),
                 response.headers,
             )
     except urllib.error.HTTPError as error:
@@ -535,38 +543,27 @@ def _headers(extra=None):
     return headers
 
 
-def scrape_public_books(history, fetch=http_fetch, pause=time.sleep):
-    """Try each public book once. Failures are unavailable, not invented prices."""
-    jobs = (
-        ('draftkings-public', _draftkings),
-        ('fanduel-public', _fanduel),
-        ('betmgm-public', _betmgm),
-        ('pinnacle-public', _pinnacle),
-    )
-    added = 0
-    for index, (source, reader) in enumerate(jobs):
-        if index:
-            pause(PAUSE_SECONDS)
-        try:
-            status, rows, detail = reader(fetch)
-        except Exception:
-            status, rows, detail = 'unavailable', [], 'the public page could not be read'
-        if status != 'ok':
-            record_source(history, source, 'unavailable', detail or 'unavailable')
-            continue
-        tagged = []
-        for row in rows:
-            row = dict(row)
-            row['source'] = source
-            tagged.append(row)
-        count = add_observations(history, tagged)
-        added += count
-        record_source(
-            history,
-            source,
-            'ok' if count or rows else 'unavailable',
-            f'{count} new prices' if count else 'the public page had no prices',
-        )
+def scrape_public_books(
+    history, fetch=http_fetch, pause=time.sleep, private=None, windows=None,
+    roster=None, schedule=None, now=None, hours=26,
+):
+    """Read logged-out prop pages. Prices go to [private] when that file is separate.
+
+    The public history keeps the book status and the count. It does not keep
+    the scraped prices. A blocked page is unavailable.
+    """
+    import book_props
+    now = now or _now()
+    found = book_props.collect_books(fetch, pause, windows, now, hours)
+    added = book_props.apply_collection(history, private, found, roster, schedule)
+    try:
+        book_props.collect_probes(history, fetch, pause, now)
+        if private is not None and private is not history:
+            for row in history.get('sources') or []:
+                if str(row.get('source') or '').endswith('-public'):
+                    record_source(private, row['source'], row['status'], row.get('detail') or '')
+    except Exception:
+        record_source(history, 'public-books', 'unavailable', 'the public page could not be read')
     return added
 
 
@@ -878,7 +875,10 @@ def _api_get(path, params, fetch, key):
     return fetch(url, _headers())
 
 
-def capture_dense(history, snapshot, fetch=http_fetch, pause=time.sleep, now=None, key=''):
+def capture_dense(
+    history, snapshot, fetch=http_fetch, pause=time.sleep, now=None, key='',
+    private=None, windows=None, roster=None, schedule=None,
+):
     """Scrape when a pre-kickoff slot is due. Spend Odds API credits only inside the cap.
 
     The key is used on the request and is not written to the history.
@@ -932,8 +932,13 @@ def capture_dense(history, snapshot, fetch=http_fetch, pause=time.sleep, now=Non
         history.pop('eventKickoffs', None)
         return summary
     summary['slots'] = len(work)
+    if windows is None:
+        windows = [kickoff for _cluster, _slot, kickoff in work]
     if line_timing.season_months(now) or work:
-        scrape_public_books(history, fetch=fetch, pause=pause)
+        scrape_public_books(
+            history, fetch=fetch, pause=pause, private=private, windows=windows,
+            roster=roster, schedule=schedule, now=now,
+        )
         summary['scraped'] = True
     for cluster, slot, _kickoff in work:
         line_timing.record_attempt(history, cluster, slot, 'checked', now)
@@ -1049,6 +1054,10 @@ def main(argv):
     parser.add_argument('--scrape', action='store_true')
     parser.add_argument('--dense', action='store_true', help='Scrape and maybe spend credits only when a pre-kickoff slot is due.')
     parser.add_argument('--grade', action='store_true')
+    parser.add_argument('--book-store', default='backend/data/book-props.json')
+    parser.add_argument('--coverage', default='assets/book-price-coverage.json')
+    parser.add_argument('--roster', default='assets/nfl-player-stats.json')
+    parser.add_argument('--schedule', default='backend/data/games.csv')
     args = parser.parse_args(argv)
     history = load_history(args.history)
     snapshot = None
@@ -1066,10 +1075,32 @@ def main(argv):
             record_source(history, 'the-odds-api', 'ok', 'local published snapshot')
         if snapshot:
             ingest_snapshot(history, snapshot)
-    if args.dense:
-        capture_dense(history, snapshot, key=_api_key())
-    elif args.scrape:
-        scrape_public_books(history)
+    private = None
+    if args.dense or args.scrape:
+        import book_props
+        private = load_history(args.book_store)
+        roster = book_props.load_roster_file(args.roster) if Path(args.roster).exists() else {}
+        schedule = book_props.ensure_schedule(args.schedule, http_fetch)
+        if args.dense:
+            capture_dense(
+                history, snapshot, key=_api_key(), private=private,
+                roster=roster, schedule=schedule,
+            )
+        else:
+            scrape_public_books(history, private=private, roster=roster, schedule=schedule)
+        Path(args.book_store).parent.mkdir(parents=True, exist_ok=True)
+        save_json(args.book_store, private)
+        save_json(args.coverage, book_props.coverage_document(private))
+        secret = os.environ.get('BOOK_PROPS_INGEST_SECRET') or ''
+        if secret:
+            pushed = book_props.push_latest(
+                private,
+                os.environ.get('BOOK_PROPS_INGEST_URL') or '',
+                secret,
+                http_fetch,
+            )
+            if not pushed:
+                record_source(history, 'book-props-worker', 'unavailable', 'the private store was not accepted')
     refresh_derived(history)
     if args.grade or args.scrape or args.dense or args.snapshot or args.snapshot_url:
         save_json(args.history, history)

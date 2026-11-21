@@ -1,0 +1,142 @@
+{
+  "schema": "coach-book-price-coverage-v1",
+  "updatedAt": "2026-11-21T23:12:05.804884Z",
+  "store": "Normalized prices are in the gitignored file backend/data/book-props.json, kept between runs by the GitHub Actions cache. The Worker durable object keeps the latest snapshot when BOOK_PROPS_INGEST_SECRET is set. Raw book payloads are not stored. This public file has counts only.",
+  "consensusAdopted": false,
+  "consensusReason": "Two-sided closes are unavailable for 2025 and 2026.",
+  "games": 10,
+  "prices": 2513,
+  "closes": 2474,
+  "books": [
+    {
+      "book": "betmgm",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "the public page had no prop prices"
+    },
+    {
+      "book": "betrivers",
+      "status": "ok",
+      "prices": 678,
+      "closes": 678,
+      "matchedPlayers": 250,
+      "unmatchedPlayers": 6
+    },
+    {
+      "book": "bovada",
+      "status": "ok",
+      "prices": 742,
+      "closes": 742,
+      "matchedPlayers": 148,
+      "unmatchedPlayers": 1
+    },
+    {
+      "book": "caesars",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 403"
+    },
+    {
+      "book": "draftkings",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 403"
+    },
+    {
+      "book": "espnbet",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 400"
+    },
+    {
+      "book": "fanatics",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 403"
+    },
+    {
+      "book": "fanduel",
+      "status": "ok",
+      "prices": 1093,
+      "closes": 1054,
+      "matchedPlayers": 368,
+      "unmatchedPlayers": 8
+    },
+    {
+      "book": "hardrock",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 404"
+    },
+    {
+      "book": "pinnacle",
+      "status": "unavailable",
+      "prices": 0,
+      "closes": 0,
+      "matchedPlayers": 0,
+      "unmatchedPlayers": 0,
+      "detail": "HTTP 403"
+    }
+  ],
+  "markets": {
+    "player_anytime_td": {
+      "market": "player_anytime_td",
+      "prices": 633,
+      "closes": 632
+    },
+    "player_pass_attempts": {
+      "market": "player_pass_attempts",
+      "prices": 78,
+      "closes": 78
+    },
+    "player_pass_tds": {
+      "market": "player_pass_tds",
+      "prices": 118,
+      "closes": 118
+    },
+    "player_pass_yds": {
+      "market": "player_pass_yds",
+      "prices": 120,
+      "closes": 120
+    },
+    "player_reception_yds": {
+      "market": "player_reception_yds",
+      "prices": 724,
+      "closes": 686
+    },
+    "player_rush_yds": {
+      "market": "player_rush_yds",
+      "prices": 322,
+      "closes": 322
+    },
+    "player_pass_completions": {
+      "market": "player_pass_completions",
+      "prices": 38,
+      "closes": 38
+    },
+    "player_receptions": {
+      "market": "player_receptions",
+      "prices": 480,
+      "closes": 480
+    }
+  },
+  "notice": "A price that is not in the private store is unavailable. The no-vig consensus is not on the card. This is a comparison, not a pick."
+}

@@ -76,4 +76,4 @@ The best weight on all 909 was 0.05, so the projection's disagreement with the c
 
 The Odds Gap free CSV has one side, so the vig cannot be removed. That comparison is unavailable. The Bovada 2021 and 2022 files were read locally and not committed. The bundled box scores start in 2023, so those seasons cannot be scored. That comparison is unavailable.
 
-`assets/price-history.json` still has no prop prices. Yards and receptions in the season tables above still use last season's median.
+`assets/price-history.json` still has no scraped prop prices. The November 21 logged-out snapshot is in the private store, and it has no 2025 closes. Yards and receptions in the season tables above still use last season's median. The no-vig consensus stays off the card.
