@@ -123,7 +123,7 @@ The shift was worse in 2025 and better in 2026. It is not served. The card can s
 
 Weather, pace and rest are not a new prop or total chance. Version 2 already moves an open-roof game total for weather and rest. An earlier week-by-week test of rest and weather on the closing total was worse than a flat 50 percent in both recent seasons. The live forecast is shown with the time it was checked. A missing or old check says unavailable or stale. It is not a pick.
 
-A later pass tried market-specific curves, usage shares, and the closing spread and total. Only a recency weight on the last eight games beat the lognormal chance on both scores in both seasons. The numbers and the pieces that were not adopted are in `docs/PROP_SPECIALIST.md`. Anytime touchdowns are a separate count. That file has those scores too. This is not a pick.
+A later pass tried market-specific curves, usage shares, and the closing spread and total. Only a recency weight on the last eight games beat the lognormal chance on both scores in both seasons. The numbers and the pieces that were not adopted are in `docs/PROP_SPECIALIST.md`. An anytime touchdown chance that sat near 40 percent was not close to the rate players scored, and the recalibrated count did not beat the position-anchored record, so that chance is unavailable. This is not a pick.
 
 ## What changed, including a rematch
 

@@ -286,6 +286,8 @@ ShownProp showProp({
   }
 
   final shownProjection = project(card, propMarketAnchor(card, cards));
+  final anytimeHidden =
+      card.market == 'player_anytime_td' && !anytimeModelAdopted;
   final value = priceProp(
     card: card,
     cards: cards,
@@ -331,7 +333,12 @@ ShownProp showProp({
     pairedBook: paired != null && value.verdict.fairChance != null,
     projection: shownProjection,
     usingProjection: propV2Adopted && shownProjection?.chance != null,
-    dataWarning: teamMismatch
+    dataWarning:
+        anytimeHidden ||
+            shownProjection?.chance == null &&
+                card.market == 'player_anytime_td'
+        ? 'Anytime touchdown chance is unavailable.'
+        : teamMismatch
         ? 'The latest recorded club does not match this matchup. Player history is shown; matchup projection is unavailable.'
         : directory == null
         ? 'Player evidence is still loading.'

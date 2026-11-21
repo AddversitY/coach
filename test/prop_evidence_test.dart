@@ -202,4 +202,65 @@ void main() {
     expect(shown.projection, isNull);
     expect(scriptLegFor(shown), isNull);
   });
+
+  test('an uncalibrated anytime chance is hidden', () {
+    final now = DateTime.utc(2026, 11, 14);
+    final board = demoBoard(now);
+    final sample = propCards(demoBoard(now), now).first;
+    final card = PropCardModel(
+      side: Selection(
+        eventId: sample.side.eventId,
+        market: 'player_anytime_td',
+        outcome: 'Over',
+        participant: sample.player,
+        point: 0.5,
+      ),
+      otherSide: null,
+      event: sample.event,
+      player: sample.player,
+      market: 'player_anytime_td',
+      marketLabel: 'Anytime touchdown',
+      line: 0.5,
+      lineSide: LineSide.over,
+      best: sample.best,
+      implied: sample.implied,
+      fairProbability: sample.fairProbability,
+      expectedProfit: sample.expectedProfit,
+      bookRows: sample.bookRows,
+      rulesUnverified: sample.rulesUnverified,
+      demo: true,
+    );
+    final shown = showProp(
+      card: card,
+      cards: [card],
+      directory: PlayerDirectory(
+        PlayerStatsDataset(
+          rows: [
+            for (var week = 1; week <= 8; week++)
+              PlayerGame(
+                playerId: 'p',
+                name: sample.player,
+                position: 'WR',
+                team: 'KC',
+                opponent: 'BUF',
+                season: 2026,
+                week: week,
+                date: DateTime.utc(2026, 9, week),
+                seasonType: 'REG',
+                stats: {'rushing_tds': 1, 'receiving_tds': 0},
+              ),
+          ],
+        ),
+      ),
+      context: null,
+      board: board,
+      now: now,
+    );
+    expect(shown.value.verdict.ourChance, isNull);
+    expect(shown.projection, isNull);
+    expect(shown.usingProjection, isFalse);
+    expect(shown.dataWarning, 'Anytime touchdown chance is unavailable.');
+    expect(shown.value.verdict.math, contains('unavailable'));
+    expect(shown.value.verdict.math, isNot(contains('mixed in')));
+  });
 }

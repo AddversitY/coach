@@ -7,23 +7,34 @@ import 'prop_context.dart';
 import 'prop_projection.dart';
 import 'prop_report.dart';
 
-/// November 21, 2026. The anytime model is served only when it beats the
-/// shrunk record on Brier and log loss in both 2025 and 2026. The record
-/// is the current method: recorded games, 32 games at 50 percent, and the
-/// 10/15-point gap. Passing touchdowns are not scores for the passer.
-const anytimeModelAdopted = true;
+/// November 21, 2026. An anytime chance is served only when it is pulled
+/// toward the position score rate (or the book's no-vig when that price
+/// exists), the average chance matches the rate players scored within
+/// [anytimeCalibrationMatch], and it beats the position-anchored record
+/// on Brier and log loss in both 2025 and 2026. Otherwise the card says
+/// the chance is unavailable. It is not pulled toward 50 percent.
+/// Passing touchdowns are not scores for the passer.
+const anytimeModelAdopted = false;
 
-/// Which anytime curve won, or `record` when neither curve won.
-const servedAnytimeModel = 'inflated';
+/// Which anytime curve won, or `unavailable` when none is served.
+const servedAnytimeModel = 'unavailable';
 
 /// Red-zone share and the closing total are served on anytime only when
-/// that add-on beat the curve above. They are not the yard-prop switches.
-const anytimeRedZoneAdopted = true;
-const anytimeScriptAdopted = true;
+/// that add-on beat the curve above and stayed calibrated.
+const anytimeRedZoneAdopted = false;
+const anytimeScriptAdopted = false;
+
+/// Earlier scored games required before the mean correction is applied.
+const anytimeCalibrationGames = 200;
+
+/// How far the average chance may sit from the rate players scored.
+/// Two points. A walk-forward cannot use the week it is scoring.
+const anytimeCalibrationMatch = 0.02;
 
 class AnytimeForecast {
   const AnytimeForecast({
     required this.season,
+    required this.legacy,
     required this.record,
     required this.poisson,
     required this.inflated,
@@ -38,6 +49,10 @@ class AnytimeForecast {
   });
 
   final int season, games;
+
+  /// The old record, pulled toward 50 percent. Kept so the before number
+  /// can be printed. It is not a candidate.
+  final double legacy;
   final double record, poisson, inflated;
   final double poissonZone, inflatedZone;
   final double poissonScript, inflatedScript;
@@ -46,14 +61,14 @@ class AnytimeForecast {
 }
 
 /// Week-by-week anytime chances. Earlier weeks only. The line is 0.5,
-/// which is at least one touchdown. The anchor is a fair 50 percent,
-/// the same anchor the other prop test uses when no book price is saved.
+/// which is at least one touchdown. The anchor is the position's earlier
+/// score rate, not 50 percent. A mean correction uses only earlier weeks.
 List<AnytimeForecast> anytimeForecasts(
   List<PlayerGame> rows, {
   UsageBook? shares,
   ScriptBook? scripts,
 }) {
-  final events = <AnytimeForecast>[];
+  final pending = <_AnytimeRow>[];
   final byPlayer = <String, List<PlayerGame>>{};
   for (final game in rows) {
     if (game.seasonType != 'REG') continue;
@@ -73,7 +88,7 @@ List<AnytimeForecast> anytimeForecasts(
     final seasons = bySeason.keys.toList()..sort();
     for (var index = 1; index < seasons.length; index++) {
       final season = seasons[index];
-      if (season != 2025 && season != 2026) continue;
+      if (season < 2024 || season > 2026) continue;
       final previous = bySeason[seasons[index - 1]]!;
       if (previous.length < 4) continue;
       final history = <PlayerGame>[
@@ -94,10 +109,17 @@ List<AnytimeForecast> anytimeForecasts(
             final count = anytimeTouchdowns(earlier);
             if (count != null && count > 0.5) hits++;
           }
-          final record = propSideChance(
+          final anchor = position.scoreRate(game.position, season, week);
+          if (anchor == null || anchor <= 0 || anchor >= 1) continue;
+          final legacy = propSideChance(
             hits: hits,
             observed: observed,
             market: propReportMarketProxy,
+          );
+          final record = propSideChance(
+            hits: hits,
+            observed: observed,
+            market: anchor,
           );
           final plain = _expectedTouchdowns(
             history: history,
@@ -139,7 +161,8 @@ List<AnytimeForecast> anytimeForecasts(
             playerId: game.playerId,
             team: game.team,
           );
-          if (record == null ||
+          if (legacy == null ||
+              record == null ||
               plain == null ||
               zone == null ||
               scripted == null ||
@@ -152,54 +175,46 @@ List<AnytimeForecast> anytimeForecasts(
               .toDouble();
           final positionZero =
               position.zero(game.position, season, week) ?? zeros / observed;
-          double? cappedPoisson(double mean) => _capped(
-            raw: 1 - math.exp(-mean.clamp(0.02, 3.0)),
-            observed: observed,
-          );
-          double? cappedInflated(double mean) {
-            final pi = ((zeros + 8 * positionZero) / (observed + 8)).clamp(
-              0.0,
-              0.85,
-            );
-            final lambda = pi >= 0.999 ? mean : mean / (1 - pi);
-            return _capped(
-              raw: (1 - pi) * (1 - math.exp(-lambda.clamp(0.02, 4.0))),
+          final curves = <String, double>{};
+          final raws = <String, double>{};
+          void put(String name, double mean, {required bool inflated}) {
+            final raw = _touchdownRaw(
+              mean: mean,
+              inflated: inflated,
+              zeros: zeros,
+              positionZero: positionZero,
               observed: observed,
             );
+            final chance = _anchored(
+              raw: raw,
+              observed: observed,
+              anchor: anchor,
+            );
+            if (chance == null) return;
+            curves[name] = chance;
+            raws[name] = raw;
           }
 
-          final poisson = cappedPoisson(plain);
-          final inflated = cappedInflated(plain);
-          final poissonZone = cappedPoisson(zone);
-          final inflatedZone = cappedInflated(zone);
-          final poissonScript = cappedPoisson(scripted);
-          final inflatedScript = cappedInflated(scripted);
-          final poissonBoth = cappedPoisson(both);
-          final inflatedBoth = cappedInflated(both);
-          if (poisson == null ||
-              inflated == null ||
-              poissonZone == null ||
-              inflatedZone == null ||
-              poissonScript == null ||
-              inflatedScript == null ||
-              poissonBoth == null ||
-              inflatedBoth == null) {
-            continue;
-          }
-          events.add(
-            AnytimeForecast(
+          put('poisson', plain, inflated: false);
+          put('inflated', plain, inflated: true);
+          put('poissonZone', zone, inflated: false);
+          put('inflatedZone', zone, inflated: true);
+          put('poissonScript', scripted, inflated: false);
+          put('inflatedScript', scripted, inflated: true);
+          put('poissonBoth', both, inflated: false);
+          put('inflatedBoth', both, inflated: true);
+          if (curves.length < 8) continue;
+          pending.add(
+            _AnytimeRow(
               season: season,
-              record: record,
-              poisson: poisson,
-              inflated: inflated,
-              poissonZone: poissonZone,
-              inflatedZone: inflatedZone,
-              poissonScript: poissonScript,
-              inflatedScript: inflatedScript,
-              poissonBoth: poissonBoth,
-              inflatedBoth: inflatedBoth,
-              hit: value > 0.5,
+              week: week,
               games: observed,
+              hit: value > 0.5,
+              legacy: legacy,
+              record: record,
+              anchor: anchor,
+              shrunk: curves,
+              raw: raws,
             ),
           );
         }
@@ -207,21 +222,186 @@ List<AnytimeForecast> anytimeForecasts(
       }
     }
   }
-  return events;
+  final prepared = _calibrate(pending);
+  _cachedRows = rows;
+  _cachedShares = shares;
+  _cachedScripts = scripts;
+  _cachedEvents = prepared.$1;
+  _cachedBias = prepared.$2;
+  return prepared.$1;
 }
 
-double? _capped({required double raw, required int observed}) {
+List<PlayerGame>? _cachedRows;
+UsageBook? _cachedShares;
+ScriptBook? _cachedScripts;
+List<AnytimeForecast>? _cachedEvents;
+Map<String, double>? _cachedBias;
+
+(List<AnytimeForecast>, Map<String, double>) _prepare(
+  List<PlayerGame> rows, {
+  UsageBook? shares,
+  ScriptBook? scripts,
+}) {
+  if (identical(_cachedRows, rows) &&
+      identical(_cachedShares, shares) &&
+      identical(_cachedScripts, scripts) &&
+      _cachedEvents != null &&
+      _cachedBias != null) {
+    return (_cachedEvents!, _cachedBias!);
+  }
+  anytimeForecasts(rows, shares: shares, scripts: scripts);
+  return (_cachedEvents!, _cachedBias!);
+}
+
+(List<AnytimeForecast>, Map<String, double>) _calibrate(
+  List<_AnytimeRow> rows,
+) {
+  rows.sort((a, b) {
+    final season = a.season.compareTo(b.season);
+    return season != 0 ? season : a.week.compareTo(b.week);
+  });
+  const names = [
+    'poisson',
+    'inflated',
+    'poissonZone',
+    'inflatedZone',
+    'poissonScript',
+    'inflatedScript',
+    'poissonBoth',
+    'inflatedBoth',
+  ];
+  final totals = {for (final name in names) name: _Running()};
+  final events = <AnytimeForecast>[];
+  final biases = <String, double>{};
+  var index = 0;
+  while (index < rows.length) {
+    final season = rows[index].season;
+    final week = rows[index].week;
+    final bias = {for (final name in names) name: totals[name]!.bias};
+    for (final name in names) {
+      biases['$season|$week|$name'] = bias[name]!;
+    }
+    while (index < rows.length &&
+        rows[index].season == season &&
+        rows[index].week == week) {
+      final row = rows[index];
+      final shown = <String, double>{};
+      for (final name in names) {
+        final shifted = (row.shrunk[name]! + bias[name]!).clamp(1e-4, 1 - 1e-4);
+        shown[name] = limitChanceGap(
+          chance: shifted,
+          raw: row.raw[name]!,
+          observed: row.games,
+          market: row.anchor,
+        );
+        totals[name]!.add(shown[name]!, row.hit);
+      }
+      if (season == 2025 || season == 2026) {
+        events.add(
+          AnytimeForecast(
+            season: season,
+            legacy: row.legacy,
+            record: row.record,
+            poisson: shown['poisson']!,
+            inflated: shown['inflated']!,
+            poissonZone: shown['poissonZone']!,
+            inflatedZone: shown['inflatedZone']!,
+            poissonScript: shown['poissonScript']!,
+            inflatedScript: shown['inflatedScript']!,
+            poissonBoth: shown['poissonBoth']!,
+            inflatedBoth: shown['inflatedBoth']!,
+            hit: row.hit,
+            games: row.games,
+          ),
+        );
+      }
+      index++;
+    }
+  }
+  for (final name in names) {
+    biases['next|$name'] = totals[name]!.bias;
+  }
+  return (events, biases);
+}
+
+double _biasFor(
+  List<PlayerGame> rows, {
+  required int season,
+  required int week,
+  required String name,
+  UsageBook? shares,
+  ScriptBook? scripts,
+}) {
+  final biases = _prepare(rows, shares: shares, scripts: scripts).$2;
+  return biases['$season|$week|$name'] ?? biases['next|$name'] ?? 0;
+}
+
+class _Running {
+  int n = 0;
+  double predicted = 0;
+  double actual = 0;
+
+  double get bias {
+    if (n < anytimeCalibrationGames) return 0;
+    return actual / n - predicted / n;
+  }
+
+  void add(double chance, bool hit) {
+    n++;
+    predicted += chance;
+    if (hit) actual += 1;
+  }
+}
+
+class _AnytimeRow {
+  const _AnytimeRow({
+    required this.season,
+    required this.week,
+    required this.games,
+    required this.hit,
+    required this.legacy,
+    required this.record,
+    required this.anchor,
+    required this.shrunk,
+    required this.raw,
+  });
+
+  final int season, week, games;
+  final bool hit;
+  final double legacy, record, anchor;
+  final Map<String, double> shrunk, raw;
+}
+
+double _touchdownRaw({
+  required double mean,
+  required bool inflated,
+  required double zeros,
+  required double positionZero,
+  required int observed,
+}) {
+  if (!inflated) return 1 - math.exp(-mean.clamp(0.02, 3.0));
+  final pi = ((zeros + 8 * positionZero) / (observed + 8)).clamp(0.0, 0.85);
+  final lambda = pi >= 0.999 ? mean.clamp(0.02, 3.0) : mean / (1 - pi);
+  return (1 - pi) * (1 - math.exp(-lambda.clamp(0.02, 4.0)));
+}
+
+double? _anchored({
+  required double raw,
+  required int observed,
+  required double anchor,
+}) {
+  final projected = raw.clamp(1e-4, 1 - 1e-4);
   final shrunk = shrinkProjectedChance(
-    projected: raw.clamp(1e-4, 1 - 1e-4),
+    projected: projected,
     observed: observed,
-    market: propReportMarketProxy,
+    market: anchor,
   );
   if (shrunk == null) return null;
   return limitChanceGap(
     chance: shrunk,
-    raw: raw.clamp(1e-4, 1 - 1e-4),
+    raw: projected,
     observed: observed,
-    market: propReportMarketProxy,
+    market: anchor,
   );
 }
 
@@ -268,8 +448,21 @@ double? _expectedTouchdowns({
   return mean > 3 ? 3 : mean;
 }
 
+/// The curve name the card serves, including a red-zone or script add-on.
+String get servedAnytimeKey {
+  if (!anytimeModelAdopted || servedAnytimeModel == 'unavailable') {
+    return 'unavailable';
+  }
+  if (anytimeRedZoneAdopted && anytimeScriptAdopted) {
+    return '${servedAnytimeModel}Both';
+  }
+  if (anytimeRedZoneAdopted) return '${servedAnytimeModel}Zone';
+  if (anytimeScriptAdopted) return '${servedAnytimeModel}Script';
+  return servedAnytimeModel;
+}
+
 /// The card's anytime chance when [anytimeModelAdopted] is set.
-/// Otherwise the caller keeps the recorded-game chance.
+/// Otherwise the caller shows the chance as unavailable.
 PropProjection? projectAnytime({
   required List<PlayerGame> games,
   required String playerId,
@@ -284,7 +477,7 @@ PropProjection? projectAnytime({
   double? closingTotal,
   DateTime? beforeDate,
 }) {
-  if (!anytimeModelAdopted || servedAnytimeModel == 'record') return null;
+  if (!anytimeModelAdopted || servedAnytimeKey == 'unavailable') return null;
   final prior =
       [
         for (final game in games)
@@ -322,44 +515,72 @@ PropProjection? projectAnytime({
     team: prior.last.team,
   );
   if (mean == null) return null;
-  final raw = servedAnytimeModel == 'inflated'
-      ? () {
-          final zeros = prior
-              .where((game) => (anytimeTouchdowns(game) ?? 1) <= 0)
-              .length
-              .toDouble();
-          final positionZero =
-              rates.zero(prior.last.position, cutoff.$1, cutoff.$2) ??
-              zeros / prior.length;
-          final pi = ((zeros + 8 * positionZero) / (prior.length + 8)).clamp(
-            0.0,
-            0.85,
-          );
-          final lambda = pi >= 0.999 ? mean : mean / (1 - pi);
-          return (1 - pi) * (1 - math.exp(-lambda.clamp(0.02, 4.0)));
-        }()
-      : 1 - math.exp(-mean.clamp(0.02, 3.0));
-  final over = raw.clamp(1e-4, 1 - 1e-4);
-  final sideRaw = side == LineSide.over ? over : (1 - over);
-  final shrunk = shrinkProjectedChance(
-    projected: sideRaw,
-    observed: prior.length,
-    market: market,
+  final positionRate = rates.scoreRate(
+    prior.last.position,
+    cutoff.$1,
+    cutoff.$2,
   );
-  final anchor = market;
-  var shown = shrunk;
-  if (shown != null &&
-      anchor != null &&
-      anchor.isFinite &&
-      anchor > 0 &&
-      anchor < 1) {
+  final book = market != null && market > 0 && market < 1 ? market : null;
+  final overAnchor = book == null
+      ? positionRate
+      : side == LineSide.over
+      ? book
+      : (1 - book).clamp(1e-4, 1 - 1e-4);
+  if (overAnchor == null || overAnchor <= 0 || overAnchor >= 1) return null;
+  final zeros = prior
+      .where((game) => (anytimeTouchdowns(game) ?? 1) <= 0)
+      .length
+      .toDouble();
+  final positionZero =
+      rates.zero(prior.last.position, cutoff.$1, cutoff.$2) ??
+      zeros / prior.length;
+  final raw = _touchdownRaw(
+    mean: mean,
+    inflated: servedAnytimeModel == 'inflated',
+    zeros: zeros,
+    positionZero: positionZero,
+    observed: prior.length,
+  );
+  final shrunk = _anchored(
+    raw: raw,
+    observed: prior.length,
+    anchor: overAnchor,
+  );
+  if (shrunk == null) return null;
+  final bias = _biasFor(
+    games,
+    season: cutoff.$1,
+    week: cutoff.$2,
+    name: servedAnytimeKey,
+    shares: shares,
+    scripts: scripts,
+  );
+  final shifted = (shrunk + bias).clamp(1e-4, 1 - 1e-4);
+  final overShown = limitChanceGap(
+    chance: shifted,
+    raw: raw.clamp(1e-4, 1 - 1e-4),
+    observed: prior.length,
+    market: overAnchor,
+  );
+  var capped = (overShown - shifted).abs() > 1e-9;
+  var shown = side == LineSide.over
+      ? overShown
+      : (1 - overShown).clamp(1e-4, 1 - 1e-4);
+  if (book != null) {
+    final beforeBook = shown;
     shown = limitChanceGap(
       chance: shown,
-      raw: sideRaw,
+      raw: side == LineSide.over
+          ? raw.clamp(1e-4, 1 - 1e-4)
+          : (1 - raw).clamp(1e-4, 1 - 1e-4),
       observed: prior.length,
-      market: anchor,
+      market: book,
     );
+    if ((shown - beforeBook).abs() > 1e-9) capped = true;
   }
+  final sideRaw = side == LineSide.over
+      ? raw.clamp(1e-4, 1 - 1e-4)
+      : (1 - raw).clamp(1e-4, 1 - 1e-4);
   return PropProjection(
     metric: 'anytime_td',
     mean: mean,
@@ -371,7 +592,7 @@ PropProjection? projectAnytime({
     adjustedChance: sideRaw,
     chance: shown,
     market: market,
-    capped: shown != null && shrunk != null && (shown - shrunk).abs() > 1e-9,
+    capped: capped,
     games: prior.length,
     side: side,
     factors: [
@@ -444,6 +665,27 @@ class _TouchdownRates {
 
   double? zero(String position, int season, int week) =>
       _read('z', position, season, week, zeros: true);
+
+  /// Share of earlier games at [position] with at least one score.
+  /// Null when fewer than 12 players have four earlier games.
+  double? scoreRate(String position, int season, int week) {
+    final key = 's|$position|$season|$week';
+    if (_cache.containsKey(key)) return _cache[key];
+    var scores = 0.0;
+    var games = 0.0;
+    var players = 0;
+    for (final series in _series.values) {
+      if (series.position != position) continue;
+      final read = series.scoresBefore(season, week);
+      if (read == null) continue;
+      scores += read.$1;
+      games += read.$2;
+      players++;
+    }
+    final result = players < 12 || games <= 0 ? null : scores / games;
+    _cache[key] = result;
+    return result;
+  }
 
   double? _read(
     String kind,
@@ -532,5 +774,15 @@ class _TdSeries {
       if (values[i] <= 0) zeros++;
     }
     return zeros / n;
+  }
+
+  (double, double)? scoresBefore(int season, int week) {
+    final n = _cut(season, week);
+    if (n < 4) return null;
+    var scores = 0.0;
+    for (var i = 0; i < n; i++) {
+      if (values[i] > 0.5) scores++;
+    }
+    return (scores, n.toDouble());
   }
 }

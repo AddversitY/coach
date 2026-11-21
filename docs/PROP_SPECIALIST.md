@@ -26,18 +26,27 @@ These pieces did not win on both scores in both seasons, so they are not on the 
 | Closing spread shifts the pass rate | 0.2299 | 0.6523 | 0.2358 | 0.6644 |
 | Closing total shifts the volume | 0.2297 | 0.6519 | 0.2367 | 0.6661 |
 
-The share file is still in the app. Anytime touchdowns use the red-zone part. Yards and receptions do not.
+The share file is still in the app. Yards and receptions do not use it. Anytime touchdowns do not use it either, because that chance is not on the card.
 
 ## Anytime touchdowns
 
-An anytime score is rushing touchdowns plus receiving touchdowns. A passing touchdown is not a score for the passer. The old chance is the player's recorded rate, shrunk toward 50 percent with the same gap. The line in the test is 0.5, meaning at least one score. Players scored on 6.3 percent of the 2025 games and 6.7 percent of the 2026 games. The shrink and the gap keep every chance near 40 percent, so none of these chances is close to the rate players actually scored. The new curve is closer than the record. It is still not a prediction that someone will score.
+An anytime score is rushing touchdowns plus receiving touchdowns. A passing touchdown is not a score for the passer. The line in the test is 0.5, meaning at least one score. Recent-games weighting on yards and receptions is unchanged.
 
-| Path | 2025 games | 2025 Brier | 2025 log loss | 2025 mean chance | 2026 games | 2026 Brier | 2026 log loss | 2026 mean chance |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Recorded rate | 14,240 | 0.1715 | 0.5340 | 0.401 | 8,379 | 0.1710 | 0.5329 | 0.399 |
-| Zero-inflated count, plus red zone and the closing total | 14,240 | 0.1571 | 0.5033 | 0.376 | 8,379 | 0.1542 | 0.4971 | 0.370 |
+The chance that was about to ship shrunk the player's record toward 50 percent, then kept it within 10 or 15 points of that anchor. On an earlier full count that put the average chance near 40 percent while players scored on 6.3 percent of 14,240 games in 2025 and 6.7 percent of 8,379 games in 2026. That chance is not on the card.
 
-The plain zero-inflated count already beat the record (2025 Brier 0.1572, log loss 0.5034; 2026 Brier 0.1545, log loss 0.4976). Adding the red-zone share and the game's implied total, one at a time and then together, beat that plain count on both scores in both seasons. That combined count is what the card uses when an anytime price is on the board. The chat is unchanged.
+The replacement pulls the raw count toward the book's no-vig price when a real price is saved, and toward the position's earlier score rate when it is not. A position rate is used only after 12 players at that position have four earlier games. A small correction, fit on earlier weeks only and warmed up on 2024, is added after 200 earlier scored games, then the same 10/15-point gap is applied again. The card can show that chance only when the average sits within 2 points of the rate players scored, and the chance beats the position-anchored record on both scores in both seasons.
+
+On the games that have a position rate, players scored on 10.9 percent of 8,110 games in 2025 and 10.8 percent of 5,181 games in 2026. The old 50 percent shrink on those same games still averaged 40.2 percent and 39.9 percent.
+
+| Path | 2025 games | 2025 Brier | 2025 log loss | 2025 mean chance | 2025 actual | 2026 games | 2026 Brier | 2026 log loss | 2026 mean chance | 2026 actual |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Old shrink toward 50 percent | 8,110 | 0.1798 | 0.5506 | 0.402 | 0.109 | 5,181 | 0.1776 | 0.5460 | 0.399 | 0.108 |
+| Record pulled toward the position rate | 8,110 | 0.0824 | 0.2611 | 0.110 | 0.109 | 5,181 | 0.0790 | 0.2476 | 0.103 | 0.108 |
+| Poisson count, calibrated | 8,110 | 0.0841 | 0.2722 | 0.113 | 0.109 | 5,181 | 0.0822 | 0.2629 | 0.103 | 0.108 |
+| Zero-inflated count, calibrated | 8,110 | 0.0851 | 0.2751 | 0.105 | 0.109 | 5,181 | 0.0832 | 0.2655 | 0.094 | 0.108 |
+| Poisson, plus red zone and the closing total | 8,110 | 0.0825 | 0.2671 | 0.114 | 0.109 | 5,181 | 0.0808 | 0.2590 | 0.103 | 0.108 |
+
+The calibrated counts land within 2 points of the rate players scored. None of them beat the position-anchored record on both scores in both seasons. The card therefore does not show an anytime chance. The feed and the detail say "Anytime touchdown chance is unavailable." The chat is unchanged.
 
 ## Real closing prices
 

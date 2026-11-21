@@ -205,6 +205,7 @@ void main() {
       scripts: scripts,
     );
     final touchNames = [
+      'legacy',
       'record',
       'poisson',
       'inflated',
@@ -217,9 +218,12 @@ void main() {
     ];
     final touchBoards = _scoreAnytime(touchdowns);
     _printBoards('anytime', touchBoards, touchNames);
+    bool kept(String name) =>
+        _beats(touchBoards[name]!, touchBoards['record']!) &&
+        _matchesRate(touchBoards[name]!);
     final touchWinners = [
       for (final name in ['poisson', 'inflated'])
-        if (_beats(touchBoards[name]!, touchBoards['record']!)) name,
+        if (kept(name)) name,
     ];
     final touchAdopted = touchWinners.isEmpty
         ? null
@@ -230,13 +234,18 @@ void main() {
       final zoneName = '${touchAdopted}Zone';
       final scriptName = '${touchAdopted}Script';
       final bothName = '${touchAdopted}Both';
-      zoneOn = _beats(touchBoards[zoneName]!, touchBoards[touchAdopted]!);
-      scriptOn = _beats(touchBoards[scriptName]!, touchBoards[touchAdopted]!);
+      final zoneKept =
+          _beats(touchBoards[zoneName]!, touchBoards[touchAdopted]!) &&
+          _matchesRate(touchBoards[zoneName]!);
+      final scriptKept =
+          _beats(touchBoards[scriptName]!, touchBoards[touchAdopted]!) &&
+          _matchesRate(touchBoards[scriptName]!);
+      zoneOn = zoneKept;
+      scriptOn = scriptKept;
       if (zoneOn && scriptOn) {
-        final bothWins = _beats(
-          touchBoards[bothName]!,
-          touchBoards[touchAdopted]!,
-        );
+        final bothWins =
+            _beats(touchBoards[bothName]!, touchBoards[touchAdopted]!) &&
+            _matchesRate(touchBoards[bothName]!);
         if (!bothWins) {
           final keep = _best(touchBoards, [zoneName, scriptName]);
           zoneOn = keep == zoneName;
@@ -245,7 +254,7 @@ void main() {
       }
     }
     expect(anytimeModelAdopted, touchAdopted != null);
-    expect(servedAnytimeModel, touchAdopted ?? 'record');
+    expect(servedAnytimeModel, touchAdopted ?? 'unavailable');
     expect(anytimeRedZoneAdopted, zoneOn);
     expect(anytimeScriptAdopted, scriptOn);
 
@@ -356,6 +365,7 @@ Map<String, Map<int, _Board>> _score(
 
 Map<String, Map<int, _Board>> _scoreAnytime(List<AnytimeForecast> events) {
   final names = [
+    'legacy',
     'record',
     'poisson',
     'inflated',
@@ -371,6 +381,7 @@ Map<String, Map<int, _Board>> _scoreAnytime(List<AnytimeForecast> events) {
   };
   for (final event in events) {
     final chances = {
+      'legacy': event.legacy,
       'record': event.record,
       'poisson': event.poisson,
       'inflated': event.inflated,
@@ -391,6 +402,14 @@ Map<String, Map<int, _Board>> _scoreAnytime(List<AnytimeForecast> events) {
     }
   }
   return boards;
+}
+
+bool _matchesRate(Map<int, _Board> model) {
+  return [2025, 2026].every((season) {
+    final board = model[season]!;
+    return board.n >= 1000 &&
+        (board.predicted - board.actual).abs() <= anytimeCalibrationMatch;
+  });
 }
 
 bool _beats(Map<int, _Board> model, Map<int, _Board> base) {

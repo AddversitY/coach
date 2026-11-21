@@ -5,6 +5,7 @@ import 'player_stats.dart';
 import 'prop_history.dart';
 import 'prop_chance.dart';
 import 'prop_model.dart';
+import 'prop_touchdown.dart';
 import 'value_check.dart';
 
 class PropValue {
@@ -35,7 +36,7 @@ PropValue priceProp({
   final rate = rateFor(card);
   final anchor = _marketAnchor(card, cards);
   final projected = projectedChance?.call(card, rate, anchor);
-  final chance = projected ?? _chanceFor(rate, anchor);
+  final chance = _servedChance(card, rate, anchor, projected);
   final usingProjection = projected != null;
   final quote = card.best;
   final input = _input(
@@ -135,7 +136,7 @@ List<ValueInput> _sameLine(
           cards: cards,
           rate: rate,
           anchor: anchor,
-          chance: projected ?? _chanceFor(rate, anchor),
+          chance: _servedChance(card, rate, anchor, projected),
           usingProjection: projected != null,
           decimal: row.quote.decimal,
           label: '${row.quote.book} ${card.lineLabel}',
@@ -195,7 +196,21 @@ double? _ourChance(
 ) {
   final rate = rateFor(item);
   final anchor = _marketAnchor(item, cards);
-  return projectedChance?.call(item, rate, anchor) ?? _chanceFor(rate, anchor);
+  final projected = projectedChance?.call(item, rate, anchor);
+  return _servedChance(item, rate, anchor, projected);
+}
+
+/// Anytime is never filled in from the recorded rate. That fill-in was
+/// pulled toward 50 percent and sat near 40 percent while players scored
+/// far less often. A missing model stays missing.
+double? _servedChance(
+  PropCardModel card,
+  HitRate? rate,
+  double? anchor,
+  double? projected,
+) {
+  if (propStatMetrics[card.market] == 'anytime_td') return projected;
+  return projected ?? _chanceFor(rate, anchor);
 }
 
 /// One card per player, market, and line: the side whose chance beats
@@ -260,7 +275,7 @@ ValueInput _inputFor(
     cards: cards,
     rate: rate,
     anchor: anchor,
-    chance: projected ?? _chanceFor(rate, anchor),
+    chance: _servedChance(item, rate, anchor, projected),
     usingProjection: projected != null,
     decimal: quote?.decimal,
     label:
@@ -280,16 +295,26 @@ ValueInput _input({
   String? bookId,
 }) {
   final book = bookId ?? card.best?.bookId;
+  final anytimeUnavailable =
+      propStatMetrics[card.market] == 'anytime_td' &&
+      chance == null &&
+      !anytimeModelAdopted;
   return ValueInput(
     label: label,
     ourChance: chance,
     decimal: decimal,
     otherDecimal: book == null ? null : _otherAtBook(card, cards, book),
     consensusFair: card.fairProbability,
-    source: usingProjection ? propProjectionSource : _chanceSource(rate, anchor),
-    hits: rate?.hits,
-    observed: rate?.observed,
-    chanceNote: usingProjection
+    source: anytimeUnavailable
+        ? 'the anytime model'
+        : usingProjection
+        ? propProjectionSource
+        : _chanceSource(rate, anchor),
+    hits: anytimeUnavailable ? null : rate?.hits,
+    observed: anytimeUnavailable ? null : rate?.observed,
+    chanceNote: anytimeUnavailable
+        ? 'Anytime touchdown chance is unavailable.'
+        : usingProjection
         ? propLiveChance == PropLiveChance.calibrated
               ? 'Projected from recent usage, shifted by earlier games, then pulled toward the book\'s no-vig chance and capped.'
               : 'Projected from recent usage, the matchup, and the team total, then pulled toward the book\'s no-vig chance and capped.'
