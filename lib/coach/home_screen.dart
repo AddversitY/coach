@@ -9,6 +9,8 @@ import '../domain/odds.dart';
 import '../domain/parlay_slip.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_history.dart';
+import '../domain/prop_specialist.dart';
+import '../domain/prop_touchdown.dart';
 import '../domain/skip_list.dart';
 import '../ui/scan_card.dart';
 import '../ui/research_grid.dart';
@@ -111,6 +113,15 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => matchup = context);
     } catch (_) {
       // A missing matchup file leaves the meter blank. It does not invent a rank.
+    }
+    if (shareUsageAdopted || anytimeRedZoneAdopted) {
+      try {
+        final usage = await loadBundledPropUsage();
+        if (!mounted) return;
+        setState(() => PropPricingMemo.usage = usage);
+      } catch (_) {
+        // A missing share file leaves red-zone usage off. It does not invent a share.
+      }
     }
     try {
       final games = await loadBundledHistoryGames();

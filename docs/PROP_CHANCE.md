@@ -1,6 +1,6 @@
 # Prop chance
 
-The chance on a player-prop card is not the raw hit rate. Five clears in five games is not a 100% chance, and it is not shown as a 26-point edge. Coach's Line, the team number in [MODEL.md](MODEL.md), is a different estimate and is not used here.
+The chance on a player-prop card is not the raw hit rate. Yards use the lognormal curve in `docs/MATCHUPS.md`, with the recent-game weight in `docs/PROP_SPECIALIST.md`. An anytime touchdown uses the count in that same file. Five clears in five games is not a 100% chance, and it is not shown as a 26-point edge. Coach's Line, the team number in [MODEL.md](MODEL.md), is a different estimate and is not used here.
 
 ## What is mixed in
 

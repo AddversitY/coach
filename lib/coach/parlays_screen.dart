@@ -12,6 +12,9 @@ import '../domain/parlay_slip.dart';
 import '../domain/parlay_value.dart';
 import '../domain/player_stats.dart';
 import '../domain/prop_history.dart';
+import '../domain/prop_specialist.dart';
+import '../domain/prop_touchdown.dart';
+import 'prop_pricing.dart';
 import '../domain/value_check.dart';
 import '../domain/why_brief.dart';
 import '../explained_number.dart';
@@ -73,6 +76,13 @@ class _ParlaysScreenState extends State<ParlaysScreen> {
       if (!mounted) return;
       setState(() => directory = PlayerDirectory(players));
     } catch (_) {}
+    if (shareUsageAdopted || anytimeRedZoneAdopted) {
+      try {
+        final usage = await loadBundledPropUsage();
+        if (!mounted) return;
+        setState(() => PropPricingMemo.usage = usage);
+      } catch (_) {}
+    }
     try {
       final context = await (widget.loadMatchup ?? loadBundledMatchup)();
       if (!mounted) return;

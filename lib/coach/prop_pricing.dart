@@ -16,8 +16,11 @@ import '../domain/prop_chance.dart';
 import '../domain/prop_history.dart';
 import '../domain/prop_evidence.dart';
 import '../domain/over_rate.dart';
+import '../domain/prop_context.dart';
 import '../domain/prop_model.dart';
 import '../domain/prop_projection.dart';
+import '../domain/prop_specialist.dart';
+import '../domain/prop_touchdown.dart';
 import '../domain/prop_value.dart';
 import '../domain/unit_ratings.dart';
 import '../domain/value_check.dart';
@@ -83,6 +86,21 @@ class PropPricingMemo {
   final windows = <String, PropWindows>{};
   final projections = <String, PropProjection?>{};
   RatingBook? ratings;
+  PositionSpread? spreads;
+  ScriptBook? scripts;
+
+  /// Filled when the app loads the derived share file. Unused while
+  /// [shareUsageAdopted] is off.
+  static UsageBook? usage;
+}
+
+ScriptBook? _scriptsFor(PropPricingMemo cache, List<HistoricalGame> scores) {
+  if (!gameScriptMixAdopted &&
+      !gameScriptVolumeAdopted &&
+      !anytimeScriptAdopted) {
+    return null;
+  }
+  return cache.scripts ??= ScriptBook(scores);
 }
 
 ScriptLeg? scriptLegFor(ShownProp shown) {
@@ -210,6 +228,26 @@ ShownProp showProp({
     }
     final knownEnvironment = environment != null && environment.known;
     final dropStacked = pricedPathDropsStackedScales && knownEnvironment;
+    final tune = servedPropTune;
+    if (metric == 'anytime_td') {
+      if (!anytimeModelAdopted) return null;
+      final anytime = projectAnytime(
+        games: players.data.rows,
+        playerId: id,
+        line: item.line,
+        side: item.lineSide,
+        beforeSeason: 10000,
+        beforeWeek: 1,
+        beforeDate: cutoff,
+        market: market,
+        shares: anytimeRedZoneAdopted ? PropPricingMemo.usage : null,
+        scripts: anytimeScriptAdopted ? _scriptsFor(cache, scores) : null,
+        closingSpread: anytimeScriptAdopted ? itemSpread : null,
+        closingTotal: anytimeScriptAdopted ? itemTotal : null,
+      );
+      cache.projections[key] = anytime;
+      return anytime;
+    }
     final projection = projectProp(
       index: usage,
       playerId: id,
@@ -232,6 +270,16 @@ ShownProp showProp({
       postShrinkCalibrator: postShrink,
       lognormalYards:
           overRateCalibrationAdopted && servedOverCalibration == 'lognormal',
+      tune: tune,
+      spreads: tune.positionVariance || tune.zeroInflated
+          ? (cache.spreads ??= PositionSpread(players.data.rows))
+          : null,
+      scripts: tune.scriptMix || tune.scriptVolume
+          ? _scriptsFor(cache, scores)
+          : null,
+      shareBook: tune.shares ? PropPricingMemo.usage : null,
+      closingSpread: tune.scriptMix || tune.scriptVolume ? itemSpread : null,
+      closingTotal: tune.scriptMix || tune.scriptVolume ? itemTotal : null,
     );
     cache.projections[key] = projection;
     return projection;
