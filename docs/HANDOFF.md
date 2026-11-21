@@ -135,7 +135,7 @@ iPhone width is the layout that matters (390px). One idea on the card, the math 
 ## Rules
 
 - Free data and free local files only. No new signup and no paid service unless the owner says so.
-- Do not scrape sportsbooks. Odds come from The Odds API or the labeled sample board.
+- Logged-out public prop pages may be read. No account, no paid proxy, and no extra Odds API credit. Normalized prices stay in the gitignored store. Raw book payloads are not committed. See [BOOK_PROPS.md](BOOK_PROPS.md).
 - Never commit or print a key. `backend/data/` and `model/.cache/` stay gitignored. Do not commit a big stats dump.
 - Do not call a past loss an edge. The 16-game slice is not an edge. A prop test without sportsbook prices is not an edge.
 - Same-game parlay prices the app builds are estimated. A payout the user pastes is the real price.

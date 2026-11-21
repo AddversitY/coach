@@ -151,6 +151,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   PlayBook? playBook;
   TradeBook? trades;
   SelfGradeReport? selfGrade;
+  BookPriceCoverage? bookPrices;
   LineMoveBook? lineMoves;
   MatchupContext? matchupContext;
   RatingBook? ratingBook;
@@ -256,6 +257,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       contextPlayer: conversation.playerName,
       grades: selfGrade,
       moves: lineMoves,
+      bookPrices: bookPrices,
     );
   }
 
@@ -318,6 +320,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         grades = null;
       }
+      BookPriceCoverage? prices;
+      try {
+        prices = await loadBundledBookPrices();
+      } catch (_) {
+        prices = null;
+      }
       LineMoveBook? moves;
       try {
         moves = await loadBundledLineMoves();
@@ -337,6 +345,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         playBook = plays;
         trades = tape;
         selfGrade = grades;
+        bookPrices = prices;
         lineMoves = moves;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
       });

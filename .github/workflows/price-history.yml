@@ -29,9 +29,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            backend/data/book-props.json
+            backend/data/games.csv
+          key: book-props-${{ github.run_id }}
+          restore-keys: |
+            book-props-
       - name: Save published prices and try public sportsbook pages
         env:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          BOOK_PROPS_INGEST_URL: ${{ vars.COACH_API_BASE_URL }}
+          BOOK_PROPS_INGEST_SECRET: ${{ secrets.BOOK_PROPS_INGEST_SECRET }}
         run: |
           python tools/price_history.py \
             --history assets/price-history.json \
@@ -44,7 +54,7 @@ jobs:
         run: |
           git config user.name "odds-edge-evidence"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/price-history.json assets/self-grade.json assets/line-moves.json
+          git add assets/price-history.json assets/self-grade.json assets/line-moves.json assets/book-price-coverage.json
           if git diff --cached --quiet; then
             echo "Price history unchanged."
           else

@@ -151,3 +151,27 @@ test('news retrieval excludes unrelated injury, weather and price evidence',()=>
   assert.deepEqual(result.sources.map(row=>row.id),['beat_writers']);
   assert.deepEqual(parseModel({choices:[{message:{content:'{"answer":"Scoped report","cited":["team_evidence"]}'}}]}),{answer:'Scoped report',cited:['team_evidence']});
 });
+
+test('logged-out book prices require the ingest secret and drop extra fields', async () => {
+  const values = new Map();
+  const storage = {get: async key => values.get(key) ?? null, put: async (key, value) => {values.set(key, structuredClone(value));}};
+  const env = {
+    BOOK_PROPS_INGEST_SECRET: 'ingest-secret',
+    ALLOWED_ORIGIN: 'https://addversity.github.io',
+    STATE: {idFromName(){return 'id';}, get(){return new CoachState({storage}, env);}},
+  };
+  const missing = await worker.fetch(new Request('https://coach.example/v1/book-prices'), env);
+  assert.equal((await missing.json()).prices, 'unavailable');
+  const denied = await worker.fetch(new Request('https://coach.example/v1/book-prices', {method:'POST', body:'{}'}), env);
+  assert.equal(denied.status, 401);
+  const row = {book:'bovada', eventId:'nflverse:2026_12_IND_HOU', market:'player_pass_yds', outcome:'Over', at:'2026-11-21T22:00:00Z', decimal:1.91, line:242.5, player:'C.J. Stroud', playerId:'00-0039163', apiKey:'ingest-secret'};
+  const accepted = await worker.fetch(new Request('https://coach.example/v1/book-prices', {method:'POST', headers:{authorization:'Bearer ingest-secret', 'content-type':'application/json'}, body:JSON.stringify({observations:[row]})}), env);
+  assert.equal(accepted.status, 200);
+  const saved = await (await worker.fetch(new Request('https://coach.example/v1/book-prices'), env)).json();
+  assert.equal(saved.observations.length, 1);
+  assert.equal(saved.observations[0].playerId, '00-0039163');
+  assert.equal(Object.hasOwn(saved.observations[0], 'apiKey'), false);
+  assert.equal(JSON.stringify(saved).includes('ingest-secret'), false);
+  const invented = await worker.fetch(new Request('https://coach.example/v1/book-prices', {method:'POST', headers:{authorization:'Bearer ingest-secret'}, body:JSON.stringify({observations:[{...row, decimal:1}]})}), env);
+  assert.equal(invented.status, 400);
+});

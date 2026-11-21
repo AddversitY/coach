@@ -48,6 +48,13 @@ Future<SelfGradeReport> loadBundledSelfGrade() async {
   return SelfGradeReport.fromJson(Map<String, dynamic>.from(decoded));
 }
 
+Future<BookPriceCoverage> loadBundledBookPrices() async {
+  final json = await rootBundle.loadString('assets/book-price-coverage.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return BookPriceCoverage.empty;
+  return BookPriceCoverage.fromJson(Map<String, dynamic>.from(decoded));
+}
+
 Future<LineMoveBook> loadBundledLineMoves() async {
   final json = await rootBundle.loadString('assets/line-moves.json');
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));

@@ -110,6 +110,63 @@ void main() {
     expect(gradeMarketForQuestion('rushing yards report card'), 'player_rush_yds');
     expect(asksForGrade('why did the Texans beat the Colts'), isFalse);
   });
+
+  test('a book prop price is shown only when it was saved', () {
+    final coverage = BookPriceCoverage.fromJson({
+      'consensusAdopted': false,
+      'consensusReason': 'Two-sided closes are unavailable for 2025.',
+      'notice': 'This is a comparison, not a pick.',
+      'books': [
+        {'book': 'bovada', 'status': 'ok', 'prices': 4, 'closes': 0},
+        {'book': 'draftkings', 'status': 'unavailable', 'prices': 0, 'closes': 0},
+      ],
+      'observations': [
+        {
+          'book': 'bovada',
+          'market': 'player_pass_yds',
+          'outcome': 'Over',
+          'player': 'C.J. Stroud',
+          'playerId': '00-0039163',
+          'line': 242.5,
+          'decimal': 1.91,
+        },
+      ],
+    });
+    expect(coverage.consensusAdopted, isFalse);
+    final text = bookPriceSentence(
+      coverage,
+      question: 'FanDuel price for C.J. Stroud passing yards',
+      player: 'C.J. Stroud',
+    );
+    expect(text, contains('bovada'));
+    expect(text, contains('242.5'));
+    expect(text, contains('1.91'));
+    expect(text, contains('not on the card'));
+    expect(text, contains('comparison, not a pick'));
+    final hidden = bookPriceSentence(
+      BookPriceCoverage.fromJson({
+        'consensusAdopted': false,
+        'consensusReason': 'Two-sided closes are unavailable for 2025.',
+        'books': [
+          {'book': 'fanduel', 'status': 'ok', 'prices': 12, 'closes': 0},
+        ],
+        'notice': 'This is a comparison, not a pick.',
+      }),
+      question: 'FanDuel passing yards price',
+    );
+    expect(hidden, contains('unavailable'));
+    expect(hidden, contains('fanduel 12 prices'));
+    expect(asksForBookPrices('FanDuel passing yards price'), isTrue);
+    expect(asksForBookPrices('How good is Coach at receiving yards props?'), isFalse);
+    final brief = interpretQuestion(
+      question: 'What is the FanDuel passing yards price?',
+      evidence: null,
+      players: null,
+      ratings: null,
+      bookPrices: coverage,
+    );
+    expect(brief!.title, 'Book prices');
+  });
 }
 
 Map<String, Object?> _row(String at, double decimal, double line) => {

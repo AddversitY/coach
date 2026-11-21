@@ -319,6 +319,178 @@ String _fallbackLabel(String market) => switch (market) {
   _ => market,
 };
 
+class BookPriceBook {
+  const BookPriceBook({
+    required this.book,
+    required this.status,
+    required this.prices,
+    required this.closes,
+    this.detail = '',
+  });
+
+  final String book, status, detail;
+  final int prices, closes;
+  bool get unavailable => status != 'ok';
+}
+
+class SavedBookPrice {
+  const SavedBookPrice({
+    required this.book,
+    required this.market,
+    required this.outcome,
+    required this.player,
+    required this.decimal,
+    this.line,
+    this.playerId,
+  });
+
+  final String book, market, outcome, player;
+  final double decimal;
+  final double? line;
+  final String? playerId;
+}
+
+class BookPriceCoverage {
+  const BookPriceCoverage({
+    required this.books,
+    required this.consensusAdopted,
+    required this.consensusReason,
+    required this.notice,
+    this.prices = const [],
+  });
+
+  final List<BookPriceBook> books;
+  final bool consensusAdopted;
+  final String consensusReason, notice;
+  final List<SavedBookPrice> prices;
+
+  static const empty = BookPriceCoverage(
+    books: [],
+    consensusAdopted: false,
+    consensusReason: 'Two-sided closes are unavailable.',
+    notice: 'Logged-out prop prices are unavailable. This is a comparison, not a pick.',
+  );
+
+  factory BookPriceCoverage.fromJson(Map<String, dynamic> json) {
+    final books = <BookPriceBook>[];
+    final rawBooks = json['books'];
+    if (rawBooks is List) {
+      for (final row in rawBooks) {
+        if (row is! Map) continue;
+        books.add(
+          BookPriceBook(
+            book: row['book'] as String? ?? '',
+            status: row['status'] as String? ?? 'unavailable',
+            prices: _int(row['prices']),
+            closes: _int(row['closes']),
+            detail: row['detail'] as String? ?? '',
+          ),
+        );
+      }
+    }
+    final prices = <SavedBookPrice>[];
+    final rawPrices = json['observations'];
+    if (rawPrices is List) {
+      for (final row in rawPrices) {
+        if (row is! Map) continue;
+        final decimal = (row['decimal'] as num?)?.toDouble();
+        if (decimal == null || decimal <= 1) continue;
+        prices.add(
+          SavedBookPrice(
+            book: row['book'] as String? ?? '',
+            market: row['market'] as String? ?? '',
+            outcome: row['outcome'] as String? ?? '',
+            player: row['player'] as String? ?? '',
+            decimal: decimal,
+            line: (row['line'] as num?)?.toDouble(),
+            playerId: row['playerId'] as String?,
+          ),
+        );
+      }
+    }
+    return BookPriceCoverage(
+      books: books,
+      consensusAdopted: json['consensusAdopted'] == true,
+      consensusReason: json['consensusReason'] as String? ?? 'unavailable',
+      notice: json['notice'] as String? ?? BookPriceCoverage.empty.notice,
+      prices: prices,
+    );
+  }
+}
+
+bool asksForBookPrices(String question) {
+  final text = question.toLowerCase();
+  final book = RegExp(
+    r'betrivers|fanduel|bovada|draftkings|betmgm|caesars|espn bet|fanatics|hard rock|pinnacle|per[- ]book',
+  ).hasMatch(text);
+  final prop = RegExp(
+    r'prop|passing|rushing|receiving|reception|touchdown',
+  ).hasMatch(text);
+  final price = RegExp(r'price|odds|\bline\b|close').hasMatch(text);
+  return book && prop && price;
+}
+
+/// Counts from the public file, and a saved price only when one was stored.
+/// A missing number stays unavailable.
+String bookPriceSentence(
+  BookPriceCoverage coverage, {
+  String question = '',
+  String? player,
+}) {
+  if (coverage.books.isEmpty && coverage.prices.isEmpty) {
+    return coverage.notice;
+  }
+  final saved = coverage.books.where((book) => !book.unavailable && book.prices > 0);
+  final blocked = coverage.books.where((book) => book.unavailable);
+  final counts = saved.isEmpty
+      ? 'No logged-out book has a saved prop price.'
+      : saved
+          .map((book) => '${book.book} ${book.prices} prices, ${book.closes} closes')
+          .join('; ');
+  final missing = blocked.isEmpty
+      ? ''
+      : ' Unavailable: ${blocked.map((book) => book.book).join(', ')}.';
+  final shown = _matchingPrices(coverage, question, player);
+  final priceText = shown == null
+      ? 'The price on this page is unavailable.'
+      : shown;
+  final consensus = coverage.consensusAdopted
+      ? 'The no-vig consensus is on the card.'
+      : 'The no-vig consensus is not on the card. ${coverage.consensusReason}';
+  return '$counts.$missing $priceText $consensus ${coverage.notice}';
+}
+
+String? _matchingPrices(BookPriceCoverage coverage, String question, String? player) {
+  if (coverage.prices.isEmpty) return null;
+  final wanted = (player ?? '').toLowerCase();
+  final market = _questionMarket(question);
+  final rows = [
+    for (final row in coverage.prices)
+      if ((wanted.isEmpty || row.player.toLowerCase().contains(wanted)) &&
+          (market == null || row.market == market))
+        row,
+  ];
+  if (rows.isEmpty) return null;
+  final shown = rows.take(6).map((row) {
+    final line = row.line == null ? 'unavailable line' : row.line.toString();
+    return '${row.book} ${row.player} ${row.outcome} $line at ${row.decimal}';
+  });
+  final extra = rows.length > 6 ? ' ${rows.length - 6} more saved prices are not listed here.' : '';
+  return '${shown.join('; ')}.$extra';
+}
+
+String? _questionMarket(String question) {
+  final text = question.toLowerCase();
+  if (text.contains('reception') && !text.contains('yard')) return 'player_receptions';
+  if (text.contains('receiving')) return 'player_reception_yds';
+  if (text.contains('rush')) return 'player_rush_yds';
+  if (text.contains('attempt')) return 'player_pass_attempts';
+  if (text.contains('completion')) return 'player_pass_completions';
+  if (text.contains('touchdown') || text.contains(' td')) return 'player_pass_tds';
+  if (text.contains('pass')) return 'player_pass_yds';
+  return null;
+}
+
 String _sourceSentence(SelfGradeReport report) {
   if (report.sources.isEmpty) return '';
   final blocked = [

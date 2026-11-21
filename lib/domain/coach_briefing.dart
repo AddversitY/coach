@@ -89,6 +89,7 @@ CoachBrief? interpretQuestion({
   String? contextPlayer,
   SelfGradeReport? grades,
   LineMoveBook? moves,
+  BookPriceCoverage? bookPrices,
 }) {
   if (asksForGrade(question)) {
     final market = gradeMarketForQuestion(question);
@@ -96,6 +97,18 @@ CoachBrief? interpretQuestion({
     return CoachBrief(
       title: 'Report card',
       text: selfGradeSentence(report, market),
+      handlesQuestion: true,
+    );
+  }
+  if (asksForBookPrices(question)) {
+    final coverage = bookPrices ?? BookPriceCoverage.empty;
+    return CoachBrief(
+      title: 'Book prices',
+      text: bookPriceSentence(
+        coverage,
+        question: question,
+        player: contextPlayer,
+      ),
       handlesQuestion: true,
     );
   }
