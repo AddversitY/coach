@@ -451,9 +451,7 @@ String bookPriceSentence(
       ? ''
       : ' Unavailable: ${blocked.map((book) => book.book).join(', ')}.';
   final shown = _matchingPrices(coverage, question, player);
-  final priceText = shown == null
-      ? 'The price on this page is unavailable.'
-      : shown;
+  final priceText = shown ?? 'The price on this page is unavailable.';
   final consensus = coverage.consensusAdopted
       ? 'The no-vig consensus is on the card.'
       : 'The no-vig consensus is not on the card. ${coverage.consensusReason}';
