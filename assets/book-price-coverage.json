@@ -1,11 +1,11 @@
 {
   "schema": "coach-book-price-coverage-v1",
-  "updatedAt": "2026-11-22T18:00:46.203021Z",
+  "updatedAt": "2026-11-22T23:33:58.255274Z",
   "store": "Normalized prices are in the gitignored file backend/data/book-props.json, kept between runs by the GitHub Actions cache. The Worker durable object keeps the latest snapshot when BOOK_PROPS_INGEST_SECRET is set. Raw book payloads are not stored. This public file has counts only.",
   "consensusAdopted": false,
   "consensusReason": "Two-sided closes are unavailable for 2025 and 2026.",
   "games": 11,
-  "prices": 2868,
+  "prices": 3141,
   "closes": 2811,
   "books": [
     {
@@ -20,7 +20,7 @@
     {
       "book": "betrivers",
       "status": "ok",
-      "prices": 761,
+      "prices": 832,
       "closes": 761,
       "matchedPlayers": 273,
       "unmatchedPlayers": 6
@@ -28,7 +28,7 @@
     {
       "book": "bovada",
       "status": "ok",
-      "prices": 868,
+      "prices": 950,
       "closes": 868,
       "matchedPlayers": 172,
       "unmatchedPlayers": 1
@@ -72,7 +72,7 @@
     {
       "book": "fanduel",
       "status": "ok",
-      "prices": 1239,
+      "prices": 1359,
       "closes": 1182,
       "matchedPlayers": 398,
       "unmatchedPlayers": 6
@@ -99,42 +99,42 @@
   "markets": {
     "player_anytime_td": {
       "market": "player_anytime_td",
-      "prices": 684,
+      "prices": 749,
       "closes": 683
     },
     "player_pass_attempts": {
       "market": "player_pass_attempts",
-      "prices": 88,
+      "prices": 96,
       "closes": 88
     },
     "player_pass_tds": {
       "market": "player_pass_tds",
-      "prices": 132,
+      "prices": 144,
       "closes": 132
     },
     "player_pass_yds": {
       "market": "player_pass_yds",
-      "prices": 134,
+      "prices": 146,
       "closes": 134
     },
     "player_reception_yds": {
       "market": "player_reception_yds",
-      "prices": 860,
+      "prices": 942,
       "closes": 804
     },
     "player_rush_yds": {
       "market": "player_rush_yds",
-      "prices": 368,
+      "prices": 406,
       "closes": 368
     },
     "player_pass_completions": {
       "market": "player_pass_completions",
-      "prices": 44,
+      "prices": 48,
       "closes": 44
     },
     "player_receptions": {
       "market": "player_receptions",
-      "prices": 558,
+      "prices": 610,
       "closes": 558
     }
   },
