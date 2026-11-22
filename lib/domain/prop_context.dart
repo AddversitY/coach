@@ -155,6 +155,16 @@ class UsageBook {
     return values.reduce((a, b) => a + b) / values.length;
   }
 
+  /// Every stored share, including later weeks. Callers that score a week
+  /// have to drop that week themselves.
+  void forEachShare(void Function(String playerId, UsageWeek week) visit) {
+    for (final entry in _rows.entries) {
+      for (final week in entry.value) {
+        visit(entry.key, week);
+      }
+    }
+  }
+
   /// Mean red-zone touch share for [position] from earlier weeks only.
   double? positionRedZone(String position, int season, int week) {
     final rows = _redZoneByPosition[position];
