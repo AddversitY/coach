@@ -1,7 +1,7 @@
 # Public betting splits – sample fetches
 
 Fetched: Sunday, Nov 22, 2026, around 12:30 AM America/New_York.
-No signups, no payments, repo not changed.
+No signups and no payments. These are public sample fetches copied into this folder.
 
 ## Best structured samples (start here)
 - `sbd-nfl-betting-splits.json` — SportsBettingDime public JSON API (`/wp-json/adpt/v1/nfl-odds`). Bets % and stake/money % for spread, total, moneyline. Best free machine-readable source.
