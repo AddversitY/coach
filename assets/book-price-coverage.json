@@ -1,12 +1,12 @@
 {
   "schema": "coach-book-price-coverage-v1",
-  "updatedAt": "2026-11-21T23:12:05.804884Z",
+  "updatedAt": "2026-11-22T02:02:36.751760Z",
   "store": "Normalized prices are in the gitignored file backend/data/book-props.json, kept between runs by the GitHub Actions cache. The Worker durable object keeps the latest snapshot when BOOK_PROPS_INGEST_SECRET is set. Raw book payloads are not stored. This public file has counts only.",
   "consensusAdopted": false,
   "consensusReason": "Two-sided closes are unavailable for 2025 and 2026.",
-  "games": 10,
-  "prices": 2513,
-  "closes": 2474,
+  "games": 1,
+  "prices": 275,
+  "closes": 267,
   "books": [
     {
       "book": "betmgm",
@@ -20,18 +20,18 @@
     {
       "book": "betrivers",
       "status": "ok",
-      "prices": 678,
-      "closes": 678,
-      "matchedPlayers": 250,
-      "unmatchedPlayers": 6
+      "prices": 73,
+      "closes": 73,
+      "matchedPlayers": 27,
+      "unmatchedPlayers": 0
     },
     {
       "book": "bovada",
       "status": "ok",
-      "prices": 742,
-      "closes": 742,
-      "matchedPlayers": 148,
-      "unmatchedPlayers": 1
+      "prices": 82,
+      "closes": 82,
+      "matchedPlayers": 16,
+      "unmatchedPlayers": 0
     },
     {
       "book": "caesars",
@@ -72,10 +72,10 @@
     {
       "book": "fanduel",
       "status": "ok",
-      "prices": 1093,
-      "closes": 1054,
-      "matchedPlayers": 368,
-      "unmatchedPlayers": 8
+      "prices": 120,
+      "closes": 112,
+      "matchedPlayers": 38,
+      "unmatchedPlayers": 0
     },
     {
       "book": "hardrock",
@@ -99,43 +99,43 @@
   "markets": {
     "player_anytime_td": {
       "market": "player_anytime_td",
-      "prices": 633,
-      "closes": 632
+      "prices": 65,
+      "closes": 65
     },
     "player_pass_attempts": {
       "market": "player_pass_attempts",
-      "prices": 78,
-      "closes": 78
+      "prices": 8,
+      "closes": 8
     },
     "player_pass_tds": {
       "market": "player_pass_tds",
-      "prices": 118,
-      "closes": 118
+      "prices": 12,
+      "closes": 12
     },
     "player_pass_yds": {
       "market": "player_pass_yds",
-      "prices": 120,
-      "closes": 120
+      "prices": 12,
+      "closes": 12
     },
     "player_reception_yds": {
       "market": "player_reception_yds",
-      "prices": 724,
-      "closes": 686
+      "prices": 82,
+      "closes": 74
     },
     "player_rush_yds": {
       "market": "player_rush_yds",
-      "prices": 322,
-      "closes": 322
+      "prices": 40,
+      "closes": 40
     },
     "player_pass_completions": {
       "market": "player_pass_completions",
-      "prices": 38,
-      "closes": 38
+      "prices": 4,
+      "closes": 4
     },
     "player_receptions": {
       "market": "player_receptions",
-      "prices": 480,
-      "closes": 480
+      "prices": 52,
+      "closes": 52
     }
   },
   "notice": "A price that is not in the private store is unavailable. The no-vig consensus is not on the card. This is a comparison, not a pick."

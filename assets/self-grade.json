@@ -1,14 +1,32 @@
 {
   "schema": "coach-self-grade-v1",
-  "updatedAt": "2026-11-21T21:34:25.637227Z",
+  "updatedAt": "2026-11-22T02:02:51.975328Z",
   "propCloses": 0,
   "realCloseGate": 1000,
   "sources": [
     {
       "source": "betmgm-public",
       "status": "unavailable",
-      "detail": "the public page had no logged-out feed",
-      "checkedAt": "2026-11-20T14:15:02.749701Z"
+      "detail": "the public page had no prop prices",
+      "checkedAt": "2026-11-22T02:02:39.786027Z"
+    },
+    {
+      "source": "betrivers-public",
+      "status": "ok",
+      "detail": "73 new prices, 73 with a player id",
+      "checkedAt": "2026-11-22T02:02:36.609709Z"
+    },
+    {
+      "source": "bovada-public",
+      "status": "ok",
+      "detail": "82 new prices, 82 with a player id",
+      "checkedAt": "2026-11-22T02:02:36.521359Z"
+    },
+    {
+      "source": "caesars-public",
+      "status": "unavailable",
+      "detail": "HTTP 403",
+      "checkedAt": "2026-11-22T02:02:41.871054Z"
     },
     {
       "source": "draftkings-public",
@@ -17,10 +35,28 @@
       "checkedAt": "2026-11-20T14:14:58.201024Z"
     },
     {
-      "source": "fanduel-public",
+      "source": "espnbet-public",
       "status": "unavailable",
       "detail": "HTTP 400",
-      "checkedAt": "2026-11-20T14:15:00.363313Z"
+      "checkedAt": "2026-11-22T02:02:44.323069Z"
+    },
+    {
+      "source": "fanatics-public",
+      "status": "unavailable",
+      "detail": "HTTP 403",
+      "checkedAt": "2026-11-22T02:02:46.399419Z"
+    },
+    {
+      "source": "fanduel-public",
+      "status": "ok",
+      "detail": "120 new prices, 120 with a player id",
+      "checkedAt": "2026-11-22T02:02:36.751790Z"
+    },
+    {
+      "source": "hardrock-public",
+      "status": "unavailable",
+      "detail": "HTTP 404",
+      "checkedAt": "2026-11-22T02:02:49.041289Z"
     },
     {
       "source": "pinnacle-public",
@@ -90,10 +126,58 @@
       "clvSum": null,
       "clvCount": 0
     },
+    "player_pass_attempts": {
+      "market": "player_pass_attempts",
+      "label": "pass attempt props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_pass_completions": {
+      "market": "player_pass_completions",
+      "label": "pass completion props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_pass_tds": {
+      "market": "player_pass_tds",
+      "label": "passing touchdown props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
+    "player_anytime_td": {
+      "market": "player_anytime_td",
+      "label": "anytime touchdown props",
+      "savedPrices": 0,
+      "cards": 0,
+      "graded": 0,
+      "hits": 0,
+      "pushes": 0,
+      "chanceSum": null,
+      "clvSum": null,
+      "clvCount": 0
+    },
     "h2h": {
       "market": "h2h",
       "label": "moneylines",
-      "savedPrices": 630,
+      "savedPrices": 964,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -105,7 +189,7 @@
     "spreads": {
       "market": "spreads",
       "label": "spreads",
-      "savedPrices": 630,
+      "savedPrices": 964,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -117,7 +201,7 @@
     "totals": {
       "market": "totals",
       "label": "totals",
-      "savedPrices": 630,
+      "savedPrices": 964,
       "cards": 0,
       "graded": 0,
       "hits": 0,
