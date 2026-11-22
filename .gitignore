@@ -60,3 +60,6 @@ hosting/node_modules/
 
 # Local hosting tool cache
 /.wrangler/
+
+# Paid EndzoneAPI raw responses stay private
+endzone-raw/

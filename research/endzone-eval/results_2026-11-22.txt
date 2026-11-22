@@ -1,0 +1,40 @@
+rows 1482 unique 1453 overlap 29
+('all',)                           n=1453 games=245 over=0.479 | noVig B=0.2464 L=0.6858 | model B=0.2772 L=0.7743 | evenCard B=0.2524 L=0.6981 | served B=0.2462 L=0.6854 | meanModel=0.489 meanBook=0.498
+('m', 'passing_yards')             n= 158 games=117 over=0.551 | noVig B=0.2511 L=0.6953 | model B=0.2822 L=0.7659 | evenCard B=0.2592 L=0.7118 | served B=0.2514 L=0.6959 | meanModel=0.420 meanBook=0.503
+('m', 'receiving_yards')           n= 515 games=115 over=0.474 | noVig B=0.2500 L=0.6931 | model B=0.2855 L=0.8169 | evenCard B=0.2519 L=0.6973 | served B=0.2495 L=0.6922 | meanModel=0.521 meanBook=0.502
+('m', 'receptions')                n= 481 games= 94 over=0.472 | noVig B=0.2399 L=0.6728 | model B=0.2554 L=0.7057 | evenCard B=0.2480 L=0.6891 | served B=0.2397 L=0.6724 | meanModel=0.497 meanBook=0.491
+('m', 'rushing_yards')             n= 299 games=119 over=0.462 | noVig B=0.2479 L=0.6890 | model B=0.2953 L=0.8157 | evenCard B=0.2567 L=0.7069 | served B=0.2481 L=0.6893 | meanModel=0.458 meanBook=0.498
+('ms', 'passing_yards', 2024)      n=  39 games= 33 over=0.487 | noVig B=0.2509 L=0.6950 | model B=0.2775 L=0.7537 | evenCard B=0.2585 L=0.7104 | served B=0.2515 L=0.6961 | meanModel=0.425 meanBook=0.503
+('ms', 'passing_yards', 2025)      n= 112 games= 80 over=0.580 | noVig B=0.2515 L=0.6961 | model B=0.2851 L=0.7733 | evenCard B=0.2602 L=0.7140 | served B=0.2517 L=0.6965 | meanModel=0.418 meanBook=0.503
+('ms', 'passing_yards', 2026)      n=   7 games=  4 over=0.429 | noVig B=0.2460 L=0.6852 | model B=0.2613 L=0.7170 | evenCard B=0.2456 L=0.6841 | served B=0.2462 L=0.6856 | meanModel=0.419 meanBook=0.503
+('ms', 'receiving_yards', 2024)    n=  80 games= 30 over=0.550 | noVig B=0.2498 L=0.6927 | model B=0.3055 L=0.8277 | evenCard B=0.2572 L=0.7077 | served B=0.2507 L=0.6946 | meanModel=0.499 meanBook=0.503
+('ms', 'receiving_yards', 2025)    n= 388 games= 81 over=0.456 | noVig B=0.2499 L=0.6929 | model B=0.2856 L=0.8215 | evenCard B=0.2532 L=0.7000 | served B=0.2494 L=0.6920 | meanModel=0.521 meanBook=0.502
+('ms', 'receiving_yards', 2026)    n=  47 games=  4 over=0.489 | noVig B=0.2512 L=0.6956 | model B=0.2505 L=0.7605 | evenCard B=0.2324 L=0.6579 | served B=0.2484 L=0.6898 | meanModel=0.551 meanBook=0.500
+('ms', 'receptions', 2024)         n=  65 games= 22 over=0.538 | noVig B=0.2500 L=0.6932 | model B=0.2846 L=0.7707 | evenCard B=0.2586 L=0.7106 | served B=0.2510 L=0.6953 | meanModel=0.458 meanBook=0.490
+('ms', 'receptions', 2025)         n= 369 games= 68 over=0.463 | noVig B=0.2376 L=0.6681 | model B=0.2527 L=0.6989 | evenCard B=0.2472 L=0.6875 | served B=0.2373 L=0.6675 | meanModel=0.501 meanBook=0.492
+('ms', 'receptions', 2026)         n=  47 games=  4 over=0.447 | noVig B=0.2445 L=0.6822 | model B=0.2366 L=0.6692 | evenCard B=0.2397 L=0.6724 | served B=0.2430 L=0.6790 | meanModel=0.519 meanBook=0.484
+('ms', 'rushing_yards', 2024)      n=  53 games= 32 over=0.623 | noVig B=0.2494 L=0.6919 | model B=0.2891 L=0.7849 | evenCard B=0.2583 L=0.7101 | served B=0.2499 L=0.6929 | meanModel=0.451 meanBook=0.502
+('ms', 'rushing_yards', 2025)      n= 223 games= 83 over=0.426 | noVig B=0.2478 L=0.6887 | model B=0.2940 L=0.8157 | evenCard B=0.2558 L=0.7050 | served B=0.2478 L=0.6888 | meanModel=0.464 meanBook=0.497
+('ms', 'rushing_yards', 2026)      n=  23 games=  4 over=0.435 | noVig B=0.2459 L=0.6848 | model B=0.3222 L=0.8864 | evenCard B=0.2620 L=0.7177 | served B=0.2467 L=0.6865 | meanModel=0.419 meanBook=0.499
+('s', 2024)                        n= 237 games= 74 over=0.553 | noVig B=0.2499 L=0.6930 | model B=0.2915 L=0.7903 | evenCard B=0.2580 L=0.7095 | served B=0.2507 L=0.6947 | meanModel=0.465 meanBook=0.499
+('s', 2025)                        n=1092 games=167 over=0.465 | noVig B=0.2455 L=0.6840 | model B=0.2762 L=0.7740 | evenCard B=0.2524 L=0.6982 | served B=0.2452 L=0.6835 | meanModel=0.492 meanBook=0.498
+('s', 2026)                        n= 124 games=  4 over=0.460 | noVig B=0.2474 L=0.6879 | model B=0.2591 L=0.7468 | evenCard B=0.2414 L=0.6759 | served B=0.2459 L=0.6849 | meanModel=0.507 meanBook=0.494
+('src', 'history')                 n= 357 games=230 over=0.555 | noVig B=0.2470 L=0.6871 | model B=0.2777 L=0.7562 | evenCard B=0.2569 L=0.7073 | served B=0.2474 L=0.6878 | meanModel=0.426 meanBook=0.505
+('src', 'probs')                   n=1096 games= 34 over=0.454 | noVig B=0.2462 L=0.6854 | model B=0.2770 L=0.7802 | evenCard B=0.2509 L=0.6951 | served B=0.2458 L=0.6847 | meanModel=0.509 meanBook=0.495
+boot model-book ('all',) ['0.0308', '0.0210', '0.0407']  served-book ['-0.0002', '-0.0008', '0.0005']
+boot model-book ('m', 'passing_yards') ['0.0311', '0.0051', '0.0568']  served-book ['0.0003', '-0.0011', '0.0017']
+boot model-book ('m', 'rushing_yards') ['0.0473', '0.0229', '0.0733']  served-book ['0.0002', '-0.0012', '0.0017']
+boot model-book ('m', 'receiving_yards') ['0.0355', '0.0172', '0.0542']  served-book ['-0.0005', '-0.0019', '0.0010']
+boot model-book ('m', 'receptions') ['0.0155', '0.0030', '0.0282']  served-book ['-0.0002', '-0.0009', '0.0004']
+gap> 0.05 1169 model side right 0.5081266039349872 B model/book 0.2849176799616266 0.24691250244406396
+gap> 0.1 879 model side right 0.5164960182025028 B model/book 0.29432258854153864 0.24623894760588078
+history with open 357 moved 221 mean abs move 1.7030812324929971
+close moved toward result (vs open line) 120 / 221
+passing_yards 100 moved 83 toward 46 meanabs move 3.05 MAE open 59.35 close 59.27
+rushing_yards 94 moved 69 toward 38 meanabs move 1.67 MAE open 39.60 close 39.37
+receiving_yards 95 moved 65 toward 35 meanabs move 1.49 MAE open 31.98 close 32.08
+receptions 68 moved 4 toward 1 meanabs move 0.06 MAE open 2.43 close 2.46
+MAE all open 36.02 close 35.97
+history books [5, 6, 7] probs fair_books [1, 2, 3, 4, 5, 6, 7]
+history hold mean 0.06675240561046308
+overlap 29 same line 28 mean abs novig diff 0.002

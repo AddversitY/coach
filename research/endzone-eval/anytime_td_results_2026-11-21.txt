@@ -1,0 +1,51 @@
+repo check 2025 8110 {'record': (0.0824, 0.2611), 'poisson': (0.0841, 0.2722), 'inflated': (0.0851, 0.2751)} mean poisson 0.113 actual 0.109
+repo check 2026 5181 {'record': (0.079, 0.2476), 'poisson': (0.0822, 0.2629), 'inflated': (0.0832, 0.2655)} mean poisson 0.103 actual 0.108
+book props 983 joined 486 no forecast 497
+
+2025: two-sided no-vig props n=188 games=21 scored=0.335 meanBook=0.318
+  noVig         Brier 0.2079  LogLoss 0.6047  mean 0.318
+  record        Brier 0.2223  LogLoss 0.6411  mean 0.247
+  poisson       Brier 0.2316  LogLoss 0.6639  mean 0.211
+  inflated      Brier 0.2356  LogLoss 0.6756  mean 0.193
+  poissonBook   Brier 0.2138  LogLoss 0.6192  mean 0.274
+  inflatedBook  Brier 0.2157  LogLoss 0.6239  mean 0.256
+  boot record-book Brier diff +0.0144 [-0.0010,+0.0286]
+  boot poissonBook-book Brier diff +0.0059 [-0.0027,+0.0142]
+  boot inflatedBook-book Brier diff +0.0078 [-0.0018,+0.0181]
+  one-sided (margin left in) n=235 scored=0.094 meanImplied=0.155
+    implied    Brier 0.0827 LogLoss 0.2966
+    record     Brier 0.0866 LogLoss 0.3172
+    poisson    Brier 0.0871 LogLoss 0.3211
+    inflated   Brier 0.0870 LogLoss 0.3199
+
+late 2024: two-sided no-vig props n=46 games=4 scored=0.283 meanBook=0.302
+  noVig         Brier 0.1626  LogLoss 0.4989  mean 0.302
+  record        Brier 0.1801  LogLoss 0.5353  mean 0.227
+  poisson       Brier 0.1870  LogLoss 0.5561  mean 0.213
+  inflated      Brier 0.1929  LogLoss 0.5698  mean 0.195
+  poissonBook   Brier 0.1663  LogLoss 0.5086  mean 0.276
+  inflatedBook  Brier 0.1662  LogLoss 0.5074  mean 0.261
+  boot record-book Brier diff +0.0176 [-0.0144,+0.0513]
+  boot poissonBook-book Brier diff +0.0038 [-0.0077,+0.0151]
+  boot inflatedBook-book Brier diff +0.0036 [-0.0100,+0.0171]
+  one-sided (margin left in) n=17 scored=0.059 meanImplied=0.118
+    implied    Brier 0.0564 LogLoss 0.2217
+    record     Brier 0.0642 LogLoss 0.2609
+    poisson    Brier 0.0706 LogLoss 0.2854
+    inflated   Brier 0.0678 LogLoss 0.2768
+
+both: two-sided no-vig props n=234 games=25 scored=0.325 meanBook=0.315
+  noVig         Brier 0.1990  LogLoss 0.5839  mean 0.315
+  record        Brier 0.2140  LogLoss 0.6203  mean 0.243
+  poisson       Brier 0.2229  LogLoss 0.6427  mean 0.211
+  inflated      Brier 0.2272  LogLoss 0.6548  mean 0.193
+  poissonBook   Brier 0.2044  LogLoss 0.5975  mean 0.274
+  inflatedBook  Brier 0.2060  LogLoss 0.6010  mean 0.257
+  boot record-book Brier diff +0.0150 [+0.0009,+0.0290]
+  boot poissonBook-book Brier diff +0.0054 [-0.0013,+0.0124]
+  boot inflatedBook-book Brier diff +0.0070 [-0.0015,+0.0159]
+  one-sided (margin left in) n=252 scored=0.091 meanImplied=0.152
+    implied    Brier 0.0810 LogLoss 0.2915
+    record     Brier 0.0851 LogLoss 0.3134
+    poisson    Brier 0.0860 LogLoss 0.3187
+    inflated   Brier 0.0857 LogLoss 0.3170

@@ -1,0 +1,1345 @@
+{
+  "source": "Covers King of Covers contest consensus (not sportsbook handle)",
+  "spread_url": "https://contests.covers.com/Consensus/TopConsensus/nfl/Overall",
+  "totals_url": "https://contests.covers.com/consensus/topoverunderconsensus/nfl/overall",
+  "history_url_pattern": "https://contests.covers.com/consensus/topconsensus/nfl/overall/YYYY-MM-DD",
+  "fetched_at_et": "2026-11-22 around 12:30 AM ET",
+  "note": "Free HTML, no signup. Percentages are contest picks plus pick counts, not ticket/handle from sportsbooks. Dated URLs returned real historical tables for 2016, 2018, 2020, 2022, 2023, 2024, 2025, and 2026. Totals dated URLs also work. No moneyline consensus URL was found (the attempted moneyline path 404'd). Terms restrict automated copying without consent.",
+  "current_spread_rows": [
+    [
+      "NFL Bal Car",
+      "Sun. Nov 22 1:00 pm ET",
+      "26% 74%",
+      "+2.5 -2.5",
+      "219 635",
+      "Details"
+    ],
+    [
+      "NFL Atl Min",
+      "Sun. Nov 29 1:00 pm ET",
+      "28% 72%",
+      "+13.5 -13.5",
+      "25 65",
+      "Details"
+    ],
+    [
+      "NFL Nyg Ind",
+      "Sun. Nov 29 1:00 pm ET",
+      "71% 29%",
+      "-5.5 +5.5",
+      "60 25",
+      "Details"
+    ],
+    [
+      "NFL Sea Sf",
+      "Sun. Nov 29 4:25 pm ET",
+      "31% 69%",
+      "+2.5 -2.5",
+      "18 41",
+      "Details"
+    ],
+    [
+      "NFL Pit Phi",
+      "Sun. Nov 22 1:00 pm ET",
+      "68% 32%",
+      "-3.5 +3.5",
+      "560 264",
+      "Details"
+    ],
+    [
+      "NFL No Cin",
+      "Sun. Nov 29 1:00 pm ET",
+      "33% 67%",
+      "+8.5 -8.5",
+      "33 68",
+      "Details"
+    ],
+    [
+      "NFL Bal Hou",
+      "Sun. Nov 29 1:00 pm ET",
+      "33% 67%",
+      "+6.5 -6.5",
+      "19 38",
+      "Details"
+    ],
+    [
+      "NFL Kc Buf",
+      "Thu. Nov 26 8:20 pm ET",
+      "33% 67%",
+      "+10.5 -10.5",
+      "49 98",
+      "Details"
+    ],
+    [
+      "NFL Cin Was",
+      "Mon. Nov 23 8:15 pm ET",
+      "66% 34%",
+      "-6.5 +6.5",
+      "437 226",
+      "Details"
+    ],
+    [
+      "NFL Jac Nyg",
+      "Sun. Nov 22 4:25 pm ET",
+      "62% 38%",
+      "-5.5 +5.5",
+      "547 329",
+      "Details"
+    ],
+    [
+      "NFL Nyj Mia",
+      "Sun. Nov 29 1:00 pm ET",
+      "39% 61%",
+      "+23.5 -23.5",
+      "17 27",
+      "Details"
+    ],
+    [
+      "NFL Nyj Lac",
+      "Sun. Nov 22 4:05 pm ET",
+      "40% 60%",
+      "+3.5 -3.5",
+      "324 495",
+      "Details"
+    ],
+    [
+      "NFL Car Tb",
+      "Mon. Nov 30 8:15 pm ET",
+      "40% 60%",
+      "+2.5 -2.5",
+      "17 25",
+      "Details"
+    ],
+    [
+      "NFL Den Pit",
+      "Fri. Nov 27 3:00 pm ET",
+      "59% 41%",
+      "+2.5 -2.5",
+      "76 52",
+      "Details"
+    ],
+    [
+      "NFL Tb Det",
+      "Sun. Nov 22 1:00 pm ET",
+      "42% 58%",
+      "+3.5 -3.5",
+      "361 500",
+      "Details"
+    ],
+    [
+      "NFL Ne Lac",
+      "Sun. Nov 29 4:05 pm ET",
+      "42% 58%",
+      "+3.5 -3.5",
+      "38 52",
+      "Details"
+    ],
+    [
+      "NFL Ten Jac",
+      "Sun. Nov 29 1:00 pm ET",
+      "57% 43%",
+      "+15.5 -15.5",
+      "52 39",
+      "Details"
+    ],
+    [
+      "NFL Min Sf",
+      "Sun. Nov 22 8:20 pm ET",
+      "43% 57%",
+      "+3.5 -3.5",
+      "371 489",
+      "Details"
+    ],
+    [
+      "NFL Ari Kc",
+      "Sun. Nov 22 1:00 pm ET",
+      "44% 56%",
+      "+15.5 -15.5",
+      "333 426",
+      "Details"
+    ],
+    [
+      "NFL No Chi",
+      "Sun. Nov 22 1:00 pm ET",
+      "44% 56%",
+      "+11.5 -11.5",
+      "374 477",
+      "Details"
+    ],
+    [
+      "NFL Mia Buf",
+      "Sun. Nov 22 1:00 pm ET",
+      "55% 45%",
+      "+16.5 -16.5",
+      "439 356",
+      "Details"
+    ],
+    [
+      "NFL Lv Den",
+      "Sun. Nov 22 4:25 pm ET",
+      "47% 53%",
+      "+10.5 -10.5",
+      "370 423",
+      "Details"
+    ],
+    [
+      "NFL Ten Dal",
+      "Sun. Nov 22 1:00 pm ET",
+      "47% 53%",
+      "+7.5 -7.5",
+      "379 425",
+      "Details"
+    ],
+    [
+      "NFL Lv Cle",
+      "Sun. Nov 29 8:20 pm ET",
+      "48% 52%",
+      "+4.5 -4.5",
+      "46 50",
+      "Details"
+    ],
+    [
+      "NFL Gb La",
+      "Wed. Nov 25 8:00 pm ET",
+      "52% 48%",
+      "+2.5 -2.5",
+      "61 57",
+      "Details"
+    ],
+    [
+      "NFL Chi Det",
+      "Thu. Nov 26 1:00 pm ET",
+      "49% 51%",
+      "-2.5 +2.5",
+      "80 84",
+      "Details"
+    ],
+    [
+      "NFL Was Ari",
+      "Sun. Nov 29 4:25 pm ET",
+      "51% 49%",
+      "-6.5 +6.5",
+      "40 39",
+      "Details"
+    ]
+  ],
+  "current_totals_sample_head": null,
+  "history_samples": {
+    "2026-11-15": [
+      [
+        "NFL Ne Det",
+        "Sun. Nov 15 9:30 am ET",
+        "27% 73%",
+        "+2.5 -2.5",
+        "344 940",
+        "Details"
+      ],
+      [
+        "NFL Sf Dal",
+        "Sun. Nov 15 4:25 pm ET",
+        "66% 34%",
+        "-3.5 +3.5",
+        "978 504",
+        "Details"
+      ],
+      [
+        "NFL Buf Nyj",
+        "Sun. Nov 15 1:00 pm ET",
+        "64% 36%",
+        "-7.5 +7.5",
+        "908 518",
+        "Details"
+      ],
+      [
+        "NFL Sea Lv",
+        "Sun. Nov 15 4:05 pm ET",
+        "63% 37%",
+        "-6.5 +6.5",
+        "911 524",
+        "Details"
+      ],
+      [
+        "NFL Kc Atl",
+        "Sun. Nov 15 1:00 pm ET",
+        "63% 37%",
+        "-3.5 +3.5",
+        "912 546",
+        "Details"
+      ],
+      [
+        "NFL Jac Ten",
+        "Sun. Nov 15 1:00 pm ET",
+        "60% 40%",
+        "-10.5 +10.5",
+        "827 541",
+        "Details"
+      ],
+      [
+        "NFL Min Gb",
+        "Sun. Nov 15 1:00 pm ET",
+        "40% 60%",
+        "+2.5 -2.5",
+        "588 888",
+        "Details"
+      ],
+      [
+        "NFL Car No",
+        "Sun. Nov 15 1:00 pm ET",
+        "57% 43%",
+        "-1.5 +1.5",
+        "776 584",
+        "Details"
+      ],
+      [
+        "NFL Mia Ind",
+        "Sun. Nov 15 1:00 pm ET",
+        "46% 54%",
+        "+5.5 -5.5",
+        "587 702",
+        "Details"
+      ],
+      [
+        "NFL La Ari",
+        "Sun. Nov 15 4:05 pm ET",
+        "54% 46%",
+        "-9.5 +9.5",
+        "737 623",
+        "Details"
+      ],
+      [
+        "NFL Pit Cin",
+        "Sun. Nov 15 8:20 pm ET",
+        "47% 53%",
+        "+4.5 -4.5",
+        "693 789",
+        "Details"
+      ],
+      [
+        "NFL Hou Cle",
+        "Sun. Nov 15 1:00 pm ET",
+        "50% 50%",
+        "-3.5 +3.5",
+        "708 697",
+        "Details"
+      ]
+    ],
+    "2025-11-16": [
+      [
+        "NFL Was Mia",
+        "Sun. Nov 16 9:30 am ET",
+        "30% 70%",
+        "+3.5 -3.5",
+        "433 989",
+        "Details"
+      ],
+      [
+        "NFL Lac Jac",
+        "Sun. Nov 16 1:00 pm ET",
+        "65% 35%",
+        "-2.5 +2.5",
+        "1031 544",
+        "Details"
+      ],
+      [
+        "NFL Hou Ten",
+        "Sun. Nov 16 1:00 pm ET",
+        "65% 35%",
+        "-8.5 +8.5",
+        "998 529",
+        "Details"
+      ],
+      [
+        "NFL Sf Ari",
+        "Sun. Nov 16 4:05 pm ET",
+        "65% 35%",
+        "-24.5 +24.5",
+        "1051 567",
+        "Details"
+      ],
+      [
+        "NFL Chi Min",
+        "Sun. Nov 16 1:00 pm ET",
+        "39% 61%",
+        "+2.5 -2.5",
+        "627 990",
+        "Details"
+      ],
+      [
+        "NFL Bal Cle",
+        "Sun. Nov 16 4:25 pm ET",
+        "61% 39%",
+        "-6.5 +6.5",
+        "953 622",
+        "Details"
+      ],
+      [
+        "NFL Sea La",
+        "Sun. Nov 16 4:05 pm ET",
+        "40% 60%",
+        "+3.5 -3.5",
+        "655 999",
+        "Details"
+      ],
+      [
+        "NFL Gb Nyg",
+        "Sun. Nov 16 1:00 pm ET",
+        "59% 41%",
+        "-7.5 +7.5",
+        "912 628",
+        "Details"
+      ],
+      [
+        "NFL Car Atl",
+        "Sun. Nov 16 1:00 pm ET",
+        "44% 56%",
+        "+3.5 -3.5",
+        "683 878",
+        "Details"
+      ],
+      [
+        "NFL Cin Pit",
+        "Sun. Nov 16 1:00 pm ET",
+        "47% 53%",
+        "+6.5 -6.5",
+        "732 831",
+        "Details"
+      ],
+      [
+        "NFL Kc Den",
+        "Sun. Nov 16 4:25 pm ET",
+        "48% 52%",
+        "-1.5 +1.5",
+        "790 853",
+        "Details"
+      ],
+      [
+        "NFL Tb Buf",
+        "Sun. Nov 16 1:00 pm ET",
+        "49% 51%",
+        "+5.5 -5.5",
+        "782 825",
+        "Details"
+      ],
+      [
+        "NFL Det Phi",
+        "Sun. Nov 16 8:20 pm ET",
+        "50% 50%",
+        "+9.5 -9.5",
+        "817 804",
+        "Details"
+      ]
+    ],
+    "2024-11-17": [
+      [
+        "NFL Gb Chi",
+        "Sun. Nov 17 1:00 pm ET",
+        "70% 30%",
+        "-1 +1",
+        "1289 556",
+        "Details"
+      ],
+      [
+        "NFL Min Ten",
+        "Sun. Nov 17 1:00 pm ET",
+        "69% 31%",
+        "-10.5 +10.5",
+        "1211 553",
+        "Details"
+      ],
+      [
+        "NFL Jac Det",
+        "Sun. Nov 17 1:00 pm ET",
+        "32% 68%",
+        "+22.5 -22.5",
+        "520 1094",
+        "Details"
+      ],
+      [
+        "NFL Sea Sf",
+        "Sun. Nov 17 4:05 pm ET",
+        "34% 66%",
+        "+3.5 -3.5",
+        "601 1154",
+        "Details"
+      ],
+      [
+        "NFL Atl Den",
+        "Sun. Nov 17 4:05 pm ET",
+        "37% 63%",
+        "+5.5 -5.5",
+        "678 1157",
+        "Details"
+      ],
+      [
+        "NFL Lv Mia",
+        "Sun. Nov 17 1:00 pm ET",
+        "38% 62%",
+        "+11.5 -11.5",
+        "589 947",
+        "Details"
+      ],
+      [
+        "NFL Ind Nyj",
+        "Sun. Nov 17 1:00 pm ET",
+        "60% 40%",
+        "+3.5 -3.5",
+        "1040 693",
+        "Details"
+      ],
+      [
+        "NFL La Ne",
+        "Sun. Nov 17 1:00 pm ET",
+        "59% 41%",
+        "-8.5 +8.5",
+        "950 651",
+        "Details"
+      ],
+      [
+        "NFL Cle No",
+        "Sun. Nov 17 1:00 pm ET",
+        "43% 57%",
+        "+3.5 -3.5",
+        "763 1019",
+        "Details"
+      ],
+      [
+        "NFL Kc Buf",
+        "Sun. Nov 17 4:25 pm ET",
+        "44% 56%",
+        "+2 -2",
+        "847 1060",
+        "Details"
+      ],
+      [
+        "NFL Cin Lac",
+        "Sun. Nov 17 8:20 pm ET",
+        "55% 45%",
+        "+7.5 -7.5",
+        "1041 843",
+        "Details"
+      ],
+      [
+        "NFL Bal Pit",
+        "Sun. Nov 17 1:00 pm ET",
+        "49% 51%",
+        "+1.5 -1.5",
+        "892 947",
+        "Details"
+      ]
+    ],
+    "2023-11-19": [
+      [
+        "NFL Chi Det",
+        "Sun. Nov 19 1:00 pm ET",
+        "31% 69%",
+        "+7.5 -7.5",
+        "550 1248",
+        "Details"
+      ],
+      [
+        "NFL Dal Car",
+        "Sun. Nov 19 1:00 pm ET",
+        "69% 31%",
+        "-10 +10",
+        "1208 551",
+        "Details"
+      ],
+      [
+        "NFL Lac Gb",
+        "Sun. Nov 19 1:00 pm ET",
+        "67% 33%",
+        "-3 +3",
+        "1222 603",
+        "Details"
+      ],
+      [
+        "NFL Ten Jac",
+        "Sun. Nov 19 1:00 pm ET",
+        "36% 64%",
+        "+6.5 -6.5",
+        "634 1120",
+        "Details"
+      ],
+      [
+        "NFL Tb Sf",
+        "Sun. Nov 19 4:05 pm ET",
+        "37% 63%",
+        "+10 -10",
+        "633 1088",
+        "Details"
+      ],
+      [
+        "NFL Lv Mia",
+        "Sun. Nov 19 1:00 pm ET",
+        "39% 61%",
+        "+13.5 -13.5",
+        "656 1015",
+        "Details"
+      ],
+      [
+        "NFL Nyg Was",
+        "Sun. Nov 19 1:00 pm ET",
+        "42% 58%",
+        "+8.5 -8.5",
+        "686 965",
+        "Details"
+      ],
+      [
+        "NFL Ari Hou",
+        "Sun. Nov 19 1:00 pm ET",
+        "42% 58%",
+        "+4.5 -4.5",
+        "762 1050",
+        "Details"
+      ],
+      [
+        "NFL Pit Cle",
+        "Sun. Nov 19 1:00 pm ET",
+        "44% 56%",
+        "+1.5 -1.5",
+        "812 1030",
+        "Details"
+      ],
+      [
+        "NFL Sea La",
+        "Sun. Nov 19 4:25 pm ET",
+        "54% 46%",
+        "+2.5 -2.5",
+        "985 835",
+        "Details"
+      ],
+      [
+        "NFL Nyj Buf",
+        "Sun. Nov 19 4:25 pm ET",
+        "54% 46%",
+        "+9 -9",
+        "925 789",
+        "Details"
+      ],
+      [
+        "NFL Min Den",
+        "Sun. Nov 19 8:20 pm ET",
+        "52% 48%",
+        "+2.5 -2.5",
+        "956 891",
+        "Details"
+      ]
+    ],
+    "2022-11-20": [
+      [
+        "NFL Det Nyg",
+        "Sun. Nov 20 1:00 pm ET",
+        "31% 69%",
+        "+3 -3",
+        "577 1303",
+        "Details"
+      ],
+      [
+        "NFL Was Hou",
+        "Sun. Nov 20 1:00 pm ET",
+        "64% 36%",
+        "-3 +3",
+        "1137 637",
+        "Details"
+      ],
+      [
+        "NFL Cle Buf",
+        "Sun. Nov 20 1:00 pm ET",
+        "37% 63%",
+        "+7.5 -7.5",
+        "658 1116",
+        "Details"
+      ],
+      [
+        "NFL Chi Atl",
+        "Sun. Nov 20 1:00 pm ET",
+        "61% 39%",
+        "+2 -2",
+        "1093 707",
+        "Details"
+      ],
+      [
+        "NFL Dal Min",
+        "Sun. Nov 20 4:25 pm ET",
+        "40% 60%",
+        "-4.5 +4.5",
+        "777 1154",
+        "Details"
+      ],
+      [
+        "NFL Car Bal",
+        "Sun. Nov 20 1:00 pm ET",
+        "58% 42%",
+        "+12.5 -12.5",
+        "974 700",
+        "Details"
+      ],
+      [
+        "NFL Nyj Ne",
+        "Sun. Nov 20 1:00 pm ET",
+        "57% 43%",
+        "+3.5 -3.5",
+        "1041 791",
+        "Details"
+      ],
+      [
+        "NFL Lv Den",
+        "Sun. Nov 20 4:05 pm ET",
+        "44% 56%",
+        "+3 -3",
+        "777 995",
+        "Details"
+      ],
+      [
+        "NFL Phi Ind",
+        "Sun. Nov 20 1:00 pm ET",
+        "55% 45%",
+        "-6.5 +6.5",
+        "977 802",
+        "Details"
+      ],
+      [
+        "NFL Cin Pit",
+        "Sun. Nov 20 4:25 pm ET",
+        "55% 45%",
+        "-3.5 +3.5",
+        "1017 835",
+        "Details"
+      ],
+      [
+        "NFL Kc Lac",
+        "Sun. Nov 20 8:20 pm ET",
+        "54% 46%",
+        "-5.5 +5.5",
+        "992 862",
+        "Details"
+      ],
+      [
+        "NFL La No",
+        "Sun. Nov 20 1:00 pm ET",
+        "48% 52%",
+        "+2.5 -2.5",
+        "747 809",
+        "Details"
+      ]
+    ],
+    "2020-11-15": [
+      [
+        "NFL Bal Ne",
+        "Sun. Nov 15 8:20 pm ET",
+        "71% 29%",
+        "-7 +7",
+        "1467 604",
+        "Details"
+      ],
+      [
+        "NFL Den Lv",
+        "Sun. Nov 15 4:05 pm ET",
+        "32% 68%",
+        "+3.5 -3.5",
+        "670 1431",
+        "Details"
+      ],
+      [
+        "NFL Lac Mia",
+        "Sun. Nov 15 4:05 pm ET",
+        "35% 65%",
+        "+2 -2",
+        "749 1388",
+        "Details"
+      ],
+      [
+        "NFL Jac Gb",
+        "Sun. Nov 15 1:00 pm ET",
+        "35% 65%",
+        "+13.5 -13.5",
+        "676 1251",
+        "Details"
+      ],
+      [
+        "NFL Was Det",
+        "Sun. Nov 15 1:00 pm ET",
+        "39% 61%",
+        "+2.5 -2.5",
+        "532 849",
+        "Details"
+      ],
+      [
+        "NFL Sf No",
+        "Sun. Nov 15 4:25 pm ET",
+        "41% 59%",
+        "+9.5 -9.5",
+        "798 1162",
+        "Details"
+      ],
+      [
+        "NFL Hou Cle",
+        "Sun. Nov 15 1:00 pm ET",
+        "42% 58%",
+        "+4.5 -4.5",
+        "853 1180",
+        "Details"
+      ],
+      [
+        "NFL Sea La",
+        "Sun. Nov 15 4:25 pm ET",
+        "57% 43%",
+        "+3 -3",
+        "1226 916",
+        "Details"
+      ],
+      [
+        "NFL Tb Car",
+        "Sun. Nov 15 1:00 pm ET",
+        "55% 45%",
+        "-6 +6",
+        "1121 910",
+        "Details"
+      ],
+      [
+        "NFL Phi Nyg",
+        "Sun. Nov 15 1:00 pm ET",
+        "46% 54%",
+        "-4.5 +4.5",
+        "946 1130",
+        "Details"
+      ],
+      [
+        "NFL Buf Ari",
+        "Sun. Nov 15 4:05 pm ET",
+        "52% 48%",
+        "+3 -3",
+        "1086 992",
+        "Details"
+      ],
+      [
+        "NFL Cin Pit",
+        "Sun. Nov 15 4:25 pm ET",
+        "50% 50%",
+        "+6.5 -6.5",
+        "1022 1031",
+        "Details"
+      ]
+    ],
+    "2018-11-18": [
+      [
+        "NFL Car Det",
+        "Sun. Nov 18 1:00 pm ET",
+        "68% 32%",
+        "-4 +4",
+        "1603 764",
+        "Details"
+      ],
+      [
+        "NFL Pit Jac",
+        "Sun. Nov 18 1:00 pm ET",
+        "66% 34%",
+        "-4 +4",
+        "1602 831",
+        "Details"
+      ],
+      [
+        "NFL Cin Bal",
+        "Sun. Nov 18 1:00 pm ET",
+        "64% 36%",
+        "+6.5 -6.5",
+        "886 509",
+        "Details"
+      ],
+      [
+        "NFL Lv Ari",
+        "Sun. Nov 18 4:05 pm ET",
+        "40% 60%",
+        "+4.5 -4.5",
+        "909 1372",
+        "Details"
+      ],
+      [
+        "NFL Dal Atl",
+        "Sun. Nov 18 1:00 pm ET",
+        "41% 59%",
+        "+3.5 -3.5",
+        "943 1356",
+        "Details"
+      ],
+      [
+        "NFL Hou Was",
+        "Sun. Nov 18 1:00 pm ET",
+        "58% 42%",
+        "-3 +3",
+        "1382 1001",
+        "Details"
+      ],
+      [
+        "NFL Tb Nyg",
+        "Sun. Nov 18 1:00 pm ET",
+        "44% 56%",
+        "+3 -3",
+        "935 1200",
+        "Details"
+      ],
+      [
+        "NFL Den Lac",
+        "Sun. Nov 18 4:05 pm ET",
+        "45% 55%",
+        "+7.5 -7.5",
+        "1071 1291",
+        "Details"
+      ],
+      [
+        "NFL Phi No",
+        "Sun. Nov 18 4:25 pm ET",
+        "45% 55%",
+        "+7 -7",
+        "1072 1287",
+        "Details"
+      ],
+      [
+        "NFL Min Chi",
+        "Sun. Nov 18 8:20 pm ET",
+        "47% 53%",
+        "+2.5 -2.5",
+        "1152 1323",
+        "Details"
+      ],
+      [
+        "NFL Ten Ind",
+        "Sun. Nov 18 1:00 pm ET",
+        "51% 49%",
+        "+2 -2",
+        "1219 1170",
+        "Details"
+      ]
+    ],
+    "2016-11-20": [
+      [
+        "NFL Ne Sf",
+        "Sun. Nov 20 4:25 pm ET",
+        "75% 25%",
+        "-10.5 +10.5",
+        "2127 696",
+        "Details"
+      ],
+      [
+        "NFL Pit Cle",
+        "Sun. Nov 20 1:00 pm ET",
+        "70% 30%",
+        "-8 +8",
+        "1965 839",
+        "Details"
+      ],
+      [
+        "NFL Jac Det",
+        "Sun. Nov 20 1:00 pm ET",
+        "32% 68%",
+        "+5.5 -5.5",
+        "913 1898",
+        "Details"
+      ],
+      [
+        "NFL Mia La",
+        "Sun. Nov 20 4:05 pm ET",
+        "64% 36%",
+        "+1 -1",
+        "1831 1009",
+        "Details"
+      ],
+      [
+        "NFL Chi Nyg",
+        "Sun. Nov 20 1:00 pm ET",
+        "36% 64%",
+        "+7 -7",
+        "906 1628",
+        "Details"
+      ],
+      [
+        "NFL Phi Sea",
+        "Sun. Nov 20 4:25 pm ET",
+        "37% 63%",
+        "+6.5 -6.5",
+        "1016 1764",
+        "Details"
+      ],
+      [
+        "NFL Ari Min",
+        "Sun. Nov 20 1:00 pm ET",
+        "57% 43%",
+        "+2 -2",
+        "1606 1220",
+        "Details"
+      ],
+      [
+        "NFL Ten Ind",
+        "Sun. Nov 20 1:00 pm ET",
+        "55% 45%",
+        "+3 -3",
+        "1536 1251",
+        "Details"
+      ],
+      [
+        "NFL Tb Kc",
+        "Sun. Nov 20 1:00 pm ET",
+        "46% 54%",
+        "+7 -7",
+        "1232 1427",
+        "Details"
+      ],
+      [
+        "NFL Buf Cin",
+        "Sun. Nov 20 1:00 pm ET",
+        "49% 51%",
+        "+2.5 -2.5",
+        "1236 1303",
+        "Details"
+      ],
+      [
+        "NFL Gb Was",
+        "Sun. Nov 20 8:30 pm ET",
+        "51% 49%",
+        "+3 -3",
+        "1469 1434",
+        "Details"
+      ],
+      [
+        "NFL Bal Dal",
+        "Sun. Nov 20 1:00 pm ET",
+        "50% 50%",
+        "+7 -7",
+        "1433 1417",
+        "Details"
+      ]
+    ],
+    "totals-2025-11-16": [
+      [
+        "NFL Tb Buf",
+        "Sun. Nov. 16 1:00 pm ET",
+        "65 % Over 35 % Under",
+        "49.5",
+        "682 364",
+        "Details"
+      ],
+      [
+        "NFL Det Phi",
+        "Sun. Nov. 16 8:20 pm ET",
+        "65 % Over 35 % Under",
+        "47.5",
+        "727 389",
+        "Details"
+      ],
+      [
+        "NFL Lac Jac",
+        "Sun. Nov. 16 1:00 pm ET",
+        "63 % Over 38 % Under",
+        "44",
+        "625 375",
+        "Details"
+      ],
+      [
+        "NFL Sea La",
+        "Sun. Nov. 16 4:05 pm ET",
+        "59 % Over 41 % Under",
+        "48.5",
+        "629 436",
+        "Details"
+      ],
+      [
+        "NFL Bal Cle",
+        "Sun. Nov. 16 4:25 pm ET",
+        "58 % Over 42 % Under",
+        "44.5",
+        "603 429",
+        "Details"
+      ],
+      [
+        "NFL Sf Ari",
+        "Sun. Nov. 16 4:05 pm ET",
+        "57 % Under 43 % Over",
+        "47.5",
+        "574 438",
+        "Details"
+      ],
+      [
+        "NFL Car Atl",
+        "Sun. Nov. 16 1:00 pm ET",
+        "56 % Over 44 % Under",
+        "45.5",
+        "557 432",
+        "Details"
+      ],
+      [
+        "NFL Gb Nyg",
+        "Sun. Nov. 16 1:00 pm ET",
+        "56 % Over 44 % Under",
+        "43.5",
+        "567 450",
+        "Details"
+      ],
+      [
+        "NFL Kc Den",
+        "Sun. Nov. 16 4:25 pm ET",
+        "54 % Under 46 % Over",
+        "45.5",
+        "581 489",
+        "Details"
+      ],
+      [
+        "NFL Hou Ten",
+        "Sun. Nov. 16 1:00 pm ET",
+        "52 % Under 48 % Over",
+        "43.5",
+        "511 466",
+        "Details"
+      ],
+      [
+        "NFL Chi Min",
+        "Sun. Nov. 16 1:00 pm ET",
+        "52 % Over 48 % Under",
+        "45.5",
+        "511 476",
+        "Details"
+      ],
+      [
+        "NFL Was Mia",
+        "Sun. Nov. 16 9:30 am ET",
+        "52 % Under 48 % Over",
+        "48.5",
+        "459 430",
+        "Details"
+      ],
+      [
+        "NFL Cin Pit",
+        "Sun. Nov. 16 1:00 pm ET",
+        "51 % Under 49 % Over",
+        "46.5",
+        "539 528",
+        "Details"
+      ]
+    ]
+  },
+  "current_totals_rows": [
+    [
+      "NFL Tb Det",
+      "Sun. Nov. 22 1:00 pm ET",
+      "72 % Over 28 % Under",
+      "45.5",
+      "367 143",
+      "Details"
+    ],
+    [
+      "NFL Ten Jac",
+      "Sun. Nov. 29 1:00 pm ET",
+      "71 % Over 29 % Under",
+      "47",
+      "47 19",
+      "Details"
+    ],
+    [
+      "NFL Kc Buf",
+      "Thu. Nov. 26 8:20 pm ET",
+      "69 % Over 31 % Under",
+      "50.5",
+      "79 35",
+      "Details"
+    ],
+    [
+      "NFL No Cin",
+      "Sun. Nov. 29 1:00 pm ET",
+      "68 % Over 32 % Under",
+      "52.5",
+      "41 19",
+      "Details"
+    ],
+    [
+      "NFL Was Ari",
+      "Sun. Nov. 29 4:25 pm ET",
+      "68 % Over 32 % Under",
+      "41.5",
+      "48 23",
+      "Details"
+    ],
+    [
+      "NFL Cin Was",
+      "Mon. Nov. 23 8:15 pm ET",
+      "67 % Over 33 % Under",
+      "54",
+      "291 141",
+      "Details"
+    ],
+    [
+      "NFL Mia Buf",
+      "Sun. Nov. 22 1:00 pm ET",
+      "66 % Over 34 % Under",
+      "45.5",
+      "316 160",
+      "Details"
+    ],
+    [
+      "NFL Sea Sf",
+      "Sun. Nov. 29 4:25 pm ET",
+      "66 % Over 34 % Under",
+      "46.5",
+      "44 23",
+      "Details"
+    ],
+    [
+      "NFL Ari Kc",
+      "Sun. Nov. 22 1:00 pm ET",
+      "63 % Over 37 % Under",
+      "41.5",
+      "310 179",
+      "Details"
+    ],
+    [
+      "NFL Gb La",
+      "Wed. Nov. 25 8:00 pm ET",
+      "63 % Over 37 % Under",
+      "48.5",
+      "90 52",
+      "Details"
+    ],
+    [
+      "NFL No Chi",
+      "Sun. Nov. 22 1:00 pm ET",
+      "62 % Over 38 % Under",
+      "48.5",
+      "310 191",
+      "Details"
+    ],
+    [
+      "NFL Jac Nyg",
+      "Sun. Nov. 22 4:25 pm ET",
+      "61 % Over 39 % Under",
+      "46.5",
+      "293 190",
+      "Details"
+    ],
+    [
+      "NFL Chi Det",
+      "Thu. Nov. 26 1:00 pm ET",
+      "60 % Over 40 % Under",
+      "53.5",
+      "67 45",
+      "Details"
+    ],
+    [
+      "NFL Bal Hou",
+      "Sun. Nov. 29 1:00 pm ET",
+      "59 % Under 41 % Over",
+      "44.5",
+      "39 27",
+      "Details"
+    ],
+    [
+      "NFL Phi Dal",
+      "Thu. Nov. 26 4:30 pm ET",
+      "59 % Over 41 % Under",
+      "49.5",
+      "62 43",
+      "Details"
+    ],
+    [
+      "NFL Pit Phi",
+      "Sun. Nov. 22 1:00 pm ET",
+      "59 % Under 41 % Over",
+      "37.5",
+      "286 202",
+      "Details"
+    ],
+    [
+      "NFL Atl Min",
+      "Sun. Nov. 29 1:00 pm ET",
+      "58 % Over 42 % Under",
+      "43.5",
+      "38 27",
+      "Details"
+    ],
+    [
+      "NFL Car Tb",
+      "Mon. Nov. 30 8:15 pm ET",
+      "58 % Over 42 % Under",
+      "43.5",
+      "41 30",
+      "Details"
+    ],
+    [
+      "NFL Nyg Ind",
+      "Sun. Nov. 29 1:00 pm ET",
+      "58 % Over 42 % Under",
+      "46.5",
+      "38 28",
+      "Details"
+    ],
+    [
+      "NFL Ten Dal",
+      "Sun. Nov. 22 1:00 pm ET",
+      "56 % Over 44 % Under",
+      "55",
+      "300 233",
+      "Details"
+    ],
+    [
+      "NFL Lv Cle",
+      "Sun. Nov. 29 8:20 pm ET",
+      "55 % Over 45 % Under",
+      "37.5",
+      "37 30",
+      "Details"
+    ],
+    [
+      "NFL Bal Car",
+      "Sun. Nov. 22 1:00 pm ET",
+      "55 % Over 45 % Under",
+      "43.5",
+      "267 219",
+      "Details"
+    ],
+    [
+      "NFL Den Pit",
+      "Fri. Nov. 27 3:00 pm ET",
+      "55 % Under 45 % Over",
+      "39.5",
+      "57 47",
+      "Details"
+    ],
+    [
+      "NFL Nyj Mia",
+      "Sun. Nov. 29 1:00 pm ET",
+      "54 % Over 46 % Under",
+      "41.5",
+      "34 29",
+      "Details"
+    ],
+    [
+      "NFL Lv Den",
+      "Sun. Nov. 22 4:25 pm ET",
+      "53 % Over 47 % Under",
+      "40.5",
+      "254 222",
+      "Details"
+    ],
+    [
+      "NFL Nyj Lac",
+      "Sun. Nov. 22 4:05 pm ET",
+      "53 % Under 47 % Over",
+      "42",
+      "243 219",
+      "Details"
+    ],
+    [
+      "NFL Ne Lac",
+      "Sun. Nov. 29 4:05 pm ET",
+      "51 % Under 49 % Over",
+      "39.5",
+      "34 33",
+      "Details"
+    ],
+    [
+      "NFL Min Sf",
+      "Sun. Nov. 22 8:20 pm ET",
+      "50 % Over 50 % Under",
+      "46.5",
+      "267 266",
+      "Details"
+    ]
+  ]
+}

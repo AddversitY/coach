@@ -1,0 +1,910 @@
+{
+  "fetched_at_et": "2026-11-22 around 12:30 AM ET",
+  "note": "Side-by-side numbers from independent fetches. Sources do not always agree. Home/away orientation differs (Action/SBD report home share; CLEATZ reports the listed side).",
+  "games": [
+    {
+      "game": "MIA @ BUF",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          47.85,
+          49.85
+        ],
+        "spread_home_bets_stake": [
+          52.15,
+          50.15
+        ],
+        "total_over_bets_stake": [
+          68.31,
+          68.92
+        ],
+        "ml_home_bets_stake": [
+          98.69,
+          93.45
+        ],
+        "spread_updated": "2026-11-22T05:05:49.177Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -16.5,
+        "spread_home_tickets_money": [
+          52,
+          49
+        ],
+        "total_over_line": 44.5,
+        "total_over_tickets_money": [
+          68,
+          68
+        ],
+        "ml_home_tickets_money": [
+          99,
+          93
+        ],
+        "num_bets": 24072
+      },
+      "scoresandodds_spread": {
+        "left": "MIA",
+        "left_line": "+16.5",
+        "right": "BUF",
+        "right_line": "-16.5",
+        "left_bets_money": [
+          48,
+          51
+        ],
+        "right_bets_money": [
+          52,
+          49
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "BUF Bills -16.5 vs MIA",
+          "when": "Sun 1:00pm",
+          "handle_pct": 57,
+          "bets_pct": 49,
+          "gap": 8,
+          "raw": "BUF Bills -16.5 vs MIA \u00b7 Sun 1:00pm 57% 49% +8"
+        },
+        {
+          "label": "MIA Dolphins +16.5 at BUF",
+          "when": "Sun 1:00pm",
+          "handle_pct": 43,
+          "bets_pct": 51,
+          "gap": -8,
+          "raw": "MIA Dolphins +16.5 at BUF \u00b7 Sun 1:00pm 43% 51% -8"
+        }
+      ]
+    },
+    {
+      "game": "BAL @ CAR",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          39.01,
+          41.72
+        ],
+        "spread_home_bets_stake": [
+          60.99,
+          58.28
+        ],
+        "total_over_bets_stake": [
+          73.09,
+          71.07
+        ],
+        "ml_home_bets_stake": [
+          82.03,
+          82.65
+        ],
+        "spread_updated": "2026-11-22T05:05:44.421Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -2.5,
+        "spread_home_tickets_money": [
+          55,
+          53
+        ],
+        "total_over_line": 43.5,
+        "total_over_tickets_money": [
+          72,
+          70
+        ],
+        "ml_home_tickets_money": [
+          82,
+          82
+        ],
+        "num_bets": 19205
+      },
+      "scoresandodds_spread": {
+        "left": "BAL",
+        "left_line": "+3",
+        "right": "CAR",
+        "right_line": "-3",
+        "left_bets_money": [
+          45,
+          47
+        ],
+        "right_bets_money": [
+          55,
+          53
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "CAR Panthers -3 vs BAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 72,
+          "bets_pct": 65,
+          "gap": 7,
+          "raw": "CAR Panthers -3 vs BAL \u00b7 Sun 1:00pm 72% 65% +7"
+        },
+        {
+          "label": "BAL Ravens +3 at CAR",
+          "when": "Sun 1:00pm",
+          "handle_pct": 28,
+          "bets_pct": 35,
+          "gap": -7,
+          "raw": "BAL Ravens +3 at CAR \u00b7 Sun 1:00pm 28% 35% -7"
+        }
+      ]
+    },
+    {
+      "game": "TB @ DET",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          10.25,
+          12.78
+        ],
+        "spread_home_bets_stake": [
+          89.75,
+          87.22
+        ],
+        "total_over_bets_stake": [
+          85.22,
+          89.85
+        ],
+        "ml_home_bets_stake": [
+          95.88,
+          97.87
+        ],
+        "spread_updated": "2026-11-22T05:05:44.511Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -3.5,
+        "spread_home_tickets_money": [
+          89,
+          87
+        ],
+        "total_over_line": 47.5,
+        "total_over_tickets_money": [
+          85,
+          90
+        ],
+        "ml_home_tickets_money": [
+          96,
+          98
+        ],
+        "num_bets": 28767
+      },
+      "scoresandodds_spread": {
+        "left": "TB",
+        "left_line": "+3.5",
+        "right": "DET",
+        "right_line": "-3.5",
+        "left_bets_money": [
+          11,
+          13
+        ],
+        "right_bets_money": [
+          89,
+          87
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "DET Lions -3.5 vs TB",
+          "when": "Sun 1:00pm",
+          "handle_pct": 51,
+          "bets_pct": 73,
+          "gap": -22,
+          "raw": "DET Lions -3.5 vs TB \u00b7 Sun 1:00pm 51% 73% -22"
+        },
+        {
+          "label": "TB Buccaneers +3.5 at DET",
+          "when": "Sun 1:00pm",
+          "handle_pct": 49,
+          "bets_pct": 27,
+          "gap": 22,
+          "raw": "TB Buccaneers +3.5 at DET \u00b7 Sun 1:00pm 49% 27% +22"
+        }
+      ]
+    },
+    {
+      "game": "ARI @ KC",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          43.53,
+          43.46
+        ],
+        "spread_home_bets_stake": [
+          56.47,
+          56.54
+        ],
+        "total_over_bets_stake": [
+          85.44,
+          85.17
+        ],
+        "ml_home_bets_stake": [
+          98.49,
+          92.35
+        ],
+        "spread_updated": "2026-11-22T05:05:50.300Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -15.5,
+        "spread_home_tickets_money": [
+          59,
+          57
+        ],
+        "total_over_line": 40.5,
+        "total_over_tickets_money": [
+          85,
+          84
+        ],
+        "ml_home_tickets_money": [
+          98,
+          92
+        ],
+        "num_bets": 23118
+      },
+      "scoresandodds_spread": {
+        "left": "ARI",
+        "left_line": "+15.5",
+        "right": "KC",
+        "right_line": "-15.5",
+        "left_bets_money": [
+          41,
+          43
+        ],
+        "right_bets_money": [
+          59,
+          57
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "KC Chiefs -15.5 vs ARI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 58,
+          "bets_pct": 56,
+          "gap": 2,
+          "raw": "KC Chiefs -15.5 vs ARI \u00b7 Sun 1:00pm 58% 56% +2"
+        },
+        {
+          "label": "ARI Cardinals +15.5 at KC",
+          "when": "Sun 1:00pm",
+          "handle_pct": 42,
+          "bets_pct": 44,
+          "gap": -2,
+          "raw": "ARI Cardinals +15.5 at KC \u00b7 Sun 1:00pm 42% 44% -2"
+        }
+      ]
+    },
+    {
+      "game": "TEN @ DAL",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          52.88,
+          50.95
+        ],
+        "spread_home_bets_stake": [
+          47.12,
+          49.05
+        ],
+        "total_over_bets_stake": [
+          51.28,
+          53.56
+        ],
+        "ml_home_bets_stake": [
+          96.42,
+          95.15
+        ],
+        "spread_updated": "2026-11-22T05:05:45.897Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -7.5,
+        "spread_home_tickets_money": [
+          54,
+          53
+        ],
+        "total_over_line": 54.5,
+        "total_over_tickets_money": [
+          53,
+          55
+        ],
+        "ml_home_tickets_money": [
+          96,
+          95
+        ],
+        "num_bets": 28838
+      },
+      "scoresandodds_spread": {
+        "left": "TEN",
+        "left_line": "+7.5",
+        "right": "DAL",
+        "right_line": "-7.5",
+        "left_bets_money": [
+          46,
+          47
+        ],
+        "right_bets_money": [
+          54,
+          53
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "TEN Titans +7.5 at DAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 56,
+          "bets_pct": 46,
+          "gap": 10,
+          "raw": "TEN Titans +7.5 at DAL \u00b7 Sun 1:00pm 56% 46% +10"
+        },
+        {
+          "label": "DAL Cowboys -7.5 vs TEN",
+          "when": "Sun 1:00pm",
+          "handle_pct": 44,
+          "bets_pct": 54,
+          "gap": -10,
+          "raw": "DAL Cowboys -7.5 vs TEN \u00b7 Sun 1:00pm 44% 54% -10"
+        }
+      ]
+    },
+    {
+      "game": "NO @ CHI",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          36.54,
+          41.53
+        ],
+        "spread_home_bets_stake": [
+          63.46,
+          58.47
+        ],
+        "total_over_bets_stake": [
+          82.88,
+          83.23
+        ],
+        "ml_home_bets_stake": [
+          98.22,
+          98.41
+        ],
+        "spread_updated": "2026-11-22T05:05:50.851Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -11.5,
+        "spread_home_tickets_money": [
+          65,
+          59
+        ],
+        "total_over_line": 48.5,
+        "total_over_tickets_money": [
+          81,
+          81
+        ],
+        "ml_home_tickets_money": [
+          98,
+          98
+        ],
+        "num_bets": 31281
+      },
+      "scoresandodds_spread": {
+        "left": "NO",
+        "left_line": "+11.5",
+        "right": "CHI",
+        "right_line": "-11.5",
+        "left_bets_money": [
+          35,
+          41
+        ],
+        "right_bets_money": [
+          65,
+          59
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "CHI Bears -11.5 vs NO",
+          "when": "Sun 1:00pm",
+          "handle_pct": 77,
+          "bets_pct": 63,
+          "gap": 14,
+          "raw": "CHI Bears -11.5 vs NO \u00b7 Sun 1:00pm 77% 63% +14"
+        },
+        {
+          "label": "NO Saints +11.5 at CHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 23,
+          "bets_pct": 37,
+          "gap": -14,
+          "raw": "NO Saints +11.5 at CHI \u00b7 Sun 1:00pm 23% 37% -14"
+        }
+      ]
+    },
+    {
+      "game": "PIT @ PHI",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          48.67,
+          49
+        ],
+        "spread_home_bets_stake": [
+          51.33,
+          51
+        ],
+        "total_over_bets_stake": [
+          73.09,
+          71.41
+        ],
+        "ml_home_bets_stake": [
+          10.16,
+          6.31
+        ],
+        "spread_updated": "2026-11-22T04:05:46.423Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": 3.5,
+        "spread_home_tickets_money": [
+          51,
+          51
+        ],
+        "total_over_line": 37.5,
+        "total_over_tickets_money": [
+          73,
+          71
+        ],
+        "ml_home_tickets_money": [
+          10,
+          6
+        ],
+        "num_bets": 17559
+      },
+      "scoresandodds_spread": {
+        "left": "PIT",
+        "left_line": "-3.5",
+        "right": "PHI",
+        "right_line": "+3.5",
+        "left_bets_money": [
+          51,
+          52
+        ],
+        "right_bets_money": [
+          49,
+          48
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "PIT Steelers -3.5 at PHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 68,
+          "bets_pct": 80,
+          "gap": -12,
+          "raw": "PIT Steelers -3.5 at PHI \u00b7 Sun 1:00pm 68% 80% -12"
+        },
+        {
+          "label": "PHI Eagles +3.5 vs PIT",
+          "when": "Sun 1:00pm",
+          "handle_pct": 32,
+          "bets_pct": 20,
+          "gap": 12,
+          "raw": "PHI Eagles +3.5 vs PIT \u00b7 Sun 1:00pm 32% 20% +12"
+        }
+      ]
+    },
+    {
+      "game": "NYJ @ LAC",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          48.28,
+          49.67
+        ],
+        "spread_home_bets_stake": [
+          51.72,
+          50.33
+        ],
+        "total_over_bets_stake": [
+          55.59,
+          55.3
+        ],
+        "ml_home_bets_stake": [
+          76.39,
+          64.44
+        ],
+        "spread_updated": "2026-11-22T05:05:49.191Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -3,
+        "spread_home_tickets_money": [
+          51,
+          51
+        ],
+        "total_over_line": 41.5,
+        "total_over_tickets_money": [
+          55,
+          55
+        ],
+        "ml_home_tickets_money": [
+          76,
+          65
+        ],
+        "num_bets": 13909
+      },
+      "scoresandodds_spread": {
+        "left": "NYJ",
+        "left_line": "+3",
+        "right": "LAC",
+        "right_line": "-3",
+        "left_bets_money": [
+          49,
+          49
+        ],
+        "right_bets_money": [
+          51,
+          51
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "LAC Chargers -3 vs NYJ",
+          "when": "Sun 4:05pm",
+          "handle_pct": 85,
+          "bets_pct": 60,
+          "gap": 25,
+          "raw": "LAC Chargers -3 vs NYJ \u00b7 Sun 4:05pm 85% 60% +25"
+        },
+        {
+          "label": "NYJ Jets +3 at LAC",
+          "when": "Sun 4:05pm",
+          "handle_pct": 15,
+          "bets_pct": 40,
+          "gap": -25,
+          "raw": "NYJ Jets +3 at LAC \u00b7 Sun 4:05pm 15% 40% -25"
+        }
+      ]
+    },
+    {
+      "game": "JAC @ NYG",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          76.72,
+          75.4
+        ],
+        "spread_home_bets_stake": [
+          23.28,
+          24.6
+        ],
+        "total_over_bets_stake": [
+          83.06,
+          82.76
+        ],
+        "ml_home_bets_stake": [
+          3.03,
+          1.02
+        ],
+        "spread_updated": "2026-11-22T05:05:44.389Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": 6,
+        "spread_home_tickets_money": [
+          27,
+          28
+        ],
+        "total_over_line": 45.5,
+        "total_over_tickets_money": [
+          83,
+          82
+        ],
+        "ml_home_tickets_money": [
+          3,
+          1
+        ],
+        "num_bets": 25849
+      },
+      "scoresandodds_spread": {
+        "left": "JAC",
+        "left_line": "-6",
+        "right": "NYG",
+        "right_line": "+6",
+        "left_bets_money": [
+          73,
+          72
+        ],
+        "right_bets_money": [
+          27,
+          28
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "JAX Jaguars -6 at NYG",
+          "when": "Sun 4:25pm",
+          "handle_pct": 82,
+          "bets_pct": 79,
+          "gap": 3,
+          "raw": "JAX Jaguars -6 at NYG \u00b7 Sun 4:25pm 82% 79% +3"
+        },
+        {
+          "label": "NYG Giants +6 vs JAX",
+          "when": "Sun 4:25pm",
+          "handle_pct": 18,
+          "bets_pct": 21,
+          "gap": -3,
+          "raw": "NYG Giants +6 vs JAX \u00b7 Sun 4:25pm 18% 21% -3"
+        }
+      ]
+    },
+    {
+      "game": "LV @ DEN",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          36.73,
+          38
+        ],
+        "spread_home_bets_stake": [
+          63.27,
+          62
+        ],
+        "total_over_bets_stake": [
+          71.91,
+          72.42
+        ],
+        "ml_home_bets_stake": [
+          97.47,
+          93.82
+        ],
+        "spread_updated": "2026-11-22T04:05:46.858Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -10.5,
+        "spread_home_tickets_money": [
+          63,
+          62
+        ],
+        "total_over_line": 40.5,
+        "total_over_tickets_money": [
+          72,
+          72
+        ],
+        "ml_home_tickets_money": [
+          97,
+          94
+        ],
+        "num_bets": 18892
+      },
+      "scoresandodds_spread": {
+        "left": "LV",
+        "left_line": "+10.5",
+        "right": "DEN",
+        "right_line": "-10.5",
+        "left_bets_money": [
+          37,
+          38
+        ],
+        "right_bets_money": [
+          63,
+          62
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "LV Raiders +10.5 at DEN",
+          "when": "Sun 4:25pm",
+          "handle_pct": 52,
+          "bets_pct": 51,
+          "gap": 1,
+          "raw": "LV Raiders +10.5 at DEN \u00b7 Sun 4:25pm 52% 51% +1"
+        },
+        {
+          "label": "DEN Broncos -10.5 vs LV",
+          "when": "Sun 4:25pm",
+          "handle_pct": 48,
+          "bets_pct": 49,
+          "gap": -1,
+          "raw": "DEN Broncos -10.5 vs LV \u00b7 Sun 4:25pm 48% 49% -1"
+        }
+      ]
+    },
+    {
+      "game": "MIN @ SF",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          65.62,
+          40.45
+        ],
+        "spread_home_bets_stake": [
+          34.38,
+          59.55
+        ],
+        "total_over_bets_stake": [
+          11.08,
+          14.98
+        ],
+        "ml_home_bets_stake": [
+          83.21,
+          72.65
+        ],
+        "spread_updated": "2026-11-22T05:05:47.164Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": -3.5,
+        "spread_home_tickets_money": [
+          30,
+          57
+        ],
+        "total_over_line": 46.5,
+        "total_over_tickets_money": [
+          11,
+          15
+        ],
+        "ml_home_tickets_money": [
+          83,
+          73
+        ],
+        "num_bets": 22507
+      },
+      "scoresandodds_spread": {
+        "left": "MIN",
+        "left_line": "+3",
+        "right": "SF",
+        "right_line": "-3",
+        "left_bets_money": [
+          70,
+          43
+        ],
+        "right_bets_money": [
+          30,
+          57
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "US users Get offer SF 49ers -3 vs MIN",
+          "when": "Sun 8:20pm",
+          "handle_pct": 71,
+          "bets_pct": 55,
+          "gap": 16,
+          "raw": "US users Get offer SF 49ers -3 vs MIN \u00b7 Sun 8:20pm 71% 55% +16"
+        },
+        {
+          "label": "MIN Vikings +3 at SF",
+          "when": "Sun 8:20pm",
+          "handle_pct": 29,
+          "bets_pct": 45,
+          "gap": -16,
+          "raw": "MIN Vikings +3 at SF \u00b7 Sun 8:20pm 29% 45% -16"
+        }
+      ]
+    },
+    {
+      "game": "CIN @ WAS",
+      "sportsbettingdime": {
+        "spread_home_line_not_in_splits": "line lives in markets, not in this compact extract",
+        "spread_away_bets_stake": [
+          80.81,
+          68.39
+        ],
+        "spread_home_bets_stake": [
+          19.19,
+          31.61
+        ],
+        "total_over_bets_stake": [
+          70.16,
+          68.03
+        ],
+        "ml_home_bets_stake": [
+          2.29,
+          4.03
+        ],
+        "spread_updated": "2026-11-22T05:05:48.978Z"
+      },
+      "action_network_consensus": {
+        "spread_home_line": 6,
+        "spread_home_tickets_money": [
+          19,
+          32
+        ],
+        "total_over_line": 54.5,
+        "total_over_tickets_money": [
+          70,
+          68
+        ],
+        "ml_home_tickets_money": [
+          2,
+          4
+        ],
+        "num_bets": 15868
+      },
+      "scoresandodds_spread": {
+        "left": "CIN",
+        "left_line": "-6",
+        "right": "WAS",
+        "right_line": "+6",
+        "left_bets_money": [
+          81,
+          68
+        ],
+        "right_bets_money": [
+          19,
+          32
+        ]
+      },
+      "cleatz_spread_rows": [
+        {
+          "label": "CIN Bengals -6 at WAS",
+          "when": "Mon 8:15pm",
+          "handle_pct": 92,
+          "bets_pct": 86,
+          "gap": 6,
+          "raw": "CIN Bengals -6 at WAS \u00b7 Mon 8:15pm 92% 86% +6"
+        },
+        {
+          "label": "WAS Commanders +6 vs CIN",
+          "when": "Mon 8:15pm",
+          "handle_pct": 8,
+          "bets_pct": 14,
+          "gap": -6,
+          "raw": "WAS Commanders +6 vs CIN \u00b7 Mon 8:15pm 8% 14% -6"
+        }
+      ]
+    }
+  ],
+  "vsin_partial": {
+    "source": "WebFetch of https://data.vsin.com/betting-splits/?sport=NFL (curl was Cloudflare-blocked)",
+    "warning": "The markdown conversion only returned the first game, so this is not a full-slate sample.",
+    "game": "MIA @ BUF, Sunday Nov 22, 2026",
+    "book": "DraftKings (page says the table is DraftKings Sportsbook action, updated every 5 minutes)",
+    "spread": {
+      "line": "MIA +16.5 / BUF -16.5",
+      "handle": {
+        "MIA": "43%",
+        "BUF": "57%"
+      },
+      "bets": {
+        "MIA": "45%",
+        "BUF": "55%"
+      }
+    },
+    "total": {
+      "line": "44.5",
+      "handle": {
+        "over": "85%",
+        "under": "15%"
+      },
+      "bets": {
+        "over": "77%",
+        "under": "23%"
+      }
+    },
+    "moneyline": {
+      "line": "MIA +900 / BUF -1580 (one fetch) or nearby",
+      "handle": {
+        "MIA": "18-19%",
+        "BUF": "81-82%"
+      },
+      "bets": {
+        "MIA": "6%",
+        "BUF": "94%"
+      },
+      "note": "Two WebFetches a few minutes apart showed MIA moneyline handle 18% then 19%."
+    }
+  }
+}

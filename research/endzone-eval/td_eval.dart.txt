@@ -1,0 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:odds_edge/domain/player_stats.dart';
+import 'td_patched.dart';
+void main() {
+  final rows = PlayerStatsDataset.fromJson(jsonDecode(File('/workspace/coach-eval/assets/nfl-player-stats.json').readAsStringSync().replaceFirst('\uFEFF', '')) as Map<String, dynamic>).rows;
+  final book = jsonDecode(File('/workspace/evalwork/td_book.json').readAsStringSync()) as List;
+  for (final b in book) {
+    if (b['noVig'] != null) evalBook['${b['playerId']}|${b['season']}|${b['week']}'] = (b['noVig'] as num).toDouble();
+  }
+  anytimeForecasts(rows);
+  File('/workspace/evalwork/td_scored.json').writeAsStringSync(jsonEncode(evalOut));
+  print('rows ${evalOut.length}');
+}
