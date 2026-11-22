@@ -1,0 +1,63 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:odds_edge/domain/history.dart';
+import 'package:odds_edge/domain/hit_rate.dart';
+import 'package:odds_edge/domain/player_stats.dart';
+import 'package:odds_edge/domain/prop_chance.dart';
+import 'package:odds_edge/domain/prop_context.dart';
+import 'package:odds_edge/domain/prop_projection.dart';
+import 'package:odds_edge/domain/unit_ratings.dart';
+
+Map<String, dynamic> _json(String p) =>
+    jsonDecode(File(p).readAsStringSync().replaceFirst('\uFEFF', '')) as Map<String, dynamic>;
+
+void main() {
+  const root = '/workspace/coach-eval/';
+  final players = PlayerStatsDataset.fromJson(_json('${root}assets/nfl-player-stats.json')).rows;
+  final games = _json('${root}assets/nfl-history.json')['games'] as List;
+  final history = [for (final r in games) if (r is Map) HistoricalGame.fromJson(Map<String, dynamic>.from(r))];
+  final index = UsageIndex.build(players, scores: history);
+  final ratings = RatingBook.build(players);
+  const tune = PropTune(recency: true); // servedPropTune: only recency adopted
+  final byPlayer = <String, List<PlayerGame>>{};
+  for (final g in players) {
+    (byPlayer[g.playerId] ??= []).add(g);
+  }
+  final props = jsonDecode(File('/workspace/evalwork/props.json').readAsStringSync()) as List;
+  final out = <Map<String, dynamic>>[];
+  for (final p in props) {
+    final season = p['season'] as int, week = p['week'] as int;
+    // POST weeks continue after REG; cut is season/week so earlier games only.
+    final metric = p['metric'] as String;
+    final line = (p['line'] as num).toDouble();
+    final pid = p['playerId'] as String;
+    final before = [
+      for (final g in byPlayer[pid] ?? const <PlayerGame>[])
+        if (g.season < season || (g.season == season && g.week < week)) g
+    ];
+    final env = matchupEnvironment(
+      book: ratings, playerGames: before, metric: metric,
+      opponent: p['opponent'] as String, beforeSeason: season, beforeWeek: week,
+      recencyWeight: matchupRecencyWeight);
+    PropProjection? run(double market, double? weight) => projectProp(
+      index: index, playerId: pid, metric: metric, line: line, side: LineSide.over,
+      beforeSeason: season, beforeWeek: week, team: p['team'] as String,
+      opponent: p['opponent'] as String, market: market,
+      environment: env.known ? env : null, lognormalYards: true, tune: tune,
+      marketWeight: weight);
+    final even = run(0.5, null);
+    final nv = (p['noVig'] as num).toDouble();
+    final served = run(nv, propModelWeight);
+    final anchored = run(nv, null);
+    if (even == null || served == null) continue;
+    out.add({
+      ...Map<String, dynamic>.from(p as Map),
+      'model': even.adjustedChance,
+      'evenCard': even.chance,
+      'served': served.chance,
+      'anchored': anchored?.chance,
+    });
+  }
+  File('/workspace/evalwork/scored.json').writeAsStringSync(jsonEncode(out));
+  print('scored ${out.length} of ${props.length}');
+}

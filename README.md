@@ -11,6 +11,7 @@ Hosted Coach AI is connected through Cloudflare Workers AI. Guided evidence tool
 - [Current architecture and hosting next step](docs/COACH_WORKSPACE.md)
 - [Game analysis and automatic evaluation](docs/GAME_ANALYSIS.md)
 - [Handoff](docs/HANDOFF.md)
+- [Handoff to Claude Code, Nov 22 2026](docs/HANDOFF_CLAUDE.md)
 
 Windows setup: `.\tools\setup.ps1`, then `.\tools\flutter.ps1 run -d windows`.
 The existing internal Dart package name and application identifiers are retained

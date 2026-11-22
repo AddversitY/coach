@@ -1,0 +1,215 @@
+PUBLIC-BIAS RESEARCH — 2026-11-22 (America/New_York). Private research; raw odds stay in the bot store, nothing committed.
+
+QUESTION: Do public-money patterns (overs, stars, popular teams, prime time, favorites, line moves, soft vs sharp books) bend
+closing prices enough that a de-biased probability beats the books' no-vig probability?
+
+DATA
+- Player props (passing/rushing/receiving yards, receptions), pushes dropped, deduped per player-week-market:
+  EndzoneAPI history (with open line + real over/under prices) and EndzoneAPI game probabilities (no-vig fair prob, avg prices),
+  plus repo prop-closes.json (PropLine CC BY sample, 2026 weeks 2-3, soft-book consensus and Pinnacle no-vig; -110 assumed for ROI).
+  2024 n=239, 2025 n=1117, 2026 n=1093. (Count differs slightly from the earlier 1,453 EZ set because of dedupe key and the added PropLine rows.)
+- Game lines: repo closing-lines.json (nflverse, CC BY) 2015-2026 regular season, closing spread/total/moneyline WITH prices; kickoff day/time
+  from nflverse games.csv. No opening lines exist in this file.
+- Popularity proxies (free, point-in-time safe): prior-season fantasy PPR rank from nflverse stats in repo (star = top-12 QB/TE, top-24 RB/WR);
+  1st-round draft pick (nflverse players.csv); a-priori "public team" list DAL GB PIT KC SF PHI (fixed before testing); prime time = Thu/Mon or night kickoff.
+- NOT usable yet: repo price-history.json starts 2026-11-19 (essentially no graded games); book-props snapshots have no graded results.
+
+METHOD
+- Each signal = one feature x. De-biased prob p' = logistic(logit(noVig) + b*x). b fit (ridge lambda=5, needs >=30 active training rows,
+  else b=0) ONLY on weeks strictly before the scored week (week-based walk-forward; games train from 2015, props from 2024).
+- Score: Brier of p' vs books' no-vig, per season, with game-clustered bootstrap 95% CI on the difference.
+- Signal group: actual event rate vs mean no-vig implied, 95% CI, z.
+- ROI (diagnostic only, NOT a pick or edge claim): flat bet on the anti-public side in the group at real prices (EZ history/nflverse),
+  EZ avg prices, or -110 (PropLine); and flat bet following the walk-forward p' side.
+- Pass rule: p' Brier < no-vig Brier in BOTH 2025 and 2026.
+- Multiple testing: 18 tests run (9 prop, 9 game). Bonferroni family-wise 5% threshold |z| >= 2.99.
+
+RESULTS (full output)
+=== PLAYER PROPS (yards + receptions), event = OVER hits; books no-vig = consensus close ===
+  2024: n=239 over-rate=0.552 mean noVig over=0.500 Brier noVig=0.2495  sources: {'ez_hist': 108, 'ez_probs': 131, 'propline': 0}
+  2025: n=1117 over-rate=0.466 mean noVig over=0.498 Brier noVig=0.2455  sources: {'ez_hist': 249, 'ez_probs': 868, 'propline': 0}
+  2026: n=1093 over-rate=0.476 mean noVig over=0.496 Brier noVig=0.2508  sources: {'ez_hist': 0, 'ez_probs': 135, 'propline': 958}
+--- P1 overall over/under bias: all props; public is said to like overs
+  2024: all n=239 games=74 | Brier debiased=0.2506 books noVig=0.2495 diff=+0.0011 [95% CI -0.0107,+0.0096] | mean coef b=+0.200
+        signal group n=239 event-rate=0.552 implied=0.500 diff=+0.053 [95% CI -0.010,+0.116] z=+1.64 | ROI bet anti-public side (no) n=239 -16.1% | ROI walk-forward rule n=182 -0.2%
+  2025: all n=1117 games=167 | Brier debiased=0.2466 books noVig=0.2455 diff=+0.0011 [95% CI -0.0010,+0.0038] | mean coef b=+0.078
+        signal group n=1117 event-rate=0.466 implied=0.498 diff=-0.032 [95% CI -0.062,-0.003] z=-2.17 | ROI bet anti-public side (no) n=1117 -0.4% | ROI walk-forward rule n=1117 -8.0%
+  2026: all n=1093 games=36 | Brier debiased=0.2505 books noVig=0.2508 diff=-0.0003 [95% CI -0.0017,+0.0011] | mean coef b=-0.078
+        signal group n=1093 event-rate=0.476 implied=0.496 diff=-0.021 [95% CI -0.050,+0.009] z=-1.37 | ROI bet anti-public side (no) n=1093 -0.2% | ROI walk-forward rule n=1093 -0.2%
+  PASS both 2025 & 2026: no
+--- P2 star-player overs: star = prior-season fantasy PPR top-12 QB/TE, top-24 RB/WR (nflverse, point-in-time)
+  2024: all n=239 games=74 | Brier debiased=0.2490 books noVig=0.2495 diff=-0.0005 [95% CI -0.0102,+0.0067] | mean coef b=+0.259
+        signal group n=110 (SMALL SAMPLE) event-rate=0.636 implied=0.501 diff=+0.135 [95% CI +0.045,+0.225] z=+2.95 | ROI bet anti-public side (no) n=110 -32.0% | ROI walk-forward rule n=66 +6.0%
+  2025: all n=1117 games=167 | Brier debiased=0.2473 books noVig=0.2455 diff=+0.0018 [95% CI -0.0005,+0.0043] | mean coef b=+0.199
+        signal group n=424 event-rate=0.479 implied=0.499 diff=-0.020 [95% CI -0.067,+0.028] z=-0.82 | ROI bet anti-public side (no) n=424 -2.0% | ROI walk-forward rule n=424 -9.6%
+  2026: all n=1093 games=36 | Brier debiased=0.2509 books noVig=0.2508 diff=+0.0001 [95% CI -0.0003,+0.0005] | mean coef b=+0.039
+        signal group n=309 event-rate=0.489 implied=0.501 diff=-0.012 [95% CI -0.068,+0.044] z=-0.42 | ROI bet anti-public side (no) n=309 -2.7% | ROI walk-forward rule n=309 -6.7%
+  PASS both 2025 & 2026: no
+--- P3 first-round-pick overs: player was a 1st-round draft pick (hype proxy)
+  2024: all n=239 games=74 | Brier debiased=0.2502 books noVig=0.2495 diff=+0.0007 [95% CI -0.0059,+0.0070] | mean coef b=+0.191
+        signal group n=107 (SMALL SAMPLE) event-rate=0.589 implied=0.501 diff=+0.087 [95% CI -0.006,+0.181] z=+1.84 | ROI bet anti-public side (no) n=107 -22.6% | ROI walk-forward rule n=62 -0.4%
+  2025: all n=1117 games=167 | Brier debiased=0.2466 books noVig=0.2455 diff=+0.0011 [95% CI -0.0007,+0.0029] | mean coef b=+0.137
+        signal group n=394 event-rate=0.485 implied=0.500 diff=-0.016 [95% CI -0.065,+0.034] z=-0.62 | ROI bet anti-public side (no) n=394 -3.6% | ROI walk-forward rule n=394 -9.5%
+  2026: all n=1093 games=36 | Brier debiased=0.2511 books noVig=0.2508 diff=+0.0003 [95% CI -0.0005,+0.0010] | mean coef b=-0.026
+        signal group n=340 event-rate=0.447 implied=0.502 diff=-0.055 [95% CI -0.108,-0.002] z=-2.05 | ROI bet anti-public side (no) n=340 +5.3% | ROI walk-forward rule n=340 -12.7%
+  PASS both 2025 & 2026: no
+--- P4 popular-team player overs: team in a-priori public list DAL GB PIT KC SF PHI
+  2024: all n=239 games=74 | Brier debiased=0.2494 books noVig=0.2495 diff=-0.0002 [95% CI -0.0015,+0.0016] | mean coef b=-0.045
+        signal group n=64 (SMALL SAMPLE) event-rate=0.422 implied=0.495 diff=-0.073 [95% CI -0.194,+0.048] z=-1.18 | ROI bet anti-public side (no) n=64 +7.2% | ROI walk-forward rule n=29 +15.9%
+  2025: all n=1117 games=167 | Brier debiased=0.2467 books noVig=0.2455 diff=+0.0012 [95% CI -0.0002,+0.0031] | mean coef b=+0.039
+        signal group n=259 event-rate=0.486 implied=0.499 diff=-0.012 [95% CI -0.073,+0.049] z=-0.39 | ROI bet anti-public side (no) n=259 -5.0% | ROI walk-forward rule n=259 -8.8%
+  2026: all n=1093 games=36 | Brier debiased=0.2509 books noVig=0.2508 diff=+0.0001 [95% CI -0.0004,+0.0006] | mean coef b=-0.067
+        signal group n=207 event-rate=0.493 implied=0.494 diff=-0.001 [95% CI -0.070,+0.067] z=-0.04 | ROI bet anti-public side (no) n=207 -3.4% | ROI walk-forward rule n=207 -3.4%
+  PASS both 2025 & 2026: no
+--- P5 prime-time overs: Thu/Mon or Sat/Sun night kickoff
+  2024: all n=239 games=74 | Brier debiased=0.2513 books noVig=0.2495 diff=+0.0018 [95% CI -0.0014,+0.0056] | mean coef b=+0.165
+        signal group n=102 (SMALL SAMPLE) event-rate=0.539 implied=0.497 diff=+0.042 [95% CI -0.055,+0.139] z=+0.85 | ROI bet anti-public side (no) n=102 -13.7% | ROI walk-forward rule n=65 -9.9%
+  2025: all n=1117 games=167 | Brier debiased=0.2467 books noVig=0.2455 diff=+0.0012 [95% CI -0.0012,+0.0041] | mean coef b=+0.150
+        signal group n=460 event-rate=0.487 implied=0.496 diff=-0.009 [95% CI -0.055,+0.036] z=-0.40 | ROI bet anti-public side (no) n=460 -5.1% | ROI walk-forward rule n=460 -8.6%
+  2026: all n=1093 games=36 | Brier debiased=0.2509 books noVig=0.2508 diff=+0.0000 [95% CI -0.0000,+0.0001] | mean coef b=+0.009
+        signal group n=240 event-rate=0.487 implied=0.493 diff=-0.005 [95% CI -0.069,+0.058] z=-0.17 | ROI bet anti-public side (no) n=240 -3.0% | ROI walk-forward rule n=240 -7.1%
+  PASS both 2025 & 2026: no
+--- P6 favored-team player overs: player's team favored by closing spread
+  2024: all n=239 games=74 | Brier debiased=0.2507 books noVig=0.2495 diff=+0.0012 [95% CI -0.0055,+0.0073] | mean coef b=+0.139
+        signal group n=143 (SMALL SAMPLE) event-rate=0.552 implied=0.500 diff=+0.052 [95% CI -0.029,+0.134] z=+1.25 | ROI bet anti-public side (no) n=143 -16.2% | ROI walk-forward rule n=110 +3.9%
+  2025: all n=1117 games=167 | Brier debiased=0.2462 books noVig=0.2455 diff=+0.0008 [95% CI -0.0011,+0.0026] | mean coef b=+0.087
+        signal group n=604 event-rate=0.462 implied=0.497 diff=-0.035 [95% CI -0.075,+0.005] z=-1.73 | ROI bet anti-public side (no) n=604 +0.4% | ROI walk-forward rule n=604 -7.9%
+  2026: all n=1093 games=36 | Brier debiased=0.2507 books noVig=0.2508 diff=-0.0002 [95% CI -0.0010,+0.0007] | mean coef b=-0.060
+        signal group n=558 event-rate=0.473 implied=0.494 diff=-0.021 [95% CI -0.062,+0.021] z=-0.97 | ROI bet anti-public side (no) n=558 +0.2% | ROI walk-forward rule n=558 +0.2%
+  PASS both 2025 & 2026: no
+--- P7 composite public score: x = count of P2,P4,P5,P6 flags (0-4)
+  2024: all n=239 games=74 | Brier debiased=0.2516 books noVig=0.2495 diff=+0.0021 [95% CI -0.0077,+0.0104] | mean coef b=+0.100
+        signal group n=201 event-rate=0.542 implied=0.499 diff=+0.044 [95% CI -0.025,+0.112] z=+1.24 | ROI bet anti-public side (no) n=201 -14.4% | ROI walk-forward rule n=147 -2.8%
+  2025: all n=1117 games=167 | Brier debiased=0.2470 books noVig=0.2455 diff=+0.0015 [95% CI -0.0014,+0.0044] | mean coef b=+0.061
+        signal group n=936 event-rate=0.469 implied=0.498 diff=-0.029 [95% CI -0.061,+0.003] z=-1.75 | ROI bet anti-public side (no) n=936 -1.1% | ROI walk-forward rule n=936 -12.0%
+  2026: all n=1093 games=36 | Brier debiased=0.2508 books noVig=0.2508 diff=-0.0000 [95% CI -0.0003,+0.0003] | mean coef b=-0.010
+        signal group n=820 event-rate=0.474 implied=0.496 diff=-0.021 [95% CI -0.055,+0.013] z=-1.21 | ROI bet anti-public side (no) n=820 -0.1% | ROI walk-forward rule n=820 -0.1%
+  PASS both 2025 & 2026: no
+--- P8 line moved from open: EndzoneAPI history rows only (2024-25): +1 line moved up (toward over/public), -1 down
+  2024: all n=108 games=71 | Brier debiased=0.2486 books noVig=0.2481 diff=+0.0005 [95% CI -0.0015,+0.0026] | mean coef b=+0.024
+        signal group n=75 (SMALL SAMPLE) event-rate=0.627 implied=0.504 diff=+0.122 [95% CI +0.013,+0.232] z=+2.19 | ROI bet anti-public side (no) n=75 -29.7% | ROI walk-forward rule n=41 -4.4%
+  2025: all n=249 games=159 | Brier debiased=0.2475 books noVig=0.2465 diff=+0.0010 [95% CI -0.0009,+0.0027] | mean coef b=+0.065
+        signal group n=146 (SMALL SAMPLE) event-rate=0.500 implied=0.503 diff=-0.003 [95% CI -0.084,+0.078] z=-0.07 | ROI bet anti-public side (no) n=146 -5.5% | ROI walk-forward rule n=146 -6.1%
+  2026: no rows
+  PASS both 2025 & 2026: no
+--- P9 soft books vs Pinnacle disagreement (PropLine sample, 2026 weeks 2-3 only)
+  n=718 Brier soft-books mean=0.2507 Pinnacle alone=0.2506
+  gap>=0.02: n=94 (SMALL SAMPLE) Pinnacle side right 0.532 | ROI betting Pinnacle side at -110 +1.5%
+  gap>=0.04: n=4 (SMALL SAMPLE) Pinnacle side right 0.250 | ROI betting Pinnacle side at -110 -52.3%
+  walk-forward: Pinnacle weight picked on week 2 = 0.0; week 3 Brier blend=0.2488 vs soft books=0.2488 (n=367)
+  PASS both 2025 & 2026: no (no 2025 two-book data; one season, two weeks)
+
+=== GAME LINES (nflverse closing lines + prices, 2015-2026 regular season), walk-forward from 2015 ===
+--- G1 overall over bias (totals): all games
+  2023: all n=270 games=270 | Brier debiased=0.2490 books noVig=0.2501 diff=-0.0010 [95% CI -0.0034,+0.0016] | mean coef b=-0.087
+        signal group n=270 event-rate=0.459 implied=0.501 diff=-0.041 [95% CI -0.101,+0.018] z=-1.36 | ROI bet anti-public side (no) n=270 +3.4% | ROI walk-forward rule n=270 +3.4%
+  2024: all n=269 games=269 | Brier debiased=0.2516 books noVig=0.2498 diff=+0.0019 [95% CI -0.0006,+0.0041] | mean coef b=-0.078
+        signal group n=269 event-rate=0.539 implied=0.501 diff=+0.038 [95% CI -0.021,+0.098] z=+1.26 | ROI bet anti-public side (no) n=269 -11.9% | ROI walk-forward rule n=269 -11.9%
+  2025: all n=272 games=272 | Brier debiased=0.2513 books noVig=0.2504 diff=+0.0009 [95% CI -0.0007,+0.0026] | mean coef b=-0.055
+        signal group n=272 event-rate=0.522 implied=0.500 diff=+0.022 [95% CI -0.038,+0.081] z=+0.71 | ROI bet anti-public side (no) n=272 -8.5% | ROI walk-forward rule n=272 -8.5%
+  2026: all n=151 games=151 | Brier debiased=0.2510 books noVig=0.2503 diff=+0.0007 [95% CI -0.0012,+0.0024] | mean coef b=-0.045
+        signal group n=151 (SMALL SAMPLE) event-rate=0.523 implied=0.499 diff=+0.024 [95% CI -0.056,+0.103] z=+0.58 | ROI bet anti-public side (no) n=151 -9.0% | ROI walk-forward rule n=151 -9.0%
+  PASS both 2025 & 2026: no
+--- G2 prime-time overs: Thu/Mon/Sat-Sun night
+  2023: all n=270 games=270 | Brier debiased=0.2489 books noVig=0.2501 diff=-0.0011 [95% CI -0.0045,+0.0024] | mean coef b=-0.234
+        signal group n=62 (SMALL SAMPLE) event-rate=0.419 implied=0.500 diff=-0.081 [95% CI -0.204,+0.042] z=-1.29 | ROI bet anti-public side (no) n=62 +10.9% | ROI walk-forward rule n=62 +10.9%
+  2024: all n=269 games=269 | Brier debiased=0.2504 books noVig=0.2498 diff=+0.0006 [95% CI -0.0021,+0.0034] | mean coef b=-0.204
+        signal group n=58 (SMALL SAMPLE) event-rate=0.500 implied=0.502 diff=-0.002 [95% CI -0.131,+0.127] z=-0.03 | ROI bet anti-public side (no) n=58 -3.9% | ROI walk-forward rule n=58 -3.9%
+  2025: all n=272 games=272 | Brier debiased=0.2508 books noVig=0.2504 diff=+0.0004 [95% CI -0.0026,+0.0034] | mean coef b=-0.200
+        signal group n=63 (SMALL SAMPLE) event-rate=0.492 implied=0.501 diff=-0.009 [95% CI -0.133,+0.114] z=-0.15 | ROI bet anti-public side (no) n=63 -2.3% | ROI walk-forward rule n=63 -2.3%
+  2026: all n=151 games=151 | Brier debiased=0.2522 books noVig=0.2503 diff=+0.0019 [95% CI -0.0009,+0.0051] | mean coef b=-0.172
+        signal group n=31 (SMALL SAMPLE) event-rate=0.581 implied=0.499 diff=+0.082 [95% CI -0.092,+0.255] z=+0.92 | ROI bet anti-public side (no) n=31 -19.9% | ROI walk-forward rule n=31 -19.9%
+  PASS both 2025 & 2026: no
+--- G3 popular-team game overs: DAL GB PIT KC SF PHI involved
+  2023: all n=270 games=270 | Brier debiased=0.2499 books noVig=0.2501 diff=-0.0002 [95% CI -0.0016,+0.0013] | mean coef b=-0.083
+        signal group n=92 (SMALL SAMPLE) event-rate=0.467 implied=0.501 diff=-0.034 [95% CI -0.136,+0.068] z=-0.65 | ROI bet anti-public side (no) n=92 +2.0% | ROI walk-forward rule n=92 +2.0%
+  2024: all n=269 games=269 | Brier debiased=0.2503 books noVig=0.2498 diff=+0.0005 [95% CI -0.0008,+0.0018] | mean coef b=-0.074
+        signal group n=91 (SMALL SAMPLE) event-rate=0.516 implied=0.500 diff=+0.016 [95% CI -0.086,+0.119] z=+0.31 | ROI bet anti-public side (no) n=91 -8.0% | ROI walk-forward rule n=91 -8.0%
+  2025: all n=272 games=272 | Brier debiased=0.2508 books noVig=0.2504 diff=+0.0004 [95% CI -0.0007,+0.0015] | mean coef b=-0.060
+        signal group n=95 (SMALL SAMPLE) event-rate=0.526 implied=0.500 diff=+0.026 [95% CI -0.074,+0.127] z=+0.51 | ROI bet anti-public side (no) n=95 -9.5% | ROI walk-forward rule n=95 -9.5%
+  2026: all n=151 games=151 | Brier debiased=0.2503 books noVig=0.2503 diff=+0.0000 [95% CI -0.0011,+0.0011] | mean coef b=-0.048
+        signal group n=53 (SMALL SAMPLE) event-rate=0.491 implied=0.500 diff=-0.010 [95% CI -0.144,+0.125] z=-0.14 | ROI bet anti-public side (no) n=53 -2.8% | ROI walk-forward rule n=53 -2.8%
+  PASS both 2025 & 2026: no
+--- G4 favorites cover (spread): all non-pick games, event = favorite covers
+  2023: all n=258 games=258 | Brier debiased=0.2518 books noVig=0.2500 diff=+0.0018 [95% CI -0.0009,+0.0043] | mean coef b=-0.084
+        signal group n=258 event-rate=0.531 implied=0.502 diff=+0.030 [95% CI -0.031,+0.090] z=+0.95 | ROI bet anti-public side (no) n=258 -10.1% | ROI walk-forward rule n=258 -10.1%
+  2024: all n=268 games=268 | Brier debiased=0.2524 books noVig=0.2511 diff=+0.0013 [95% CI -0.0006,+0.0034] | mean coef b=-0.064
+        signal group n=268 event-rate=0.534 implied=0.502 diff=+0.032 [95% CI -0.028,+0.091] z=+1.04 | ROI bet anti-public side (no) n=268 -10.3% | ROI walk-forward rule n=268 -10.3%
+  2025: all n=271 games=271 | Brier debiased=0.2494 books noVig=0.2496 diff=-0.0002 [95% CI -0.0016,+0.0012] | mean coef b=-0.045
+        signal group n=271 event-rate=0.483 implied=0.501 diff=-0.017 [95% CI -0.077,+0.042] z=-0.57 | ROI bet anti-public side (no) n=271 -1.2% | ROI walk-forward rule n=271 -1.2%
+  2026: all n=145 games=145 | Brier debiased=0.2505 books noVig=0.2497 diff=+0.0008 [95% CI -0.0012,+0.0030] | mean coef b=-0.052
+        signal group n=145 (SMALL SAMPLE) event-rate=0.524 implied=0.502 diff=+0.022 [95% CI -0.059,+0.104] z=+0.54 | ROI bet anti-public side (no) n=145 -8.8% | ROI walk-forward rule n=145 -8.8%
+  PASS both 2025 & 2026: no
+--- G5 big favorites cover (7+): x=1 when spread >= 7
+  2023: all n=258 games=258 | Brier debiased=0.2501 books noVig=0.2500 diff=+0.0001 [95% CI -0.0000,+0.0002] | mean coef b=+0.003
+        signal group n=62 (SMALL SAMPLE) event-rate=0.484 implied=0.501 diff=-0.017 [95% CI -0.141,+0.107] z=-0.27 | ROI bet anti-public side (no) n=62 -1.4% | ROI walk-forward rule n=62 -35.5%
+  2024: all n=268 games=268 | Brier debiased=0.2511 books noVig=0.2511 diff=+0.0000 [95% CI -0.0003,+0.0003] | mean coef b=-0.019
+        signal group n=61 (SMALL SAMPLE) event-rate=0.475 implied=0.502 diff=-0.027 [95% CI -0.152,+0.099] z=-0.42 | ROI bet anti-public side (no) n=61 +0.7% | ROI walk-forward rule n=61 +0.7%
+  2025: all n=271 games=271 | Brier debiased=0.2496 books noVig=0.2496 diff=+0.0001 [95% CI -0.0003,+0.0004] | mean coef b=-0.023
+        signal group n=83 (SMALL SAMPLE) event-rate=0.482 implied=0.501 diff=-0.019 [95% CI -0.127,+0.088] z=-0.35 | ROI bet anti-public side (no) n=83 -0.7% | ROI walk-forward rule n=83 -0.7%
+  2026: all n=145 games=145 | Brier debiased=0.2496 books noVig=0.2497 diff=-0.0001 [95% CI -0.0008,+0.0006] | mean coef b=-0.033
+        signal group n=33 (SMALL SAMPLE) event-rate=0.424 implied=0.502 diff=-0.078 [95% CI -0.246,+0.091] z=-0.90 | ROI bet anti-public side (no) n=33 +10.1% | ROI walk-forward rule n=33 +10.1%
+  PASS both 2025 & 2026: no
+--- G6 prime-time favorites cover: x=1 prime-time
+  2023: all n=258 games=258 | Brier debiased=0.2500 books noVig=0.2500 diff=+0.0000 [95% CI -0.0014,+0.0017] | mean coef b=-0.110
+        signal group n=58 (SMALL SAMPLE) event-rate=0.483 implied=0.503 diff=-0.021 [95% CI -0.149,+0.108] z=-0.31 | ROI bet anti-public side (no) n=58 -0.4% | ROI walk-forward rule n=58 -0.4%
+  2024: all n=268 games=268 | Brier debiased=0.2524 books noVig=0.2511 diff=+0.0013 [95% CI +0.0002,+0.0025] | mean coef b=-0.085
+        signal group n=58 (SMALL SAMPLE) event-rate=0.621 implied=0.502 diff=+0.119 [95% CI -0.006,+0.244] z=+1.86 | ROI bet anti-public side (no) n=58 -27.0% | ROI walk-forward rule n=58 -27.0%
+  2025: all n=271 games=271 | Brier debiased=0.2495 books noVig=0.2496 diff=-0.0001 [95% CI -0.0010,+0.0007] | mean coef b=-0.057
+        signal group n=63 (SMALL SAMPLE) event-rate=0.460 implied=0.501 diff=-0.041 [95% CI -0.164,+0.082] z=-0.65 | ROI bet anti-public side (no) n=63 +3.3% | ROI walk-forward rule n=63 +3.3%
+  2026: all n=145 games=145 | Brier debiased=0.2493 books noVig=0.2497 diff=-0.0004 [95% CI -0.0019,+0.0009] | mean coef b=-0.079
+        signal group n=31 (SMALL SAMPLE) event-rate=0.419 implied=0.499 diff=-0.080 [95% CI -0.254,+0.094] z=-0.90 | ROI bet anti-public side (no) n=31 +10.8% | ROI walk-forward rule n=31 +10.8%
+  PASS both 2025 & 2026: YES
+--- G7 road favorites cover: x=1 favorite is the away team
+  2023: all n=258 games=258 | Brier debiased=0.2503 books noVig=0.2500 diff=+0.0003 [95% CI -0.0001,+0.0007] | mean coef b=-0.018
+        signal group n=99 (SMALL SAMPLE) event-rate=0.545 implied=0.502 diff=+0.044 [95% CI -0.055,+0.142] z=+0.87 | ROI bet anti-public side (no) n=99 -12.9% | ROI walk-forward rule n=99 -18.8%
+  2024: all n=268 games=268 | Brier debiased=0.2512 books noVig=0.2511 diff=+0.0002 [95% CI +0.0000,+0.0003] | mean coef b=+0.003
+        signal group n=110 (SMALL SAMPLE) event-rate=0.527 implied=0.503 diff=+0.025 [95% CI -0.069,+0.118] z=+0.51 | ROI bet anti-public side (no) n=110 -9.1% | ROI walk-forward rule n=110 -12.0%
+  2025: all n=271 games=271 | Brier debiased=0.2496 books noVig=0.2496 diff=+0.0001 [95% CI -0.0001,+0.0002] | mean coef b=+0.007
+        signal group n=114 (SMALL SAMPLE) event-rate=0.482 implied=0.500 diff=-0.017 [95% CI -0.109,+0.074] z=-0.37 | ROI bet anti-public side (no) n=114 -1.2% | ROI walk-forward rule n=114 -11.0%
+  2026: all n=145 games=145 | Brier debiased=0.2496 books noVig=0.2497 diff=-0.0001 [95% CI -0.0003,+0.0001] | mean coef b=+0.000
+        signal group n=58 (SMALL SAMPLE) event-rate=0.638 implied=0.502 diff=+0.136 [95% CI +0.012,+0.260] z=+2.16 | ROI bet anti-public side (no) n=58 -30.6% | ROI walk-forward rule n=58 -4.4%
+  PASS both 2025 & 2026: no
+--- G8 popular team covers: games with exactly one public team; event = public team covers
+  2023: all n=83 games=83 | Brier debiased=0.2487 books noVig=0.2500 diff=-0.0013 [95% CI -0.0066,+0.0040] | mean coef b=+0.104
+        signal group n=83 (SMALL SAMPLE) event-rate=0.554 implied=0.501 diff=+0.053 [95% CI -0.054,+0.160] z=+0.97 | ROI bet anti-public side (no) n=83 -14.6% | ROI walk-forward rule n=83 +5.7%
+  2024: all n=83 games=83 | Brier debiased=0.2534 books noVig=0.2517 diff=+0.0016 [95% CI -0.0037,+0.0066] | mean coef b=+0.094
+        signal group n=83 (SMALL SAMPLE) event-rate=0.482 implied=0.500 diff=-0.018 [95% CI -0.126,+0.089] z=-0.33 | ROI bet anti-public side (no) n=83 -0.7% | ROI walk-forward rule n=83 -7.6%
+  2025: all n=87 games=87 | Brier debiased=0.2521 books noVig=0.2510 diff=+0.0012 [95% CI -0.0027,+0.0054] | mean coef b=+0.081
+        signal group n=87 (SMALL SAMPLE) event-rate=0.483 implied=0.501 diff=-0.018 [95% CI -0.123,+0.087] z=-0.34 | ROI bet anti-public side (no) n=87 -0.8% | ROI walk-forward rule n=87 -7.7%
+  2026: all n=48 games=48 | Brier debiased=0.2523 books noVig=0.2512 diff=+0.0011 [95% CI -0.0030,+0.0057] | mean coef b=+0.064
+        signal group n=48 (SMALL SAMPLE) event-rate=0.479 implied=0.501 diff=-0.022 [95% CI -0.163,+0.119] z=-0.31 | ROI bet anti-public side (no) n=48 +0.0% | ROI walk-forward rule n=48 -8.5%
+  PASS both 2025 & 2026: no
+--- G9 moneyline favorites win: favorite-longshot bias check
+  2023: all n=272 games=272 | Brier debiased=0.2192 books noVig=0.2187 diff=+0.0005 [95% CI -0.0003,+0.0013] | mean coef b=-0.031
+        signal group n=272 event-rate=0.676 implied=0.651 diff=+0.026 [95% CI -0.030,+0.081] z=+0.90 | ROI bet anti-public side (no) n=272 -7.9% | ROI walk-forward rule n=272 -7.9%
+  2024: all n=272 games=272 | Brier debiased=0.2004 books noVig=0.2002 diff=+0.0002 [95% CI -0.0001,+0.0006] | mean coef b=-0.009
+        signal group n=272 event-rate=0.717 implied=0.653 diff=+0.064 [95% CI +0.010,+0.117] z=+2.33 | ROI bet anti-public side (no) n=272 -22.5% | ROI walk-forward rule n=272 -10.4%
+  2025: all n=271 games=271 | Brier debiased=0.2123 books noVig=0.2121 diff=+0.0002 [95% CI -0.0003,+0.0007] | mean coef b=+0.017
+        signal group n=271 event-rate=0.653 implied=0.671 diff=-0.018 [95% CI -0.075,+0.038] z=-0.63 | ROI bet anti-public side (no) n=271 -2.1% | ROI walk-forward rule n=271 -7.0%
+  2026: all n=150 games=150 | Brier debiased=0.2110 books noVig=0.2110 diff=-0.0000 [95% CI -0.0002,+0.0002] | mean coef b=+0.005
+        signal group n=150 (SMALL SAMPLE) event-rate=0.680 implied=0.654 diff=+0.026 [95% CI -0.049,+0.101] z=+0.69 | ROI bet anti-public side (no) n=150 -10.3% | ROI walk-forward rule n=150 -0.2%
+  PASS both 2025 & 2026: no
+
+TESTS RUN: 18 (Bonferroni 5% family-wise threshold |z| >= 2.99)
+PASSED (debiased Brier below books no-vig in BOTH 2025 and 2026): G6 prime-time favorites cover
+ROBUSTNESS CHECK ON THE ONE NOMINAL PASS (G6 prime-time favorites) — walk-forward Brier diff (p' minus no-vig), negative = better:
+G6 2016:+0.0012 2017:+0.0002 2018:+0.0002 2019:+0.0004 2020:+0.0001 2021:-0.0004 2022:-0.0009 2023:+0.0000 2024:+0.0013 2025:-0.0001 2026:-0.0004  pooled 2016-26 diff +0.00016 (n=2714) — better in only 4/11 seasons
+(for comparison G1 over bias pooled +0.00012, 4/11; G4 favorites pooled +0.00016, 5/11)
+
+VERDICT
+- G6 clears the literal 2025+2026 bar by -0.0001 and -0.0004 Brier on just 63 and 31 prime-time games, with CIs spanning zero,
+  it was significantly WORSE in 2024, and it loses to the books pooled over 2016-2026. With 18 tests, about one noise "pass" is expected.
+  Treat as chance; do NOT adopt.
+- No signal reached the Bonferroni threshold (largest |z| = 2.95, P2 stars in 2024, and that went the OPPOSITE way: star overs hit MORE).
+- Overall props leaned UNDER in 2025 (over 0.466 vs 0.498 implied, z=-2.17) and 2026 (0.476 vs 0.496, z=-1.37) but OVER in 2024
+  (0.552 vs 0.500); the walk-forward under-lean still did not beat no-vig Brier. Under-bets at real prices were ~breakeven-minus-vig.
+- Soft vs Pinnacle (2026 wks 2-3 only, n=718): Pinnacle alone 0.2506 vs soft mean 0.2507 — no measurable gap; only 94 props differed by >=2 pts.
+- Line movement (EZ history, 2024-25 only, n=357): no 2026 data; no Brier gain.
+CONCLUSION: none of the public-bias signals beat the books' closing no-vig on both seasons. Nothing to change in the app.
+
+MORE DATA NEEDED
+- Signed-in books (DraftKings, FanDuel, BetMGM, Caesars, ESPN Bet, Fanatics) + Pinnacle saved together each week -> real soft-vs-sharp test across seasons.
+- Opening AND closing prices per book for several weeks (price-history only began 2026-11-19) -> line-move-toward-public test at game and prop level.
+- Actual public betting % / ticket vs money splits (e.g., Action Network, VSiN free pages) — the direct "public side" measure; none used here.
+- More graded 2026 prop weeks from the same source as 2025 (2026 is mostly a different source, PropLine, two weeks).

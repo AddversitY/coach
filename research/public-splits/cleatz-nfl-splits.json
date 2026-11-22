@@ -1,0 +1,600 @@
+{
+  "source": "CLEATZ NFL public betting page",
+  "url": "https://cleatz.com/public-betting/nfl/",
+  "page_title": "NFL Public Betting Splits Today (Week 11): Bets & Handle % - CLEATZ",
+  "fetched_at_et": "2026-11-22 around 12:30 AM ET",
+  "note": "Free HTML, no signup. Shows Handle % (dollars) and Bets % (tickets) and the gap for spread, total, and moneyline. Data source is not named on the page. Numbers do not always match SportsBettingDime or Action Network on the same game. No public JSON endpoint was identified; the board is in the HTML. Terms were not separately fetched.",
+  "boards": [
+    {
+      "raw_preview": " CIN Bengals -6 at WAS \u00b7 Mon 8:15pm 92% 86% +6 LAC Chargers -3 vs NYJ \u00b7 Sun 4:05pm 85% 60% +25 JAX Jaguars -6 at NYG \u00b7 Sun 4:25pm 82% 79% +3 CHI Bears -11.5 vs NO \u00b7 Sun 1:00pm 77% 63% +14 CAR Panthers -3 vs BAL \u00b7 Sun 1:00pm 72% 65% +7 Kalshi \u00b7 Partner offer Trade $25, Get $25 \u00b7 Code CLEATZ10 18+ \u00b7 Eligible new users Get offer Underdog \u00b7 Partner offer Play $10, Get $50 \u00b7 Code CLEATZ Get offer Polymarket \u00b7 Partner offer Deposit $10, Get $25 \u00b7 Code CLEATZ 18+ \u00b7 Eligible new US users Get offer SF 49ers -3 vs MIN \u00b7 Sun 8:20pm 71% 55% +16 PIT Steelers -3.5 at PHI \u00b7 Sun 1:00pm 68% 80% -12 KC Chiefs -15.5 vs ARI \u00b7 Sun 1:00pm 58% 56% +2 BUF Bills -16.5 vs MIA \u00b7 Sun 1:00pm 57% 49% +8 TEN Titans +7.5 at DAL \u00b7 Sun 1:00pm 56% 46% +10 LV Raiders +10.5 at DEN \u00b7 Sun 4:25pm 52% 51% +1 DET Lions -3.5 vs TB \u00b7 Sun 1:00pm 51% 73% -22 TB Buccaneers +3.5 at DET \u00b7 Sun 1:00pm 49% 27% +22 DEN Broncos -10.5 vs LV \u00b7 Sun 4:25pm 48% 49% -1 DAL Cowboys -7.5 vs TEN \u00b7 Sun 1:00pm 44% 54% -10 MIA Dolphins +16.5 at BUF \u00b7 Sun 1:00pm 43% 51% -8 ARI Cardinals +15.5 at KC \u00b7 Sun 1:00pm 42% 44% -2 PHI Eagles +3.5 vs PIT \u00b7 Sun 1:00pm 32% 20% +12 MIN Vikings +3 at SF \u00b7 Sun 8:20pm 29% 45% -16 BAL Ravens +3 at CAR \u00b7 Sun 1:00pm 28% 35% -7 NO Saints +11.5 at CHI \u00b7 Sun 1:00pm 23% 37% -14 NYG Giants +6 vs JAX \u00b7 Sun 4:25pm 18% 21% -3 NYJ Jets +3 at LAC \u00b7 Sun 4:05pm 15% 40% -25 WAS Commanders +6 vs CIN \u00b7 Mon 8:15pm 8% 14% -6 ",
+      "parsed": [
+        {
+          "label": "CIN Bengals -6 at WAS",
+          "when": "Mon 8:15pm",
+          "handle_pct": 92,
+          "bets_pct": 86,
+          "gap": 6,
+          "raw": "CIN Bengals -6 at WAS \u00b7 Mon 8:15pm 92% 86% +6"
+        },
+        {
+          "label": "LAC Chargers -3 vs NYJ",
+          "when": "Sun 4:05pm",
+          "handle_pct": 85,
+          "bets_pct": 60,
+          "gap": 25,
+          "raw": "LAC Chargers -3 vs NYJ \u00b7 Sun 4:05pm 85% 60% +25"
+        },
+        {
+          "label": "JAX Jaguars -6 at NYG",
+          "when": "Sun 4:25pm",
+          "handle_pct": 82,
+          "bets_pct": 79,
+          "gap": 3,
+          "raw": "JAX Jaguars -6 at NYG \u00b7 Sun 4:25pm 82% 79% +3"
+        },
+        {
+          "label": "CHI Bears -11.5 vs NO",
+          "when": "Sun 1:00pm",
+          "handle_pct": 77,
+          "bets_pct": 63,
+          "gap": 14,
+          "raw": "CHI Bears -11.5 vs NO \u00b7 Sun 1:00pm 77% 63% +14"
+        },
+        {
+          "label": "CAR Panthers -3 vs BAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 72,
+          "bets_pct": 65,
+          "gap": 7,
+          "raw": "CAR Panthers -3 vs BAL \u00b7 Sun 1:00pm 72% 65% +7"
+        },
+        {
+          "label": "US users Get offer SF 49ers -3 vs MIN",
+          "when": "Sun 8:20pm",
+          "handle_pct": 71,
+          "bets_pct": 55,
+          "gap": 16,
+          "raw": "US users Get offer SF 49ers -3 vs MIN \u00b7 Sun 8:20pm 71% 55% +16"
+        },
+        {
+          "label": "PIT Steelers -3.5 at PHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 68,
+          "bets_pct": 80,
+          "gap": -12,
+          "raw": "PIT Steelers -3.5 at PHI \u00b7 Sun 1:00pm 68% 80% -12"
+        },
+        {
+          "label": "KC Chiefs -15.5 vs ARI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 58,
+          "bets_pct": 56,
+          "gap": 2,
+          "raw": "KC Chiefs -15.5 vs ARI \u00b7 Sun 1:00pm 58% 56% +2"
+        },
+        {
+          "label": "BUF Bills -16.5 vs MIA",
+          "when": "Sun 1:00pm",
+          "handle_pct": 57,
+          "bets_pct": 49,
+          "gap": 8,
+          "raw": "BUF Bills -16.5 vs MIA \u00b7 Sun 1:00pm 57% 49% +8"
+        },
+        {
+          "label": "TEN Titans +7.5 at DAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 56,
+          "bets_pct": 46,
+          "gap": 10,
+          "raw": "TEN Titans +7.5 at DAL \u00b7 Sun 1:00pm 56% 46% +10"
+        },
+        {
+          "label": "LV Raiders +10.5 at DEN",
+          "when": "Sun 4:25pm",
+          "handle_pct": 52,
+          "bets_pct": 51,
+          "gap": 1,
+          "raw": "LV Raiders +10.5 at DEN \u00b7 Sun 4:25pm 52% 51% +1"
+        },
+        {
+          "label": "DET Lions -3.5 vs TB",
+          "when": "Sun 1:00pm",
+          "handle_pct": 51,
+          "bets_pct": 73,
+          "gap": -22,
+          "raw": "DET Lions -3.5 vs TB \u00b7 Sun 1:00pm 51% 73% -22"
+        },
+        {
+          "label": "TB Buccaneers +3.5 at DET",
+          "when": "Sun 1:00pm",
+          "handle_pct": 49,
+          "bets_pct": 27,
+          "gap": 22,
+          "raw": "TB Buccaneers +3.5 at DET \u00b7 Sun 1:00pm 49% 27% +22"
+        },
+        {
+          "label": "DEN Broncos -10.5 vs LV",
+          "when": "Sun 4:25pm",
+          "handle_pct": 48,
+          "bets_pct": 49,
+          "gap": -1,
+          "raw": "DEN Broncos -10.5 vs LV \u00b7 Sun 4:25pm 48% 49% -1"
+        },
+        {
+          "label": "DAL Cowboys -7.5 vs TEN",
+          "when": "Sun 1:00pm",
+          "handle_pct": 44,
+          "bets_pct": 54,
+          "gap": -10,
+          "raw": "DAL Cowboys -7.5 vs TEN \u00b7 Sun 1:00pm 44% 54% -10"
+        },
+        {
+          "label": "MIA Dolphins +16.5 at BUF",
+          "when": "Sun 1:00pm",
+          "handle_pct": 43,
+          "bets_pct": 51,
+          "gap": -8,
+          "raw": "MIA Dolphins +16.5 at BUF \u00b7 Sun 1:00pm 43% 51% -8"
+        },
+        {
+          "label": "ARI Cardinals +15.5 at KC",
+          "when": "Sun 1:00pm",
+          "handle_pct": 42,
+          "bets_pct": 44,
+          "gap": -2,
+          "raw": "ARI Cardinals +15.5 at KC \u00b7 Sun 1:00pm 42% 44% -2"
+        },
+        {
+          "label": "PHI Eagles +3.5 vs PIT",
+          "when": "Sun 1:00pm",
+          "handle_pct": 32,
+          "bets_pct": 20,
+          "gap": 12,
+          "raw": "PHI Eagles +3.5 vs PIT \u00b7 Sun 1:00pm 32% 20% +12"
+        },
+        {
+          "label": "MIN Vikings +3 at SF",
+          "when": "Sun 8:20pm",
+          "handle_pct": 29,
+          "bets_pct": 45,
+          "gap": -16,
+          "raw": "MIN Vikings +3 at SF \u00b7 Sun 8:20pm 29% 45% -16"
+        },
+        {
+          "label": "BAL Ravens +3 at CAR",
+          "when": "Sun 1:00pm",
+          "handle_pct": 28,
+          "bets_pct": 35,
+          "gap": -7,
+          "raw": "BAL Ravens +3 at CAR \u00b7 Sun 1:00pm 28% 35% -7"
+        },
+        {
+          "label": "NO Saints +11.5 at CHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 23,
+          "bets_pct": 37,
+          "gap": -14,
+          "raw": "NO Saints +11.5 at CHI \u00b7 Sun 1:00pm 23% 37% -14"
+        },
+        {
+          "label": "NYG Giants +6 vs JAX",
+          "when": "Sun 4:25pm",
+          "handle_pct": 18,
+          "bets_pct": 21,
+          "gap": -3,
+          "raw": "NYG Giants +6 vs JAX \u00b7 Sun 4:25pm 18% 21% -3"
+        },
+        {
+          "label": "NYJ Jets +3 at LAC",
+          "when": "Sun 4:05pm",
+          "handle_pct": 15,
+          "bets_pct": 40,
+          "gap": -25,
+          "raw": "NYJ Jets +3 at LAC \u00b7 Sun 4:05pm 15% 40% -25"
+        },
+        {
+          "label": "WAS Commanders +6 vs CIN",
+          "when": "Mon 8:15pm",
+          "handle_pct": 8,
+          "bets_pct": 14,
+          "gap": -6,
+          "raw": "WAS Commanders +6 vs CIN \u00b7 Mon 8:15pm 8% 14% -6"
+        }
+      ]
+    },
+    {
+      "raw_preview": " O Over 47.5 TB at DET \u00b7 Sun 1:00pm 98% 81% +17 O Over 54.5 CIN at WAS \u00b7 Mon 8:15pm 88% 62% +26 O Over 54.5 TEN at DAL \u00b7 Sun 1:00pm 81% 54% +27 O Over 44.5 MIA at BUF \u00b7 Sun 1:00pm 76% 79% -3 O Over 41.5 NYJ at LAC \u00b7 Sun 4:05pm 73% 56% +17 Kalshi \u00b7 Partner offer Trade $25, Get $25 \u00b7 Code CLEATZ10 18+ \u00b7 Eligible new users Get offer Underdog \u00b7 Partner offer Play $10, Get $50 \u00b7 Code CLEATZ Get offer Polymarket \u00b7 Partner offer Deposit $10, Get $25 \u00b7 Code CLEATZ 18+ \u00b7 Eligible new US users Get offer U Under 37.5 PIT at PHI \u00b7 Sun 1:00pm 71% 46% +25 O Over 40.5 LV at DEN \u00b7 Sun 4:25pm 70% 63% +7 O Over 46.5 MIN at SF \u00b7 Sun 8:20pm 70% 51% +19 U Under 48.5 NO at CHI \u00b7 Sun 1:00pm 70% 36% +34 O Over 43.5 BAL at CAR \u00b7 Sun 1:00pm 59% 65% -6 O Over 40.5 ARI at KC \u00b7 Sun 1:00pm 51% 72% -21 O Over 45.5 JAX at NYG \u00b7 Sun 4:25pm 51% 62% -11 U Under 45.5 JAX at NYG \u00b7 Sun 4:25pm 49% 38% +11 U Under 40.5 ARI at KC \u00b7 Sun 1:00pm 49% 28% +21 U Under 43.5 BAL at CAR \u00b7 Sun 1:00pm 41% 35% +6 O Over 48.5 NO at CHI \u00b7 Sun 1:00pm 30% 64% -34 U Under 46.5 MIN at SF \u00b7 Sun 8:20pm 30% 49% -19 U Under 40.5 LV at DEN \u00b7 Sun 4:25pm 30% 37% -7 O Over 37.5 PIT at PHI \u00b7 Sun 1:00pm 29% 54% -25 U Under 41.5 NYJ at LAC \u00b7 Sun 4:05pm 27% 44% -17 U Under 44.5 MIA at BUF \u00b7 Sun 1:00pm 24% 21% +3 U Under 54.5 TEN at DAL \u00b7 Sun 1:00pm 19% 46% -27 U Under 54.5 CIN at WAS \u00b7 Mon 8:15pm 12% 38% -26 U Under 47.5 TB at DET \u00b7 Sun 1:00pm 2% 19% -17 ",
+      "parsed": [
+        {
+          "label": "O Over 47.5 TB at DET",
+          "when": "Sun 1:00pm",
+          "handle_pct": 98,
+          "bets_pct": 81,
+          "gap": 17,
+          "raw": "O Over 47.5 TB at DET \u00b7 Sun 1:00pm 98% 81% +17"
+        },
+        {
+          "label": "O Over 54.5 CIN at WAS",
+          "when": "Mon 8:15pm",
+          "handle_pct": 88,
+          "bets_pct": 62,
+          "gap": 26,
+          "raw": "O Over 54.5 CIN at WAS \u00b7 Mon 8:15pm 88% 62% +26"
+        },
+        {
+          "label": "O Over 54.5 TEN at DAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 81,
+          "bets_pct": 54,
+          "gap": 27,
+          "raw": "O Over 54.5 TEN at DAL \u00b7 Sun 1:00pm 81% 54% +27"
+        },
+        {
+          "label": "O Over 44.5 MIA at BUF",
+          "when": "Sun 1:00pm",
+          "handle_pct": 76,
+          "bets_pct": 79,
+          "gap": -3,
+          "raw": "O Over 44.5 MIA at BUF \u00b7 Sun 1:00pm 76% 79% -3"
+        },
+        {
+          "label": "O Over 41.5 NYJ at LAC",
+          "when": "Sun 4:05pm",
+          "handle_pct": 73,
+          "bets_pct": 56,
+          "gap": 17,
+          "raw": "O Over 41.5 NYJ at LAC \u00b7 Sun 4:05pm 73% 56% +17"
+        },
+        {
+          "label": "US users Get offer U Under 37.5 PIT at PHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 71,
+          "bets_pct": 46,
+          "gap": 25,
+          "raw": "US users Get offer U Under 37.5 PIT at PHI \u00b7 Sun 1:00pm 71% 46% +25"
+        },
+        {
+          "label": "O Over 40.5 LV at DEN",
+          "when": "Sun 4:25pm",
+          "handle_pct": 70,
+          "bets_pct": 63,
+          "gap": 7,
+          "raw": "O Over 40.5 LV at DEN \u00b7 Sun 4:25pm 70% 63% +7"
+        },
+        {
+          "label": "O Over 46.5 MIN at SF",
+          "when": "Sun 8:20pm",
+          "handle_pct": 70,
+          "bets_pct": 51,
+          "gap": 19,
+          "raw": "O Over 46.5 MIN at SF \u00b7 Sun 8:20pm 70% 51% +19"
+        },
+        {
+          "label": "U Under 48.5 NO at CHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 70,
+          "bets_pct": 36,
+          "gap": 34,
+          "raw": "U Under 48.5 NO at CHI \u00b7 Sun 1:00pm 70% 36% +34"
+        },
+        {
+          "label": "O Over 43.5 BAL at CAR",
+          "when": "Sun 1:00pm",
+          "handle_pct": 59,
+          "bets_pct": 65,
+          "gap": -6,
+          "raw": "O Over 43.5 BAL at CAR \u00b7 Sun 1:00pm 59% 65% -6"
+        },
+        {
+          "label": "O Over 40.5 ARI at KC",
+          "when": "Sun 1:00pm",
+          "handle_pct": 51,
+          "bets_pct": 72,
+          "gap": -21,
+          "raw": "O Over 40.5 ARI at KC \u00b7 Sun 1:00pm 51% 72% -21"
+        },
+        {
+          "label": "O Over 45.5 JAX at NYG",
+          "when": "Sun 4:25pm",
+          "handle_pct": 51,
+          "bets_pct": 62,
+          "gap": -11,
+          "raw": "O Over 45.5 JAX at NYG \u00b7 Sun 4:25pm 51% 62% -11"
+        },
+        {
+          "label": "U Under 45.5 JAX at NYG",
+          "when": "Sun 4:25pm",
+          "handle_pct": 49,
+          "bets_pct": 38,
+          "gap": 11,
+          "raw": "U Under 45.5 JAX at NYG \u00b7 Sun 4:25pm 49% 38% +11"
+        },
+        {
+          "label": "U Under 40.5 ARI at KC",
+          "when": "Sun 1:00pm",
+          "handle_pct": 49,
+          "bets_pct": 28,
+          "gap": 21,
+          "raw": "U Under 40.5 ARI at KC \u00b7 Sun 1:00pm 49% 28% +21"
+        },
+        {
+          "label": "U Under 43.5 BAL at CAR",
+          "when": "Sun 1:00pm",
+          "handle_pct": 41,
+          "bets_pct": 35,
+          "gap": 6,
+          "raw": "U Under 43.5 BAL at CAR \u00b7 Sun 1:00pm 41% 35% +6"
+        },
+        {
+          "label": "O Over 48.5 NO at CHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 30,
+          "bets_pct": 64,
+          "gap": -34,
+          "raw": "O Over 48.5 NO at CHI \u00b7 Sun 1:00pm 30% 64% -34"
+        },
+        {
+          "label": "U Under 46.5 MIN at SF",
+          "when": "Sun 8:20pm",
+          "handle_pct": 30,
+          "bets_pct": 49,
+          "gap": -19,
+          "raw": "U Under 46.5 MIN at SF \u00b7 Sun 8:20pm 30% 49% -19"
+        },
+        {
+          "label": "U Under 40.5 LV at DEN",
+          "when": "Sun 4:25pm",
+          "handle_pct": 30,
+          "bets_pct": 37,
+          "gap": -7,
+          "raw": "U Under 40.5 LV at DEN \u00b7 Sun 4:25pm 30% 37% -7"
+        },
+        {
+          "label": "O Over 37.5 PIT at PHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 29,
+          "bets_pct": 54,
+          "gap": -25,
+          "raw": "O Over 37.5 PIT at PHI \u00b7 Sun 1:00pm 29% 54% -25"
+        },
+        {
+          "label": "U Under 41.5 NYJ at LAC",
+          "when": "Sun 4:05pm",
+          "handle_pct": 27,
+          "bets_pct": 44,
+          "gap": -17,
+          "raw": "U Under 41.5 NYJ at LAC \u00b7 Sun 4:05pm 27% 44% -17"
+        },
+        {
+          "label": "U Under 44.5 MIA at BUF",
+          "when": "Sun 1:00pm",
+          "handle_pct": 24,
+          "bets_pct": 21,
+          "gap": 3,
+          "raw": "U Under 44.5 MIA at BUF \u00b7 Sun 1:00pm 24% 21% +3"
+        },
+        {
+          "label": "U Under 54.5 TEN at DAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 19,
+          "bets_pct": 46,
+          "gap": -27,
+          "raw": "U Under 54.5 TEN at DAL \u00b7 Sun 1:00pm 19% 46% -27"
+        },
+        {
+          "label": "U Under 54.5 CIN at WAS",
+          "when": "Mon 8:15pm",
+          "handle_pct": 12,
+          "bets_pct": 38,
+          "gap": -26,
+          "raw": "U Under 54.5 CIN at WAS \u00b7 Mon 8:15pm 12% 38% -26"
+        },
+        {
+          "label": "U Under 47.5 TB at DET",
+          "when": "Sun 1:00pm",
+          "handle_pct": 2,
+          "bets_pct": 19,
+          "gap": -17,
+          "raw": "U Under 47.5 TB at DET \u00b7 Sun 1:00pm 2% 19% -17"
+        }
+      ]
+    },
+    {
+      "raw_preview": " BUF Bills vs MIA \u00b7 Sun 1:00pm 95% 93% +2 CHI Bears vs NO \u00b7 Sun 1:00pm 89% 93% -4 CIN Bengals at WAS \u00b7 Mon 8:15pm 85% 93% -8 DAL Cowboys vs TEN \u00b7 Sun 1:00pm 81% 91% -10 PIT Steelers at PHI \u00b7 Sun 1:00pm 81% 82% -1 Kalshi \u00b7 Partner offer Trade $25, Get $25 \u00b7 Code CLEATZ10 18+ \u00b7 Eligible new users Get offer Underdog \u00b7 Partner offer Play $10, Get $50 \u00b7 Code CLEATZ Get offer Polymarket \u00b7 Partner offer Deposit $10, Get $25 \u00b7 Code CLEATZ 18+ \u00b7 Eligible new US users Get offer DET Lions vs TB \u00b7 Sun 1:00pm 79% 89% -10 KC Chiefs vs ARI \u00b7 Sun 1:00pm 77% 94% -17 DEN Broncos vs LV \u00b7 Sun 4:25pm 75% 92% -17 CAR Panthers vs BAL \u00b7 Sun 1:00pm 75% 73% +2 JAX Jaguars at NYG \u00b7 Sun 4:25pm 70% 90% -20 NYJ Jets at LAC \u00b7 Sun 4:05pm 59% 42% +17 SF 49ers vs MIN \u00b7 Sun 8:20pm 53% 63% -10 MIN Vikings at SF \u00b7 Sun 8:20pm 47% 37% +10 LAC Chargers vs NYJ \u00b7 Sun 4:05pm 41% 58% -17 NYG Giants vs JAX \u00b7 Sun 4:25pm 30% 10% +20 BAL Ravens at CAR \u00b7 Sun 1:00pm 25% 27% -2 LV Raiders at DEN \u00b7 Sun 4:25pm 25% 8% +17 ARI Cardinals at KC \u00b7 Sun 1:00pm 23% 6% +17 TB Buccaneers at DET \u00b7 Sun 1:00pm 21% 11% +10 PHI Eagles vs PIT \u00b7 Sun 1:00pm 19% 18% +1 TEN Titans at DAL \u00b7 Sun 1:00pm 19% 9% +10 WAS Commanders vs CIN \u00b7 Mon 8:15pm 15% 7% +8 NO Saints at CHI \u00b7 Sun 1:00pm 11% 7% +4 MIA Dolphins at BUF \u00b7 Sun 1:00pm 5% 7% -2 ",
+      "parsed": [
+        {
+          "label": "BUF Bills vs MIA",
+          "when": "Sun 1:00pm",
+          "handle_pct": 95,
+          "bets_pct": 93,
+          "gap": 2,
+          "raw": "BUF Bills vs MIA \u00b7 Sun 1:00pm 95% 93% +2"
+        },
+        {
+          "label": "CHI Bears vs NO",
+          "when": "Sun 1:00pm",
+          "handle_pct": 89,
+          "bets_pct": 93,
+          "gap": -4,
+          "raw": "CHI Bears vs NO \u00b7 Sun 1:00pm 89% 93% -4"
+        },
+        {
+          "label": "CIN Bengals at WAS",
+          "when": "Mon 8:15pm",
+          "handle_pct": 85,
+          "bets_pct": 93,
+          "gap": -8,
+          "raw": "CIN Bengals at WAS \u00b7 Mon 8:15pm 85% 93% -8"
+        },
+        {
+          "label": "DAL Cowboys vs TEN",
+          "when": "Sun 1:00pm",
+          "handle_pct": 81,
+          "bets_pct": 91,
+          "gap": -10,
+          "raw": "DAL Cowboys vs TEN \u00b7 Sun 1:00pm 81% 91% -10"
+        },
+        {
+          "label": "PIT Steelers at PHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 81,
+          "bets_pct": 82,
+          "gap": -1,
+          "raw": "PIT Steelers at PHI \u00b7 Sun 1:00pm 81% 82% -1"
+        },
+        {
+          "label": "US users Get offer DET Lions vs TB",
+          "when": "Sun 1:00pm",
+          "handle_pct": 79,
+          "bets_pct": 89,
+          "gap": -10,
+          "raw": "US users Get offer DET Lions vs TB \u00b7 Sun 1:00pm 79% 89% -10"
+        },
+        {
+          "label": "KC Chiefs vs ARI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 77,
+          "bets_pct": 94,
+          "gap": -17,
+          "raw": "KC Chiefs vs ARI \u00b7 Sun 1:00pm 77% 94% -17"
+        },
+        {
+          "label": "DEN Broncos vs LV",
+          "when": "Sun 4:25pm",
+          "handle_pct": 75,
+          "bets_pct": 92,
+          "gap": -17,
+          "raw": "DEN Broncos vs LV \u00b7 Sun 4:25pm 75% 92% -17"
+        },
+        {
+          "label": "CAR Panthers vs BAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 75,
+          "bets_pct": 73,
+          "gap": 2,
+          "raw": "CAR Panthers vs BAL \u00b7 Sun 1:00pm 75% 73% +2"
+        },
+        {
+          "label": "JAX Jaguars at NYG",
+          "when": "Sun 4:25pm",
+          "handle_pct": 70,
+          "bets_pct": 90,
+          "gap": -20,
+          "raw": "JAX Jaguars at NYG \u00b7 Sun 4:25pm 70% 90% -20"
+        },
+        {
+          "label": "NYJ Jets at LAC",
+          "when": "Sun 4:05pm",
+          "handle_pct": 59,
+          "bets_pct": 42,
+          "gap": 17,
+          "raw": "NYJ Jets at LAC \u00b7 Sun 4:05pm 59% 42% +17"
+        },
+        {
+          "label": "SF 49ers vs MIN",
+          "when": "Sun 8:20pm",
+          "handle_pct": 53,
+          "bets_pct": 63,
+          "gap": -10,
+          "raw": "SF 49ers vs MIN \u00b7 Sun 8:20pm 53% 63% -10"
+        },
+        {
+          "label": "MIN Vikings at SF",
+          "when": "Sun 8:20pm",
+          "handle_pct": 47,
+          "bets_pct": 37,
+          "gap": 10,
+          "raw": "MIN Vikings at SF \u00b7 Sun 8:20pm 47% 37% +10"
+        },
+        {
+          "label": "LAC Chargers vs NYJ",
+          "when": "Sun 4:05pm",
+          "handle_pct": 41,
+          "bets_pct": 58,
+          "gap": -17,
+          "raw": "LAC Chargers vs NYJ \u00b7 Sun 4:05pm 41% 58% -17"
+        },
+        {
+          "label": "NYG Giants vs JAX",
+          "when": "Sun 4:25pm",
+          "handle_pct": 30,
+          "bets_pct": 10,
+          "gap": 20,
+          "raw": "NYG Giants vs JAX \u00b7 Sun 4:25pm 30% 10% +20"
+        },
+        {
+          "label": "BAL Ravens at CAR",
+          "when": "Sun 1:00pm",
+          "handle_pct": 25,
+          "bets_pct": 27,
+          "gap": -2,
+          "raw": "BAL Ravens at CAR \u00b7 Sun 1:00pm 25% 27% -2"
+        },
+        {
+          "label": "LV Raiders at DEN",
+          "when": "Sun 4:25pm",
+          "handle_pct": 25,
+          "bets_pct": 8,
+          "gap": 17,
+          "raw": "LV Raiders at DEN \u00b7 Sun 4:25pm 25% 8% +17"
+        },
+        {
+          "label": "ARI Cardinals at KC",
+          "when": "Sun 1:00pm",
+          "handle_pct": 23,
+          "bets_pct": 6,
+          "gap": 17,
+          "raw": "ARI Cardinals at KC \u00b7 Sun 1:00pm 23% 6% +17"
+        },
+        {
+          "label": "TB Buccaneers at DET",
+          "when": "Sun 1:00pm",
+          "handle_pct": 21,
+          "bets_pct": 11,
+          "gap": 10,
+          "raw": "TB Buccaneers at DET \u00b7 Sun 1:00pm 21% 11% +10"
+        },
+        {
+          "label": "PHI Eagles vs PIT",
+          "when": "Sun 1:00pm",
+          "handle_pct": 19,
+          "bets_pct": 18,
+          "gap": 1,
+          "raw": "PHI Eagles vs PIT \u00b7 Sun 1:00pm 19% 18% +1"
+        },
+        {
+          "label": "TEN Titans at DAL",
+          "when": "Sun 1:00pm",
+          "handle_pct": 19,
+          "bets_pct": 9,
+          "gap": 10,
+          "raw": "TEN Titans at DAL \u00b7 Sun 1:00pm 19% 9% +10"
+        },
+        {
+          "label": "WAS Commanders vs CIN",
+          "when": "Mon 8:15pm",
+          "handle_pct": 15,
+          "bets_pct": 7,
+          "gap": 8,
+          "raw": "WAS Commanders vs CIN \u00b7 Mon 8:15pm 15% 7% +8"
+        },
+        {
+          "label": "NO Saints at CHI",
+          "when": "Sun 1:00pm",
+          "handle_pct": 11,
+          "bets_pct": 7,
+          "gap": 4,
+          "raw": "NO Saints at CHI \u00b7 Sun 1:00pm 11% 7% +4"
+        },
+        {
+          "label": "MIA Dolphins at BUF",
+          "when": "Sun 1:00pm",
+          "handle_pct": 5,
+          "bets_pct": 7,
+          "gap": -2,
+          "raw": "MIA Dolphins at BUF \u00b7 Sun 1:00pm 5% 7% -2"
+        }
+      ]
+    }
+  ]
+}
