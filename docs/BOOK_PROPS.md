@@ -20,6 +20,18 @@ Markets saved when the book posts them: passing yards, rushing yards, receiving 
 
 Pass attempts and completions came from BetRivers and Bovada. FanDuel's passing page had yards and passing touchdowns, not attempts or completions.
 
+## DraftKings, BetMGM and Caesars (checked November 23, 2026)
+
+A real browser on the owner's home connection shows all three books' props while logged out (see HANDOFF_CLAUDE.md). Servers do not get the same answer:
+
+- GitHub Actions (latest coverage file): DraftKings HTTP 403, Caesars HTTP 403, BetMGM page with no prices.
+- A Claude Code cloud machine: DraftKings' current feed (`sportsbook-nash.draftkings.com/.../leagues/88808`) HTTP 403 "Access Denied", Caesars' schedule feed HTTP 403 from CloudFront.
+- The Cloudflare Worker (November 21): DraftKings and Caesars HTTP 403, BetMGM empty.
+
+The DraftKings probe now asks for the current feed instead of the retired `api/v5/eventgroups` one, so the daily check tests the right address. No parser is added until a feed answers from a free server, because a parser written without a real response would be a guess. A paid proxy is not used.
+
+The free route that is known to work is a home connection. That would mean a small collector on the owner's computer during the pre-kickoff windows, posting to the existing ingest route. It is not built. It needs the owner's yes.
+
 ## How often
 
 The Worker cron is the live collector. It runs every two minutes and only requests books when a game is inside one of the six pre-kickoff windows: 24 hours, 6 hours, 3 hours, 90 minutes, 30 minutes, and about 10 minutes. Each run reads one slice, so the requests stay a few minutes apart. The close moves to the newest pre-kickoff price. It does not add a second close.

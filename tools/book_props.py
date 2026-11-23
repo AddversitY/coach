@@ -65,7 +65,7 @@ FANDUEL_TABS = ('passing-props', 'rushing-props', 'receiving-props', 'td-scorer-
 
 # One polite request. These hosts did not return a logged-out prop feed.
 PROBES = (
-    ('draftkings-public', 'https://sportsbook.draftkings.com/sites/US-SB/api/v5/eventgroups/88808?format=json'),
+    ('draftkings-public', 'https://sportsbook-nash.draftkings.com/api/sportscontent/dkuspa/v1/leagues/88808'),
     ('betmgm-public', 'https://sports.nj.betmgm.com/en/sports/football-11'),
     ('caesars-public', 'https://api.americanwagering.com/regions/us/locations/nj/brands/czr/sb/v3/sports/americanfootball/events/schedule/'),
     ('espnbet-public', 'https://sportsbook-espnbet.us-default.thescore.bet/graphql'),
