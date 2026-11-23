@@ -1,0 +1,554 @@
+{
+ "source": "nflverse weekly player stats and schedules (CC BY 4.0); 2026 prop closes from the PropLine sample (CC BY 4.0)",
+ "periods": {
+  "find": [
+   2012,
+   2018
+  ],
+  "check": [
+   2019,
+   2025
+  ]
+ },
+ "proxyLine": "median of the player's previous 10 games (no free historical prop lines)",
+ "playerGames": 131213,
+ "angles": {
+  "control: player hosting Denver (same defense, no altitude)": {
+   "find": {
+    "bets": 674,
+    "hitRate": 0.5504,
+    "baseHitRate": 0.5677,
+    "lift": {
+     "n": 674,
+     "mean": -0.0173,
+     "low": -0.0484,
+     "high": 0.0139
+    }
+   },
+   "check": {
+    "bets": 1059,
+    "hitRate": 0.5788,
+    "baseHitRate": 0.5768,
+    "lift": {
+     "n": 1059,
+     "mean": 0.002,
+     "low": -0.0235,
+     "high": 0.0266
+    }
+   },
+   "verdict": "no lift"
+  },
+  "milestone: within reach in the last two weeks": {
+   "find": {
+    "bets": 199,
+    "hitRate": 0.5025,
+    "baseHitRate": 0.4323,
+    "lift": {
+     "n": 199,
+     "mean": 0.0702,
+     "low": 0.0099,
+     "high": 0.1255
+    }
+   },
+   "check": {
+    "bets": 200,
+    "hitRate": 0.465,
+    "baseHitRate": 0.4232,
+    "lift": {
+     "n": 200,
+     "mean": 0.0418,
+     "low": -0.0132,
+     "high": 0.0968
+    }
+   },
+   "verdict": "lead: lift above zero in both periods, not yet clear (proxy line)"
+  },
+  "revenge: player against a former team": {
+   "find": {
+    "bets": 603,
+    "hitRate": 0.3847,
+    "baseHitRate": 0.4323,
+    "lift": {
+     "n": 603,
+     "mean": -0.0475,
+     "low": -0.0791,
+     "high": -0.0144
+    }
+   },
+   "check": {
+    "bets": 1264,
+    "hitRate": 0.4059,
+    "baseHitRate": 0.4232,
+    "lift": {
+     "n": 1264,
+     "mean": -0.0173,
+     "low": -0.0403,
+     "high": 0.0048
+    }
+   },
+   "verdict": "no lift"
+  },
+  "short week: Thanksgiving": {
+   "find": {
+    "bets": 739,
+    "hitRate": 0.525,
+    "baseHitRate": 0.5677,
+    "lift": {
+     "n": 739,
+     "mean": -0.0427,
+     "low": -0.0738,
+     "high": -0.0128
+    }
+   },
+   "check": {
+    "bets": 724,
+    "hitRate": 0.5138,
+    "baseHitRate": 0.5768,
+    "lift": {
+     "n": 724,
+     "mean": -0.063,
+     "low": -0.092,
+     "high": -0.0312
+    }
+   },
+   "verdict": "no lift"
+  },
+  "short week: Thursday": {
+   "find": {
+    "bets": 2980,
+    "hitRate": 0.5762,
+    "baseHitRate": 0.5677,
+    "lift": {
+     "n": 2980,
+     "mean": 0.0085,
+     "low": -0.0066,
+     "high": 0.0236
+    }
+   },
+   "check": {
+    "bets": 3561,
+    "hitRate": 0.563,
+    "baseHitRate": 0.5768,
+    "lift": {
+     "n": 3561,
+     "mean": -0.0138,
+     "low": -0.027,
+     "high": -0.0
+    }
+   },
+   "verdict": "no lift"
+  },
+  "venue: own split indoors": {
+   "find": {
+    "bets": 5404,
+    "hitRate": 0.4983,
+    "baseHitRate": 0.4925,
+    "lift": {
+     "n": 5404,
+     "mean": 0.0059,
+     "low": -0.0051,
+     "high": 0.0167
+    }
+   },
+   "check": {
+    "bets": 8613,
+    "hitRate": 0.5001,
+    "baseHitRate": 0.4939,
+    "lift": {
+     "n": 8613,
+     "mean": 0.0062,
+     "low": -0.0024,
+     "high": 0.0152
+    }
+   },
+   "verdict": "lead: lift above zero in both periods, not yet clear (proxy line)"
+  },
+  "venue: own split on grass": {
+   "find": {
+    "bets": 8530,
+    "hitRate": 0.5213,
+    "baseHitRate": 0.5127,
+    "lift": {
+     "n": 8530,
+     "mean": 0.0086,
+     "low": -0.0007,
+     "high": 0.0171
+    }
+   },
+   "check": {
+    "bets": 10422,
+    "hitRate": 0.5096,
+    "baseHitRate": 0.5097,
+    "lift": {
+     "n": 10422,
+     "mean": -0.0001,
+     "low": -0.0079,
+     "high": 0.0079
+    }
+   },
+   "verdict": "no lift"
+  },
+  "venue: own split on turf": {
+   "find": {
+    "bets": 8353,
+    "hitRate": 0.4995,
+    "baseHitRate": 0.491,
+    "lift": {
+     "n": 8353,
+     "mean": 0.0084,
+     "low": -0.0006,
+     "high": 0.0167
+    }
+   },
+   "check": {
+    "bets": 10241,
+    "hitRate": 0.4978,
+    "baseHitRate": 0.4921,
+    "lift": {
+     "n": 10241,
+     "mean": 0.0057,
+     "low": -0.0026,
+     "high": 0.0139
+    }
+   },
+   "verdict": "lead: lift above zero in both periods, not yet clear (proxy line)"
+  },
+  "venue: own split outdoors": {
+   "find": {
+    "bets": 6337,
+    "hitRate": 0.5023,
+    "baseHitRate": 0.5147,
+    "lift": {
+     "n": 6337,
+     "mean": -0.0124,
+     "low": -0.0226,
+     "high": -0.0021
+    }
+   },
+   "check": {
+    "bets": 8301,
+    "hitRate": 0.5105,
+    "baseHitRate": 0.5147,
+    "lift": {
+     "n": 8301,
+     "mean": -0.0042,
+     "low": -0.0131,
+     "high": 0.0046
+    }
+   },
+   "verdict": "no lift"
+  },
+  "venue: visiting player at Denver altitude": {
+   "find": {
+    "bets": 874,
+    "hitRate": 0.6304,
+    "baseHitRate": 0.5677,
+    "lift": {
+     "n": 874,
+     "mean": 0.0627,
+     "low": 0.0353,
+     "high": 0.0902
+    }
+   },
+   "check": {
+    "bets": 1079,
+    "hitRate": 0.6061,
+    "baseHitRate": 0.5768,
+    "lift": {
+     "n": 1079,
+     "mean": 0.0293,
+     "low": 0.0034,
+     "high": 0.0534
+    }
+   },
+   "verdict": "lift clearly above zero in both periods (proxy line)"
+  }
+ },
+ "kickers": {
+  "all kickers, bad weather": {
+   "find": {
+    "bets": 392,
+    "underHitRate": 0.5944,
+    "baseUnderHitRate": 0.5489,
+    "lift": {
+     "n": 392,
+     "mean": 0.0455,
+     "low": 0.0072,
+     "high": 0.0863
+    },
+    "pointsVsLine": -0.68
+   },
+   "check": {
+    "bets": 360,
+    "underHitRate": 0.5778,
+    "baseUnderHitRate": 0.5304,
+    "lift": {
+     "n": 360,
+     "mean": 0.0473,
+     "low": 0.0055,
+     "high": 0.089
+    },
+    "pointsVsLine": -0.52
+   }
+  },
+  "weaker kickers (under 75% from 40+), bad weather": {
+   "find": {
+    "bets": 127,
+    "underHitRate": 0.5039,
+    "baseUnderHitRate": 0.5489,
+    "lift": {
+     "n": 127,
+     "mean": -0.045,
+     "low": -0.1158,
+     "high": 0.0259
+    },
+    "pointsVsLine": -0.17
+   },
+   "check": {
+    "bets": 124,
+    "underHitRate": 0.5242,
+    "baseUnderHitRate": 0.5304,
+    "lift": {
+     "n": 124,
+     "mean": -0.0062,
+     "low": -0.0788,
+     "high": 0.0663
+    },
+    "pointsVsLine": -0.22
+   }
+  },
+  "stronger kickers (75%+ from 40+), bad weather": {
+   "find": {
+    "bets": 204,
+    "underHitRate": 0.6471,
+    "baseUnderHitRate": 0.5489,
+    "lift": {
+     "n": 204,
+     "mean": 0.0982,
+     "low": 0.0442,
+     "high": 0.1521
+    },
+    "pointsVsLine": -1.06
+   },
+   "check": {
+    "bets": 213,
+    "underHitRate": 0.6244,
+    "baseUnderHitRate": 0.5304,
+    "lift": {
+     "n": 213,
+     "mean": 0.094,
+     "low": 0.0376,
+     "high": 0.1503
+    },
+    "pointsVsLine": -0.77
+   }
+  }
+ },
+ "against2026Closes": {
+  "revenge: player against a former team": {
+   "n": 13,
+   "mean": 0.142,
+   "low": -0.3674,
+   "high": 0.6176
+  },
+  "short week: Thursday": {
+   "n": 61,
+   "mean": -0.0674,
+   "low": -0.2775,
+   "high": 0.1488
+  },
+  "venue: own split indoors": {
+   "n": 57,
+   "mean": -0.2542,
+   "low": -0.4724,
+   "high": -0.037
+  },
+  "venue: own split on grass": {
+   "n": 97,
+   "mean": 0.0029,
+   "low": -0.1573,
+   "high": 0.1695
+  },
+  "venue: own split on turf": {
+   "n": 60,
+   "mean": -0.0978,
+   "low": -0.3041,
+   "high": 0.121
+  },
+  "venue: own split outdoors": {
+   "n": 81,
+   "mean": -0.35,
+   "low": -0.5187,
+   "high": -0.1722
+  },
+  "venue: visiting player at Denver altitude": {
+   "n": 12,
+   "mean": -0.0022,
+   "low": -0.492,
+   "high": 0.4952
+  }
+ },
+ "stickyLines": {
+  "pairs": 413,
+  "flags": 55,
+  "valueAtFairClose": {
+   "n": 55,
+   "mean": -0.3064,
+   "low": -0.5178,
+   "high": -0.0973
+  },
+  "rule": "line moved under 3% week to week while the opponent allowance changed 10%+",
+  "examples": [
+   {
+    "player": "00-0023459",
+    "metric": "rushing_yards",
+    "week": 3,
+    "lineBefore": 0.5,
+    "lineNow": 0.5,
+    "matchupChange": 0.219,
+    "side": "over",
+    "hit": true
+   },
+   {
+    "player": "00-0032764",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": 0.137,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0033106",
+    "metric": "rushing_yards",
+    "week": 3,
+    "lineBefore": 0.5,
+    "lineNow": 0.5,
+    "matchupChange": -0.142,
+    "side": "under",
+    "hit": false
+   },
+   {
+    "player": "00-0033293",
+    "metric": "rushing_yards",
+    "week": 3,
+    "lineBefore": 53.5,
+    "lineNow": 52.5,
+    "matchupChange": -0.314,
+    "side": "under",
+    "hit": false
+   },
+   {
+    "player": "00-0033906",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 2.5,
+    "lineNow": 2.5,
+    "matchupChange": -0.155,
+    "side": "under",
+    "hit": true
+   },
+   {
+    "player": "00-0034753",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 4.5,
+    "lineNow": 4.5,
+    "matchupChange": 0.137,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0034837",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": 0.178,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0034975",
+    "metric": "receiving_yards",
+    "week": 3,
+    "lineBefore": 13.5,
+    "lineNow": 13.5,
+    "matchupChange": 0.262,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0034975",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 2.5,
+    "lineNow": 2.5,
+    "matchupChange": 0.137,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0035261",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": 0.178,
+    "side": "over",
+    "hit": true
+   },
+   {
+    "player": "00-0035640",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 4.5,
+    "lineNow": 4.5,
+    "matchupChange": 0.131,
+    "side": "over",
+    "hit": false
+   },
+   {
+    "player": "00-0035644",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": -0.155,
+    "side": "under",
+    "hit": false
+   },
+   {
+    "player": "00-0035685",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": 0.132,
+    "side": "over",
+    "hit": true
+   },
+   {
+    "player": "00-0035689",
+    "metric": "receptions",
+    "week": 3,
+    "lineBefore": 1.5,
+    "lineNow": 1.5,
+    "matchupChange": -0.147,
+    "side": "under",
+    "hit": true
+   },
+   {
+    "player": "00-0035710",
+    "metric": "passing_yards",
+    "week": 3,
+    "lineBefore": 216.5,
+    "lineNow": 210.5,
+    "matchupChange": 0.192,
+    "side": "over",
+    "hit": true
+   }
+  ]
+ }
+}

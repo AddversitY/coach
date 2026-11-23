@@ -1,0 +1,69 @@
+name: Niche watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hourly. Free sources only (nflverse, the Worker's saved props,
+    # SportsBettingDime's public splits feed, Open-Meteo); no Odds API credits.
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: price-history
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download free inputs
+        run: |
+          set +e
+          base=https://github.com/nflverse/nflverse-data/releases/download
+          season=$(date -u +%Y); [ "$(date -u +%m)" -lt 3 ] && season=$((season - 1))
+          curl -fsSL --max-time 120 -o "$RUNNER_TEMP/games.csv" "$base/schedules/games.csv"
+          curl -fsSL --max-time 120 -o "$RUNNER_TEMP/stats-last.csv" "$base/stats_player/stats_player_week_$((season - 1)).csv"
+          curl -fsSL --max-time 120 -o "$RUNNER_TEMP/stats-now.csv" "$base/stats_player/stats_player_week_$season.csv"
+          curl -fsSL --max-time 120 -o "$RUNNER_TEMP/book-prices.json" https://coach-research.dds-dge.workers.dev/v1/book-prices
+          curl -fsSL --max-time 60 -o "$RUNNER_TEMP/coach-index.json" https://addversity.github.io/coach/data/coach-index.json
+          exit 0
+      - name: Niche angles (venue, revenge, short week, late season, kickers, milestones, sticky lines)
+        run: |
+          if [ -f "$RUNNER_TEMP/games.csv" ]; then
+            python tools/niche_watch.py --schedule "$RUNNER_TEMP/games.csv" \
+              --stats "$RUNNER_TEMP/stats-last.csv" "$RUNNER_TEMP/stats-now.csv" \
+              --history assets/price-history.json --book-prices "$RUNNER_TEMP/book-prices.json" \
+              --index "$RUNNER_TEMP/coach-index.json" --research research/niche/game_angles.json \
+              --output assets/niche-watch.json || echo "Niche watch skipped."
+          fi
+      - name: Public betting splits (signals only, never shown in the app)
+        run: python tools/public_splits.py --history assets/price-history.json --output assets/public-splits.json || echo "Public splits skipped."
+      - name: Slow books
+        run: python tools/book_lag.py --history assets/price-history.json --book-prices "$RUNNER_TEMP/book-prices.json" --output assets/book-lag.json || echo "Book lag skipped."
+      - name: Commit only when an alert or price changed
+        run: |
+          files="assets/niche-watch.json assets/public-splits.json assets/book-lag.json"
+          git add -N $files 2>/dev/null || true
+          if ! git diff -U0 -- $files | grep -E '^[+-][^+-]' | grep -vqE '"(checkedAt|loggedAt)"'; then
+            echo "Nothing new."
+            exit 0
+          fi
+          git config user.name "odds-edge-evidence"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $files
+          git commit -m "Niche watch: angles, public splits and slow books"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main

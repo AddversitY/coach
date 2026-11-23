@@ -1,0 +1,1700 @@
+{
+ "schema": "coach-book-lag-v1",
+ "alerts": [
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "espnbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Washington Commanders",
+    "line": 6.5,
+    "book": "hardrockbet",
+    "decimal": 1.91,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "betmgm",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 54.0,
+    "book": "ballybet",
+    "decimal": 1.88,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "betmgm",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 54.0,
+    "book": "betrivers",
+    "decimal": 1.88,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "ballybet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "betrivers",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betmgm",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "betmgm",
+    "decimal": 1.89,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CAR",
+   "home": "TB",
+   "kickoff": "2026-12-01T01:15:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "espnbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Tampa Bay Buccaneers",
+    "line": -2.5,
+    "book": "hardrockbet",
+    "decimal": 1.83,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betmgm",
+    "betrivers",
+    "draftkings"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 50.5,
+    "book": "fanduel",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "ballybet",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "betrivers",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "fanduel",
+    "decimal": 1.91,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "espnbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "espnbet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "PHI",
+   "home": "DAL",
+   "kickoff": "2026-11-26T21:30:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "espnbet",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 47.5,
+    "book": "draftkings",
+    "decimal": 1.86,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "WAS",
+   "home": "ARI",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "draftkings",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  }
+ ],
+ "backtest": {
+  "source": "PropLine NFL sample (CC BY 4.0), Sep 18-29 2026",
+  "books": [
+   {
+    "book": "betmgm",
+    "market": "player_pass_yds",
+    "props": 61,
+    "sharpMoves": 19,
+    "followShare": 0.217,
+    "closeGapToPinnacle": 0.0157,
+    "staleSideValue": {
+     "n": 0,
+     "mean": null,
+     "low": null,
+     "high": null
+    }
+   },
+   {
+    "book": "betmgm",
+    "market": "player_reception_yds",
+    "props": 337,
+    "sharpMoves": 76,
+    "followShare": 0.239,
+    "closeGapToPinnacle": 0.0145,
+    "staleSideValue": {
+     "n": 26,
+     "mean": -0.0277,
+     "low": -0.0376,
+     "high": -0.0177
+    }
+   },
+   {
+    "book": "betmgm",
+    "market": "player_receptions",
+    "props": 330,
+    "sharpMoves": 118,
+    "followShare": 0.276,
+    "closeGapToPinnacle": 0.0219,
+    "staleSideValue": {
+     "n": 106,
+     "mean": -0.044,
+     "low": -0.052,
+     "high": -0.0363
+    }
+   },
+   {
+    "book": "betmgm",
+    "market": "player_rush_yds",
+    "props": 153,
+    "sharpMoves": 44,
+    "followShare": 0.296,
+    "closeGapToPinnacle": 0.0162,
+    "staleSideValue": {
+     "n": 18,
+     "mean": -0.0414,
+     "low": -0.0574,
+     "high": -0.0245
+    }
+   },
+   {
+    "book": "betrivers",
+    "market": "player_pass_yds",
+    "props": 58,
+    "sharpMoves": 18,
+    "followShare": 0.096,
+    "closeGapToPinnacle": 0.0212,
+    "staleSideValue": {
+     "n": 1,
+     "mean": 0.0067,
+     "low": 0.0067,
+     "high": 0.0067
+    }
+   },
+   {
+    "book": "betrivers",
+    "market": "player_reception_yds",
+    "props": 325,
+    "sharpMoves": 74,
+    "followShare": 0.526,
+    "closeGapToPinnacle": 0.0141,
+    "staleSideValue": {
+     "n": 14,
+     "mean": -0.0322,
+     "low": -0.0485,
+     "high": -0.0165
+    }
+   },
+   {
+    "book": "betrivers",
+    "market": "player_rush_yds",
+    "props": 154,
+    "sharpMoves": 42,
+    "followShare": 0.687,
+    "closeGapToPinnacle": 0.0165,
+    "staleSideValue": {
+     "n": 11,
+     "mean": -0.0253,
+     "low": -0.0439,
+     "high": -0.0034
+    }
+   },
+   {
+    "book": "betway",
+    "market": "player_pass_yds",
+    "props": 60,
+    "sharpMoves": 18,
+    "followShare": 0.0,
+    "closeGapToPinnacle": 0.0187,
+    "staleSideValue": {
+     "n": 2,
+     "mean": -0.016,
+     "low": -0.0228,
+     "high": -0.0091
+    }
+   },
+   {
+    "book": "betway",
+    "market": "player_reception_yds",
+    "props": 315,
+    "sharpMoves": 70,
+    "followShare": 0.0,
+    "closeGapToPinnacle": 0.0165,
+    "staleSideValue": {
+     "n": 18,
+     "mean": -0.0174,
+     "low": -0.031,
+     "high": -0.0056
+    }
+   },
+   {
+    "book": "betway",
+    "market": "player_receptions",
+    "props": 313,
+    "sharpMoves": 108,
+    "followShare": 0.0,
+    "closeGapToPinnacle": 0.0229,
+    "staleSideValue": {
+     "n": 98,
+     "mean": -0.0223,
+     "low": -0.0316,
+     "high": -0.0113
+    }
+   },
+   {
+    "book": "betway",
+    "market": "player_rush_yds",
+    "props": 156,
+    "sharpMoves": 43,
+    "followShare": -0.0,
+    "closeGapToPinnacle": 0.0189,
+    "staleSideValue": {
+     "n": 11,
+     "mean": -0.0148,
+     "low": -0.035,
+     "high": 0.0107
+    }
+   },
+   {
+    "book": "courtside",
+    "market": "player_pass_yds",
+    "props": 32,
+    "sharpMoves": 9,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0214,
+    "staleSideValue": {
+     "n": 0,
+     "mean": null,
+     "low": null,
+     "high": null
+    }
+   },
+   {
+    "book": "courtside",
+    "market": "player_reception_yds",
+    "props": 182,
+    "sharpMoves": 34,
+    "followShare": 0.0,
+    "closeGapToPinnacle": 0.0184,
+    "staleSideValue": {
+     "n": 7,
+     "mean": 0.0513,
+     "low": 0.0209,
+     "high": 0.0836
+    }
+   },
+   {
+    "book": "courtside",
+    "market": "player_receptions",
+    "props": 182,
+    "sharpMoves": 56,
+    "followShare": 0.599,
+    "closeGapToPinnacle": 0.0176,
+    "staleSideValue": {
+     "n": 50,
+     "mean": -0.0416,
+     "low": -0.0487,
+     "high": -0.0337
+    }
+   },
+   {
+    "book": "courtside",
+    "market": "player_rush_yds",
+    "props": 90,
+    "sharpMoves": 16,
+    "followShare": -0.0,
+    "closeGapToPinnacle": 0.0166,
+    "staleSideValue": {
+     "n": 4,
+     "mean": 0.0187,
+     "low": -0.0188,
+     "high": 0.0562
+    }
+   },
+   {
+    "book": "dabble",
+    "market": "player_pass_yds",
+    "props": 29,
+    "sharpMoves": 8,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0192,
+    "staleSideValue": {
+     "n": 1,
+     "mean": 0.0779,
+     "low": 0.0779,
+     "high": 0.0779
+    }
+   },
+   {
+    "book": "dabble",
+    "market": "player_reception_yds",
+    "props": 167,
+    "sharpMoves": 29,
+    "followShare": 0.234,
+    "closeGapToPinnacle": 0.0159,
+    "staleSideValue": {
+     "n": 4,
+     "mean": 0.0331,
+     "low": 0.0047,
+     "high": 0.0552
+    }
+   },
+   {
+    "book": "dabble",
+    "market": "player_receptions",
+    "props": 90,
+    "sharpMoves": 31,
+    "followShare": 0.0,
+    "closeGapToPinnacle": 0.027,
+    "staleSideValue": {
+     "n": 26,
+     "mean": 0.0502,
+     "low": 0.031,
+     "high": 0.0718
+    }
+   },
+   {
+    "book": "dabble",
+    "market": "player_rush_yds",
+    "props": 80,
+    "sharpMoves": 14,
+    "followShare": 0.006,
+    "closeGapToPinnacle": 0.0176,
+    "staleSideValue": {
+     "n": 4,
+     "mean": 0.0538,
+     "low": 0.0342,
+     "high": 0.0728
+    }
+   },
+   {
+    "book": "draftkings",
+    "market": "player_pass_yds",
+    "props": 59,
+    "sharpMoves": 18,
+    "followShare": 0.37,
+    "closeGapToPinnacle": 0.0143,
+    "staleSideValue": {
+     "n": 2,
+     "mean": -0.0153,
+     "low": -0.0454,
+     "high": 0.0147
+    }
+   },
+   {
+    "book": "draftkings",
+    "market": "player_reception_yds",
+    "props": 347,
+    "sharpMoves": 78,
+    "followShare": 0.617,
+    "closeGapToPinnacle": 0.0133,
+    "staleSideValue": {
+     "n": 25,
+     "mean": -0.0217,
+     "low": -0.0324,
+     "high": -0.0105
+    }
+   },
+   {
+    "book": "draftkings",
+    "market": "player_receptions",
+    "props": 350,
+    "sharpMoves": 120,
+    "followShare": 0.705,
+    "closeGapToPinnacle": 0.0185,
+    "staleSideValue": {
+     "n": 109,
+     "mean": -0.0357,
+     "low": -0.0422,
+     "high": -0.0289
+    }
+   },
+   {
+    "book": "draftkings",
+    "market": "player_rush_yds",
+    "props": 174,
+    "sharpMoves": 45,
+    "followShare": 0.65,
+    "closeGapToPinnacle": 0.0138,
+    "staleSideValue": {
+     "n": 20,
+     "mean": -0.0319,
+     "low": -0.0427,
+     "high": -0.0205
+    }
+   },
+   {
+    "book": "fanatics",
+    "market": "player_pass_yds",
+    "props": 59,
+    "sharpMoves": 18,
+    "followShare": 0.074,
+    "closeGapToPinnacle": 0.0172,
+    "staleSideValue": {
+     "n": 0,
+     "mean": null,
+     "low": null,
+     "high": null
+    }
+   },
+   {
+    "book": "fanatics",
+    "market": "player_reception_yds",
+    "props": 344,
+    "sharpMoves": 77,
+    "followShare": 0.867,
+    "closeGapToPinnacle": 0.0194,
+    "staleSideValue": {
+     "n": 17,
+     "mean": -0.0525,
+     "low": -0.0644,
+     "high": -0.0408
+    }
+   },
+   {
+    "book": "fanatics",
+    "market": "player_rush_yds",
+    "props": 159,
+    "sharpMoves": 37,
+    "followShare": 0.342,
+    "closeGapToPinnacle": 0.0286,
+    "staleSideValue": {
+     "n": 12,
+     "mean": -0.0315,
+     "low": -0.0459,
+     "high": -0.015
+    }
+   },
+   {
+    "book": "fanduel",
+    "market": "player_pass_yds",
+    "props": 61,
+    "sharpMoves": 19,
+    "followShare": 0.23,
+    "closeGapToPinnacle": 0.0137,
+    "staleSideValue": {
+     "n": 12,
+     "mean": -0.0126,
+     "low": -0.0245,
+     "high": -0.0011
+    }
+   },
+   {
+    "book": "fanduel",
+    "market": "player_reception_yds",
+    "props": 344,
+    "sharpMoves": 75,
+    "followShare": 0.781,
+    "closeGapToPinnacle": 0.0094,
+    "staleSideValue": {
+     "n": 36,
+     "mean": -0.0376,
+     "low": -0.0459,
+     "high": -0.0302
+    }
+   },
+   {
+    "book": "fanduel",
+    "market": "player_receptions",
+    "props": 350,
+    "sharpMoves": 120,
+    "followShare": 0.942,
+    "closeGapToPinnacle": 0.0148,
+    "staleSideValue": {
+     "n": 115,
+     "mean": -0.0461,
+     "low": -0.0531,
+     "high": -0.0396
+    }
+   },
+   {
+    "book": "fanduel",
+    "market": "player_rush_yds",
+    "props": 175,
+    "sharpMoves": 45,
+    "followShare": 0.63,
+    "closeGapToPinnacle": 0.012,
+    "staleSideValue": {
+     "n": 23,
+     "mean": -0.024,
+     "low": -0.0326,
+     "high": -0.0146
+    }
+   },
+   {
+    "book": "fliff",
+    "market": "player_pass_yds",
+    "props": 61,
+    "sharpMoves": 19,
+    "followShare": 0.291,
+    "closeGapToPinnacle": 0.0142,
+    "staleSideValue": {
+     "n": 5,
+     "mean": -0.0526,
+     "low": -0.0695,
+     "high": -0.0352
+    }
+   },
+   {
+    "book": "fliff",
+    "market": "player_reception_yds",
+    "props": 342,
+    "sharpMoves": 74,
+    "followShare": 0.544,
+    "closeGapToPinnacle": 0.0102,
+    "staleSideValue": {
+     "n": 28,
+     "mean": -0.0645,
+     "low": -0.0737,
+     "high": -0.0537
+    }
+   },
+   {
+    "book": "fliff",
+    "market": "player_receptions",
+    "props": 354,
+    "sharpMoves": 122,
+    "followShare": 0.799,
+    "closeGapToPinnacle": 0.0139,
+    "staleSideValue": {
+     "n": 109,
+     "mean": -0.0623,
+     "low": -0.0675,
+     "high": -0.0562
+    }
+   },
+   {
+    "book": "fliff",
+    "market": "player_rush_yds",
+    "props": 164,
+    "sharpMoves": 42,
+    "followShare": 0.415,
+    "closeGapToPinnacle": 0.0132,
+    "staleSideValue": {
+     "n": 13,
+     "mean": -0.0613,
+     "low": -0.0742,
+     "high": -0.0483
+    }
+   },
+   {
+    "book": "hardrock",
+    "market": "player_reception_yds",
+    "props": 71,
+    "sharpMoves": 16,
+    "followShare": 1.326,
+    "closeGapToPinnacle": 0.0373,
+    "staleSideValue": {
+     "n": 0,
+     "mean": null,
+     "low": null,
+     "high": null
+    }
+   },
+   {
+    "book": "hardrock",
+    "market": "player_receptions",
+    "props": 282,
+    "sharpMoves": 101,
+    "followShare": 0.857,
+    "closeGapToPinnacle": 0.0303,
+    "staleSideValue": {
+     "n": 71,
+     "mean": -0.0365,
+     "low": -0.0449,
+     "high": -0.0297
+    }
+   },
+   {
+    "book": "hardrock",
+    "market": "player_rush_yds",
+    "props": 43,
+    "sharpMoves": 11,
+    "followShare": 1.104,
+    "closeGapToPinnacle": 0.0509,
+    "staleSideValue": {
+     "n": 2,
+     "mean": -0.0389,
+     "low": -0.046,
+     "high": -0.0319
+    }
+   },
+   {
+    "book": "kalshi",
+    "market": "player_reception_yds",
+    "props": 129,
+    "sharpMoves": 25,
+    "followShare": 1.655,
+    "closeGapToPinnacle": 0.0602,
+    "staleSideValue": {
+     "n": 2,
+     "mean": -0.0027,
+     "low": -0.013,
+     "high": 0.0076
+    }
+   },
+   {
+    "book": "kalshi",
+    "market": "player_receptions",
+    "props": 186,
+    "sharpMoves": 67,
+    "followShare": 0.525,
+    "closeGapToPinnacle": 0.0411,
+    "staleSideValue": {
+     "n": 34,
+     "mean": -0.0105,
+     "low": -0.0219,
+     "high": 0.0016
+    }
+   },
+   {
+    "book": "kalshi",
+    "market": "player_rush_yds",
+    "props": 46,
+    "sharpMoves": 8,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0668,
+    "staleSideValue": {
+     "n": 0,
+     "mean": null,
+     "low": null,
+     "high": null
+    }
+   },
+   {
+    "book": "novig",
+    "market": "player_reception_yds",
+    "props": 140,
+    "sharpMoves": 24,
+    "followShare": 0.457,
+    "closeGapToPinnacle": 0.0209,
+    "staleSideValue": {
+     "n": 6,
+     "mean": -0.0298,
+     "low": -0.0632,
+     "high": 0.0037
+    }
+   },
+   {
+    "book": "novig",
+    "market": "player_receptions",
+    "props": 161,
+    "sharpMoves": 50,
+    "followShare": 0.694,
+    "closeGapToPinnacle": 0.0227,
+    "staleSideValue": {
+     "n": 36,
+     "mean": -0.0274,
+     "low": -0.0381,
+     "high": -0.0173
+    }
+   },
+   {
+    "book": "novig",
+    "market": "player_rush_yds",
+    "props": 66,
+    "sharpMoves": 9,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0248,
+    "staleSideValue": {
+     "n": 3,
+     "mean": -0.0425,
+     "low": -0.0698,
+     "high": -0.0151
+    }
+   },
+   {
+    "book": "parlayplay",
+    "market": "player_pass_yds",
+    "props": 32,
+    "sharpMoves": 9,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0143,
+    "staleSideValue": {
+     "n": 4,
+     "mean": -0.0433,
+     "low": -0.0504,
+     "high": -0.0361
+    }
+   },
+   {
+    "book": "parlayplay",
+    "market": "player_reception_yds",
+    "props": 175,
+    "sharpMoves": 33,
+    "followShare": 0.538,
+    "closeGapToPinnacle": 0.0099,
+    "staleSideValue": {
+     "n": 16,
+     "mean": -0.0712,
+     "low": -0.0829,
+     "high": -0.0592
+    }
+   },
+   {
+    "book": "parlayplay",
+    "market": "player_receptions",
+    "props": 179,
+    "sharpMoves": 57,
+    "followShare": 0.691,
+    "closeGapToPinnacle": 0.0141,
+    "staleSideValue": {
+     "n": 51,
+     "mean": -0.0894,
+     "low": -0.0962,
+     "high": -0.0828
+    }
+   },
+   {
+    "book": "parlayplay",
+    "market": "player_rush_yds",
+    "props": 89,
+    "sharpMoves": 16,
+    "followShare": 0.421,
+    "closeGapToPinnacle": 0.0098,
+    "staleSideValue": {
+     "n": 10,
+     "mean": -0.0711,
+     "low": -0.0796,
+     "high": -0.0605
+    }
+   },
+   {
+    "book": "polymarket_us",
+    "market": "player_reception_yds",
+    "props": 112,
+    "sharpMoves": 21,
+    "followShare": 0.826,
+    "closeGapToPinnacle": 0.0464,
+    "staleSideValue": {
+     "n": 2,
+     "mean": -0.0039,
+     "low": -0.0355,
+     "high": 0.0277
+    }
+   },
+   {
+    "book": "polymarket_us",
+    "market": "player_receptions",
+    "props": 229,
+    "sharpMoves": 85,
+    "followShare": 0.626,
+    "closeGapToPinnacle": 0.036,
+    "staleSideValue": {
+     "n": 39,
+     "mean": -0.0043,
+     "low": -0.0139,
+     "high": 0.0056
+    }
+   },
+   {
+    "book": "polymarket_us",
+    "market": "player_rush_yds",
+    "props": 61,
+    "sharpMoves": 21,
+    "followShare": 0.333,
+    "closeGapToPinnacle": 0.0415,
+    "staleSideValue": {
+     "n": 2,
+     "mean": 0.0196,
+     "low": 0.0148,
+     "high": 0.0243
+    }
+   },
+   {
+    "book": "prizepicks",
+    "market": "player_reception_yds",
+    "props": 211,
+    "sharpMoves": 39,
+    "followShare": 0.432,
+    "closeGapToPinnacle": 0.0097,
+    "staleSideValue": {
+     "n": 23,
+     "mean": 0.0277,
+     "low": 0.0153,
+     "high": 0.0425
+    }
+   },
+   {
+    "book": "prizepicks",
+    "market": "player_receptions",
+    "props": 147,
+    "sharpMoves": 46,
+    "followShare": -0.0,
+    "closeGapToPinnacle": 0.0584,
+    "staleSideValue": {
+     "n": 37,
+     "mean": 0.0692,
+     "low": 0.0345,
+     "high": 0.1059
+    }
+   },
+   {
+    "book": "prizepicks",
+    "market": "player_rush_yds",
+    "props": 87,
+    "sharpMoves": 15,
+    "followShare": 0.315,
+    "closeGapToPinnacle": 0.0138,
+    "staleSideValue": {
+     "n": 6,
+     "mean": 0.0412,
+     "low": 0.015,
+     "high": 0.0648
+    }
+   },
+   {
+    "book": "prophetx",
+    "market": "player_pass_yds",
+    "props": 55,
+    "sharpMoves": 17,
+    "followShare": 0.474,
+    "closeGapToPinnacle": 0.0298,
+    "staleSideValue": {
+     "n": 4,
+     "mean": -0.0004,
+     "low": -0.0211,
+     "high": 0.0173
+    }
+   },
+   {
+    "book": "prophetx",
+    "market": "player_reception_yds",
+    "props": 279,
+    "sharpMoves": 67,
+    "followShare": 0.235,
+    "closeGapToPinnacle": 0.0242,
+    "staleSideValue": {
+     "n": 12,
+     "mean": -0.018,
+     "low": -0.0273,
+     "high": -0.0092
+    }
+   },
+   {
+    "book": "prophetx",
+    "market": "player_receptions",
+    "props": 319,
+    "sharpMoves": 110,
+    "followShare": 0.977,
+    "closeGapToPinnacle": 0.0151,
+    "staleSideValue": {
+     "n": 88,
+     "mean": -0.0299,
+     "low": -0.0394,
+     "high": -0.022
+    }
+   },
+   {
+    "book": "prophetx",
+    "market": "player_rush_yds",
+    "props": 154,
+    "sharpMoves": 40,
+    "followShare": 0.63,
+    "closeGapToPinnacle": 0.027,
+    "staleSideValue": {
+     "n": 7,
+     "mean": -0.0441,
+     "low": -0.0641,
+     "high": -0.0242
+    }
+   },
+   {
+    "book": "sleeper",
+    "market": "player_pass_yds",
+    "props": 31,
+    "sharpMoves": 9,
+    "followShare": null,
+    "closeGapToPinnacle": 0.0113,
+    "staleSideValue": {
+     "n": 1,
+     "mean": -0.0613,
+     "low": -0.0613,
+     "high": -0.0613
+    }
+   },
+   {
+    "book": "sleeper",
+    "market": "player_reception_yds",
+    "props": 164,
+    "sharpMoves": 31,
+    "followShare": 0.25,
+    "closeGapToPinnacle": 0.009,
+    "staleSideValue": {
+     "n": 10,
+     "mean": -0.0846,
+     "low": -0.1083,
+     "high": -0.0608
+    }
+   },
+   {
+    "book": "sleeper",
+    "market": "player_receptions",
+    "props": 167,
+    "sharpMoves": 50,
+    "followShare": 0.239,
+    "closeGapToPinnacle": 0.0112,
+    "staleSideValue": {
+     "n": 42,
+     "mean": -0.1038,
+     "low": -0.1095,
+     "high": -0.0977
+    }
+   },
+   {
+    "book": "sleeper",
+    "market": "player_rush_yds",
+    "props": 75,
+    "sharpMoves": 13,
+    "followShare": 0.144,
+    "closeGapToPinnacle": 0.0098,
+    "staleSideValue": {
+     "n": 4,
+     "mean": -0.0931,
+     "low": -0.1039,
+     "high": -0.0823
+    }
+   },
+   {
+    "book": "underdog",
+    "market": "player_pass_yds",
+    "props": 51,
+    "sharpMoves": 14,
+    "followShare": 0.137,
+    "closeGapToPinnacle": 0.0142,
+    "staleSideValue": {
+     "n": 12,
+     "mean": -0.0107,
+     "low": -0.0222,
+     "high": 0.0023
+    }
+   },
+   {
+    "book": "underdog",
+    "market": "player_reception_yds",
+    "props": 345,
+    "sharpMoves": 75,
+    "followShare": 0.574,
+    "closeGapToPinnacle": 0.0096,
+    "staleSideValue": {
+     "n": 40,
+     "mean": -0.0293,
+     "low": -0.0376,
+     "high": -0.0207
+    }
+   },
+   {
+    "book": "underdog",
+    "market": "player_receptions",
+    "props": 362,
+    "sharpMoves": 124,
+    "followShare": 0.435,
+    "closeGapToPinnacle": 0.0143,
+    "staleSideValue": {
+     "n": 117,
+     "mean": -0.0276,
+     "low": -0.0333,
+     "high": -0.0216
+    }
+   },
+   {
+    "book": "underdog",
+    "market": "player_rush_yds",
+    "props": 156,
+    "sharpMoves": 34,
+    "followShare": 0.303,
+    "closeGapToPinnacle": 0.0123,
+    "staleSideValue": {
+     "n": 15,
+     "mean": -0.0237,
+     "low": -0.0359,
+     "high": -0.0124
+    }
+   }
+  ],
+  "slowestByMarket": {
+   "player_pass_yds": "betway",
+   "player_reception_yds": "courtside",
+   "player_receptions": "prizepicks",
+   "player_rush_yds": "betway"
+  },
+  "howToRead": "followShare: median share of Pinnacle's open-to-close move that the book followed. staleSideValue: value of betting the side Pinnacle moved toward at the book's closing price, judged by Pinnacle's close (zero = fair, above zero = the book was too slow)."
+ },
+ "live": [
+  {
+   "book": "ballybet",
+   "market": "spreads",
+   "moves": 4,
+   "medianHoursToMatch": null,
+   "neverMatched": 4
+  },
+  {
+   "book": "ballybet",
+   "market": "totals",
+   "moves": 12,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 7
+  },
+  {
+   "book": "betmgm",
+   "market": "spreads",
+   "moves": 5,
+   "medianHoursToMatch": 15.96,
+   "neverMatched": 2
+  },
+  {
+   "book": "betmgm",
+   "market": "totals",
+   "moves": 5,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 2
+  },
+  {
+   "book": "betrivers",
+   "market": "spreads",
+   "moves": 3,
+   "medianHoursToMatch": null,
+   "neverMatched": 3
+  },
+  {
+   "book": "betrivers",
+   "market": "totals",
+   "moves": 13,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 8
+  },
+  {
+   "book": "draftkings",
+   "market": "spreads",
+   "moves": 9,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 8
+  },
+  {
+   "book": "draftkings",
+   "market": "totals",
+   "moves": 9,
+   "medianHoursToMatch": 6.62,
+   "neverMatched": 3
+  },
+  {
+   "book": "espnbet",
+   "market": "spreads",
+   "moves": 8,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 3
+  },
+  {
+   "book": "espnbet",
+   "market": "totals",
+   "moves": 6,
+   "medianHoursToMatch": null,
+   "neverMatched": 6
+  },
+  {
+   "book": "fanduel",
+   "market": "spreads",
+   "moves": 9,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 8
+  },
+  {
+   "book": "fanduel",
+   "market": "totals",
+   "moves": 13,
+   "medianHoursToMatch": 6.62,
+   "neverMatched": 7
+  },
+  {
+   "book": "fliff",
+   "market": "spreads",
+   "moves": 15,
+   "medianHoursToMatch": 7.68,
+   "neverMatched": 11
+  },
+  {
+   "book": "fliff",
+   "market": "totals",
+   "moves": 14,
+   "medianHoursToMatch": 5.57,
+   "neverMatched": 11
+  },
+  {
+   "book": "hardrockbet",
+   "market": "spreads",
+   "moves": 10,
+   "medianHoursToMatch": 4.47,
+   "neverMatched": 5
+  },
+  {
+   "book": "hardrockbet",
+   "market": "totals",
+   "moves": 3,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 2
+  },
+  {
+   "book": "pinnacle",
+   "market": "totals",
+   "moves": 1,
+   "medianHoursToMatch": null,
+   "neverMatched": 1
+  }
+ ],
+ "current": [
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "espnbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Washington Commanders",
+    "line": 6.5,
+    "book": "hardrockbet",
+    "decimal": 1.91,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "betmgm",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 54.0,
+    "book": "ballybet",
+    "decimal": 1.88,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CIN",
+   "home": "WAS",
+   "kickoff": "2026-11-24T01:15:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "betmgm",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 54.0,
+    "book": "betrivers",
+    "decimal": 1.88,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "ballybet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "betrivers",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betmgm",
+   "movedBooks": [
+    "draftkings",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "betmgm",
+    "decimal": 1.89,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "CAR",
+   "home": "TB",
+   "kickoff": "2026-12-01T01:15:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "espnbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Tampa Bay Buccaneers",
+    "line": -2.5,
+    "book": "hardrockbet",
+    "decimal": 1.83,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betmgm",
+    "betrivers",
+    "draftkings"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 50.5,
+    "book": "fanduel",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "ballybet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "ballybet",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "betrivers",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "betrivers",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "fanduel",
+    "decimal": 1.91,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "NYJ",
+   "home": "MIA",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "espnbet",
+   "movedBooks": [
+    "betmgm",
+    "draftkings",
+    "hardrockbet"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "espnbet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "PHI",
+   "home": "DAL",
+   "kickoff": "2026-11-26T21:30:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "espnbet",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 47.5,
+    "book": "draftkings",
+    "decimal": 1.86,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "WAS",
+   "home": "ARI",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (totals)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fanduel"
+   ],
+   "checkedAt": "2026-11-23T22:27:27.258550Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "draftkings",
+    "decimal": 1.85,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "player": ""
+   }
+  }
+ ],
+ "summary": {
+  "clv": {
+   "n": 0,
+   "mean": null,
+   "low": null,
+   "high": null
+  },
+  "passes": false,
+  "reason": "only 0 scored bets; 200 are needed",
+  "byAngle": {}
+ },
+ "notice": "Which book is slowest to follow a move, and its stale prices now. Research, not a pick."
+}
