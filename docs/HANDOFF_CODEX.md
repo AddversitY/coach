@@ -55,7 +55,7 @@ a pick".
 | Odds API | `backend/` (local Dart server), `tools/price_history.py`, `tools/line_timing.py` | Game prices from 10 books incl. Pinnacle (one region, 3 credits per call) at T-24h/6h/3h/90m/30m/~10m. |
 | Python models | `model/` | nflverse data (CC BY 4.0) into Coach's Line, prop projections, Elo ratings, backtests. Writes JSON into `assets/` and `research/`. |
 | Python tools | `tools/` | Evidence refresh, price history, closing lines, self-grade, line shopping, QB news, weather and Kalshi watch, home DraftKings collector. |
-| GitHub Actions | `.github/workflows/` | `price-history.yml` (every 30 min), `news-watch.yml` (every 10 min), `refresh-evidence.yml` (daily), `nfl-model.yml` (PRs + Tuesdays), `publish-preview.yml` (Pages on push to main), `ios-build.yml`. The bots commit refreshed `assets/*.json` straight to `main`. |
+| GitHub Actions | `.github/workflows/` | `price-history.yml` (every 30 min), `news-watch.yml` (every 10 min), `niche-watch.yml` (hourly), `refresh-evidence.yml` (daily), `nfl-model.yml` (PRs + Tuesdays), `publish-preview.yml` (Pages on push to main), `ios-build.yml`. The bots commit refreshed `assets/*.json` straight to `main`. |
 
 Key data files in `assets/`: `nfl-model.json` (Coach's Line), `price-history.json`,
 `closing-lines.json`, `accuracy-scorecard.json`, `suggestion-log.json`,
