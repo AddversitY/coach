@@ -308,4 +308,109 @@ void main() {
     expect(elo.teamCount, 32);
     expect(elo.note, contains('not part of'));
   });
+
+  test('game lines add coaching, chemistry, injuries, rest and referee', () {
+    final r = EloRatings.fromJson({
+      'season': 2026,
+      'teams': [
+        {
+          't': 'KC',
+          'o': 90,
+          'off': 90,
+          'def': 80,
+          'net': 5.0,
+          'ang': {
+            'coach': 'Andy Reid',
+            'proe': 5.7,
+            'go4': 0.67,
+            'blitz': 0.27,
+            'pa': 0.3,
+            'olTogether': 4,
+            'chem': {'qb': 'Patrick Mahomes', 'rec': 'Travis Kelce', 'v': 0.05},
+            'out': [
+              {'n': 'Trey Smith', 'p': 'G', 'pts': 0.4},
+            ],
+            'outPts': 0.4,
+          },
+        },
+        {
+          't': 'ARI',
+          'o': 50,
+          'off': 50,
+          'def': 50,
+          'net': -2.0,
+          'ang': {'coach': 'Jonathan Gannon', 'blitz': 0.35},
+        },
+      ],
+      'players': [
+        {
+          'n': 'Patrick Mahomes',
+          'id': 'pm',
+          't': 'KC',
+          'p': 'QB',
+          'o': 95,
+          'd': 0,
+          's': 600,
+          'sit': {'3rd down': 97, 'Vs blitz': 88},
+        },
+      ],
+      'upcoming': {
+        'week': 12,
+        'games': [
+          {
+            'h': 'KC',
+            'a': 'ARI',
+            'restH': 7,
+            'restA': 6,
+            'milesA': 1059,
+            'tzA': 2,
+            'early': ['ARI'],
+            'ref': 'Shawn Smith',
+            'refPens': 1.2,
+            'refTotal': -0.8,
+            'refHome': 0.3,
+          },
+        ],
+      },
+    });
+    final lines = r.gameLines('KC', 'ARI').join('\n');
+    expect(
+      lines,
+      contains(
+        'Coaching: ARI Jonathan Gannon; KC Andy Reid (passes +5.7% vs expected, goes for it on 67% of short 4th downs).',
+      ),
+    );
+    expect(
+      lines,
+      contains('ARI blitzes on 35% of dropbacks; KC uses play-action on 30%'),
+    );
+    expect(lines, contains('Patrick Mahomes to Travis Kelce'));
+    expect(lines, contains('KC lists Trey Smith (G) out or doubtful'));
+    expect(
+      lines,
+      contains(
+        'ARI 6 days of rest, KC 7; ARI travels 1059 miles and 2 time zones.',
+      ),
+    );
+    expect(lines, contains('ARI kicks off at 10 AM or earlier'));
+    expect(lines, contains('Referee: Shawn Smith.'));
+    expect(r.upcomingWeek, 12);
+    final p = r.playerLines(name: 'Patrick Mahomes').join('\n');
+    expect(
+      p,
+      contains(
+        'Situations (40-99 vs other passers): 3rd down 97, Vs blitz 88.',
+      ),
+    );
+    // A game with no angle data adds no angle lines.
+    expect(
+      EloRatings.fromJson({
+        'teams': [
+          {'t': 'A', 'o': 1, 'off': 1, 'def': 1, 'net': 0},
+          {'t': 'B', 'o': 1, 'off': 1, 'def': 1, 'net': 0},
+        ],
+      }).gameLines('A', 'B').any((l) => l.startsWith('Coaching')),
+      isFalse,
+    );
+  });
 }

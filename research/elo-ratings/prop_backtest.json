@@ -1,23 +1,23 @@
 {
  "projectionQuality": {
   "receiving_yards": {
-   "playerGames": 57739,
+   "playerGames": 57813,
    "mae": 15.81,
    "correlation": 0.614
   },
   "receptions": {
-   "playerGames": 57739,
+   "playerGames": 57813,
    "mae": 1.27,
    "correlation": 0.634
   },
   "rushing_yards": {
-   "playerGames": 48426,
+   "playerGames": 48494,
    "mae": 8.32,
    "correlation": 0.734
   },
   "passing_yards": {
-   "playerGames": 6363,
-   "mae": 70.54,
+   "playerGames": 6374,
+   "mae": 70.56,
    "correlation": 0.579
   }
  },
@@ -63,82 +63,82 @@
    }
   },
   "worker": {
-   "props": 400,
+   "props": 638,
    "brier": {
-    "booksNoVig": 0.2486,
-    "ratingsAlone": 0.2656,
+    "booksNoVig": 0.2482,
+    "ratingsAlone": 0.2761,
     "coinFlip": 0.25
    },
    "logLoss": {
-    "booksNoVig": 0.6903,
-    "ratingsAlone": 0.744
+    "booksNoVig": 0.6896,
+    "ratingsAlone": 0.7645
    },
    "blendBrier": {
-    "0.05": 0.2485,
-    "0.10": 0.2486,
-    "0.20": 0.2493
+    "0.05": 0.2487,
+    "0.10": 0.2493,
+    "0.20": 0.251
    },
-   "projectionVsLineCorrelation": 0.98,
+   "projectionVsLineCorrelation": 0.979,
    "byMetric": {
     "passing_yards": {
-     "props": 35,
-     "booksBrier": 0.2484,
-     "ratingsBrier": 0.2536
+     "props": 55,
+     "booksBrier": 0.249,
+     "ratingsBrier": 0.2648
     },
     "receiving_yards": {
-     "props": 193,
-     "booksBrier": 0.2501,
-     "ratingsBrier": 0.2615
+     "props": 307,
+     "booksBrier": 0.25,
+     "ratingsBrier": 0.2676
     },
     "receptions": {
-     "props": 92,
-     "booksBrier": 0.2435,
-     "ratingsBrier": 0.2552
+     "props": 146,
+     "booksBrier": 0.2424,
+     "ratingsBrier": 0.2689
     },
     "rushing_yards": {
-     "props": 80,
-     "booksBrier": 0.2509,
-     "ratingsBrier": 0.2929
+     "props": 130,
+     "booksBrier": 0.2503,
+     "ratingsBrier": 0.3089
     }
    }
   },
   "all": {
-   "props": 1404,
+   "props": 1642,
    "brier": {
-    "booksNoVig": 0.2506,
-    "ratingsAlone": 0.2726,
+    "booksNoVig": 0.2502,
+    "ratingsAlone": 0.2757,
     "coinFlip": 0.25
    },
    "logLoss": {
-    "booksNoVig": 0.6944,
-    "ratingsAlone": 0.7513
+    "booksNoVig": 0.6935,
+    "ratingsAlone": 0.7582
    },
    "blendBrier": {
-    "0.05": 0.2509,
-    "0.10": 0.2513,
-    "0.20": 0.2525
+    "0.05": 0.2506,
+    "0.10": 0.2512,
+    "0.20": 0.2527
    },
-   "projectionVsLineCorrelation": 0.98,
+   "projectionVsLineCorrelation": 0.979,
    "byMetric": {
     "passing_yards": {
-     "props": 97,
-     "booksBrier": 0.2473,
-     "ratingsBrier": 0.2658
+     "props": 117,
+     "booksBrier": 0.2477,
+     "ratingsBrier": 0.269
     },
     "receiving_yards": {
-     "props": 568,
+     "props": 682,
      "booksBrier": 0.2502,
-     "ratingsBrier": 0.2713
+     "ratingsBrier": 0.2724
     },
     "receptions": {
-     "props": 471,
-     "booksBrier": 0.2512,
-     "ratingsBrier": 0.2743
+     "props": 525,
+     "booksBrier": 0.2502,
+     "ratingsBrier": 0.2762
     },
     "rushing_yards": {
-     "props": 268,
-     "booksBrier": 0.2514,
-     "ratingsBrier": 0.275
+     "props": 318,
+     "booksBrier": 0.2511,
+     "ratingsBrier": 0.2843
     }
    }
   }
