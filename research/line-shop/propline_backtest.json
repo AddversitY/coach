@@ -1,0 +1,106 @@
+{
+  "source": "PropLine graded player props sample (NFL, 2026-09-18 to 2026-09-29)",
+  "sourceUrl": "https://huggingface.co/datasets/propline/graded-player-props-sample",
+  "license": "CC BY 4.0",
+  "results": {
+    "pinnacle": {
+      "reference": "pinnacle",
+      "minEdge": 0.02,
+      "open": {
+        "allSoftOpensClv": {
+          "n": 2096,
+          "mean": -0.0664,
+          "low": -0.0684,
+          "high": -0.0643
+        },
+        "flags": 69,
+        "averageEdge": 0.051,
+        "clv": {
+          "n": 69,
+          "mean": -0.0159,
+          "low": -0.0312,
+          "high": -0.0006
+        },
+        "beatClose": 0.4348,
+        "passes": false,
+        "reason": "only 69 scored bets; 200 are needed"
+      },
+      "close": {
+        "flags": 82,
+        "averageEdge": 0.0511,
+        "profitPerUnit": {
+          "n": 82,
+          "mean": -0.0121,
+          "low": -0.1891,
+          "high": 0.1803
+        }
+      }
+    },
+    "prophetx": {
+      "reference": "prophetx",
+      "minEdge": 0.02,
+      "open": {
+        "allSoftOpensClv": {
+          "n": 3797,
+          "mean": -0.0649,
+          "low": -0.067,
+          "high": -0.0627
+        },
+        "flags": 95,
+        "averageEdge": 0.0676,
+        "clv": {
+          "n": 95,
+          "mean": -0.0229,
+          "low": -0.0401,
+          "high": -0.0061
+        },
+        "beatClose": 0.3684,
+        "passes": false,
+        "reason": "only 95 scored bets; 200 are needed"
+      },
+      "close": {
+        "flags": 82,
+        "averageEdge": 0.0511,
+        "profitPerUnit": {
+          "n": 82,
+          "mean": -0.0121,
+          "low": -0.1891,
+          "high": 0.1803
+        }
+      }
+    },
+    "novig": {
+      "reference": "novig",
+      "minEdge": 0.02,
+      "open": {
+        "allSoftOpensClv": {
+          "n": 1018,
+          "mean": -0.0657,
+          "low": -0.0681,
+          "high": -0.0624
+        },
+        "flags": 30,
+        "averageEdge": 0.0615,
+        "clv": {
+          "n": 30,
+          "mean": -0.0146,
+          "low": -0.0434,
+          "high": 0.0145
+        },
+        "beatClose": 0.5333,
+        "passes": false,
+        "reason": "only 30 scored bets; 200 are needed"
+      },
+      "close": {
+        "flags": 82,
+        "averageEdge": 0.0511,
+        "profitPerUnit": {
+          "n": 82,
+          "mean": -0.0121,
+          "low": -0.1891,
+          "high": 0.1803
+        }
+      }
+    }
+  }
+}
