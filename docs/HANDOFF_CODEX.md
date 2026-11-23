@@ -222,7 +222,8 @@ What is left:
   work was redone later and is in `main`; they can be closed. Left open for
   Vincent to decide.
 - `claude/project-thread-*` branches `l8xjw0`, `ihvqcy`, `eekj1d`, `4q36wv`
-  were squash-merged (#45, #46, #38, #31); nothing in them is missing from
+  were squash-merged (#45, #46, #38, #31), and `o7o9ar` and `a8cc57` are
+  #48 and #49; nothing in them is missing from
   `main`. `claude/project-thread-jlp66s` is the Nov 19 work squashed into #20.
 - Old `cursor/*` and `codex/*` branches from Oct-Nov 13 are stale; ignore.
 
