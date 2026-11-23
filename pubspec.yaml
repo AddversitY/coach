@@ -76,6 +76,7 @@ flutter:
     - assets/prop-usage.json
     - assets/prop-closes.json
     - assets/elo-ratings.json
+    - assets/backup-watch.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

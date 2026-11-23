@@ -96,7 +96,21 @@ Future<EloRatings> loadBundledEloRatings() async {
   final json = await rootBundle.loadString('assets/elo-ratings.json');
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
   if (decoded is! Map) return EloRatings.empty;
-  return EloRatings.fromJson(Map<String, dynamic>.from(decoded));
+  final merged = Map<String, dynamic>.from(decoded);
+  // Backups stepping in (tools/backup_watch.py). Missing or broken stays out.
+  try {
+    final watch = jsonDecode(
+      (await rootBundle.loadString(
+        'assets/backup-watch.json',
+      )).replaceFirst('\uFEFF', ''),
+    );
+    if (watch is Map && watch['current'] is List) {
+      merged['backupWatch'] = watch['current'];
+    }
+  } catch (_) {
+    // No backup watch file: the ratings still load.
+  }
+  return EloRatings.fromJson(merged);
 }
 
 Future<TradeBook> loadBundledTrades() async {

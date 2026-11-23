@@ -1,0 +1,389 @@
+{
+ "source": "nflverse weekly player stats, snap counts and injury reports 2016-2026 (CC BY 4.0); PropLine graded player-props sample 2026-09-18 to 2026-09-29 (CC BY 4.0)",
+ "starter": {
+  "QB": "at least 70% of snaps over his previous games, Out or Doubtful",
+  "RB": "at least 50% of snaps over his previous games, Out or Doubtful",
+  "WR": "at least 70% of snaps over his previous games, Out or Doubtful",
+  "TE": "at least 70% of snaps over his previous games, Out or Doubtful"
+ },
+ "backup": "the same-group teammate with the most snaps over the previous games who is not a starter",
+ "train": [
+  2016,
+  2020
+ ],
+ "test": [
+  2021,
+  2025
+ ],
+ "events": {
+  "train": 214,
+  "test": 265
+ },
+ "inheritedShare": {
+  "QB:attempts": 0.788,
+  "RB:carries": 0.482,
+  "RB:targets": 0.536,
+  "WR:targets": 0.207,
+  "TE:targets": 0.271
+ },
+ "projectionTest": {
+  "QB": {
+   "events": 64,
+   "player_pass_yds": {
+    "averageActual": 165.7,
+    "averageOwnRecent": 49.4,
+    "averageProjection": 207.1,
+    "rmseOwnRecent": 151.12,
+    "rmseProjection": 99.36,
+    "beatOwnRecent": 0.875,
+    "lazyLineBrier": {
+     "projection": 0.1122,
+     "coinFlip": 0.25,
+     "overRate": 0.875
+    }
+   },
+   "player_pass_attempts": {
+    "averageActual": 25.4,
+    "averageOwnRecent": 8.2,
+    "averageProjection": 30.3,
+    "rmseOwnRecent": 21.59,
+    "rmseProjection": 13.03,
+    "beatOwnRecent": 0.891,
+    "lazyLineBrier": {
+     "projection": 0.102,
+     "coinFlip": 0.25,
+     "overRate": 0.891
+    }
+   },
+   "player_pass_completions": {
+    "averageActual": 16.2,
+    "averageOwnRecent": 4.8,
+    "averageProjection": 19.0,
+    "rmseOwnRecent": 13.85,
+    "rmseProjection": 8.04,
+    "beatOwnRecent": 0.906,
+    "lazyLineBrier": {
+     "projection": 0.0881,
+     "coinFlip": 0.25,
+     "overRate": 0.906
+    }
+   }
+  },
+  "RB": {
+   "events": 64,
+   "player_rush_yds": {
+    "averageActual": 44.0,
+    "averageOwnRecent": 21.3,
+    "averageProjection": 51.1,
+    "rmseOwnRecent": 43.69,
+    "rmseProjection": 38.0,
+    "beatOwnRecent": 0.672,
+    "lazyLineBrier": {
+     "projection": 0.2682,
+     "coinFlip": 0.25,
+     "overRate": 0.672
+    }
+   },
+   "player_reception_yds": {
+    "averageActual": 15.1,
+    "averageOwnRecent": 8.8,
+    "averageProjection": 20.5,
+    "rmseOwnRecent": 16.14,
+    "rmseProjection": 16.19,
+    "beatOwnRecent": 0.625,
+    "lazyLineBrier": {
+     "projection": 0.2494,
+     "coinFlip": 0.25,
+     "overRate": 0.625
+    }
+   },
+   "player_receptions": {
+    "averageActual": 2.0,
+    "averageOwnRecent": 1.3,
+    "averageProjection": 2.6,
+    "rmseOwnRecent": 2.06,
+    "rmseProjection": 1.98,
+    "beatOwnRecent": 0.625,
+    "lazyLineBrier": {
+     "projection": 0.2106,
+     "coinFlip": 0.25,
+     "overRate": 0.625
+    }
+   }
+  },
+  "WR": {
+   "events": 105,
+   "player_reception_yds": {
+    "averageActual": 33.6,
+    "averageOwnRecent": 20.9,
+    "averageProjection": 35.3,
+    "rmseOwnRecent": 35.64,
+    "rmseProjection": 33.59,
+    "beatOwnRecent": 0.61,
+    "lazyLineBrier": {
+     "projection": 0.2191,
+     "coinFlip": 0.25,
+     "overRate": 0.61
+    }
+   },
+   "player_receptions": {
+    "averageActual": 2.8,
+    "averageOwnRecent": 1.8,
+    "averageProjection": 2.8,
+    "rmseOwnRecent": 2.53,
+    "rmseProjection": 2.34,
+    "beatOwnRecent": 0.61,
+    "lazyLineBrier": {
+     "projection": 0.2394,
+     "coinFlip": 0.25,
+     "overRate": 0.61
+    }
+   }
+  },
+  "TE": {
+   "events": 32,
+   "player_reception_yds": {
+    "averageActual": 19.3,
+    "averageOwnRecent": 7.7,
+    "averageProjection": 20.1,
+    "rmseOwnRecent": 21.02,
+    "rmseProjection": 18.62,
+    "beatOwnRecent": 0.719,
+    "lazyLineBrier": {
+     "projection": 0.197,
+     "coinFlip": 0.25,
+     "overRate": 0.719
+    }
+   },
+   "player_receptions": {
+    "averageActual": 2.3,
+    "averageOwnRecent": 0.9,
+    "averageProjection": 1.9,
+    "rmseOwnRecent": 2.54,
+    "rmseProjection": 2.08,
+    "beatOwnRecent": 0.75,
+    "lazyLineBrier": {
+     "projection": 0.1775,
+     "coinFlip": 0.25,
+     "overRate": 0.75
+    }
+   }
+  }
+ },
+ "projectionTrain": {
+  "QB": {
+   "events": 37,
+   "player_pass_yds": {
+    "averageActual": 212.6,
+    "averageOwnRecent": 62.6,
+    "averageProjection": 233.1,
+    "rmseOwnRecent": 184.54,
+    "rmseProjection": 100.62,
+    "beatOwnRecent": 0.865
+   },
+   "player_pass_attempts": {
+    "averageActual": 31.9,
+    "averageOwnRecent": 8.9,
+    "averageProjection": 32.8,
+    "rmseOwnRecent": 26.76,
+    "rmseProjection": 13.0,
+    "beatOwnRecent": 0.946
+   },
+   "player_pass_completions": {
+    "averageActual": 19.3,
+    "averageOwnRecent": 5.5,
+    "averageProjection": 20.7,
+    "rmseOwnRecent": 16.45,
+    "rmseProjection": 8.87,
+    "beatOwnRecent": 0.919
+   }
+  },
+  "RB": {
+   "events": 54,
+   "player_rush_yds": {
+    "averageActual": 39.9,
+    "averageOwnRecent": 17.5,
+    "averageProjection": 44.0,
+    "rmseOwnRecent": 39.72,
+    "rmseProjection": 32.63,
+    "beatOwnRecent": 0.685
+   },
+   "player_reception_yds": {
+    "averageActual": 21.6,
+    "averageOwnRecent": 9.6,
+    "averageProjection": 21.8,
+    "rmseOwnRecent": 24.75,
+    "rmseProjection": 20.04,
+    "beatOwnRecent": 0.63
+   },
+   "player_receptions": {
+    "averageActual": 2.6,
+    "averageOwnRecent": 1.2,
+    "averageProjection": 2.7,
+    "rmseOwnRecent": 2.63,
+    "rmseProjection": 2.03,
+    "beatOwnRecent": 0.685
+   }
+  },
+  "WR": {
+   "events": 93,
+   "player_reception_yds": {
+    "averageActual": 36.1,
+    "averageOwnRecent": 26.2,
+    "averageProjection": 36.9,
+    "rmseOwnRecent": 34.48,
+    "rmseProjection": 31.83,
+    "beatOwnRecent": 0.591
+   },
+   "player_receptions": {
+    "averageActual": 2.9,
+    "averageOwnRecent": 2.1,
+    "averageProjection": 2.9,
+    "rmseOwnRecent": 2.31,
+    "rmseProjection": 2.16,
+    "beatOwnRecent": 0.559
+   }
+  },
+  "TE": {
+   "events": 30,
+   "player_reception_yds": {
+    "averageActual": 25.2,
+    "averageOwnRecent": 13.4,
+    "averageProjection": 23.8,
+    "rmseOwnRecent": 24.75,
+    "rmseProjection": 21.12,
+    "beatOwnRecent": 0.6
+   },
+   "player_receptions": {
+    "averageActual": 2.4,
+    "averageOwnRecent": 1.3,
+    "averageProjection": 2.2,
+    "rmseOwnRecent": 2.09,
+    "rmseProjection": 1.79,
+    "beatOwnRecent": 0.7
+   }
+  }
+ },
+ "prices": {
+  "backupOverClv": {
+   "n": 6,
+   "mean": -0.0523,
+   "low": -0.0824,
+   "high": -0.0195
+  },
+  "backupUnderClv": {
+   "n": 6,
+   "mean": -0.0023,
+   "low": -0.0377,
+   "high": 0.0328
+  },
+  "backupProjectedSideClv": {
+   "n": 2,
+   "mean": 0.0203,
+   "low": -0.0306,
+   "high": 0.0713
+  },
+  "backupProjectedSideProfit": {
+   "n": 2,
+   "mean": -0.0652,
+   "low": -1.0,
+   "high": 0.8696
+  },
+  "otherOverClv": {
+   "n": 1214,
+   "mean": -0.0052,
+   "low": -0.009,
+   "high": 0.0005
+  },
+  "otherUnderClv": {
+   "n": 1214,
+   "mean": -0.0182,
+   "low": -0.0219,
+   "high": -0.0148
+  },
+  "backupProps": [
+   {
+    "player": "Case Keenum",
+    "starterOut": "Caleb Williams",
+    "market": "player_pass_yds",
+    "openLine": 162.5,
+    "closeLine": 162.5,
+    "projection": 137.9,
+    "pick": null,
+    "overChance": 0.264,
+    "overClv": -0.0614,
+    "underClv": -0.0099
+   },
+   {
+    "player": "Case Keenum",
+    "starterOut": "Caleb Williams",
+    "market": "player_rush_yds",
+    "openLine": 5.5,
+    "closeLine": 2.5,
+    "projection": null,
+    "pick": null,
+    "overChance": null,
+    "overClv": -0.12,
+    "underClv": 0.0544
+   },
+   {
+    "player": "Chris Bell",
+    "starterOut": "Caleb Douglas",
+    "market": "player_reception_yds",
+    "openLine": 18.5,
+    "closeLine": 19.5,
+    "projection": 19.4,
+    "pick": null,
+    "overChance": 0.412,
+    "overClv": -0.0471,
+    "underClv": -0.0049
+   },
+   {
+    "player": "Chris Bell",
+    "starterOut": "Caleb Douglas",
+    "market": "player_receptions",
+    "openLine": 1.5,
+    "closeLine": 1.5,
+    "projection": 1.5,
+    "pick": "under",
+    "overChance": 0.438,
+    "overClv": -0.0846,
+    "underClv": 0.0713
+   },
+   {
+    "player": "Marcus Mariota",
+    "starterOut": "Jayden Daniels",
+    "market": "player_pass_yds",
+    "openLine": 167.5,
+    "closeLine": 172.5,
+    "projection": 254.6,
+    "pick": "over",
+    "overChance": 0.711,
+    "overClv": -0.0306,
+    "underClv": -0.0495
+   },
+   {
+    "player": "Marcus Mariota",
+    "starterOut": "Jayden Daniels",
+    "market": "player_rush_yds",
+    "openLine": 24.5,
+    "closeLine": 23.5,
+    "projection": null,
+    "pick": null,
+    "overChance": null,
+    "overClv": 0.0302,
+    "underClv": -0.0753
+   }
+  ],
+  "passes": false,
+  "reason": "only 2 scored bets; 200 are needed",
+  "note": "Opening price at the best soft book against the median no-vig close of 3+ books, moved to the opening line. Backups are matched by name in the weeks a starter was ruled out."
+ },
+ "inheritedShareAllSeasons": {
+  "QB:attempts": 0.721,
+  "RB:carries": 0.429,
+  "RB:targets": 0.38,
+  "WR:targets": 0.2,
+  "TE:targets": 0.311
+ }
+}
