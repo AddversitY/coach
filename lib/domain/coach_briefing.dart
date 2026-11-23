@@ -1,4 +1,5 @@
 import 'coach_books.dart';
+import 'elo_ratings.dart';
 import 'line_movement.dart';
 import 'game_research.dart';
 import 'matchup.dart';
@@ -24,9 +25,15 @@ class CoachBrief {
     this.ratings = const [],
     this.formNotes = const [],
     this.props,
+    this.eloLines = const [],
+    this.eloNote,
   });
 
   final String title, text;
+
+  /// Coach ratings (Elo). An extra number to weigh, never part of the chance.
+  final List<String> eloLines;
+  final String? eloNote;
   final bool handlesQuestion;
   final ChangeReport? change;
   final PlayerSplits? splits;
@@ -121,7 +128,16 @@ CoachBrief? interpretQuestion({
   LineMoveBook? moves,
   BookPriceCoverage? bookPrices,
   AccuracyScorecard? scorecard,
+  EloRatings? elo,
 }) {
+  final eloBrief = eloQuestionBrief(
+    question: question,
+    elo: elo,
+    contextHome: contextHome,
+    contextAway: contextAway,
+    contextPlayer: contextPlayer,
+  );
+  if (eloBrief != null) return eloBrief;
   if (asksForAccuracy(question)) {
     final card = scorecard ?? AccuracyScorecard.empty;
     return CoachBrief(
@@ -160,7 +176,8 @@ CoachBrief? interpretQuestion({
     final book = moves ?? LineMoveBook.empty;
     return CoachBrief(
       title: 'Line movement',
-      text: book.sentenceFor(
+      text:
+          book.sentenceFor(
             home: contextHome,
             away: contextAway,
             question: question,
@@ -276,11 +293,17 @@ CoachBrief? contextBrief({
   int? week,
   double? line,
   String? metric,
+  EloRatings? elo,
 }) {
-  if (ratings == null || season == null || week == null) return null;
   final homeCode = home == null ? null : _code(home);
   final awayCode = away == null ? null : _code(away);
   if (homeCode == null || awayCode == null) return null;
+  final eloLines = elo == null
+      ? const <String>[]
+      : _eloGameLines(elo, homeCode, awayCode, playerName);
+  if (ratings == null || season == null || week == null) {
+    return _eloOnly(elo, eloLines);
+  }
   final snap = ratings.before(season: season, week: week);
   final cards = <UnitRating>[
     ?snap.lookup(homeCode, UnitKey.pass, offense: true),
@@ -292,9 +315,11 @@ CoachBrief? contextBrief({
     ?snap.lookup(awayCode, UnitKey.run, offense: true),
     ?snap.lookup(homeCode, UnitKey.run, offense: false),
   ];
-  if (cards.isEmpty) return null;
+  if (cards.isEmpty) return _eloOnly(elo, eloLines);
   return CoachBrief(
     title: 'Matchup',
+    eloLines: eloLines,
+    eloNote: eloLines.isEmpty ? null : elo!.note,
     text: _pairSentence(cards),
     handlesQuestion: false,
     ratings: cards,
@@ -320,8 +345,17 @@ CoachBrief? playerContextBrief({
   required GameResearchPlayer player,
   required String metric,
   double? line,
+  EloRatings? elo,
 }) {
-  if (ratings == null || player.games.isEmpty) return null;
+  final eloLines = elo == null || player.games.isEmpty
+      ? const <String>[]
+      : elo.playerLines(
+          id: player.id,
+          name: player.name,
+          team: player.team,
+          opponent: player.latest.opponent,
+        );
+  if (ratings == null || player.games.isEmpty) return _eloOnly(elo, eloLines);
   final latest = player.latest;
   final beforeWeek = latest.week + 1;
   final splits = playerSplits(
@@ -332,7 +366,7 @@ CoachBrief? playerContextBrief({
     beforeSeason: latest.season,
     beforeWeek: beforeWeek,
   );
-  if (splits == null) return null;
+  if (splits == null) return _eloOnly(elo, eloLines);
   final defense = ratings
       .before(season: latest.season, week: beforeWeek)
       .lookup(latest.opponent, splits.unit, offense: false);
@@ -343,8 +377,109 @@ CoachBrief? playerContextBrief({
     title: 'Matchup',
     text: '${_allTiers(splits)}$last',
     handlesQuestion: false,
+    eloLines: eloLines,
+    eloNote: eloLines.isEmpty ? null : elo!.note,
     ratings: [?defense],
     splits: splits,
+  );
+}
+
+List<String> _eloGameLines(
+  EloRatings elo,
+  String home,
+  String away,
+  String? playerName,
+) {
+  final lines = [...elo.gameLines(home, away)];
+  if (playerName != null) {
+    for (final team in [home, away]) {
+      final found = elo.player(name: playerName, team: team);
+      if (found != null && found.team == team) {
+        lines.addAll(
+          elo.playerLines(
+            id: found.id,
+            team: team,
+            opponent: team == home ? away : home,
+          ),
+        );
+        break;
+      }
+    }
+  }
+  return lines;
+}
+
+CoachBrief? _eloOnly(EloRatings? elo, List<String> lines) {
+  if (elo == null || lines.isEmpty) return null;
+  return CoachBrief(
+    title: 'Coach ratings',
+    text: lines.first,
+    handlesQuestion: false,
+    eloLines: lines.skip(1).toList(),
+    eloNote: elo.note,
+  );
+}
+
+/// Direct questions about the ratings: "what's Jefferson's elo",
+/// "coach ratings for Bills Chiefs", "top rated corners".
+final _eloStrong = RegExp(
+  r"\b(elo|coach ratings?|overall rating|player ratings?|team ratings?)\b",
+  caseSensitive: false,
+);
+final _eloWeak = RegExp(r"\b(rated|ratings?|overall)\b", caseSensitive: false);
+
+CoachBrief? eloQuestionBrief({
+  required String question,
+  required EloRatings? elo,
+  String? contextHome,
+  String? contextAway,
+  String? contextPlayer,
+}) {
+  if (elo == null || elo.isEmpty) return null;
+  final strong = _eloStrong.hasMatch(question);
+  if (!strong && !_eloWeak.hasMatch(question)) return null;
+  // Leave unit-tier, accuracy and grading questions to their own cards.
+  if (_matchup.hasMatch(question) ||
+      asksForAccuracy(question) ||
+      asksForGrade(question) ||
+      RegExp(r"passer rating", caseSensitive: false).hasMatch(question)) {
+    return null;
+  }
+  final player = elo.playerIn(question);
+  final codes = _codes(question).toList();
+  final top = elo.topLines(question);
+  if (top.isNotEmpty) return _eloAnswer(elo, top);
+  if (player != null) {
+    final opponent = codes.where((c) => c != player.team).firstOrNull;
+    final lines = elo.playerLines(id: player.id, opponent: opponent);
+    return _eloAnswer(elo, lines);
+  }
+  if (codes.length >= 2) {
+    return _eloAnswer(elo, elo.gameLines(codes[0], codes[1]));
+  }
+  if (codes.length == 1) {
+    return _eloAnswer(elo, elo.teamLines(codes.single));
+  }
+  if (!strong) return null;
+  final home = contextHome == null ? null : _code(contextHome);
+  final away = contextAway == null ? null : _code(contextAway);
+  if (home != null && away != null) {
+    return _eloAnswer(elo, _eloGameLines(elo, home, away, contextPlayer));
+  }
+  if (contextPlayer != null) {
+    return _eloAnswer(elo, elo.playerLines(name: contextPlayer));
+  }
+  return null;
+}
+
+CoachBrief? _eloAnswer(EloRatings elo, List<String> lines) {
+  if (lines.isEmpty) return null;
+  return CoachBrief(
+    title: 'Coach ratings',
+    text: lines.first,
+    handlesQuestion: true,
+    eloLines: lines.skip(1).toList(),
+    eloNote: elo.note,
   );
 }
 

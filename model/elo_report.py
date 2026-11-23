@@ -204,18 +204,34 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names) -> dic
         if r.off >= 100:
             book_pass = pr_players.qb_book if r.position == "QB" else pr_players.books[("off", "pass")]
             v = book_pass.get(r.gsis_id, season, wi)[0] + pr_players.books[("off", "run")].get(r.gsis_id, season, wi)[0]
-            prows.append({"player": r.gsis_id, "team": r.team, "position": r.position, "side": "offense", "value": v})
+            prows.append({"player": r.gsis_id, "team": r.team, "position": r.position, "side": "offense", "value": v, "snaps": int(r.off)})
         if r.de >= 100:
             v = pr_players.books[("def", "pass")].get(r.gsis_id, season, wi)[0] + pr_players.books[("def", "run")].get(r.gsis_id, season, wi)[0]
-            prows.append({"player": r.gsis_id, "team": r.team, "position": r.position, "side": "defense", "value": v})
+            prows.append({"player": r.gsis_id, "team": r.team, "position": r.position, "side": "defense", "value": v, "snaps": int(r.de)})
     pdf = pd.DataFrame(prows)
-    pdf["overall"] = pdf.groupby("position")["value"].transform(overall)
-    # Skill detail from the prop ratings.
     g = lambda book, key: round(float(book.get(key, season, wi)[0]), 3)
+    # Overall mixes the player's own skill ratings with his on-field rating, so a
+    # star on a weak passing team is not dragged down by his teammates alone.
+    z = lambda col: (col - col.mean()) / (col.std() or 1.0)
+    pdf["ts"] = [g(pr_props.tshare, p) for p in pdf.player]
+    pdf["ypt"] = [g(pr_props.rec_ypt, p) for p in pdf.player]
+    pdf["cr"] = [g(pr_props.rec_catch, p) for p in pdf.player]
+    pdf["ypc_r"] = [g(pr_props.ypc, p) for p in pdf.player]
+    pdf["ypa_r"] = [g(pr_props.qb_ypa, p) for p in pdf.player]
+    pdf["score"] = pdf["value"]
+    for pos, cols in {"WR": {"ts": 1.0, "ypt": 1.0, "cr": 0.5, "value": 0.5},
+                      "TE": {"ts": 1.0, "ypt": 1.0, "cr": 0.5, "value": 0.5},
+                      "RB": {"ts": 0.5, "ypt": 0.5, "ypc_r": 1.0, "value": 0.5},
+                      "QB": {"ypa_r": 1.0, "value": 1.0}}.items():
+        m = (pdf.position == pos) & (pdf.side == "offense")
+        if m.sum() > 1:
+            pdf.loc[m, "score"] = sum(w * z(pdf.loc[m, c]) for c, w in cols.items())
+    pdf["overall"] = pdf.groupby(["position", "side"])["score"].transform(overall)
     players_out = []
     for r in pdf.sort_values(["position", "overall"], ascending=[True, False]).itertuples(index=False):
         row = {"name": names.get(r.player, r.player), "id": r.player, "team": r.team, "position": r.position,
-               "overall": int(r.overall), "onFieldEpaPerPlay": round(float(r.value), 4)}
+               "overall": int(r.overall), "side": r.side, "snaps": int(r.snaps),
+               "onFieldEpaPerPlay": round(float(r.value), 4)}
         if r.position in ("WR", "TE", "RB"):
             row.update({"yardsPerTargetVsAverage": g(pr_props.rec_ypt, r.player), "catchRateVsAverage": g(pr_props.rec_catch, r.player),
                         "targetShareVsAverage": g(pr_props.tshare, r.player)})
@@ -228,8 +244,36 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names) -> dic
     for t in teams:
         defense_vs.append({"team": t, **{f"yardsPerTargetAllowedVs{p}": g(pr_props.def_ypt, (t, p)) for p in ("WR", "TE", "RB")},
                            "yardsPerCarryAllowed": g(pr_props.def_ypc, t)})
-    return {"season": season, "asOfWeek": week, "scale": "overall = 40 + 59 x percentile within position (teams: within league)",
+    return {"season": season, "asOfWeek": week, "scale": "overall = 40 + 59 x percentile within position (teams: within league). Skill players mix target share, yards per target, catch rate, yards per carry or per attempt with the on-field rating.",
             "teams": team_out, "players": players_out, "defenseVsPosition": defense_vs}
+
+
+def app_ratings(current: dict) -> dict:
+    """Compact copy for the app (assets/elo-ratings.json). Extra context only."""
+    players = []
+    for r in current["players"]:
+        row = {"n": r["name"], "id": r["id"], "t": r["team"], "p": r["position"], "o": r["overall"],
+               "d": 1 if r["side"] == "defense" else 0, "s": r["snaps"]}
+        for key, short_key in (("yardsPerTargetVsAverage", "ypt"), ("catchRateVsAverage", "cr"),
+                               ("targetShareVsAverage", "ts"), ("yardsPerCarryVsAverage", "ypc"),
+                               ("yardsPerAttemptVsAverage", "ypa")):
+            if r.get(key) is not None:
+                row[short_key] = r[key]
+        players.append(row)
+    return {
+        "schema": 1,
+        "season": current["season"],
+        "asOfWeek": current["asOfWeek"],
+        "source": "nflverse play-by-play and snap counts (CC BY 4.0)",
+        "note": ("Coach ratings are an extra number to weigh. They are not part of Coach's chance, "
+                 "and in testing they did not beat the closing line (docs/ELO_RATINGS.md)."),
+        "teams": [{"t": r["team"], "o": r["overall"], "off": r["offense"], "def": r["defense"],
+                   "net": r["netPointsVsAverage"], "qb": r["quarterback"]} for r in current["teams"]],
+        "players": players,
+        "defVs": {r["team"]: {"WR": r["yardsPerTargetAllowedVsWR"], "TE": r["yardsPerTargetAllowedVsTE"],
+                              "RB": r["yardsPerTargetAllowedVsRB"], "ypc": r["yardsPerCarryAllowed"]}
+                  for r in current["defenseVsPosition"]},
+    }
 
 
 def main():
@@ -238,6 +282,7 @@ def main():
     ap.add_argument("--schedule", default="model/.cache/games.csv")
     ap.add_argument("--book-prices", default="")
     ap.add_argument("--out", default="research/elo-ratings")
+    ap.add_argument("--app-out", default="assets/elo-ratings.json")
     args = ap.parse_args()
     cache, out = Path(args.cache), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -267,7 +312,10 @@ def main():
     prop_rows += worker_props(Path(args.book_prices) if args.book_prices else None, people)
     (out / "prop_backtest.json").write_text(json.dumps(prop_report(proj, prop_rows), indent=1))
     names = dict(zip(people.gsis_id, people.display_name))
-    (out / "ratings_current.json").write_text(json.dumps(current_ratings(tr, pr_players, pr_props, games, snaps, plays, names), indent=1))
+    current = current_ratings(tr, pr_players, pr_props, games, snaps, plays, names)
+    (out / "ratings_current.json").write_text(json.dumps(current, indent=1))
+    if args.app_out:
+        Path(args.app_out).write_text(json.dumps(app_ratings(current), separators=(",", ":")))
     print(json.dumps({k: v for k, v in report.items()}, indent=1)[:3000])
     print(json.dumps(json.loads((out / "prop_backtest.json").read_text())["props"].get("all", {}), indent=1))
 

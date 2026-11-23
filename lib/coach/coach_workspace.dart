@@ -26,6 +26,7 @@ import '../domain/coach_session.dart';
 import '../domain/coach_conversation.dart';
 import '../domain/coach_books.dart';
 import '../domain/eastern.dart';
+import '../domain/elo_ratings.dart';
 import '../domain/odds.dart';
 import '../domain/market_question.dart';
 import '../domain/nfl_teams.dart';
@@ -152,6 +153,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   RecentEvidence? recentEvidence;
   PlayBook? playBook;
   TradeBook? trades;
+  EloRatings? eloRatings;
   SelfGradeReport? selfGrade;
   BookPriceCoverage? bookPrices;
   AccuracyScorecard? scorecard;
@@ -262,6 +264,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       scorecard: scorecard,
       moves: lineMoves,
       bookPrices: bookPrices,
+      elo: eloRatings,
     );
   }
 
@@ -284,6 +287,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         week: _weekGuess(event.startsAt),
         line: answer.line,
         metric: answer.metric.key,
+        elo: eloRatings,
       );
     }
     if (player == null) return null;
@@ -292,6 +296,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       player: player,
       metric: answer.metric.key,
       line: answer.line,
+      elo: eloRatings,
     );
   }
 
@@ -351,12 +356,19 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         tape = null;
       }
+      EloRatings? elo;
+      try {
+        elo = await loadBundledEloRatings();
+      } catch (_) {
+        elo = null;
+      }
       if (!mounted) return;
       setState(() {
         recentEvidence = recent;
         matchupContext = matchup;
         playBook = plays;
         trades = tape;
+        eloRatings = elo;
         selfGrade = grades;
         bookPrices = prices;
         scorecard = accuracy;

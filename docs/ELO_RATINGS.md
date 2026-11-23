@@ -113,6 +113,25 @@ Where an edge could still come from (all free):
 3. **Participation data for 2026**, if nflverse posts it, would let the
    defender ratings use exact on-field lists instead of snap shares.
 
+## In the app
+
+Vincent asked (Nov 23) to show the ratings as **one more number to weigh**,
+not a replacement. Nothing about Coach's chances, lines or prop math changed.
+
+- `assets/elo-ratings.json` is a compact copy of the current ratings, read by
+  `lib/domain/elo_ratings.dart`.
+- On a game or player answer, a **Coach ratings (Elo)** section opens under the
+  card: both teams' overall, offense and defense, the points gap on a neutral
+  field, both quarterbacks, both secondaries, and for a player his overall,
+  his skill ratings, the opponent's pass defense rank against his position,
+  the opponent's secondary and his quarterback.
+- Direct questions work too: "what's Justin Jefferson's elo against the
+  Bears", "coach ratings Bills Chiefs", "top rated corners", "best teams by
+  elo".
+- Every ratings answer carries the note that they are not part of the chance
+  and did not beat the closing line.
+- The weekly model workflow (Tuesday) rebuilds the ratings and commits them.
+
 ## Current ratings
 
 `research/elo-ratings/ratings_current.json` holds every team and every player

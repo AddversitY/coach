@@ -31,7 +31,7 @@
    },
    "logLoss": {
     "booksNoVig": 0.696,
-    "ratingsAlone": 0.7541
+    "ratingsAlone": 0.7542
    },
    "blendBrier": {
     "0.05": 0.2518,
