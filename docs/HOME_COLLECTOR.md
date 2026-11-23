@@ -2,7 +2,7 @@
 
 Checked November 22, 2026. DraftKings blocks GitHub, Cloudflare and other server addresses (HTTP 403), but its logged-out prop feed answers from the owner's home connection in Bethel Park, PA. So DraftKings prices are collected on the owner's desktop, which stays on.
 
-- Script: [tools/home_collector.py](../tools/home_collector.py). Standard library only.
+- Script: [tools/home_collector.py](../tools/home_collector.py). Standard library only. DraftKings returns 403 without an `Accept-Language` header, so the script sends one.
 - Folder on the desktop: `C:\Users\addve\Documents\Coach` (never the Shieldbreak folder).
 - Runs from Windows Task Scheduler every 5 minutes. Most runs only read Coach's public schedule and stop.
 - It asks DraftKings only when a game is inside one of the Worker's six pre-kickoff windows (24h, 6h, 3h, 90m, 30m, ~10m), and each window once per game. A capture is 7 requests, 3 seconds apart, one per prop group. Each returns the whole slate.

@@ -278,7 +278,7 @@ def merge_store(stored, rows, now):
 
 
 def http_json(url, data=None, headers=None, timeout=25):
-    request = urllib.request.Request(url, data=data, headers={'User-Agent': UA, 'Accept': 'application/json', **(headers or {})}, method='POST' if data else 'GET')
+    request = urllib.request.Request(url, data=data, headers={'User-Agent': UA, 'Accept': 'application/json', 'Accept-Language': 'en-US,en;q=0.9', **(headers or {})}, method='POST' if data else 'GET')
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return response.status, json.loads(response.read().decode('utf-8'))
