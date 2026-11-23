@@ -86,6 +86,13 @@ CI on pull requests: `.github/workflows/nfl-model.yml` and
 
 ## Recent results (all November 2026)
 
+### Team and player Elo ratings (Nov 23, Claude)
+[ELO_RATINGS.md](ELO_RATINGS.md). Kalman/Elo ratings for every team and
+every snap-taking player, with receiver vs passer vs defense ratings tied
+together. Walk-forward vs the closing line: no edge on games (2015-2026) or
+on 1,404 2026 props. **Not adopted.** Current ratings with a 40-99 overall:
+`research/elo-ratings/ratings_current.json`.
+
 ### EndzoneAPI prop evaluation (private paid data, summaries only)
 Files: [research/endzone-eval/](../research/endzone-eval/).
 The raw EndzoneAPI responses are **not** in git (paid data). The key is not
