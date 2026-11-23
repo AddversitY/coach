@@ -52,8 +52,8 @@ def fetch_injuries(fetch=None):
     return json.loads(fetch(ESPN_INJURIES))
 
 
-def quarterback_statuses(payload):
-    """{team code: {player name: (status, reported at)}} for quarterbacks."""
+def quarterback_statuses(payload, positions=('QB',)):
+    """{team code: {player name: (status, reported at)}} for the given positions (all when None)."""
     out = {}
     for team in (payload or {}).get('injuries') or []:
         code = _names().get(team.get('displayName'))
@@ -61,7 +61,7 @@ def quarterback_statuses(payload):
             continue
         for item in team.get('injuries') or []:
             athlete = item.get('athlete') or {}
-            if ((athlete.get('position') or {}).get('abbreviation')) != 'QB':
+            if positions is not None and ((athlete.get('position') or {}).get('abbreviation')) not in positions:
                 continue
             out.setdefault(code, {})[athlete.get('displayName') or ''] = (
                 str(item.get('status') or ''), item.get('date'))
@@ -149,6 +149,49 @@ def build_alerts(ratings, statuses, history, now):
     return alerts
 
 
+# Starter groups other than quarterback, and how many Coach players count as starters.
+# The line move is the 2017-2021 out-of-sample average from research/news/backtest.json
+# (points against the injured team, open to close). Betting the other side at the
+# opener had negative closing line value for every one of these groups, so these
+# are information, not bets.
+STARTER_GROUPS = {
+    'WR': (('WR',), 2, 0.49), 'RB': (('RB', 'HB', 'FB'), 1, 1.13), 'TE': (('TE',), 1, 0.06),
+    'OL': (('T', 'G', 'C', 'OL'), 5, 0.25), 'DL': (('DL', 'DT', 'DE', 'NT'), 3, 0.57),
+    'LB': (('LB',), 2, 0.11), 'CB': (('CB', 'DB'), 2, 0.23), 'S': (('S',), 2, -0.04),
+}
+# Share of Questionable starters who played, 2012-2021, by last practice status
+# (research/news/backtest.json). ESPN's feed has no practice status, so the
+# overall rate is used.
+QUESTIONABLE_PLAYED = {'did not practice': 0.41, 'limited': 0.74, 'full': 0.90, 'unknown': 0.73}
+
+
+def starter_alerts(ratings, statuses):
+    """Non-quarterback starters listed Out, Doubtful or Questionable, with the expected line move."""
+    alerts = []
+    players = ratings.get('players') or []
+    for group, (positions, count, move) in STARTER_GROUPS.items():
+        by_team = {}
+        for player in players:
+            if player.get('p') in positions:
+                by_team.setdefault(player.get('t'), []).append(player)
+        for team, roster in by_team.items():
+            for player in sorted(roster, key=lambda p: -(p.get('s') or 0))[:count]:
+                status = _status_for(statuses.get(team, {}), player.get('n'))
+                if not status:
+                    continue
+                label = status[0].lower()
+                if label in OUT_STATUSES:
+                    chance = 0.0
+                elif label == 'questionable':
+                    chance = QUESTIONABLE_PLAYED['unknown']
+                else:
+                    continue
+                alerts.append({'team': team, 'player': player.get('n'), 'group': group, 'rating': player.get('o'),
+                               'status': status[0], 'reportedAt': status[1], 'chanceToPlay': chance,
+                               'expectedLineMovePoints': round(move * (1 - chance), 2)})
+    return sorted(alerts, key=lambda a: -a['expectedLineMovePoints'])
+
+
 def merge(log, alerts):
     rows = log.setdefault('alerts', [])
     seen = {(a['team'], a['starter'], a['home'], a['away'], a['kickoff']) for a in rows}
@@ -197,6 +240,7 @@ def main(argv=None):
     try:
         payload = json.loads(Path(args.injuries).read_text()) if args.injuries else fetch_injuries()
         alerts = build_alerts(ratings, quarterback_statuses(payload), history, now)
+        log['starters'] = starter_alerts(ratings, quarterback_statuses(payload, positions=None))
         log['source'] = {'status': 'ok', 'checkedAt': now.isoformat().replace('+00:00', 'Z')}
     except Exception as error:  # noqa: BLE001 - an unavailable feed is recorded, not invented
         alerts = []

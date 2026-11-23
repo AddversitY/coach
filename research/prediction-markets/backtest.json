@@ -1,0 +1,1040 @@
+{
+ "source": "Kalshi public market data (KXNFLGAME hourly candlesticks); nflverse closing moneylines (CC BY 4.0)",
+ "games": 146,
+ "brier": {
+  "sportsbookClose": 0.20742,
+  "kalshi1h": 0.20687,
+  "kalshi24h": 0.20856,
+  "sportsbookCloseSameGames24h": 0.20742,
+  "games1h": 146,
+  "games24h": 146
+ },
+ "averageGap": {
+  "kalshi1hVsClose": 0.0093,
+  "kalshi24hVsClose": 0.0131
+ },
+ "rows": [
+  {
+   "game": "DEN@KC 2026-09-14",
+   "homeWon": 1,
+   "close": 0.5427435387673957,
+   "kalshi24h": 0.555,
+   "kalshi1h": 0.535
+  },
+  {
+   "game": "DET@BUF 2026-09-17",
+   "homeWon": 1,
+   "close": 0.6750312469954812,
+   "kalshi24h": 0.675,
+   "kalshi1h": 0.695
+  },
+  {
+   "game": "IND@KC 2026-09-20",
+   "homeWon": 1,
+   "close": 0.6957699520733487,
+   "kalshi24h": 0.715,
+   "kalshi1h": 0.715
+  },
+  {
+   "game": "WAS@DAL 2026-09-20",
+   "homeWon": 1,
+   "close": 0.6574752261956054,
+   "kalshi24h": 0.655,
+   "kalshi1h": 0.655
+  },
+  {
+   "game": "MIA@SF 2026-09-20",
+   "homeWon": 1,
+   "close": 0.863013698630137,
+   "kalshi24h": 0.895,
+   "kalshi1h": 0.895
+  },
+  {
+   "game": "SEA@ARI 2026-09-20",
+   "homeWon": 0,
+   "close": 0.34252477380439467,
+   "kalshi24h": 0.345,
+   "kalshi1h": 0.345
+  },
+  {
+   "game": "LV@LAC 2026-09-20",
+   "homeWon": 0,
+   "close": 0.7335423197492164,
+   "kalshi24h": 0.725,
+   "kalshi1h": 0.735
+  },
+  {
+   "game": "JAX@DEN 2026-09-20",
+   "homeWon": 1,
+   "close": 0.5720596355604638,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.565
+  },
+  {
+   "game": "CLE@TB 2026-09-20",
+   "homeWon": 0,
+   "close": 0.7768331562167907,
+   "kalshi24h": 0.785,
+   "kalshi1h": 0.785
+  },
+  {
+   "game": "CIN@HOU 2026-09-20",
+   "homeWon": 0,
+   "close": 0.5720596355604638,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.585
+  },
+  {
+   "game": "NO@BAL 2026-09-20",
+   "homeWon": 0,
+   "close": 0.7571884984025559,
+   "kalshi24h": 0.785,
+   "kalshi1h": 0.785
+  },
+  {
+   "game": "GB@NYJ 2026-09-20",
+   "homeWon": 0,
+   "close": 0.3775334481388264,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.395
+  },
+  {
+   "game": "CAR@ATL 2026-09-20",
+   "homeWon": 0,
+   "close": 0.4170073589533933,
+   "kalshi24h": 0.425,
+   "kalshi1h": 0.425
+  },
+  {
+   "game": "MIN@CHI 2026-09-20",
+   "homeWon": 0,
+   "close": 0.6574752261956054,
+   "kalshi24h": 0.665,
+   "kalshi1h": 0.655
+  },
+  {
+   "game": "PIT@NE 2026-09-20",
+   "homeWon": 1,
+   "close": 0.6636481241914618,
+   "kalshi24h": 0.685,
+   "kalshi1h": 0.675
+  },
+  {
+   "game": "PHI@TEN 2026-09-20",
+   "homeWon": 0,
+   "close": 0.26645768025078376,
+   "kalshi24h": 0.245,
+   "kalshi1h": 0.245
+  },
+  {
+   "game": "NYG@LA 2026-09-21",
+   "homeWon": 1,
+   "close": 0.7179705215419501,
+   "kalshi24h": 0.735,
+   "kalshi1h": 0.715
+  },
+  {
+   "game": "ATL@GB 2026-09-24",
+   "homeWon": 0,
+   "close": 0.6690070210631895,
+   "kalshi24h": 0.705,
+   "kalshi1h": 0.695
+  },
+  {
+   "game": "LA@DEN 2026-09-27",
+   "homeWon": 1,
+   "close": 0.5043297540699688,
+   "kalshi24h": 0.455,
+   "kalshi1h": 0.495
+  },
+  {
+   "game": "BAL@DAL 2026-09-27",
+   "homeWon": 0,
+   "close": 0.3962430290578221,
+   "kalshi24h": 0.375,
+   "kalshi1h": 0.375
+  },
+  {
+   "game": "LV@NO 2026-09-27",
+   "homeWon": 0,
+   "close": 0.6309403437815976,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.625
+  },
+  {
+   "game": "MIN@TB 2026-09-27",
+   "homeWon": 0,
+   "close": 0.4956702459300312,
+   "kalshi24h": 0.475,
+   "kalshi1h": 0.475
+  },
+  {
+   "game": "ARI@SF 2026-09-27",
+   "homeWon": 1,
+   "close": 0.7659021045164341,
+   "kalshi24h": 0.775,
+   "kalshi1h": 0.775
+  },
+  {
+   "game": "CIN@PIT 2026-09-27",
+   "homeWon": 1,
+   "close": 0.3835616438356164,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.385
+  },
+  {
+   "game": "SEA@WAS 2026-09-27",
+   "homeWon": 1,
+   "close": 0.22849462365591394,
+   "kalshi24h": 0.245,
+   "kalshi1h": 0.225
+  },
+  {
+   "game": "HOU@IND 2026-09-27",
+   "homeWon": 1,
+   "close": 0.4675324675324675,
+   "kalshi24h": 0.46499999999999997,
+   "kalshi1h": 0.46499999999999997
+  },
+  {
+   "game": "NYJ@DET 2026-09-27",
+   "homeWon": 1,
+   "close": 0.7335423197492164,
+   "kalshi24h": 0.725,
+   "kalshi1h": 0.725
+  },
+  {
+   "game": "LAC@BUF 2026-09-27",
+   "homeWon": 1,
+   "close": 0.7335423197492164,
+   "kalshi24h": 0.755,
+   "kalshi1h": 0.755
+  },
+  {
+   "game": "NE@JAX 2026-09-27",
+   "homeWon": 1,
+   "close": 0.593369754159424,
+   "kalshi24h": 0.595,
+   "kalshi1h": 0.595
+  },
+  {
+   "game": "TEN@NYG 2026-09-27",
+   "homeWon": 1,
+   "close": 0.5427435387673957,
+   "kalshi24h": 0.555,
+   "kalshi1h": 0.555
+  },
+  {
+   "game": "CAR@CLE 2026-09-27",
+   "homeWon": 1,
+   "close": 0.448558885283451,
+   "kalshi24h": 0.445,
+   "kalshi1h": 0.455
+  },
+  {
+   "game": "KC@MIA 2026-09-27",
+   "homeWon": 0,
+   "close": 0.17766497461928932,
+   "kalshi24h": 0.14500000000000002,
+   "kalshi1h": 0.155
+  },
+  {
+   "game": "PHI@CHI 2026-09-28",
+   "homeWon": 1,
+   "close": 0.3630958183058778,
+   "kalshi24h": 0.345,
+   "kalshi1h": 0.365
+  },
+  {
+   "game": "PIT@CLE 2026-10-01",
+   "homeWon": 1,
+   "close": 0.42794036443953615,
+   "kalshi24h": 0.425,
+   "kalshi1h": 0.425
+  },
+  {
+   "game": "DET@CAR 2026-10-04",
+   "homeWon": 1,
+   "close": 0.33635187580853815,
+   "kalshi24h": 0.355,
+   "kalshi1h": 0.345
+  },
+  {
+   "game": "DEN@SF 2026-10-04",
+   "homeWon": 1,
+   "close": 0.5996387718242023,
+   "kalshi24h": 0.575,
+   "kalshi1h": 0.595
+  },
+  {
+   "game": "LAC@SEA 2026-10-04",
+   "homeWon": 1,
+   "close": 0.7440690150970525,
+   "kalshi24h": 0.755,
+   "kalshi1h": 0.755
+  },
+  {
+   "game": "KC@LV 2026-10-04",
+   "homeWon": 0,
+   "close": 0.33635187580853815,
+   "kalshi24h": 0.335,
+   "kalshi1h": 0.325
+  },
+  {
+   "game": "MIA@MIN 2026-10-04",
+   "homeWon": 1,
+   "close": 0.8081570996978852,
+   "kalshi24h": 0.835,
+   "kalshi1h": 0.825
+  },
+  {
+   "game": "JAX@CIN 2026-10-04",
+   "homeWon": 0,
+   "close": 0.5720596355604638,
+   "kalshi24h": 0.565,
+   "kalshi1h": 0.565
+  },
+  {
+   "game": "TEN@BAL 2026-10-04",
+   "homeWon": 1,
+   "close": 0.8524590163934427,
+   "kalshi24h": 0.845,
+   "kalshi1h": 0.855
+  },
+  {
+   "game": "GB@TB 2026-10-04",
+   "homeWon": 0,
+   "close": 0.4170073589533933,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.405
+  },
+  {
+   "game": "LA@PHI 2026-10-04",
+   "homeWon": 0,
+   "close": 0.3630958183058778,
+   "kalshi24h": 0.365,
+   "kalshi1h": 0.355
+  },
+  {
+   "game": "DAL@HOU 2026-10-04",
+   "homeWon": 0,
+   "close": 0.5829926410466066,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.575
+  },
+  {
+   "game": "NYJ@CHI 2026-10-04",
+   "homeWon": 1,
+   "close": 0.6309403437815976,
+   "kalshi24h": 0.625,
+   "kalshi1h": 0.635
+  },
+  {
+   "game": "NE@BUF 2026-10-04",
+   "homeWon": 0,
+   "close": 0.7440690150970525,
+   "kalshi24h": 0.735,
+   "kalshi1h": 0.735
+  },
+  {
+   "game": "ARI@NYG 2026-10-04",
+   "homeWon": 1,
+   "close": 0.448558885283451,
+   "kalshi24h": 0.425,
+   "kalshi1h": 0.435
+  },
+  {
+   "game": "IND@WAS 2026-10-04",
+   "homeWon": 0,
+   "close": 0.33099297893681046,
+   "kalshi24h": 0.345,
+   "kalshi1h": 0.345
+  },
+  {
+   "game": "ATL@NO 2026-10-05",
+   "homeWon": 0,
+   "close": 0.5173641257162701,
+   "kalshi24h": 0.535,
+   "kalshi1h": 0.525
+  },
+  {
+   "game": "TB@DAL 2026-10-08",
+   "homeWon": 0,
+   "close": 0.8081570996978852,
+   "kalshi24h": 0.795,
+   "kalshi1h": 0.805
+  },
+  {
+   "game": "BAL@ATL 2026-10-11",
+   "homeWon": 0,
+   "close": 0.6092362344582594,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.615
+  },
+  {
+   "game": "CHI@GB 2026-10-11",
+   "homeWon": 1,
+   "close": 0.4675324675324675,
+   "kalshi24h": 0.46499999999999997,
+   "kalshi1h": 0.475
+  },
+  {
+   "game": "SF@SEA 2026-10-11",
+   "homeWon": 0,
+   "close": 0.5996387718242023,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.605
+  },
+  {
+   "game": "DET@ARI 2026-10-11",
+   "homeWon": 0,
+   "close": 0.30423004792665137,
+   "kalshi24h": 0.305,
+   "kalshi1h": 0.305
+  },
+  {
+   "game": "DEN@LAC 2026-10-11",
+   "homeWon": 0,
+   "close": 0.3690596562184025,
+   "kalshi24h": 0.365,
+   "kalshi1h": 0.365
+  },
+  {
+   "game": "IND@PIT 2026-10-11",
+   "homeWon": 1,
+   "close": 0.593369754159424,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.595
+  },
+  {
+   "game": "CLE@NYJ 2026-10-11",
+   "homeWon": 1,
+   "close": 0.5634920634920635,
+   "kalshi24h": 0.565,
+   "kalshi1h": 0.565
+  },
+  {
+   "game": "LV@NE 2026-10-11",
+   "homeWon": 1,
+   "close": 0.6164383561643836,
+   "kalshi24h": 0.625,
+   "kalshi1h": 0.625
+  },
+  {
+   "game": "CIN@MIA 2026-10-11",
+   "homeWon": 0,
+   "close": 0.2522172949002217,
+   "kalshi24h": 0.245,
+   "kalshi1h": 0.245
+  },
+  {
+   "game": "HOU@TEN 2026-10-11",
+   "homeWon": 0,
+   "close": 0.27424749163879597,
+   "kalshi24h": 0.245,
+   "kalshi1h": 0.255
+  },
+  {
+   "game": "MIN@NO 2026-10-11",
+   "homeWon": 0,
+   "close": 0.43650793650793646,
+   "kalshi24h": 0.435,
+   "kalshi1h": 0.445
+  },
+  {
+   "game": "PHI@JAX 2026-10-11",
+   "homeWon": 1,
+   "close": 0.7600000000000001,
+   "kalshi24h": 0.765,
+   "kalshi1h": 0.765
+  },
+  {
+   "game": "BUF@LA 2026-10-12",
+   "homeWon": 0,
+   "close": 0.6224665518611737,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.615
+  },
+  {
+   "game": "SEA@DEN 2026-10-15",
+   "homeWon": 1,
+   "close": 0.4170073589533933,
+   "kalshi24h": 0.435,
+   "kalshi1h": 0.435
+  },
+  {
+   "game": "DAL@GB 2026-10-18",
+   "homeWon": 1,
+   "close": 0.4891657638136511,
+   "kalshi24h": 0.515,
+   "kalshi1h": 0.495
+  },
+  {
+   "game": "LAC@KC 2026-10-18",
+   "homeWon": 1,
+   "close": 0.7867435158501441,
+   "kalshi24h": 0.785,
+   "kalshi1h": 0.785
+  },
+  {
+   "game": "BUF@LV 2026-10-18",
+   "homeWon": 0,
+   "close": 0.3249687530045188,
+   "kalshi24h": 0.325,
+   "kalshi1h": 0.315
+  },
+  {
+   "game": "ARI@LA 2026-10-18",
+   "homeWon": 0,
+   "close": 0.84,
+   "kalshi24h": 0.875,
+   "kalshi1h": 0.865
+  },
+  {
+   "game": "PIT@TB 2026-10-18",
+   "homeWon": 0,
+   "close": 0.43650793650793646,
+   "kalshi24h": 0.435,
+   "kalshi1h": 0.455
+  },
+  {
+   "game": "CAR@PHI 2026-10-18",
+   "homeWon": 0,
+   "close": 0.4066302458405761,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.395
+  },
+  {
+   "game": "NO@NYG 2026-10-18",
+   "homeWon": 0,
+   "close": 0.5043297540699688,
+   "kalshi24h": 0.505,
+   "kalshi1h": 0.505
+  },
+  {
+   "game": "NYJ@NE 2026-10-18",
+   "homeWon": 1,
+   "close": 0.7440690150970525,
+   "kalshi24h": 0.755,
+   "kalshi1h": 0.755
+  },
+  {
+   "game": "TEN@IND 2026-10-18",
+   "homeWon": 0,
+   "close": 0.7179705215419501,
+   "kalshi24h": 0.745,
+   "kalshi1h": 0.735
+  },
+  {
+   "game": "BAL@CLE 2026-10-18",
+   "homeWon": 1,
+   "close": 0.3962430290578221,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.385
+  },
+  {
+   "game": "CHI@ATL 2026-10-18",
+   "homeWon": 0,
+   "close": 0.4826358742837298,
+   "kalshi24h": 0.495,
+   "kalshi1h": 0.485
+  },
+  {
+   "game": "HOU@JAX 2026-10-18",
+   "homeWon": 0,
+   "close": 0.5634920634920635,
+   "kalshi24h": 0.565,
+   "kalshi1h": 0.565
+  },
+  {
+   "game": "WAS@SF 2026-10-19",
+   "homeWon": 1,
+   "close": 0.7659021045164341,
+   "kalshi24h": 0.785,
+   "kalshi1h": 0.765
+  },
+  {
+   "game": "NE@CHI 2026-10-22",
+   "homeWon": 1,
+   "close": 0.5829926410466066,
+   "kalshi24h": 0.595,
+   "kalshi1h": 0.595
+  },
+  {
+   "game": "KC@SEA 2026-10-25",
+   "homeWon": 1,
+   "close": 0.593369754159424,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.585
+  },
+  {
+   "game": "GB@DET 2026-10-25",
+   "homeWon": 1,
+   "close": 0.6309403437815976,
+   "kalshi24h": 0.625,
+   "kalshi1h": 0.645
+  },
+  {
+   "game": "LA@LV 2026-10-25",
+   "homeWon": 0,
+   "close": 0.3835616438356164,
+   "kalshi24h": 0.395,
+   "kalshi1h": 0.385
+  },
+  {
+   "game": "DEN@ARI 2026-10-25",
+   "homeWon": 0,
+   "close": 0.33099297893681046,
+   "kalshi24h": 0.335,
+   "kalshi1h": 0.335
+  },
+  {
+   "game": "MIA@NYJ 2026-10-25",
+   "homeWon": 0,
+   "close": 0.6574752261956054,
+   "kalshi24h": 0.665,
+   "kalshi1h": 0.655
+  },
+  {
+   "game": "TB@CAR 2026-10-25",
+   "homeWon": 0,
+   "close": 0.5996387718242023,
+   "kalshi24h": 0.595,
+   "kalshi1h": 0.595
+  },
+  {
+   "game": "CIN@BAL 2026-10-25",
+   "homeWon": 0,
+   "close": 0.4066302458405761,
+   "kalshi24h": 0.485,
+   "kalshi1h": 0.415
+  },
+  {
+   "game": "SF@ATL 2026-10-25",
+   "homeWon": 1,
+   "close": 0.4170073589533933,
+   "kalshi24h": 0.415,
+   "kalshi1h": 0.425
+  },
+  {
+   "game": "CLE@TEN 2026-10-25",
+   "homeWon": 0,
+   "close": 0.4572564612326044,
+   "kalshi24h": 0.455,
+   "kalshi1h": 0.445
+  },
+  {
+   "game": "IND@MIN 2026-10-25",
+   "homeWon": 1,
+   "close": 0.7335423197492164,
+   "kalshi24h": 0.715,
+   "kalshi1h": 0.735
+  },
+  {
+   "game": "NYG@HOU 2026-10-25",
+   "homeWon": 0,
+   "close": 0.8042929292929294,
+   "kalshi24h": 0.805,
+   "kalshi1h": 0.805
+  },
+  {
+   "game": "PIT@NO 2026-10-25",
+   "homeWon": 0,
+   "close": 0.4066302458405761,
+   "kalshi24h": 0.395,
+   "kalshi1h": 0.405
+  },
+  {
+   "game": "DAL@PHI 2026-10-26",
+   "homeWon": 0,
+   "close": 0.33635187580853815,
+   "kalshi24h": 0.33,
+   "kalshi1h": 0.335
+  },
+  {
+   "game": "CAR@GB 2026-10-29",
+   "homeWon": 1,
+   "close": 0.6309403437815976,
+   "kalshi24h": 0.645,
+   "kalshi1h": 0.635
+  },
+  {
+   "game": "PHI@WAS 2026-11-01",
+   "homeWon": 1,
+   "close": 0.705033164260632,
+   "kalshi24h": 0.705,
+   "kalshi1h": 0.705
+  },
+  {
+   "game": "NE@MIA 2026-11-01",
+   "homeWon": 0,
+   "close": 0.2559309849029475,
+   "kalshi24h": 0.235,
+   "kalshi1h": 0.235
+  },
+  {
+   "game": "KC@DEN 2026-11-01",
+   "homeWon": 1,
+   "close": 0.5043297540699688,
+   "kalshi24h": 0.475,
+   "kalshi1h": 0.495
+  },
+  {
+   "game": "LAC@LA 2026-11-01",
+   "homeWon": 1,
+   "close": 0.7095435684647302,
+   "kalshi24h": 0.725,
+   "kalshi1h": 0.735
+  },
+  {
+   "game": "ATL@TB 2026-11-01",
+   "homeWon": 1,
+   "close": 0.5427435387673957,
+   "kalshi24h": 0.555,
+   "kalshi1h": 0.545
+  },
+  {
+   "game": "CLE@PIT 2026-11-01",
+   "homeWon": 1,
+   "close": 0.6369041816941223,
+   "kalshi24h": 0.645,
+   "kalshi1h": 0.645
+  },
+  {
+   "game": "LV@NYJ 2026-11-01",
+   "homeWon": 0,
+   "close": 0.5324675324675325,
+   "kalshi24h": 0.535,
+   "kalshi1h": 0.535
+  },
+  {
+   "game": "IND@JAX 2026-11-01",
+   "homeWon": 1,
+   "close": 0.7957758771164253,
+   "kalshi24h": 0.805,
+   "kalshi1h": 0.815
+  },
+  {
+   "game": "MIN@DET 2026-11-01",
+   "homeWon": 1,
+   "close": 0.6037569709421778,
+   "kalshi24h": 0.625,
+   "kalshi1h": 0.625
+  },
+  {
+   "game": "TEN@CIN 2026-11-01",
+   "homeWon": 1,
+   "close": 0.863013698630137,
+   "kalshi24h": 0.865,
+   "kalshi1h": 0.875
+  },
+  {
+   "game": "BAL@BUF 2026-11-01",
+   "homeWon": 1,
+   "close": 0.593369754159424,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.615
+  },
+  {
+   "game": "ARI@DAL 2026-11-01",
+   "homeWon": 0,
+   "close": 0.740871613663133,
+   "kalshi24h": 0.745,
+   "kalshi1h": 0.745
+  },
+  {
+   "game": "CHI@SEA 2026-11-02",
+   "homeWon": 0,
+   "close": 0.5996387718242023,
+   "kalshi24h": 0.605,
+   "kalshi1h": 0.615
+  },
+  {
+   "game": "JAX@BAL 2026-11-05",
+   "homeWon": 0,
+   "close": 0.2132564841498559,
+   "kalshi24h": 0.185,
+   "kalshi1h": 0.20500000000000002
+  },
+  {
+   "game": "TB@CHI 2026-11-08",
+   "homeWon": 1,
+   "close": 0.7135512302607419,
+   "kalshi24h": 0.715,
+   "kalshi1h": 0.715
+  },
+  {
+   "game": "GB@NE 2026-11-08",
+   "homeWon": 0,
+   "close": 0.6224665518611737,
+   "kalshi24h": 0.605,
+   "kalshi1h": 0.615
+  },
+  {
+   "game": "ARI@SEA 2026-11-08",
+   "homeWon": 1,
+   "close": 0.7867435158501441,
+   "kalshi24h": 0.785,
+   "kalshi1h": 0.785
+  },
+  {
+   "game": "LV@SF 2026-11-08",
+   "homeWon": 1,
+   "close": 0.771505376344086,
+   "kalshi24h": 0.795,
+   "kalshi1h": 0.795
+  },
+  {
+   "game": "HOU@LAC 2026-11-08",
+   "homeWon": 0,
+   "close": 0.33099297893681046,
+   "kalshi24h": 0.305,
+   "kalshi1h": 0.325
+  },
+  {
+   "game": "LA@WAS 2026-11-08",
+   "homeWon": 0,
+   "close": 0.33635187580853815,
+   "kalshi24h": 0.335,
+   "kalshi1h": 0.335
+  },
+  {
+   "game": "NYG@PHI 2026-11-08",
+   "homeWon": 0,
+   "close": 0.4066302458405761,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.395
+  },
+  {
+   "game": "DET@MIA 2026-11-08",
+   "homeWon": 0,
+   "close": 0.27792074112197634,
+   "kalshi24h": 0.265,
+   "kalshi1h": 0.265
+  },
+  {
+   "game": "DAL@IND 2026-11-08",
+   "homeWon": 0,
+   "close": 0.34252477380439467,
+   "kalshi24h": 0.325,
+   "kalshi1h": 0.325
+  },
+  {
+   "game": "DEN@CAR 2026-11-08",
+   "homeWon": 0,
+   "close": 0.4170073589533933,
+   "kalshi24h": 0.425,
+   "kalshi1h": 0.415
+  },
+  {
+   "game": "CLE@NO 2026-11-08",
+   "homeWon": 1,
+   "close": 0.6636481241914618,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.625
+  },
+  {
+   "game": "NYJ@KC 2026-11-08",
+   "homeWon": 1,
+   "close": 0.8042929292929294,
+   "kalshi24h": 0.805,
+   "kalshi1h": 0.805
+  },
+  {
+   "game": "CIN@ATL 2026-11-08",
+   "homeWon": 0,
+   "close": 0.3835616438356164,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.375
+  },
+  {
+   "game": "BUF@MIN 2026-11-09",
+   "homeWon": 0,
+   "close": 0.3775334481388264,
+   "kalshi24h": 0.385,
+   "kalshi1h": 0.365
+  },
+  {
+   "game": "WAS@NYG 2026-11-12",
+   "homeWon": 0,
+   "close": 0.5260865852617197,
+   "kalshi24h": 0.555,
+   "kalshi1h": 0.535
+  },
+  {
+   "game": "PIT@CIN 2026-11-15",
+   "homeWon": 1,
+   "close": 0.6574752261956054,
+   "kalshi24h": 0.635,
+   "kalshi1h": 0.645
+  },
+  {
+   "game": "SF@DAL 2026-11-15",
+   "homeWon": 0,
+   "close": 0.35527082119976705,
+   "kalshi24h": 0.345,
+   "kalshi1h": 0.345
+  },
+  {
+   "game": "LA@ARI 2026-11-15",
+   "homeWon": 0,
+   "close": 0.18813314037626627,
+   "kalshi24h": 0.195,
+   "kalshi1h": 0.195
+  },
+  {
+   "game": "SEA@LV 2026-11-15",
+   "homeWon": 0,
+   "close": 0.2820294784580499,
+   "kalshi24h": 0.275,
+   "kalshi1h": 0.28500000000000003
+  },
+  {
+   "game": "BUF@NYJ 2026-11-15",
+   "homeWon": 0,
+   "close": 0.2042241228835748,
+   "kalshi24h": 0.20500000000000002,
+   "kalshi1h": 0.20500000000000002
+  },
+  {
+   "game": "MIA@IND 2026-11-15",
+   "homeWon": 1,
+   "close": 0.6636481241914618,
+   "kalshi24h": 0.665,
+   "kalshi1h": 0.665
+  },
+  {
+   "game": "HOU@CLE 2026-11-15",
+   "homeWon": 1,
+   "close": 0.3630958183058778,
+   "kalshi24h": 0.325,
+   "kalshi1h": 0.355
+  },
+  {
+   "game": "KC@ATL 2026-11-15",
+   "homeWon": 0,
+   "close": 0.39076376554174075,
+   "kalshi24h": 0.375,
+   "kalshi1h": 0.375
+  },
+  {
+   "game": "JAX@TEN 2026-11-15",
+   "homeWon": 0,
+   "close": 0.16835016835016833,
+   "kalshi24h": 0.165,
+   "kalshi1h": 0.165
+  },
+  {
+   "game": "CAR@NO 2026-11-15",
+   "homeWon": 0,
+   "close": 0.5,
+   "kalshi24h": 0.545,
+   "kalshi1h": 0.495
+  },
+  {
+   "game": "MIN@GB 2026-11-15",
+   "homeWon": 0,
+   "close": 0.5720596355604638,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.575
+  },
+  {
+   "game": "NE@DET 2026-11-15",
+   "homeWon": 1,
+   "close": 0.5720596355604638,
+   "kalshi24h": 0.575,
+   "kalshi1h": 0.575
+  },
+  {
+   "game": "LAC@BAL 2026-11-16",
+   "homeWon": 0,
+   "close": 0.6636481241914618,
+   "kalshi24h": 0.665,
+   "kalshi1h": 0.675
+  },
+  {
+   "game": "IND@HOU 2026-11-19",
+   "homeWon": 1,
+   "close": 0.8481464939705226,
+   "kalshi24h": 0.845,
+   "kalshi1h": 0.845
+  },
+  {
+   "game": "MIN@SF 2026-11-22",
+   "homeWon": 1,
+   "close": 0.6439901304194573,
+   "kalshi24h": 0.615,
+   "kalshi1h": 0.645
+  },
+  {
+   "game": "JAX@NYG 2026-11-22",
+   "homeWon": 1,
+   "close": 0.30511769429066476,
+   "kalshi24h": 0.295,
+   "kalshi1h": 0.28500000000000003
+  },
+  {
+   "game": "LV@DEN 2026-11-22",
+   "homeWon": 1,
+   "close": 0.8326266458379826,
+   "kalshi24h": 0.825,
+   "kalshi1h": 0.835
+  },
+  {
+   "game": "NYJ@LAC 2026-11-22",
+   "homeWon": 0,
+   "close": 0.618786629042761,
+   "kalshi24h": 0.605,
+   "kalshi1h": 0.605
+  },
+  {
+   "game": "PIT@PHI 2026-11-22",
+   "homeWon": 1,
+   "close": 0.36388670338316287,
+   "kalshi24h": 0.355,
+   "kalshi1h": 0.345
+  },
+  {
+   "game": "TB@DET 2026-11-22",
+   "homeWon": 1,
+   "close": 0.6616208466857818,
+   "kalshi24h": 0.685,
+   "kalshi1h": 0.665
+  },
+  {
+   "game": "BAL@CAR 2026-11-22",
+   "homeWon": 1,
+   "close": 0.5616508121282673,
+   "kalshi24h": 0.585,
+   "kalshi1h": 0.575
+  },
+  {
+   "game": "MIA@BUF 2026-11-22",
+   "homeWon": 1,
+   "close": 0.9110122358175751,
+   "kalshi24h": 0.915,
+   "kalshi1h": 0.915
+  },
+  {
+   "game": "ARI@KC 2026-11-22",
+   "homeWon": 1,
+   "close": 0.898898250162022,
+   "kalshi24h": 0.915,
+   "kalshi1h": 0.915
+  },
+  {
+   "game": "TEN@DAL 2026-11-22",
+   "homeWon": 1,
+   "close": 0.7521491209123504,
+   "kalshi24h": 0.765,
+   "kalshi1h": 0.765
+  },
+  {
+   "game": "NO@CHI 2026-11-22",
+   "homeWon": 1,
+   "close": 0.8365041617122474,
+   "kalshi24h": 0.845,
+   "kalshi1h": 0.845
+  }
+ ]
+}
