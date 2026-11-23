@@ -63,6 +63,22 @@ BOVADA_MARKETS = (
 
 FANDUEL_TABS = ('passing-props', 'rushing-props', 'receiving-props', 'td-scorer-props')
 
+# Market names a public feed offered that Coach does not parse yet, counted per
+# run. Published in the coverage file so niche markets (longest reception,
+# kicking points, tackles) can be mapped from the real labels later.
+UNMAPPED_LABELS = {}
+
+
+def _note_unmapped(book, label):
+    label = re.sub(r'\s+', ' ', str(label or '')).strip()
+    if not label:
+        return
+    # Drop the player's name from "Name - Market" so labels group by market.
+    if ' - ' in label:
+        label = label.split(' - ', 1)[1]
+    key = f'{book}: {label[:80]}'
+    UNMAPPED_LABELS[key] = UNMAPPED_LABELS.get(key, 0) + 1
+
 # One polite request. These hosts did not return a logged-out prop feed.
 PROBES = (
     ('draftkings-public', 'https://sportsbook-nash.draftkings.com/api/sportscontent/dkuspa/v1/leagues/88808'),
@@ -374,6 +390,8 @@ def parse_kambi_event(payload, now=None):
             continue
         market = KAMBI_MARKETS.get((offer.get('criterion') or {}).get('englishLabel') or '')
         event = events.get(offer.get('eventId')) or {}
+        if market is None and event:
+            _note_unmapped('betrivers', (offer.get('criterion') or {}).get('englishLabel'))
         if market is None or not event:
             continue
         for outcome in offer.get('outcomes') or []:
@@ -415,6 +433,8 @@ def parse_bovada(payload, now=None):
                 for market in group.get('markets') or []:
                     kind = _bovada_market(market.get('descriptionKey') or market.get('description') or '')
                     period = (market.get('period') or {}).get('description') or 'Game'
+                    if kind is None:
+                        _note_unmapped('bovada', market.get('description') or market.get('descriptionKey'))
                     if kind is None or period not in ('Game', 'G') or str(market.get('status') or 'O').upper() in ('S', 'SUSPENDED', 'CLOSED'):
                         continue
                     player = _bovada_player(market.get('descriptionKey') or market.get('description') or '')
@@ -469,6 +489,8 @@ def parse_fanduel_page(payload, now=None):
             continue
         event = events.get(str(market.get('eventId'))) or {}
         kind, player = _fanduel_market(market.get('marketName') or '')
+        if kind is None and event:
+            _note_unmapped('fanduel', market.get('marketName'))
         if kind is None or not event:
             continue
         away, home = _split_matchup(event.get('name'))
@@ -810,6 +832,10 @@ def coverage_document(history, consensus=None):
         'closes': sum(book['closes'] for book in books.values()),
         'books': sorted(books.values(), key=lambda row: row['book']),
         'markets': markets,
+        'unmappedMarketLabels': [
+            {'label': label, 'count': count}
+            for label, count in sorted(UNMAPPED_LABELS.items(), key=lambda item: -item[1])[:150]
+        ],
         'notice': (
             'A price that is not in the private store is unavailable. '
             'The no-vig consensus is not on the card. This is a comparison, not a pick.'

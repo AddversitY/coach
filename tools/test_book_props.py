@@ -204,3 +204,17 @@ class BookPropTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class UnmappedLabelTests(unittest.TestCase):
+    def test_unparsed_markets_are_counted_without_player_names(self):
+        import book_props
+        book_props.UNMAPPED_LABELS.clear()
+        book_props.parse_fanduel_page({'attachments': {
+            'events': {'1': {'name': 'A @ B'}},
+            'markets': {'m': {'eventId': '1', 'marketName': 'Joe Smith - Longest Reception', 'runners': []}},
+        }})
+        self.assertEqual(book_props.UNMAPPED_LABELS, {'fanduel: Longest Reception': 1})
+        document = book_props.coverage_document({'observations': [], 'sources': []})
+        self.assertEqual(document['unmappedMarketLabels'][0]['count'], 1)
+        book_props.UNMAPPED_LABELS.clear()
