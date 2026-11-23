@@ -1,0 +1,149 @@
+{
+ "source": {
+  "odds": "Sportsbook Reviews Online NFL odds archive (consensus opening and closing spread and total)",
+  "oddsUrl": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nfl/nfloddsarchives.htm",
+  "model": "walk-forward team ratings (model/elo_backtest.py), each week fit on earlier weeks only"
+ },
+ "seasons": [
+  2008,
+  2021
+ ],
+ "quarterback": "actual starter (look-ahead)",
+ "games": 3144,
+ "matchedOdds": 3354,
+ "closeAgreesWithNflverse": 0.965,
+ "spreads": {
+  "moveTowardCoach": {
+   "games": 3144,
+   "slope": 0.2562,
+   "correlation": 0.3632
+  },
+  "gap1": {
+   "clv": {
+    "n": 2292,
+    "mean": -0.0075,
+    "low": -0.0122,
+    "high": -0.0029
+   },
+   "profitAtOpener": {
+    "n": 2222,
+    "mean": 0.0147,
+    "low": -0.0188,
+    "high": 0.0491
+   },
+   "seasonsWithPositiveClv": 4,
+   "seasons": 14
+  },
+  "gap2": {
+   "clv": {
+    "n": 1503,
+    "mean": 0.0016,
+    "low": -0.0042,
+    "high": 0.0075
+   },
+   "profitAtOpener": {
+    "n": 1461,
+    "mean": 0.0231,
+    "low": -0.02,
+    "high": 0.0637
+   },
+   "seasonsWithPositiveClv": 5,
+   "seasons": 14
+  },
+  "gap3": {
+   "clv": {
+    "n": 926,
+    "mean": 0.0138,
+    "low": 0.0054,
+    "high": 0.0214
+   },
+   "profitAtOpener": {
+    "n": 900,
+    "mean": 0.0224,
+    "low": -0.0285,
+    "high": 0.0733
+   },
+   "seasonsWithPositiveClv": 7,
+   "seasons": 14
+  },
+  "gap4": {
+   "clv": {
+    "n": 559,
+    "mean": 0.0298,
+    "low": 0.0181,
+    "high": 0.0409
+   },
+   "profitAtOpener": {
+    "n": 542,
+    "mean": 0.0637,
+    "low": 0.0003,
+    "high": 0.1271
+   },
+   "seasonsWithPositiveClv": 10,
+   "seasons": 14
+  }
+ },
+ "totals": {
+  "moveTowardCoach": {
+   "games": 3144,
+   "slope": 0.1732,
+   "correlation": 0.3255
+  },
+  "gap1": {
+   "clv": {
+    "n": 2494,
+    "mean": -0.0235,
+    "low": -0.0275,
+    "high": -0.0198
+   },
+   "profitAtOpener": {
+    "n": 2437,
+    "mean": 0.0176,
+    "low": -0.0129,
+    "high": 0.0497
+   }
+  },
+  "gap2": {
+   "clv": {
+    "n": 1923,
+    "mean": -0.0188,
+    "low": -0.0232,
+    "high": -0.0143
+   },
+   "profitAtOpener": {
+    "n": 1877,
+    "mean": 0.0242,
+    "low": -0.0104,
+    "high": 0.0608
+   }
+  },
+  "gap3": {
+   "clv": {
+    "n": 1414,
+    "mean": -0.0128,
+    "low": -0.0181,
+    "high": -0.0072
+   },
+   "profitAtOpener": {
+    "n": 1380,
+    "mean": 0.0348,
+    "low": -0.0067,
+    "high": 0.0763
+   }
+  },
+  "gap4": {
+   "clv": {
+    "n": 967,
+    "mean": -0.0054,
+    "low": -0.0125,
+    "high": 0.0016
+   },
+   "profitAtOpener": {
+    "n": 944,
+    "mean": 0.0678,
+    "low": 0.0152,
+    "high": 0.1163
+   }
+  }
+ }
+}

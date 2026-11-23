@@ -1,0 +1,115 @@
+{
+ "source": "nflverse player stats 2023-2026 (CC BY 4.0); line = average of the previous 8 games",
+ "teamGames": 1934,
+ "pairs": [
+  {
+   "pair": "QB over + WR1 over",
+   "games": 1689,
+   "legA": 0.526,
+   "legB": 0.436,
+   "both": 0.295,
+   "lift": 1.286,
+   "liftRange90": [
+    1.241,
+    1.328
+   ]
+  },
+  {
+   "pair": "QB over + WR2 over",
+   "games": 1681,
+   "legA": 0.525,
+   "legB": 0.447,
+   "both": 0.293,
+   "lift": 1.246,
+   "liftRange90": [
+    1.202,
+    1.293
+   ]
+  },
+  {
+   "pair": "QB over + TE1 over",
+   "games": 1662,
+   "legA": 0.526,
+   "legB": 0.446,
+   "both": 0.285,
+   "lift": 1.213,
+   "liftRange90": [
+    1.172,
+    1.255
+   ]
+  },
+  {
+   "pair": "WR1 over + WR2 over",
+   "games": 1797,
+   "legA": 0.426,
+   "legB": 0.445,
+   "both": 0.192,
+   "lift": 1.013,
+   "liftRange90": [
+    0.964,
+    1.063
+   ]
+  },
+  {
+   "pair": "QB under + RB1 over",
+   "games": 1682,
+   "legA": 0.473,
+   "legB": 0.46,
+   "both": 0.235,
+   "lift": 1.081,
+   "liftRange90": [
+    1.035,
+    1.126
+   ]
+  },
+  {
+   "pair": "QB over + RB1 over",
+   "games": 1682,
+   "legA": 0.527,
+   "legB": 0.46,
+   "both": 0.225,
+   "lift": 0.927,
+   "liftRange90": [
+    0.885,
+    0.966
+   ]
+  },
+  {
+   "pair": "QB over + other QB over",
+   "games": 1576,
+   "legA": 0.529,
+   "legB": 0.529,
+   "both": 0.292,
+   "lift": 1.042,
+   "liftRange90": [
+    1.004,
+    1.079
+   ]
+  },
+  {
+   "pair": "WR1 over + other QB over",
+   "games": 1689,
+   "legA": 0.429,
+   "legB": 0.526,
+   "both": 0.237,
+   "lift": 1.05,
+   "liftRange90": [
+    1.009,
+    1.093
+   ]
+  },
+  {
+   "pair": "RB1 over + other QB under",
+   "games": 1682,
+   "legA": 0.452,
+   "legB": 0.473,
+   "both": 0.21,
+   "lift": 0.981,
+   "liftRange90": [
+    0.933,
+    1.026
+   ]
+  }
+ ],
+ "note": "Lift = chance both legs hit / (chance A x chance B). A two-leg parlay priced as if independent has expected value of about lift - 1 at fair leg prices. No free source has same-game parlay prices, so no book is shown to misprice these pairs."
+}
