@@ -255,7 +255,13 @@ class EloRatings {
           : {entry.key};
       final list =
           _players
-              .where((p) => positions.contains(p.position) && p.snaps >= 150)
+              .where(
+                (p) =>
+                    positions.contains(p.position) &&
+                    p.snaps >= 150 &&
+                    // A two-way player's defensive snaps are not a receiver rating.
+                    p.defense == (entry.key == 'CB' || entry.key == 'S'),
+              )
               .toList()
             ..sort(
               (a, b) => low

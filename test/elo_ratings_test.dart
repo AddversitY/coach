@@ -151,6 +151,39 @@ void main() {
     expect(brief!.text, startsWith('Top rated CBs: Jaylon Johnson (CHI) 90'));
   });
 
+  test(
+    'a two-way player is ranked only on his offensive side as a receiver',
+    () {
+      final elo = EloRatings.fromJson({
+        'teams': [
+          {'t': 'JAX', 'o': 90, 'off': 90, 'def': 90, 'net': 5.0},
+        ],
+        'players': [
+          {
+            'n': 'Two Way',
+            'id': 'tw',
+            't': 'JAX',
+            'p': 'WR',
+            'o': 99,
+            'd': 1,
+            's': 400,
+          },
+          {
+            'n': 'Real Receiver',
+            'id': 'rr',
+            't': 'JAX',
+            'p': 'WR',
+            'o': 80,
+            'd': 0,
+            's': 400,
+          },
+        ],
+      });
+      final brief = eloQuestionBrief(question: 'top rated receivers', elo: elo);
+      expect(brief!.text, 'Top rated WRs: Real Receiver (JAX) 80.');
+    },
+  );
+
   test('other questions are left alone', () {
     for (final q in [
       'How accurate is Coach?',
