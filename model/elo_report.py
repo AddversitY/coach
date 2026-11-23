@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 import elo_backtest as eb
+import elo_skill
 from elo_data import fetch, load_games, load_plays, load_snaps
 from elo_players import build_lineups, run_player_ratings, unit_epa
 from elo_props import METRICS, apply_scale, fit_scale, over_chance, player_positions, run_prop_ratings
@@ -166,7 +167,40 @@ def prop_report(proj: pd.DataFrame, prop_rows: list[dict]) -> dict:
     return out
 
 
-def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names) -> dict:
+def skill_prop_check(rp: pd.DataFrame, prop_rows: list[dict]) -> dict:
+    """Receiving-yard props for WRs and TEs: the new skill projection vs the books."""
+    played = rp[rp.a_snap_pct > 0]
+    out = {}
+    for season in sorted({r["season"] for r in prop_rows}):
+        hist = played[(played.season < season) & (played.season >= season - 4) & (played.proj > 0)]
+        cur = played[played.season == season].drop_duplicates(["week", "player"]).set_index(["week", "player"])
+        rows = []
+        for r in prop_rows:
+            if r["season"] != season or r["metric"] != "receiving_yards" or (r["week"], r["player"]) not in cur.index:
+                continue
+            x = cur.loc[(r["week"], r["player"])]
+            actual = r["actual"] if r["actual"] is not None else float(x.a_rec_yds)
+            if actual == r["line"]:
+                continue
+            chance = over_chance(float(x.proj), r["line"], hist.proj.values, hist.a_rec_yds.values)
+            if np.isnan(chance):
+                continue
+            rows.append((r["book"], chance, float(actual > r["line"]), float(x.proj), r["line"]))
+        if not rows:
+            continue
+        a = np.array(rows)
+        lg = lambda p: np.log(np.clip(p, 1e-4, 1 - 1e-4) / (1 - np.clip(p, 1e-4, 1 - 1e-4)))
+        out[str(season)] = {
+            "props": int(len(a)),
+            "booksBrier": round(eb.brier(a[:, 0], a[:, 2]), 4),
+            "skillRatingBrier": round(eb.brier(a[:, 1], a[:, 2]), 4),
+            "pooled5pctBrier": round(float(np.mean((1 / (1 + np.exp(-(0.95 * lg(a[:, 0]) + 0.05 * lg(a[:, 1])))) - a[:, 2]) ** 2)), 4),
+            "projectionVsLineCorrelation": round(float(np.corrcoef(a[:, 3], a[:, 4])[0, 1]), 3),
+        }
+    return out
+
+
+def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names, skill=None) -> dict:
     last = games[games.result.notna()].sort_values(["season", "week"]).iloc[-1]
     season, week = int(last.season), int(last.week) + 1
     wi = week_index(season, week)
@@ -210,28 +244,34 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names) -> dic
             prows.append({"player": r.gsis_id, "team": r.team, "position": r.position, "side": "defense", "value": v, "snaps": int(r.de)})
     pdf = pd.DataFrame(prows)
     g = lambda book, key: round(float(book.get(key, season, wi)[0]), 3)
-    # Overall mixes the player's own skill ratings with his on-field rating, so a
-    # star on a weak passing team is not dragged down by his teammates alone.
+    # Offense skill players: the learned skill rating (elo_skill), which predicts
+    # next-game production per opportunity from every free variable. Everyone
+    # else: the on-field rating, plus measured production for defenders.
     z = lambda col: (col - col.mean()) / (col.std() or 1.0)
-    pdf["ts"] = [g(pr_props.tshare, p) for p in pdf.player]
-    pdf["ypt"] = [g(pr_props.rec_ypt, p) for p in pdf.player]
-    pdf["cr"] = [g(pr_props.rec_catch, p) for p in pdf.player]
-    pdf["ypc_r"] = [g(pr_props.ypc, p) for p in pdf.player]
-    pdf["ypa_r"] = [g(pr_props.qb_ypa, p) for p in pdf.player]
     pdf["score"] = pdf["value"]
-    for pos, cols in {"WR": {"ts": 1.0, "ypt": 1.0, "cr": 0.5, "value": 0.5},
-                      "TE": {"ts": 1.0, "ypt": 1.0, "cr": 0.5, "value": 0.5},
-                      "RB": {"ts": 0.5, "ypt": 0.5, "ypc_r": 1.0, "value": 0.5},
-                      "QB": {"ypa_r": 1.0, "value": 1.0}}.items():
-        m = (pdf.position == pos) & (pdf.side == "offense")
-        if m.sum() > 1:
-            pdf.loc[m, "score"] = sum(w * z(pdf.loc[m, c]) for c, w in cols.items())
+    attrs = {}
+    if skill is not None:
+        rated_skill = skill["rated"].drop_duplicates("player").set_index("player")["skill"]
+        attrs = skill["attributes"]
+        prod = skill["production"]
+        off = pdf.side == "offense"
+        has = off & pdf.player.isin(rated_skill.index) & pdf.position.isin(["QB", "RB", "FB", "WR", "TE"])
+        pdf.loc[has, "score"] = pdf.loc[has, "player"].map(rated_skill)
+        de = pdf.side == "defense"
+        pdf["prod"] = [prod.get((p, "defense"), np.nan) for p in pdf.player]
+        for pos in pdf.loc[de, "position"].unique():
+            m = de & (pdf.position == pos)
+            if m.sum() > 1:
+                pr_ = pdf.loc[m, "prod"].fillna(pdf.loc[m, "prod"].median())
+                pdf.loc[m, "score"] = z(pdf.loc[m, "value"]) + z(pr_)
     pdf["overall"] = pdf.groupby(["position", "side"])["score"].transform(overall)
     players_out = []
     for r in pdf.sort_values(["position", "overall"], ascending=[True, False]).itertuples(index=False):
         row = {"name": names.get(r.player, r.player), "id": r.player, "team": r.team, "position": r.position,
                "overall": int(r.overall), "side": r.side, "snaps": int(r.snaps),
                "onFieldEpaPerPlay": round(float(r.value), 4)}
+        if attrs.get((r.player, r.side)):
+            row["attributes"] = attrs[(r.player, r.side)]
         if r.position in ("WR", "TE", "RB"):
             row.update({"yardsPerTargetVsAverage": g(pr_props.rec_ypt, r.player), "catchRateVsAverage": g(pr_props.rec_catch, r.player),
                         "targetShareVsAverage": g(pr_props.tshare, r.player)})
@@ -244,7 +284,7 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names) -> dic
     for t in teams:
         defense_vs.append({"team": t, **{f"yardsPerTargetAllowedVs{p}": g(pr_props.def_ypt, (t, p)) for p in ("WR", "TE", "RB")},
                            "yardsPerCarryAllowed": g(pr_props.def_ypc, t)})
-    return {"season": season, "asOfWeek": week, "scale": "overall = 40 + 59 x percentile within position (teams: within league). Skill players mix target share, yards per target, catch rate, yards per carry or per attempt with the on-field rating.",
+    return {"season": season, "asOfWeek": week, "scale": "overall = 40 + 59 x percentile within position (teams: within league). QB/RB/WR/TE: learned skill rating from every free variable (docs/ELO_RATINGS.md). Defenders: on-field rating plus measured production. Attributes: percentile within position of measured data.",
             "teams": team_out, "players": players_out, "defenseVsPosition": defense_vs}
 
 
@@ -259,6 +299,8 @@ def app_ratings(current: dict) -> dict:
                                ("yardsPerAttemptVsAverage", "ypa")):
             if r.get(key) is not None:
                 row[short_key] = r[key]
+        if r.get("attributes"):
+            row["a"] = r["attributes"]
         players.append(row)
     return {
         "schema": 1,
@@ -312,7 +354,31 @@ def main():
     prop_rows += worker_props(Path(args.book_prices) if args.book_prices else None, people)
     (out / "prop_backtest.json").write_text(json.dumps(prop_report(proj, prop_rows), indent=1))
     names = dict(zip(people.gsis_id, people.display_name))
-    current = current_ratings(tr, pr_players, pr_props, games, snaps, plays, names)
+    people_full = pd.read_parquet(cache / "players.parquet")
+    hist, cur, skill_games = elo_skill.build(cache, range(2013, last + 1), snaps, games, people_full)
+    (out / "skill_backtest.json").write_text(json.dumps(elo_skill.evaluate(hist, cache, people_full), indent=1))
+    rated, weights = elo_skill.fit_and_rate(hist, cur)
+    (out / "skill_weights.json").write_text(json.dumps(weights, indent=1))
+    cb = elo_skill.combine_table(cache, people_full)
+    def_prod = elo_skill.defender_production(cache, range(last - 1, last + 1), snaps)
+    season_now = int(cur.season.max())
+    week_now = int(cur.week.max())
+    avail = elo_skill.availability(snaps, season_now, week_now)
+    sn_now = snaps[snaps.season == season_now].dropna(subset=["gsis_id"])
+    tot = sn_now.groupby("gsis_id").agg(position=("position", "last"), off=("offense_snaps", "sum"), de=("defense_snaps", "sum"))
+    rated_rows = pd.concat([
+        pd.DataFrame({"player": tot.index[tot.off >= 100], "position": tot.position[tot.off >= 100].values, "side": "offense"}),
+        pd.DataFrame({"player": tot.index[tot.de >= 100], "position": tot.position[tot.de >= 100].values, "side": "defense"}),
+    ])
+    attrs, prod = elo_skill.player_attributes(rated_rows, cur, cb, def_prod, avail, season_now)
+    skill = {"rated": rated, "attributes": attrs, "production": prod}
+    rp = elo_skill.receiving_projection(hist, skill_games, range(last - 4, last + 1))
+    check = skill_prop_check(rp, prop_rows)
+    sb = json.loads((out / "skill_backtest.json").read_text())
+    sb["receivingYardPropsVsBooks"] = check
+    (out / "skill_backtest.json").write_text(json.dumps(sb, indent=1))
+    print("skill prop check", check)
+    current = current_ratings(tr, pr_players, pr_props, games, snaps, plays, names, skill)
     (out / "ratings_current.json").write_text(json.dumps(current, indent=1))
     if args.app_out:
         Path(args.app_out).write_text(json.dumps(app_ratings(current), separators=(",", ":")))
