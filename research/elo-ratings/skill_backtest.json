@@ -1,0 +1,119 @@
+{
+ "WR": {
+  "target": "rec_yds/team_db",
+  "trainedThrough": 2022,
+  "outOfSampleR2": {
+   "2023": {
+    "allVariables": 0.3905,
+    "simpleRating": 0.2673,
+    "allVariablesPlusCombine": 0.3906
+   },
+   "2024": {
+    "allVariables": 0.3804,
+    "simpleRating": 0.2438,
+    "allVariablesPlusCombine": 0.3785
+   },
+   "2025": {
+    "allVariables": 0.374,
+    "simpleRating": 0.2526,
+    "allVariablesPlusCombine": 0.3714
+   },
+   "2026": {
+    "allVariables": 0.363,
+    "simpleRating": 0.2788,
+    "allVariablesPlusCombine": 0.3618
+   }
+  },
+  "playerGames": 9579
+ },
+ "TE": {
+  "target": "rec_yds/team_db",
+  "trainedThrough": 2022,
+  "outOfSampleR2": {
+   "2023": {
+    "allVariables": 0.4138,
+    "simpleRating": 0.3013,
+    "allVariablesPlusCombine": 0.413
+   },
+   "2024": {
+    "allVariables": 0.4221,
+    "simpleRating": 0.3182,
+    "allVariablesPlusCombine": 0.4196
+   },
+   "2025": {
+    "allVariables": 0.4292,
+    "simpleRating": 0.3044,
+    "allVariablesPlusCombine": 0.4296
+   },
+   "2026": {
+    "allVariables": 0.4375,
+    "simpleRating": 0.3496,
+    "allVariablesPlusCombine": 0.4348
+   }
+  },
+  "playerGames": 6036
+ },
+ "RB": {
+  "target": "scrimmage/team_plays",
+  "trainedThrough": 2022,
+  "outOfSampleR2": {
+   "2023": {
+    "allVariables": 0.4674,
+    "simpleRating": 0.4551,
+    "allVariablesPlusCombine": 0.4646
+   },
+   "2024": {
+    "allVariables": 0.4886,
+    "simpleRating": 0.4859,
+    "allVariablesPlusCombine": 0.4844
+   },
+   "2025": {
+    "allVariables": 0.4928,
+    "simpleRating": 0.4808,
+    "allVariablesPlusCombine": 0.4875
+   },
+   "2026": {
+    "allVariables": 0.4937,
+    "simpleRating": 0.4688,
+    "allVariablesPlusCombine": 0.4897
+   }
+  },
+  "playerGames": 5890
+ },
+ "QB": {
+  "target": "pass_epa/dropbacks",
+  "trainedThrough": 2022,
+  "outOfSampleR2": {
+   "2023": {
+    "allVariables": 0.1186,
+    "simpleRating": 0.0968,
+    "allVariablesPlusCombine": 0.1095
+   },
+   "2024": {
+    "allVariables": 0.0786,
+    "simpleRating": 0.0714,
+    "allVariablesPlusCombine": 0.0789
+   },
+   "2025": {
+    "allVariables": 0.1217,
+    "simpleRating": 0.0508,
+    "allVariablesPlusCombine": 0.1219
+   },
+   "2026": {
+    "allVariables": 0.1451,
+    "simpleRating": 0.0904,
+    "allVariablesPlusCombine": 0.1359
+   }
+  },
+  "playerGames": 2067
+ },
+ "receivingYardPropsVsBooks": {
+  "2026": {
+   "props": 282,
+   "booksBrier": 0.2499,
+   "skillRatingBrier": 0.2675,
+   "pooled5pctBrier": 0.2496,
+   "projectionVsLineCorrelation": 0.841
+  }
+ }
+}

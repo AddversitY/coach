@@ -110,3 +110,28 @@ class FitTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SkillTest(unittest.TestCase):
+    def test_features_use_only_earlier_games(self):
+        import elo_skill as sk
+        cols = sorted({c for n, d, _ in sk.RATES.values() for c in (n, d) if c} - {"routes"})
+        rows = []
+        for week, yards in ((1, 10.0), (2, 200.0), (3, 0.0)):
+            row = {c: 0.0 for c in cols}
+            row.update({"player": "p", "game_id": f"g{week}", "season": 2024, "week": week, "posteam": "AAA",
+                        "defteam": "BBB", "rec_yds": yards, "targets": 5.0, "team_db": 30.0, "snap_pct": 1.0})
+            for c in sk.NGS:
+                row[c] = np.nan
+            rows.append(row)
+        f = sk.decayed_features(pd.DataFrame(rows))
+        self.assertEqual(f.loc[0, "ypt_raw"], 0.0)          # nothing known before week 1
+        self.assertAlmostEqual(f.loc[1, "ypt_raw"], 10.0)    # week 2 sees only week 1
+        self.assertGreater(f.loc[2, "ypt_raw"], 200.0)       # week 3 sees weeks 1-2, not week 3
+
+    def test_percentile_scale(self):
+        import elo_skill as sk
+        v = pd.Series([1.0, 2.0, 3.0, 4.0])
+        grp = pd.Series(["WR"] * 4)
+        self.assertEqual(list(sk.percentile_40_99(v, grp)), [55.0, 70.0, 84.0, 99.0])
+        self.assertEqual(list(sk.percentile_40_99(v, grp, higher=False)), [99.0, 84.0, 70.0, 55.0])

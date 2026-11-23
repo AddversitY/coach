@@ -38,6 +38,7 @@ class EloPlayer {
     this.targetShare,
     this.yardsPerCarry,
     this.yardsPerAttempt,
+    this.attributes = const {},
   });
 
   final String name, id, team, position;
@@ -50,6 +51,11 @@ class EloPlayer {
       targetShare,
       yardsPerCarry,
       yardsPerAttempt;
+
+  /// Madden-style sub-ratings (40-99) from measured data only: combine
+  /// testing, Next Gen Stats and play-by-play. A trait with no measurement
+  /// is absent.
+  final Map<String, int> attributes;
 }
 
 const _secondaryPositions = {'CB', 'S', 'FS', 'SS', 'DB', 'SAF'};
@@ -138,6 +144,11 @@ class EloRatings {
             targetShare: d(row['ts']),
             yardsPerCarry: d(row['ypc']),
             yardsPerAttempt: d(row['ypa']),
+            attributes: {
+              if (row['a'] is Map)
+                for (final e in (row['a'] as Map).entries)
+                  if (e.value is num) '${e.key}': (e.value as num).toInt(),
+            },
           ),
     ];
     final defenseVs = <String, Map<String, double>>{};
@@ -386,6 +397,12 @@ class EloRatings {
     }
     if (skills.isNotEmpty) {
       lines.add('Against league average: ${skills.join(', ')}.');
+    }
+    if (p.attributes.isNotEmpty) {
+      lines.add(
+        'Traits (40-99 vs his position): '
+        '${p.attributes.entries.map((e) => '${e.key} ${e.value}').join(', ')}.',
+      );
     }
     if (opponent != null && opponent != p.team) {
       final n = _teams32;

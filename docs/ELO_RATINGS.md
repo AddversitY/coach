@@ -113,6 +113,97 @@ Where an edge could still come from (all free):
 3. **Participation data for 2026**, if nflverse posts it, would let the
    defender ratings use exact on-field lists instead of snap shares.
 
+## Player ratings from every free variable (Nov 23)
+
+Vincent asked for player ratings built from as many variables as possible,
+plus physical traits like the video games use. `model/elo_skill.py` does
+this for quarterbacks, running backs, receivers and tight ends.
+
+Before each game, everything a player did in earlier games is summarized.
+All seasons count, recent games count more (half weight after 16 games, and
+an extra fade each new season), and small samples are pulled toward the
+position average. The inputs:
+
+- **Opportunity:** snap share, target share, air-yard share, targets per
+  pass play on the field, red-zone target share, carry share and goal-line
+  carry share.
+- **Efficiency:** yards per target, EPA per target, first downs per target,
+  catch rate, depth of target, yards after catch, touchdowns per target,
+  yards per carry, rushing EPA and success rate. For passers: EPA per
+  dropback, yards per attempt, sack rate, interception rate, completion %
+  over expected and depth of throw.
+- **Next Gen Stats (2016+):** separation, cushion, YAC over expected,
+  rushing yards over expected, rushing efficiency, time to throw and
+  aggressiveness.
+- **Context:** the quality of his quarterback, the defenses he faced, age,
+  years in the league and draft slot.
+
+A ridge regression learns each input's weight from what predicted the
+**next** game's production per opportunity: receiving yards per team pass
+play for WRs and TEs, scrimmage yards per team play for RBs, and EPA per
+dropback for QBs. The weights were learned on 2013-2022 and tested on
+2023-2026. The overall is that prediction's percentile within the position.
+The weights are in `research/elo-ratings/skill_weights.json`.
+
+Out-of-sample R² (share of next-game variation explained), new rating vs a
+two-variable rating:
+
+| Position | 2023 | 2024 | 2025 | 2026 |
+| --- | --- | --- | --- | --- |
+| WR | 0.391 vs 0.267 | 0.380 vs 0.244 | 0.374 vs 0.253 | 0.363 vs 0.279 |
+| TE | 0.414 vs 0.301 | 0.422 vs 0.318 | 0.429 vs 0.304 | 0.438 vs 0.350 |
+| RB | 0.467 vs 0.455 | 0.489 vs 0.486 | 0.493 vs 0.481 | 0.494 vs 0.469 |
+| QB | 0.119 vs 0.097 | 0.079 vs 0.071 | 0.122 vs 0.051 | 0.145 vs 0.090 |
+
+The new rating predicts better in every season at every position.
+
+**Physical traits.** NFL Scouting Combine results (40-yard dash, vertical,
+broad jump, 3-cone, shuttle, bench press, height and weight, via nflverse)
+were tested as inputs too. In most seasons they made predictions slightly
+**worse** once
+on-field data was in, so they are not in the overall. They are shown as
+traits instead.
+
+**Against the books.** On 282 2026 WR/TE receiving-yard props,
+the books' Brier score was 0.2499 and the new rating alone
+scored 0.2675. A 5% blend scored 0.2496,
+which is within noise. Better player ratings still do not beat the closing
+prop line.
+
+**Defenders** are rated by their on-field rating plus measured production
+per snap. Pass rush counts sacks (×3) and QB hits. Coverage counts
+interceptions (×2) and passes defended. Run stopping counts tackles for loss
+(×2), solo tackles (×0.5) and forced fumbles. These weights were set by
+hand, not learned, because there is no clean per-defender target to learn
+them from.
+
+### Traits (Madden-style, measured only)
+
+Each trait is a 40-99 percentile within the position:
+
+- **Receivers and tight ends:** Speed (40), Agility (3-cone and shuttle),
+  Jumping (vertical and broad), Strength (bench), Size, Separation, Catching,
+  Yards after catch, Deep threat, Earning targets, Red zone, Durability.
+- **Running backs:** Speed, Agility, Jumping, Strength, Size, Vision (rushing
+  yards over expected), Rushing, Catching, Yards after catch, Durability.
+- **Quarterbacks:** Speed, Size, Accuracy (completion % over expected),
+  Decisions (avoiding interceptions), Pocket (avoiding sacks),
+  Aggressiveness, Quick release, Deep threat (depth of throw), Rushing,
+  Durability.
+- **Defenders:** Speed, Agility, Jumping, Strength, Size, Pass rush,
+  Coverage, Run stopping, Durability.
+
+Durability is the share of his team's games he played, this season plus
+half of last season.
+
+**What free data cannot cover:** in-game top speed and acceleration
+(tracking data is not public per player), 10-yard splits, hand size and arm
+length for most players, route-by-route grades, press and man/zone coverage
+grades, blocking grades, awareness, play recognition, injury severity and
+medical history beyond the weekly injury report. A trait with no
+measurement (for example, a player who skipped a combine drill) is left
+blank, not guessed. We do not copy any video game's ratings.
+
 ## In the app
 
 Vincent asked (Nov 23) to show the ratings as **one more number to weigh**,
@@ -124,7 +215,7 @@ not a replacement. Nothing about Coach's chances, lines or prop math changed.
   card: both teams' overall, offense and defense, the points gap on a neutral
   field, both quarterbacks, both secondaries, and for a player his overall,
   his skill ratings, the opponent's pass defense rank against his position,
-  the opponent's secondary and his quarterback.
+  the opponent's secondary, his quarterback and his measured traits.
 - Direct questions work too: "what's Justin Jefferson's elo against the
   Bears", "coach ratings Bills Chiefs", "top rated corners", "best teams by
   elo".

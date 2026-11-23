@@ -41,6 +41,7 @@ EloRatings sample() => EloRatings.fromJson({
       'ypt': 1.2,
       'cr': 0.03,
       'ts': 0.08,
+      'a': {'Speed': 88, 'Separation': 91},
     },
     {
       'n': 'J.J. McCarthy',
@@ -119,6 +120,10 @@ void main() {
     );
     expect(lines.join(' '), contains('secondary rates 70'));
     expect(lines.join(' '), contains('J.J. McCarthy, rates 70'));
+    expect(
+      lines.join(' '),
+      contains('Traits (40-99 vs his position): Speed 88, Separation 91.'),
+    );
   });
 
   test('game lines compare both teams', () {
