@@ -413,4 +413,50 @@ void main() {
       isFalse,
     );
   });
+
+  test('game lines name a backup stepping in, with the logged price', () {
+    final elo = EloRatings.fromJson({
+      'teams': [
+        {'t': 'NE', 'o': 70, 'off': 70, 'def': 70, 'net': 0.0},
+        {'t': 'LAC', 'o': 75, 'off': 75, 'def': 75, 'net': 1.0},
+      ],
+      'backupWatch': [
+        {
+          'team': 'NE',
+          'group': 'WR',
+          'out': [
+            {'player': 'A.J. Brown', 'status': 'Doubtful'},
+          ],
+          'backup': 'Mack Hollins',
+          'backupRating': 67,
+          'projection': {
+            'player_reception_yds': 55.2,
+            'player_receptions': 4.4,
+          },
+          'prices': [
+            {
+              'book': 'fanduel',
+              'market': 'player_reception_yds',
+              'line': 40.5,
+              'over': 1.91,
+              'under': 1.91,
+              'overChance': 0.68,
+              'overEdge': 0.2988,
+              'underEdge': -0.3888,
+              'side': 'over',
+            },
+          ],
+        },
+        {'team': 'KC', 'backup': 'Someone Else', 'out': []},
+      ],
+    });
+    final lines = elo.gameLines('LAC', 'NE');
+    final line = lines.singleWhere((l) => l.startsWith('Next man up'));
+    expect(line, contains('Mack Hollins (Coach rating 67) for A.J. Brown (Doubtful)'));
+    expect(line, contains('55 receiving yards, 4.4 receptions'));
+    expect(line, contains('FanDuel over 40.5 receiving yards at 1.91'));
+    expect(line, contains('68%'));
+    expect(line, contains('not a pick'));
+    expect(lines.any((l) => l.contains('Someone Else')), isFalse);
+  });
 }

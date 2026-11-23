@@ -1,0 +1,86 @@
+{
+ "schema": "coach-backup-watch-v1",
+ "bets": [],
+ "checkedAt": "2026-11-23T22:25:57.524240Z",
+ "source": {
+  "injuries": "ok",
+  "prices": "ok",
+  "books": "Logged-out FanDuel, Bovada and BetRivers prices collected by the Worker"
+ },
+ "notice": "Backups stepping in for a starter ruled out: Coach projection, the first price seen after the news, and closing line value after kickoff. Research, not a pick.",
+ "current": [
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    {
+     "player": "Drake Maye",
+     "status": "Out",
+     "reportedAt": "2026-11-23T20:26Z",
+     "rating": 85
+    }
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "backupRating": null,
+   "backupRecentSnaps": 0.4,
+   "projection": {
+    "player_pass_yds": 147.4,
+    "player_pass_attempts": 23.3,
+    "player_pass_completions": 14.8
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "NE",
+   "group": "WR",
+   "out": [
+    {
+     "player": "A.J. Brown",
+     "status": "Doubtful",
+     "reportedAt": "2026-11-23T21:34Z",
+     "rating": 91
+    }
+   ],
+   "backup": "Mack Hollins",
+   "backupId": "00-0033555",
+   "backupRating": 67,
+   "backupRecentSnaps": 0.67,
+   "projection": {
+    "player_reception_yds": 55.2,
+    "player_receptions": 4.4
+   },
+   "prices": [],
+   "eventId": null
+  }
+ ],
+ "summary": {
+  "projectedSideClv": {
+   "n": 0,
+   "mean": null,
+   "low": null,
+   "high": null
+  },
+  "overClv": {
+   "n": 0,
+   "mean": null,
+   "low": null,
+   "high": null
+  },
+  "underClv": {
+   "n": 0,
+   "mean": null,
+   "low": null,
+   "high": null
+  },
+  "projectedSideProfit": {
+   "n": 0,
+   "mean": null,
+   "low": null,
+   "high": null
+  },
+  "passes": false,
+  "reason": "only 0 scored bets; 200 are needed"
+ }
+}

@@ -103,6 +103,7 @@ class EloRatings {
     required this.note,
     this.upcomingWeek = 0,
     this.upcoming = const [],
+    this.backups = const [],
   }) {
     for (final p in _players) {
       _byId[p.id] = p;
@@ -116,6 +117,10 @@ class EloRatings {
   /// Rest, travel and referee for the coming week's games (raw rows).
   final int upcomingWeek;
   final List<Map<String, Object?>> upcoming;
+
+  /// Backups stepping in for a starter ruled out (assets/backup-watch.json
+  /// `current`). Research shown beside the ratings, never part of a chance.
+  final List<BackupStepIn> backups;
   final Map<String, EloTeam> _teams;
   final List<EloPlayer> _players;
   final Map<String, Map<String, double>> _defenseVs;
@@ -213,6 +218,11 @@ class EloRatings {
             (json['upcoming'] as Map)['games'] is List)
           for (final g in ((json['upcoming'] as Map)['games'] as List))
             if (g is Map) {for (final e in g.entries) '${e.key}': e.value},
+      ],
+      backups: [
+        if (json['backupWatch'] is List)
+          for (final row in json['backupWatch'] as List)
+            if (row is Map) BackupStepIn.fromJson(row),
       ],
     );
   }
@@ -549,6 +559,11 @@ class EloRatings {
           ? lines.add('${qbs.join(', ')}.')
           : lines.add('${qbs.single}.');
     }
+    for (final t in [a, h]) {
+      for (final b in backups) {
+        if (team(b.team)?.code == t.code) lines.add(b.sentence());
+      }
+    }
     for (final pair in [(a, h), (h, a)]) {
       final sec = secondary(pair.$2.code);
       if (sec != null) {
@@ -655,4 +670,103 @@ String _ordinal(int n) {
     3 => '${n}rd',
     _ => '${n}th',
   };
+}
+
+
+/// One backup stepping in for a starter ruled out, from tools/backup_watch.py.
+class BackupStepIn {
+  const BackupStepIn({
+    required this.team,
+    required this.backup,
+    required this.outNames,
+    this.backupRating,
+    this.projection = const {},
+    this.bestPrice,
+  });
+
+  factory BackupStepIn.fromJson(Map raw) {
+    final out = <String>[
+      for (final o in (raw['out'] as List? ?? const []))
+        if (o is Map && o['player'] is String)
+          '${o['player']} (${o['status'] ?? 'out'})',
+    ];
+    final projection = <String, double>{
+      if (raw['projection'] is Map)
+        for (final e in (raw['projection'] as Map).entries)
+          if (e.value is num) '${e.key}': (e.value as num).toDouble(),
+    };
+    Map<String, Object?>? best;
+    for (final p in (raw['prices'] as List? ?? const [])) {
+      if (p is! Map || p['side'] == null) continue;
+      final edge = p['side'] == 'over' ? p['overEdge'] : p['underEdge'];
+      final current = best == null
+          ? null
+          : (best['side'] == 'over' ? best['overEdge'] : best['underEdge']);
+      if (edge is num && (current is! num || edge > current)) {
+        best = {for (final e in p.entries) '${e.key}': e.value};
+      }
+    }
+    return BackupStepIn(
+      team: '${raw['team'] ?? ''}',
+      backup: '${raw['backup'] ?? ''}',
+      backupRating: (raw['backupRating'] as num?)?.toInt(),
+      outNames: out,
+      projection: projection,
+      bestPrice: best,
+    );
+  }
+
+  final String team, backup;
+  final int? backupRating;
+  final List<String> outNames;
+  final Map<String, double> projection;
+  final Map<String, Object?>? bestPrice;
+
+  static const _labels = {
+    'player_pass_yds': 'passing yards',
+    'player_pass_attempts': 'pass attempts',
+    'player_pass_completions': 'completions',
+    'player_rush_yds': 'rushing yards',
+    'player_reception_yds': 'receiving yards',
+    'player_receptions': 'receptions',
+  };
+
+  static const _books = {
+    'fanduel': 'FanDuel',
+    'bovada': 'Bovada',
+    'betrivers': 'BetRivers',
+  };
+
+  String sentence() {
+    final rating = backupRating == null ? '' : ' (Coach rating $backupRating)';
+    final parts = [
+      for (final e in projection.entries)
+        if (_labels.containsKey(e.key))
+          '${e.value.toStringAsFixed(e.key == 'player_receptions' ? 1 : 0)} ${_labels[e.key]}',
+    ];
+    final buffer = StringBuffer(
+      'Next man up, $team: $backup$rating for ${outNames.join(' and ')}.',
+    );
+    if (parts.isNotEmpty) buffer.write(' Coach projects ${parts.join(', ')}.');
+    final p = bestPrice;
+    if (p != null) {
+      final side = '${p['side']}';
+      final chance = p['overChance'] is num
+          ? (side == 'over'
+                ? p['overChance'] as num
+                : 1 - (p['overChance'] as num))
+          : null;
+      final price = p[side];
+      final book = _books[p['book']] ?? '${p['book']}';
+      final label = _labels[p['market']] ?? '${p['market']}';
+      if (chance != null && price is num) {
+        buffer.write(
+          ' $book $side ${p['line']} $label at ${price.toStringAsFixed(2)}; '
+          'Coach puts it at ${(chance * 100).round()}%.',
+        );
+      }
+    }
+    buffer.write(' Research being tracked against the close, not a pick.');
+    return buffer.toString();
+  }
 }

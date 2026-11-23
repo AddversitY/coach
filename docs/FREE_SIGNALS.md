@@ -104,3 +104,8 @@ and BetRivers prices only, with none from DraftKings. The collector on
 Vincent's desktop still needs the one-time setup (`finish_setup.ps1`). Kalshi
 also lists some player markets (longest reception, passing touchdowns), which
 are a free niche source to add next.
+
+## 7. Backups stepping in
+
+When a starter is ruled out, Coach projects his backup's props and logs the
+first price seen after the news. See [BACKUP_PLAYERS.md](BACKUP_PLAYERS.md).
