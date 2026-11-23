@@ -204,6 +204,48 @@ medical history beyond the weekly injury report. A trait with no
 measurement (for example, a player who skipped a combine drill) is left
 blank, not guessed. We do not copy any video game's ratings.
 
+## Every position, and line-vs-line matchups (Nov 23)
+
+`model/elo_trenches.py` adds:
+
+- **Offensive linemen.** Pass block uses sacks plus QB hits per dropback, run
+  block uses stuffed runs (no gain or a loss), and run push uses run success.
+  Every lineman on the field is updated by his snap share against the
+  opposing front. The quarterback is in the pass-block measure too, because
+  some sacks are his. The overall mixes these three with the on-field
+  rating.
+- **The defensive front** (DE, DT, NT, OLB, ILB, MLB) uses the same three
+  measures from the other side (pocket pressure, run stuffing, run fits).
+  These are added to the on-field rating and measured production.
+- **Kickers:** field goals made over the league rate at that distance,
+  range (50+ yard makes) and extra points.
+- **Punters:** net yards over average from the same spot, and inside-the-20
+  rate.
+- **Team line units:** each team's pass block, run block, pass rush and run
+  defense, from its most recent lineup. Game answers show them side by side,
+  for example "BUF pass block 84 vs MIA pass rush 64".
+
+Free data has no per-play pressure for 2026 and no yards before contact, so
+sacks, hits and stuffs stand in for those. Pregame pass-block edges
+correlate 0.27-0.40 with the next game's actual sack-plus-hit gap (2016,
+2020, 2024, 2025 and 2026).
+
+Game test with everything added, ratings alone (margin / total error, points):
+
+| | 2015-2024 | 2025 | 2026 |
+| --- | --- | --- | --- |
+| Team only | 13.07 / 13.73 | 12.84 / 13.71 | 12.07 / 14.22 |
+| + players | 13.03 / 13.55 | 12.84 / 13.30 | 12.11 / 13.72 |
+| + line matchups | 13.04 / 13.57 | 12.83 / 13.25 | 12.03 / 13.67 |
+| Closing line | 12.77 / 13.29 | 12.24 / 13.24 | 11.90 / 13.14 |
+
+The line matchups make the ratings' own totals clearly better. In 2025 the
+total error, 13.25, nearly ties the closing total
+(13.24). They still do not beat the closing number. Over/under Brier
+on top of the line was 0.2501, 0.2499, 0.2521 (a coin flip is 0.25). Win Brier for
+market plus ratings vs market alone was 0.2126 vs 0.2123; 0.2119 vs 0.2111; 0.2055 vs 0.2066. That is better only
+in 2026, so it fails the both-seasons rule, and nothing is adopted.
+
 ## In the app
 
 Vincent asked (Nov 23) to show the ratings as **one more number to weigh**,
@@ -213,12 +255,13 @@ not a replacement. Nothing about Coach's chances, lines or prop math changed.
   `lib/domain/elo_ratings.dart`.
 - On a game or player answer, a **Coach ratings (Elo)** section opens under the
   card: both teams' overall, offense and defense, the points gap on a neutral
-  field, both quarterbacks, both secondaries, and for a player his overall,
+  field, the line-vs-line matchups, both quarterbacks, both secondaries, and for a player his overall,
   his skill ratings, the opponent's pass defense rank against his position,
   the opponent's secondary, his quarterback and his measured traits.
 - Direct questions work too: "what's Justin Jefferson's elo against the
   Bears", "coach ratings Bills Chiefs", "top rated corners", "best teams by
-  elo".
+  elo", "top rated offensive linemen", "best rated pass rushers", "top rated
+  kickers".
 - Every ratings answer carries the note that they are not part of the chance
   and did not beat the closing line.
 - The weekly model workflow (Tuesday) rebuilds the ratings and commits them.

@@ -182,5 +182,97 @@
     "marketPlusRatings": 0.5994
    }
   }
+ },
+ "teamPlusPlayersPlusLines": {
+  "2015-2024": {
+   "games": 2743,
+   "marginRmse": {
+    "ratings": 13.038,
+    "closingLine": 12.769
+   },
+   "totalRmse": {
+    "ratings": 13.571,
+    "closingLine": 13.292
+   },
+   "coverBrier": {
+    "ratingsOnTopOfLine": 0.2501,
+    "coinFlip": 0.25
+   },
+   "coverPickHitRate": 0.52,
+   "overBrier": {
+    "ratingsOnTopOfLine": 0.2501,
+    "coinFlip": 0.25
+   },
+   "winBrier": {
+    "market": 0.2123,
+    "ratingsAlone": 0.22,
+    "marketPlusRatings": 0.2126
+   },
+   "winLogLoss": {
+    "market": 0.6127,
+    "ratingsAlone": 0.6299,
+    "marketPlusRatings": 0.6134
+   }
+  },
+  "2025": {
+   "games": 285,
+   "marginRmse": {
+    "ratings": 12.831,
+    "closingLine": 12.245
+   },
+   "totalRmse": {
+    "ratings": 13.249,
+    "closingLine": 13.237
+   },
+   "coverBrier": {
+    "ratingsOnTopOfLine": 0.2517,
+    "coinFlip": 0.25
+   },
+   "coverPickHitRate": 0.451,
+   "overBrier": {
+    "ratingsOnTopOfLine": 0.2499,
+    "coinFlip": 0.25
+   },
+   "winBrier": {
+    "market": 0.2111,
+    "ratingsAlone": 0.2231,
+    "marketPlusRatings": 0.2119
+   },
+   "winLogLoss": {
+    "market": 0.6072,
+    "ratingsAlone": 0.6359,
+    "marketPlusRatings": 0.6091
+   }
+  },
+  "2026": {
+   "games": 159,
+   "marginRmse": {
+    "ratings": 12.034,
+    "closingLine": 11.9
+   },
+   "totalRmse": {
+    "ratings": 13.673,
+    "closingLine": 13.144
+   },
+   "coverBrier": {
+    "ratingsOnTopOfLine": 0.248,
+    "coinFlip": 0.25
+   },
+   "coverPickHitRate": 0.556,
+   "overBrier": {
+    "ratingsOnTopOfLine": 0.2521,
+    "coinFlip": 0.25
+   },
+   "winBrier": {
+    "market": 0.2066,
+    "ratingsAlone": 0.2014,
+    "marketPlusRatings": 0.2055
+   },
+   "winLogLoss": {
+    "market": 0.6011,
+    "ratingsAlone": 0.5879,
+    "marketPlusRatings": 0.5983
+   }
+  }
  }
 }

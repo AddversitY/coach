@@ -14,6 +14,7 @@ class EloTeam {
     required this.defense,
     required this.net,
     this.quarterback,
+    this.lines = const {},
   });
 
   final String code;
@@ -22,6 +23,10 @@ class EloTeam {
   /// Points per game better than an average team, on a neutral field.
   final double net;
   final String? quarterback;
+
+  /// Line play, 40-99 across the league: passBlock, runBlock (offensive
+  /// line plus quarterback for sacks), passRush, runDefense (the front).
+  final Map<String, int> lines;
 }
 
 class EloPlayer {
@@ -126,6 +131,11 @@ class EloRatings {
         defense: (row['def'] as num?)?.toInt() ?? 0,
         net: d(row['net']) ?? 0,
         quarterback: row['qb'] is String ? row['qb'] as String : null,
+        lines: {
+          if (row['lines'] is Map)
+            for (final e in (row['lines'] as Map).entries)
+              if (e.value is num) '${e.key}': (e.value as num).toInt(),
+        },
       );
     }
     final players = <EloPlayer>[
@@ -242,6 +252,25 @@ class EloRatings {
     'RB': r'rbs?|running backs?|backs',
     'CB': r'cbs?|corners?|cornerbacks?',
     'S': r'safet(y|ies)',
+    'OL': r'ol|o-?line(men)?|offensive line(men)?|tackles?|guards?|centers?',
+    'DL': r'dl|d-?line(men)?|defensive line(men)?|pass rushers?|edge rushers?|defensive ends?|des|dts?',
+    'LB': r'lbs?|linebackers?',
+    'K': r'kickers?',
+    'P': r'punters?',
+  };
+  static const _groupPositions = {
+    'S': {'S', 'FS', 'SS', 'SAF'},
+    'OL': {'T', 'G', 'C', 'OL', 'OT', 'OG'},
+    'DL': {'DE', 'DT', 'NT', 'DL'},
+    'LB': {'LB', 'OLB', 'ILB', 'MLB'},
+  };
+  static const _groupLabel = {
+    'S': 'safeties',
+    'OL': 'offensive linemen',
+    'DL': 'defensive linemen',
+    'LB': 'linebackers',
+    'K': 'kickers',
+    'P': 'punters',
   };
 
   /// "Top rated corners", "best teams by elo".
@@ -261,17 +290,17 @@ class EloRatings {
     }
     for (final entry in _positionWords.entries) {
       if (!RegExp('\\b(${entry.value})\\b').hasMatch(q)) continue;
-      final positions = entry.key == 'S'
-          ? const {'S', 'FS', 'SS', 'SAF'}
-          : {entry.key};
+      final positions = _groupPositions[entry.key] ?? {entry.key};
+      final defense = const {'CB', 'S', 'DL', 'LB'}.contains(entry.key);
+      final minSnaps = const {'K', 'P'}.contains(entry.key) ? 30 : 150;
       final list =
           _players
               .where(
                 (p) =>
                     positions.contains(p.position) &&
-                    p.snaps >= 150 &&
+                    p.snaps >= minSnaps &&
                     // A two-way player's defensive snaps are not a receiver rating.
-                    p.defense == (entry.key == 'CB' || entry.key == 'S'),
+                    p.defense == defense,
               )
               .toList()
             ..sort(
@@ -281,7 +310,7 @@ class EloRatings {
             );
       if (list.isEmpty) return const [];
       return [
-        '${low ? 'Lowest' : 'Top'} rated ${entry.key == 'S' ? 'safeties' : '${entry.key}s'}: '
+        '${low ? 'Lowest' : 'Top'} rated ${_groupLabel[entry.key] ?? '${entry.key}s'}: '
             '${list.take(5).map((p) => '${p.name} (${p.team}) ${p.overall}').join(', ')}.',
       ];
     }
@@ -331,6 +360,22 @@ class EloRatings {
         .round();
   }
 
+  /// "BUF pass block 84 vs MIA pass rush 64" for both offenses.
+  List<String> _lineMatchups(EloTeam a, EloTeam h) {
+    final out = <String>[];
+    for (final pair in [(a, h), (h, a)]) {
+      final off = pair.$1.lines, def = pair.$2.lines;
+      final pb = off['passBlock'], pr = def['passRush'];
+      final rb = off['runBlock'], rd = def['runDefense'];
+      if (pb == null || pr == null || rb == null || rd == null) continue;
+      out.add(
+        'Trenches: ${pair.$1.code} pass block $pb vs ${pair.$2.code} pass rush $pr; '
+        '${pair.$1.code} run block $rb vs ${pair.$2.code} run defense $rd.',
+      );
+    }
+    return out;
+  }
+
   int get _teams32 => _defenseVs.isEmpty ? _teams.length : _defenseVs.length;
 
   /// Short lines for a game. Empty when either team is missing.
@@ -344,6 +389,7 @@ class EloRatings {
           '${better.code} rates ${gap.abs().toStringAsFixed(1)} points a game better on a neutral field.',
       '${a.code} offense ${a.offense}, defense ${a.defense}. ${h.code} offense ${h.offense}, defense ${h.defense}.',
     ];
+    lines.addAll(_lineMatchups(a, h));
     final qbs = <String>[];
     for (final t in [a, h]) {
       final qb = t.quarterback == null

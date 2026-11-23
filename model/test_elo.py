@@ -135,3 +135,18 @@ class SkillTest(unittest.TestCase):
         grp = pd.Series(["WR"] * 4)
         self.assertEqual(list(sk.percentile_40_99(v, grp)), [55.0, 70.0, 84.0, 99.0])
         self.assertEqual(list(sk.percentile_40_99(v, grp, higher=False)), [99.0, 84.0, 70.0, 55.0])
+
+
+class TrenchTest(unittest.TestCase):
+    def test_good_blockers_and_rushers_rate_positive(self):
+        from elo_trenches import TrenchRatings
+        tr = TrenchRatings()
+        good_ol = {"ol": [("ol_good", 1.0)], "qb": [("qb_a", 1.0)]}
+        bad_ol = {"ol": [("ol_bad", 1.0)], "qb": [("qb_b", 1.0)]}
+        for week in range(1, 9):
+            # Few sacks+hits on the good line, many against the bad line, same rusher.
+            tr.update(good_ol, [("rusher", 1.0)], "pass_pro", 1, 40, 2024, week)
+            tr.update(bad_ol, [("rusher", 1.0)], "pass_pro", 12, 40, 2024, week)
+        book = tr.books[("ol", "pass_pro")]
+        self.assertGreater(book.get("ol_good", 2024, 9)[0], 0)
+        self.assertLess(book.get("ol_bad", 2024, 9)[0], 0)

@@ -189,6 +189,88 @@ void main() {
     },
   );
 
+  test('line matchups and new position groups', () {
+    final elo = EloRatings.fromJson({
+      'teams': [
+        {
+          't': 'BUF',
+          'o': 97,
+          'off': 97,
+          'def': 77,
+          'net': 15.0,
+          'lines': {
+            'passBlock': 84,
+            'runBlock': 99,
+            'passRush': 86,
+            'runDefense': 57,
+          },
+        },
+        {
+          't': 'MIA',
+          'o': 44,
+          'off': 49,
+          'def': 51,
+          'net': -11.5,
+          'lines': {
+            'passBlock': 64,
+            'runBlock': 49,
+            'passRush': 64,
+            'runDefense': 44,
+          },
+        },
+      ],
+      'players': [
+        {
+          'n': 'Big Tackle',
+          'id': 't1',
+          't': 'BUF',
+          'p': 'T',
+          'o': 99,
+          'd': 0,
+          's': 600,
+          'a': {'Pass block': 75},
+        },
+        {
+          'n': 'Edge Guy',
+          'id': 'd1',
+          't': 'MIA',
+          'p': 'DE',
+          'o': 90,
+          'd': 1,
+          's': 500,
+        },
+        {
+          'n': 'Leg Man',
+          'id': 'k1',
+          't': 'BUF',
+          'p': 'K',
+          'o': 95,
+          'd': 0,
+          's': 60,
+        },
+      ],
+    });
+    final lines = elo.gameLines('BUF', 'MIA').join(' ');
+    expect(
+      lines,
+      contains(
+        'Trenches: BUF pass block 84 vs MIA pass rush 64; BUF run block 99 vs MIA run defense 44.',
+      ),
+    );
+    expect(
+      eloQuestionBrief(question: 'top rated offensive linemen', elo: elo)!.text,
+      'Top rated offensive linemen: Big Tackle (BUF) 99.',
+    );
+    expect(
+      eloQuestionBrief(question: 'best rated pass rushers', elo: elo)!.text,
+      contains('Edge Guy'),
+    );
+    expect(
+      eloQuestionBrief(question: 'top rated kickers', elo: elo)!.text,
+      contains('Leg Man (BUF) 95'),
+    );
+  });
+
   test('other questions are left alone', () {
     for (final q in [
       'How accurate is Coach?',
