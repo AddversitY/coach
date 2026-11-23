@@ -1,0 +1,201 @@
+{
+ "source": {
+  "odds": "Sportsbook Reviews Online NFL odds archive (consensus opening and closing spread and total)",
+  "oddsUrl": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nfl/nfloddsarchives.htm",
+  "model": "walk-forward team ratings (model/elo_backtest.py), each week fit on earlier weeks only"
+ },
+ "seasons": [
+  2008,
+  2021
+ ],
+ "quarterback": "the team's previous starter (known at the opener)",
+ "games": 3144,
+ "matchedOdds": 3354,
+ "closeAgreesWithNflverse": 0.965,
+ "spreads": {
+  "moveTowardCoach": {
+   "games": 3144,
+   "slope": 0.2146,
+   "correlation": 0.3026
+  },
+  "gap1": {
+   "clv": {
+    "n": 2243,
+    "mean": -0.011,
+    "low": -0.0158,
+    "high": -0.0064
+   },
+   "profitAtOpener": {
+    "n": 2170,
+    "mean": 0.0056,
+    "low": -0.0279,
+    "high": 0.039
+   },
+   "seasonsWithPositiveClv": 3,
+   "seasons": 14
+  },
+  "gap2": {
+   "clv": {
+    "n": 1469,
+    "mean": -0.0071,
+    "low": -0.013,
+    "high": -0.0008
+   },
+   "profitAtOpener": {
+    "n": 1426,
+    "mean": -0.0013,
+    "low": -0.0414,
+    "high": 0.0416
+   },
+   "seasonsWithPositiveClv": 4,
+   "seasons": 14
+  },
+  "gap3": {
+   "clv": {
+    "n": 924,
+    "mean": 0.0015,
+    "low": -0.0065,
+    "high": 0.0097
+   },
+   "profitAtOpener": {
+    "n": 897,
+    "mean": 0.0046,
+    "low": -0.0486,
+    "high": 0.0578
+   },
+   "seasonsWithPositiveClv": 7,
+   "seasons": 14
+  },
+  "gap4": {
+   "clv": {
+    "n": 536,
+    "mean": 0.0062,
+    "low": -0.0061,
+    "high": 0.0184
+   },
+   "profitAtOpener": {
+    "n": 519,
+    "mean": 0.0263,
+    "low": -0.0436,
+    "high": 0.0962
+   },
+   "seasonsWithPositiveClv": 6,
+   "seasons": 14
+  }
+ },
+ "totals": {
+  "moveTowardCoach": {
+   "games": 3144,
+   "slope": 0.1707,
+   "correlation": 0.3209
+  },
+  "gap1": {
+   "clv": {
+    "n": 2496,
+    "mean": -0.0241,
+    "low": -0.0279,
+    "high": -0.0203
+   },
+   "profitAtOpener": {
+    "n": 2439,
+    "mean": 0.0136,
+    "low": -0.0169,
+    "high": 0.045
+   }
+  },
+  "gap2": {
+   "clv": {
+    "n": 1919,
+    "mean": -0.0196,
+    "low": -0.024,
+    "high": -0.0152
+   },
+   "profitAtOpener": {
+    "n": 1875,
+    "mean": 0.0253,
+    "low": -0.0103,
+    "high": 0.0609
+   }
+  },
+  "gap3": {
+   "clv": {
+    "n": 1420,
+    "mean": -0.0136,
+    "low": -0.0189,
+    "high": -0.0083
+   },
+   "profitAtOpener": {
+    "n": 1385,
+    "mean": 0.0379,
+    "low": -0.0034,
+    "high": 0.0779
+   }
+  },
+  "gap4": {
+   "clv": {
+    "n": 965,
+    "mean": -0.0084,
+    "low": -0.0154,
+    "high": -0.0019
+   },
+   "profitAtOpener": {
+    "n": 941,
+    "mean": 0.0611,
+    "low": 0.0103,
+    "high": 0.1138
+   }
+  }
+ },
+ "quarterbackNews": {
+  "gamesWithNewStarter": 626,
+  "averageLineMovePoints": {
+   "newStarter": 2.05,
+   "sameStarter": 1.3
+  },
+  "swing1": {
+   "clv": {
+    "n": 415,
+    "mean": 0.0092,
+    "low": -0.0055,
+    "high": 0.0236
+   },
+   "profitAtOpener": {
+    "n": 407,
+    "mean": 0.0366,
+    "low": -0.0431,
+    "high": 0.1117
+   },
+   "lineMoveTowardChangePoints": 0.91
+  },
+  "swing2": {
+   "clv": {
+    "n": 233,
+    "mean": 0.023,
+    "low": 0.0028,
+    "high": 0.0438
+   },
+   "profitAtOpener": {
+    "n": 230,
+    "mean": 0.1123,
+    "low": 0.0043,
+    "high": 0.2119
+   },
+   "lineMoveTowardChangePoints": 1.13
+  },
+  "swing3": {
+   "clv": {
+    "n": 126,
+    "mean": 0.0435,
+    "low": 0.015,
+    "high": 0.0707
+   },
+   "profitAtOpener": {
+    "n": 124,
+    "mean": 0.1239,
+    "low": -0.0147,
+    "high": 0.2625
+   },
+   "lineMoveTowardChangePoints": 1.5
+  }
+ }
+}
