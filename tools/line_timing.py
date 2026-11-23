@@ -37,18 +37,20 @@ STEAM_BOOKS = 3
 KEY_NUMBERS = (3, 7)
 DISAGREEMENT_HOURS = 2
 
-# Same ten books the backend sends. Ten books are one region, so three
-# markets cost 3 credits. Pinnacle is a separate region and is not requested
-# here. The logged-out Pinnacle page is the free source for that book.
+# Ten books. A bookmakers list of up to ten counts as one region, so three
+# markets cost 3 credits whichever region a book belongs to. Pinnacle (an eu
+# book) replaces Fliff here so every snapshot has a sharp reference for line
+# shopping (tools/line_shop.py) at no extra cost. Its logged-out page is
+# blocked from GitHub's servers (HTTP 403).
 GAME_BOOKS = (
     'draftkings', 'fanduel', 'betmgm', 'williamhill_us', 'espnbet',
-    'fanatics', 'betrivers', 'hardrockbet', 'ballybet', 'fliff',
+    'fanatics', 'betrivers', 'hardrockbet', 'ballybet', 'pinnacle',
 )
-RETAIL_BOOKS = set(GAME_BOOKS)
+SHARP_BOOK = 'pinnacle'
+RETAIL_BOOKS = set(GAME_BOOKS) - {SHARP_BOOK}
 PROP_MARKETS = (
     'player_pass_yds', 'player_rush_yds', 'player_reception_yds', 'player_receptions',
 )
-SHARP_BOOK = 'pinnacle'
 
 TEAMS = {
     'Arizona Cardinals': 'ARI', 'Atlanta Falcons': 'ATL', 'Baltimore Ravens': 'BAL',
@@ -484,9 +486,8 @@ def _disagreement(home_by_book, close_at):
         line = recent[-1][1]
         if book == SHARP_BOOK:
             pinnacle = line
-        elif book in RETAIL_BOOKS or book != SHARP_BOOK:
-            if book != SHARP_BOOK:
-                retail.append(line)
+        else:
+            retail.append(line)
     retail_line = _median_posted(retail)
     if pinnacle is None or retail_line is None:
         return None, None
