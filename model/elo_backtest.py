@@ -79,8 +79,10 @@ def logit(p):
     return np.log(p / (1 - p))
 
 
-def walk_forward(feat: pd.DataFrame, test_seasons) -> pd.DataFrame:
+def walk_forward(feat: pd.DataFrame, test_seasons, margin_features=None, total_features=None) -> pd.DataFrame:
     """Score every game in the test seasons, refitting before each week."""
+    MARGIN_FEATURES = margin_features or globals()["MARGIN_FEATURES"]
+    TOTAL_FEATURES = total_features or globals()["TOTAL_FEATURES"]
     df = feat[feat["result"].notna() & feat["spread_line"].notna() & (feat["season"] >= FIRST_FIT_SEASON)].copy()
     df["p_mkt_win"] = [no_vig_home(h, a) for h, a in zip(df["home_ml"], df["away_ml"])]
     df["cover"] = np.where(df["result"] > df["spread_line"], 1.0, np.where(df["result"] < df["spread_line"], 0.0, np.nan))

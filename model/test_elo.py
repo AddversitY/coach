@@ -150,3 +150,37 @@ class TrenchTest(unittest.TestCase):
         book = tr.books[("ol", "pass_pro")]
         self.assertGreater(book.get("ol_good", 2024, 9)[0], 0)
         self.assertLess(book.get("ol_bad", 2024, 9)[0], 0)
+
+
+class AngleTest(unittest.TestCase):
+    def test_pregame_walk_uses_only_earlier_weeks(self):
+        import elo_angles as ea
+        obs = pd.DataFrame({"season": [2024, 2024, 2024], "week": [1, 2, 3], "key": [("AAA", "o", "red")] * 3,
+                            "s": [10.0, 10.0, -50.0], "n": [10.0, 10.0, 10.0]})
+        obs = pd.concat([obs, pd.DataFrame({"season": [2024] * 3, "week": [1, 2, 3], "key": [("BBB", "o", "red")] * 3,
+                                            "s": [0.0, 0.0, 0.0], "n": [10.0, 10.0, 10.0]})], ignore_index=True)
+        q = pd.DataFrame({"season": [2024, 2024, 2024], "week": [1, 3, 4], "key": [("AAA", "o", "red")] * 3})
+        v = ea.pregame_walk(obs, q, k=5)
+        self.assertEqual(v[0], 0.0)          # nothing known before week 1
+        self.assertGreater(v[1], 0.0)        # weeks 1-2 were good, week 3 not yet seen
+        self.assertLess(v[2], v[1])          # week 3's bad game counts by week 4
+
+    def test_priors_are_per_kind(self):
+        import elo_angles as ea
+        self.assertEqual(ea._group(("AAA", "o", "deep")), ("o", "deep"))
+        self.assertEqual(ea._group(("qb", "x")), "qb")
+        self.assertEqual(ea._group(("pair", "q", "r")), "all")
+
+    def test_travel_and_body_clock(self):
+        import elo_angles as ea
+        self.assertAlmostEqual(ea.miles(ea.TEAM_SITE["NYG"], ea.TEAM_SITE["NYJ"]), 0.0)
+        self.assertGreater(ea.miles(ea.TEAM_SITE["SEA"], ea.TEAM_SITE["MIA"]), 2500)
+        g = pd.DataFrame([{"game_id": "2024_05_SEA_NYG", "home_team": "NYG", "away_team": "SEA", "stadium_id": "NYC01",
+                           "location": "Home", "gametime": "13:00", "home_rest": 7, "away_rest": 4}])
+        t = ea.travel_rows(g).iloc[0]
+        self.assertEqual(t.away_early, 1.0)   # 10 AM on a West Coast body clock
+        self.assertEqual(t.home_early, 0.0)
+        self.assertEqual(t.away_tz, 3)
+        london = pd.DataFrame([{"game_id": "x", "home_team": "JAX", "away_team": "BUF", "stadium_id": "LON02",
+                                "location": "Neutral", "gametime": "09:30", "home_rest": 7, "away_rest": 7}])
+        self.assertGreater(ea.travel_rows(london).iloc[0].home_miles, 3000)

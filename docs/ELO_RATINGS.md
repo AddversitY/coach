@@ -246,6 +246,77 @@ on top of the line was 0.2501, 0.2499, 0.2521 (a coin flip is 0.25). Win Brier f
 market plus ratings vs market alone was 0.2126 vs 0.2123; 0.2119 vs 0.2111; 0.2055 vs 0.2066. That is better only
 in 2026, so it fails the both-seasons rule, and nothing is adopted.
 
+## New angles: situations, coaching, chemistry, travel, referees, injuries (Nov 23)
+
+Vincent asked for angles beyond weather. `model/elo_angles.py` adds six, all
+from free nflverse data, each a pregame number built only from earlier weeks:
+
+1. **Situations.** Every offense and defense in third downs, the red zone,
+   the two-minute drill, leading or trailing by 8+, and deep throws. Every
+   quarterback, rusher and receiver also gets splits for blitz vs no blitz,
+   play-action vs not, shotgun vs under center, and short throws. Blitz means
+   5+ pass rushers (participation data 2016-2025, FTN charting 2022-2026).
+   Play-action is from FTN charting, so it starts in 2022.
+2. **Coaching and scheme.** Each head coach's pass rate over expected in
+   neutral downs, go rate on 4th and 3 or less from the opponent's 60 in,
+   neutral pace (seconds between snaps), and net EPA per play. These carry
+   with the coach to a new team. Free data names head coaches only: there is
+   no free record of play-callers or coordinators, so there is no DC
+   rating. Scheme matchups combine a QB's blitz split with how often the
+   opponent blitzes, and an offense's play-action gain with how often it uses
+   play-action.
+3. **Chemistry and continuity.** Each QB-receiver pair's EPA per target,
+   beyond what the QB and the receiver each do with others. Also how many
+   games today's five offensive linemen have started together, and how many
+   of them did not start the team's last game.
+4. **Workload and travel.** Short weeks, byes, miles travelled (international
+   games included), time zones crossed, body clock (a kickoff at 10 AM or
+   earlier on the team's home clock), and snaps played in the last one and
+   three games.
+5. **Referee crews.** Penalties per game, plus how totals and home margins
+   land against the closing line in each referee's games. All three are
+   heavily shrunk toward zero.
+6. **Injuries.** The rating value of players listed Out or Doubtful, from the
+   player ratings (snap share x rating). Quarterbacks are left out because
+   the starting QB is already in the team model.
+
+**How much each angle counts** is learned, not set by hand. The walk-forward
+ridge fits weights on earlier weeks only, and each angle is tested on its own
+on top of the current ratings. An angle's spread side is kept only if cover
+Brier and win Brier both improve in 2025 and in 2026. Its totals side is kept
+only if over Brier improves in both. Full results are in
+`research/elo-ratings/angle_backtest.json`, including each feature's weight
+in points per standard deviation.
+
+| Angle added (2025 / 2026) | Margin error | Cover Brier | Win Brier (market + ratings) | Total error | Over Brier | Kept |
+| --- | --- | --- | --- | --- | --- | --- |
+| None (current ratings) | 12.84 / 12.13 | 0.2517 / 0.2485 | 0.2118 / 0.2060 | 13.25 / 13.61 | 0.2499 / 0.2518 | |
+| Situations | 12.89 / 12.13 | 0.2519 / 0.2486 | 0.2119 / 0.2059 | 13.24 / 13.61 | 0.2497 / 0.2524 | no |
+| Coaching and scheme | 12.85 / 12.17 | 0.2520 / 0.2481 | 0.2115 / 0.2061 | 13.23 / 13.52 | 0.2507 / 0.2517 | no |
+| Chemistry and line continuity | 12.81 / 12.08 | 0.2515 / 0.2478 | 0.2117 / 0.2054 | same | same | **spread side** |
+| Workload and travel | 12.75 / 12.16 | 0.2514 / 0.2485 | 0.2117 / 0.2058 | same | same | no (2026 cover tie) |
+| Referee | 12.83 / 12.14 | 0.2518 / 0.2486 | 0.2119 / 0.2061 | 13.24 / 13.62 | 0.2498 / 0.2518 | no |
+| Injuries | 12.80 / 12.12 | 0.2516 / 0.2484 | 0.2118 / 0.2057 | 13.26 / 13.64 | 0.2495 / 0.2523 | no |
+| All six | 12.74 / 12.20 | 0.2514 / 0.2475 | 0.2108 / 0.2052 | 13.19 / 13.54 | 0.2498 / 0.2534 | |
+| Closing line | 12.25 / 11.93 | | 0.2111 / 0.2070 (market) | 13.24 / 13.14 | | |
+
+What it shows:
+
+- Every angle is small next to the closing line. None of them closes the gap
+  to the line's margin error (12.25 in 2025, 11.93 in 2026).
+- Chemistry and line continuity is the only angle that helped in both
+  seasons. It is now in the Coach ratings game model. A new starting
+  lineman costs about 0.4 points per standard deviation.
+- Coaching improves the ratings' own total error a lot in 2026 (13.61 to
+  13.52), mostly from pace and pass rate over expected. It does not improve
+  the over/under chance on top of the closing total, so it is not kept.
+- Body clock, short weeks and recent snap load move margins the expected way
+  (an early body-clock kickoff is worth about -0.3 points per SD). They help
+  2025 a lot but not 2026.
+- The win chance with the ratings beats the market alone in 2026 (0.2054 vs
+  0.2070) but not in 2025 (0.2117 vs 0.2111). That fails the both-seasons
+  rule, so Coach's chances, picks and prop math are unchanged.
+
 ## In the app
 
 Vincent asked (Nov 23) to show the ratings as **one more number to weigh**,
@@ -258,6 +329,13 @@ not a replacement. Nothing about Coach's chances, lines or prop math changed.
   field, the line-vs-line matchups, both quarterbacks, both secondaries, and for a player his overall,
   his skill ratings, the opponent's pass defense rank against his position,
   the opponent's secondary, his quarterback and his measured traits.
+- Game answers also show the new angles: both head coaches' tendencies, blitz
+  and play-action rates, each team's best QB-receiver pair, how long the
+  starting offensive line has played together, players listed out with their
+  rating value in points, rest, travel and body clock, and the referee's
+  crew tendencies. Player answers show situation ratings (3rd down, red
+  zone, two-minute, leading, trailing, vs blitz, play-action, shotgun, under
+  center, deep, short), each 40-99 against others in the same role.
 - Direct questions work too: "what's Justin Jefferson's elo against the
   Bears", "coach ratings Bills Chiefs", "top rated corners", "best teams by
   elo", "top rated offensive linemen", "best rated pass rushers", "top rated

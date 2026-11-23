@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import elo_angles
 import elo_backtest as eb
 import elo_skill
 import elo_trenches
@@ -68,6 +69,55 @@ def game_report(feat: pd.DataFrame, first: int, last: int) -> dict:
                            "ratingsAlone": round(eb.logloss(w.p_win_ratings, w.win), 4),
                            "marketPlusRatings": round(eb.logloss(w.p_win_blend, w.win), 4)},
         }
+    return out
+
+
+def _with_features(feat, margin, total, first, last):
+    saved = eb.MARGIN_FEATURES, eb.TOTAL_FEATURES
+    eb.MARGIN_FEATURES, eb.TOTAL_FEATURES = margin, total
+    try:
+        return game_report(feat, first, last)
+    finally:
+        eb.MARGIN_FEATURES, eb.TOTAL_FEATURES = saved
+
+
+def angle_tests(feat: pd.DataFrame, first: int, last: int) -> dict:
+    """Each new angle added on its own to the current ratings, then all, then the ones that pass.
+
+    An angle's spread/moneyline side is kept only if cover Brier and win Brier both improve in
+    each of the last two seasons; its totals side only if over Brier improves in both.
+    """
+    base_m, base_t = list(eb.MARGIN_FEATURES), list(eb.TOTAL_FEATURES)
+    recent = [str(last - 1), str(last)]
+    base = _with_features(feat, base_m, base_t, first, last)
+    out = {"base": base, "groups": {}, "rule": ("keep an angle's spread side only if cover and win Brier improve in both "
+                                                 f"{recent[0]} and {recent[1]}; its totals side only if over Brier does")}
+    keep_m, keep_t = [], []
+    for name, (m, t) in elo_angles.ANGLE_GROUPS.items():
+        r = _with_features(feat, base_m + m, base_t + t, first, last)
+        spread_ok = all(r[y]["coverBrier"]["ratingsOnTopOfLine"] < base[y]["coverBrier"]["ratingsOnTopOfLine"]
+                        and r[y]["winBrier"]["marketPlusRatings"] < base[y]["winBrier"]["marketPlusRatings"] for y in recent)
+        total_ok = bool(t) and all(r[y]["overBrier"]["ratingsOnTopOfLine"] < base[y]["overBrier"]["ratingsOnTopOfLine"] for y in recent)
+        out["groups"][name] = {"features": {"spread": m, "total": t}, "keptSpread": bool(spread_ok and m),
+                               "keptTotal": total_ok, "results": r}
+        if spread_ok:
+            keep_m += m
+        if total_ok:
+            keep_t += t
+    all_m = [c for m, _ in elo_angles.ANGLE_GROUPS.values() for c in m]
+    all_t = [c for _, t in elo_angles.ANGLE_GROUPS.values() for c in t]
+    out["allAngles"] = _with_features(feat, base_m + all_m, base_t + all_t, first, last)
+    out["kept"] = {"spread": keep_m, "total": keep_t}
+    out["withKeptAngles"] = _with_features(feat, base_m + keep_m, base_t + keep_t, first, last)
+    # How much each angle counts: ridge weight on all completed games, in points per one standard deviation.
+    done = feat[feat.result.notna() & (feat.season >= eb.FIRST_FIT_SEASON)]
+    weights = {}
+    for target, cols in (("margin", base_m + all_m), ("total", base_t + all_t)):
+        d = done[done.total_line.notna()] if target == "total" else done
+        beta = eb.ridge_fit(d[cols].values, d["result" if target == "margin" else "total"].values)
+        sd = d[cols].std().values
+        weights[target] = {c: round(float(b * s), 3) for c, b, s in zip(cols, beta[1:], sd)}
+    out["pointsPerSd"] = weights
     return out
 
 
@@ -385,6 +435,8 @@ def app_ratings(current: dict) -> dict:
                 row[short_key] = r[key]
         if r.get("attributes"):
             row["a"] = r["attributes"]
+        if r.get("situations"):
+            row["sit"] = r["situations"]
         players.append(row)
     return {
         "schema": 1,
@@ -395,7 +447,9 @@ def app_ratings(current: dict) -> dict:
                  "and in testing they did not beat the closing line (docs/ELO_RATINGS.md)."),
         "teams": [{"t": r["team"], "o": r["overall"], "off": r["offense"], "def": r["defense"],
                    "net": r["netPointsVsAverage"], "qb": r["quarterback"],
-                   **({"lines": r["lines"]} if r.get("lines") else {})} for r in current["teams"]],
+                   **({"lines": r["lines"]} if r.get("lines") else {}),
+                   **({"ang": r["angles"]} if r.get("angles") else {})} for r in current["teams"]],
+        "upcoming": current.get("upcoming", {}),
         "players": players,
         "defVs": {r["team"]: {"WR": r["yardsPerTargetAllowedVsWR"], "TE": r["yardsPerTargetAllowedVsTE"],
                               "RB": r["yardsPerTargetAllowedVsRB"], "ypc": r["yardsPerCarryAllowed"]}
@@ -437,6 +491,15 @@ def main():
     eb.MARGIN_FEATURES = eb.MARGIN_FEATURES + ["t_pass_pro", "t_run_stuff", "t_run_push"]
     eb.TOTAL_FEATURES = eb.TOTAL_FEATURES + ["t_pass_pro_sum", "t_run_stuff_sum", "t_run_push_sum"]
     report["teamPlusPlayersPlusLines"] = game_report(feat, 2015, last)
+    angle_data = elo_angles.AngleData(cache, range(2006, last + 1))
+    afeat, angle_state = elo_angles.build_angles(games, angle_data, snaps, lineups, unit_epa(plays[plays.season >= 2013]))
+    feat = feat.merge(afeat, on="game_id", how="left")
+    acols = [c for c in afeat.columns if c != "game_id"]
+    feat[acols] = feat[acols].fillna(0.0)
+    tests = angle_tests(feat, 2015, last)
+    (out / "angle_backtest.json").write_text(json.dumps(tests, indent=1))
+    report["teamPlusPlayersPlusLinesPlusAngles"] = tests["withKeptAngles"]
+    report["anglesKept"] = tests["kept"]
     (out / "game_backtest.json").write_text(json.dumps(report, indent=1))
     pos = player_positions(cache / "players.parquet")
     g13 = games[games.season >= 2013]
@@ -475,6 +538,19 @@ def main():
     (out / "skill_backtest.json").write_text(json.dumps(sb, indent=1))
     print("skill prop check", check)
     current = current_ratings(tr, pr_players, pr_props, games, snaps, plays, names, skill)
+    g_now = games[games.season == season_now]
+    pending = g_now.loc[g_now.result.isna(), "week"]
+    next_week = int(pending.min()) if len(pending) else week_now + 1
+    positions = {r["id"]: r["position"] for r in current["players"] if r["side"] == "offense"}
+    sits = elo_angles.situation_ratings(angle_data.s, season_now, next_week, positions)
+    for r in current["players"]:
+        if r["side"] == "offense" and r["id"] in sits:
+            r["situations"] = sits[r["id"]]
+    ang = elo_angles.current_angles(games, angle_data, snaps, angle_state, names, season_now, next_week)
+    for r in current["teams"]:
+        if ang["teams"].get(r["team"]):
+            r["angles"] = ang["teams"][r["team"]]
+    current["upcoming"] = {"week": next_week, "games": ang["upcoming"]}
     (out / "ratings_current.json").write_text(json.dumps(current, indent=1))
     if args.app_out:
         Path(args.app_out).write_text(json.dumps(app_ratings(current), separators=(",", ":")))

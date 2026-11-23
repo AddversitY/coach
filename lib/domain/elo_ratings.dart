@@ -15,6 +15,7 @@ class EloTeam {
     required this.net,
     this.quarterback,
     this.lines = const {},
+    this.angles = const {},
   });
 
   final String code;
@@ -27,6 +28,10 @@ class EloTeam {
   /// Line play, 40-99 across the league: passBlock, runBlock (offensive
   /// line plus quarterback for sacks), passRush, runDefense (the front).
   final Map<String, int> lines;
+
+  /// Coaching, scheme, chemistry, line continuity and injuries (see
+  /// model/elo_angles.py). Keys are absent when free data has no value.
+  final Map<String, Object?> angles;
 }
 
 class EloPlayer {
@@ -44,6 +49,7 @@ class EloPlayer {
     this.yardsPerCarry,
     this.yardsPerAttempt,
     this.attributes = const {},
+    this.situations = const {},
   });
 
   final String name, id, team, position;
@@ -61,6 +67,11 @@ class EloPlayer {
   /// testing, Next Gen Stats and play-by-play. A trait with no measurement
   /// is absent.
   final Map<String, int> attributes;
+
+  /// 40-99 vs others in his role (passer, rusher or receiver) by situation:
+  /// 3rd down, red zone, two-minute, script, blitz, play-action, shotgun,
+  /// deep and short throws. Only situations with enough plays are present.
+  final Map<String, int> situations;
 }
 
 const _secondaryPositions = {'CB', 'S', 'FS', 'SS', 'DB', 'SAF'};
@@ -90,6 +101,8 @@ class EloRatings {
     required this.season,
     required this.asOfWeek,
     required this.note,
+    this.upcomingWeek = 0,
+    this.upcoming = const [],
   }) {
     for (final p in _players) {
       _byId[p.id] = p;
@@ -99,6 +112,10 @@ class EloRatings {
 
   final int season, asOfWeek;
   final String note;
+
+  /// Rest, travel and referee for the coming week's games (raw rows).
+  final int upcomingWeek;
+  final List<Map<String, Object?>> upcoming;
   final Map<String, EloTeam> _teams;
   final List<EloPlayer> _players;
   final Map<String, Map<String, double>> _defenseVs;
@@ -136,6 +153,10 @@ class EloRatings {
             for (final e in (row['lines'] as Map).entries)
               if (e.value is num) '${e.key}': (e.value as num).toInt(),
         },
+        angles: {
+          if (row['ang'] is Map)
+            for (final e in (row['ang'] as Map).entries) '${e.key}': e.value,
+        },
       );
     }
     final players = <EloPlayer>[
@@ -159,6 +180,11 @@ class EloRatings {
                 for (final e in (row['a'] as Map).entries)
                   if (e.value is num) '${e.key}': (e.value as num).toInt(),
             },
+            situations: {
+              if (row['sit'] is Map)
+                for (final e in (row['sit'] as Map).entries)
+                  if (e.value is num) '${e.key}': (e.value as num).toInt(),
+            },
           ),
     ];
     final defenseVs = <String, Map<String, double>>{};
@@ -179,6 +205,15 @@ class EloRatings {
       season: (json['season'] as num?)?.toInt() ?? 0,
       asOfWeek: (json['asOfWeek'] as num?)?.toInt() ?? 0,
       note: '${json['note'] ?? ''}',
+      upcomingWeek: json['upcoming'] is Map
+          ? ((json['upcoming'] as Map)['week'] as num?)?.toInt() ?? 0
+          : 0,
+      upcoming: [
+        if (json['upcoming'] is Map &&
+            (json['upcoming'] as Map)['games'] is List)
+          for (final g in ((json['upcoming'] as Map)['games'] as List))
+            if (g is Map) {for (final e in g.entries) '${e.key}': e.value},
+      ],
     );
   }
 
@@ -376,6 +411,117 @@ class EloRatings {
     return out;
   }
 
+  static double? _num(Object? v) => v is num ? v.toDouble() : null;
+
+  String _pct(double v) => '${(v * 100).round()}%';
+
+  /// Coaching, scheme, chemistry, line continuity, injuries, rest, travel and
+  /// referee lines for a game. Each is skipped when its data is missing.
+  List<String> _angleLines(EloTeam a, EloTeam h) {
+    final out = <String>[];
+    final coaches = <String>[];
+    for (final t in [a, h]) {
+      final ang = t.angles;
+      final coach = ang['coach'];
+      if (coach is! String) continue;
+      final bits = <String>[];
+      final proe = _num(ang['proe']);
+      if (proe != null) {
+        bits.add('passes ${_signed(proe)}% vs expected');
+      }
+      final go = _num(ang['go4']);
+      if (go != null) {
+        bits.add('goes for it on ${_pct(go)} of short 4th downs');
+      }
+      coaches.add(
+        '${t.code} $coach${bits.isEmpty ? '' : ' (${bits.join(', ')})'}',
+      );
+    }
+    if (coaches.isNotEmpty) out.add('Coaching: ${coaches.join('; ')}.');
+    for (final pair in [(a, h), (h, a)]) {
+      final off = pair.$1, def = pair.$2;
+      final blitz = _num(def.angles['blitz']);
+      final pa = _num(off.angles['pa']);
+      if (blitz == null && pa == null) continue;
+      final bits = <String>[
+        if (blitz != null) '${def.code} blitzes on ${_pct(blitz)} of dropbacks',
+        if (pa != null) '${off.code} uses play-action on ${_pct(pa)}',
+      ];
+      out.add('Scheme: ${bits.join('; ')}.');
+    }
+    for (final t in [a, h]) {
+      final chem = t.angles['chem'];
+      if (chem is Map && chem['qb'] is String && chem['rec'] is String) {
+        final v = _num(chem['v']) ?? 0;
+        out.add(
+          'Chemistry: ${chem['qb']} to ${chem['rec']} is ${t.code}\'s best pair, '
+          '${_signed(v, digits: 2)} EPA per target beyond what each does with others.',
+        );
+      }
+    }
+    final ol = <String>[
+      for (final t in [a, h])
+        if (t.angles['olTogether'] is num)
+          '${t.code} ${(t.angles['olTogether'] as num).toInt()}',
+    ];
+    if (ol.isNotEmpty) {
+      out.add(
+        'Offensive line: games the current starting five have started together this season: ${ol.join(', ')}.',
+      );
+    }
+    for (final t in [a, h]) {
+      final outs = t.angles['out'];
+      if (outs is! List || outs.isEmpty) continue;
+      final names = [
+        for (final o in outs.take(4))
+          if (o is Map) '${o['n']} (${o['p']})',
+      ];
+      final pts = _num(t.angles['outPts']);
+      out.add(
+        'Injuries: ${t.code} lists ${names.join(', ')} out or doubtful'
+        '${pts == null ? '' : ', worth about ${pts.toStringAsFixed(1)} points a game by their ratings'}.',
+      );
+    }
+    final game = upcoming.where((g) => g['h'] == h.code && g['a'] == a.code);
+    if (game.isNotEmpty) {
+      final g = game.first;
+      final rest = <String>[
+        if (g['restA'] is num)
+          '${a.code} ${(g['restA'] as num).toInt()} days of rest',
+        if (g['restH'] is num) '${h.code} ${(g['restH'] as num).toInt()}',
+      ];
+      final miles = _num(g['milesA']);
+      final tz = _num(g['tzA']);
+      var travel = '';
+      if (miles != null && miles > 0) {
+        travel = '; ${a.code} travels ${miles.round()} miles';
+        if (tz != null && tz != 0) {
+          travel +=
+              ' and ${tz.abs().round()} time zone${tz.abs() == 1 ? '' : 's'}';
+        }
+      }
+      final early = g['early'];
+      final body = early is List && early.isNotEmpty
+          ? ' ${early.join(' and ')} kicks off at 10 AM or earlier on its home clock.'
+          : '';
+      if (rest.isNotEmpty) {
+        out.add('Rest and travel: ${rest.join(', ')}$travel.$body');
+      }
+      final ref = g['ref'];
+      if (ref is String) {
+        final pens = _num(g['refPens']) ?? 0;
+        final total = _num(g['refTotal']) ?? 0;
+        final home = _num(g['refHome']) ?? 0;
+        out.add(
+          'Referee: $ref. The crew calls ${_signed(pens)} penalties a game vs average; '
+          'their games land ${_signed(total)} points vs the closing total and the home side '
+          '${_signed(home)} vs the spread (shrunk toward zero).',
+        );
+      }
+    }
+    return out;
+  }
+
   int get _teams32 => _defenseVs.isEmpty ? _teams.length : _defenseVs.length;
 
   /// Short lines for a game. Empty when either team is missing.
@@ -390,6 +536,7 @@ class EloRatings {
       '${a.code} offense ${a.offense}, defense ${a.defense}. ${h.code} offense ${h.offense}, defense ${h.defense}.',
     ];
     lines.addAll(_lineMatchups(a, h));
+    lines.addAll(_angleLines(a, h));
     final qbs = <String>[];
     for (final t in [a, h]) {
       final qb = t.quarterback == null
@@ -448,6 +595,17 @@ class EloRatings {
       lines.add(
         'Traits (40-99 vs his position): '
         '${p.attributes.entries.map((e) => '${e.key} ${e.value}').join(', ')}.',
+      );
+    }
+    if (p.situations.isNotEmpty) {
+      final role = p.position == 'QB'
+          ? 'passers'
+          : p.position == 'RB' || p.position == 'FB'
+          ? 'rushers'
+          : 'receivers';
+      lines.add(
+        'Situations (40-99 vs other $role): '
+        '${p.situations.entries.map((e) => '${e.key} ${e.value}').join(', ')}.',
       );
     }
     if (opponent != null && opponent != p.team) {
