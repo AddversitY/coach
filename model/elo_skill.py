@@ -560,7 +560,9 @@ POSITION_ATTRS = {
     "QB": ["Speed", "Size", "Accuracy (over expected)", "Decisions (avoids picks)", "Pocket (avoids sacks)",
            "Aggressiveness", "Quick release", "Deep threat", "Rushing", "Durability"],
     "DEF": ["Speed", "Agility", "Jumping", "Strength", "Size", "Pass rush", "Coverage", "Run stopping", "Durability"],
+    "OL": ["Speed", "Agility", "Jumping", "Strength", "Size", "Durability"],
 }
+OL_POSITIONS = {"T", "G", "C", "OL", "OT", "OG"}
 
 
 def percentile_40_99(values: pd.Series, groups: pd.Series, higher: bool = True) -> pd.Series:
@@ -581,7 +583,7 @@ def player_attributes(rated: pd.DataFrame, current: pd.DataFrame, cb: pd.DataFra
     """
     df = rated[["player", "position", "side"]].drop_duplicates(["player", "side"]).copy()
     df["group"] = np.where(df.side == "defense", df.position.map(DEF_GROUP).fillna("DEF"),
-                           df.position.map(lambda p: POS_MAP.get(p, p)))
+                           df.position.map(lambda p: "OL" if p in OL_POSITIONS else POS_MAP.get(p, p)))
     phys = cb.reindex(df.player)
     phys.index = df.index
     df["forty"] = phys.forty
@@ -621,7 +623,7 @@ def player_attributes(rated: pd.DataFrame, current: pd.DataFrame, cb: pd.DataFra
         pct = percentile_40_99(vals, df.group, higher)
         df[f"attr::{name}"] = pct
     for idx, r in df.iterrows():
-        key = "DEF" if r.side == "defense" else POS_MAP.get(r.position, r.position)
+        key = "DEF" if r.side == "defense" else ("OL" if r.position in OL_POSITIONS else POS_MAP.get(r.position, r.position))
         names = POSITION_ATTRS.get(key, POSITION_ATTRS["DEF"] if r.side == "defense" else [])
         out[(r.player, r.side)] = {n: int(r[f"attr::{n}"]) for n in names if pd.notna(r.get(f"attr::{n}"))}
     df["def_production"] = np.where(df.group == "DL", df.pass_rush * 1.0 + df.run_stop * 0.5,

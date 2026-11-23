@@ -23,6 +23,7 @@ import pandas as pd
 
 import elo_backtest as eb
 import elo_skill
+import elo_trenches
 from elo_data import fetch, load_games, load_plays, load_snaps
 from elo_players import build_lineups, run_player_ratings, unit_epa
 from elo_props import METRICS, apply_scale, fit_scale, over_chance, player_positions, run_prop_ratings
@@ -222,13 +223,36 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names, skill=
     tdf["overall"] = overall(tdf["net"])
     for c in ("offense", "defense"):
         tdf[c] = overall((tdf.passOffense * 34 + tdf.runOffense * 26) if c == "offense" else -(tdf.passDefense * 34 + tdf.runDefense * 26))
+    unit = {}
+    if skill is not None and skill.get("trench") is not None:
+        trench, lus = skill["trench"], skill["trench_lineups"]
+        played = games[(games.season == season) & games.result.notna()].sort_values("week")
+        last_lu = {}
+        for g in played.itertuples(index=False):
+            for team, side in ((g.home_team, "home"), (g.away_team, "away")):
+                if (g.game_id, side) in lus:
+                    last_lu[team] = lus[(g.game_id, side)]
+        for t, lu in last_lu.items():
+            u = {}
+            for k in elo_trenches.TrenchRatings.KINDS:
+                u[f"block_{k}"] = trench.strength(lu["ol"], "ol", k, season, wi) + trench.strength(lu["qb"], "qb", k, season, wi)
+                u[f"front_{k}"] = trench.strength(lu["front"], "front", k, season, wi)
+            unit[t] = u
+        udf = pd.DataFrame(unit).T
+        if not udf.empty:
+            udf["passBlock"] = overall(udf.block_pass_pro)
+            udf["runBlock"] = overall(udf.block_run_stuff + udf.block_run_push)
+            udf["passRush"] = overall(udf.front_pass_pro)
+            udf["runDefense"] = overall(udf.front_run_stuff + udf.front_run_push)
+            unit = udf[["passBlock", "runBlock", "passRush", "runDefense"]].astype(int).to_dict("index")
     team_out = []
     for r in tdf.sort_values("net", ascending=False).itertuples(index=False):
         team_out.append({"team": r.team, "overall": int(r.overall), "offense": int(r.offense), "defense": int(r.defense),
                          "netPointsVsAverage": round(float(r.net), 1),
                          "passOffenseEpa": round(float(r.passOffense), 3), "passDefenseEpaAllowed": round(float(r.passDefense), 3),
                          "runOffenseEpa": round(float(r.runOffense), 3), "runDefenseEpaAllowed": round(float(r.runDefense), 3),
-                         "specialTeamsPoints": round(float(r.specialTeams), 2), "quarterback": names.get(r.qb, r.qb)})
+                         "specialTeamsPoints": round(float(r.specialTeams), 2), "quarterback": names.get(r.qb, r.qb),
+                         **({"lines": unit[r.team]} if r.team in unit else {})})
     # Players: everyone with snaps this season.
     sn = snaps[(snaps.season == season)].dropna(subset=["gsis_id"])
     agg = sn.groupby(["gsis_id"]).agg(team=("team", "last"), position=("position", "last"),
@@ -264,6 +288,66 @@ def current_ratings(tr, pr_players, pr_props, games, snaps, plays, names, skill=
             if m.sum() > 1:
                 pr_ = pdf.loc[m, "prod"].fillna(pdf.loc[m, "prod"].median())
                 pdf.loc[m, "score"] = z(pdf.loc[m, "value"]) + z(pr_)
+        trench = skill.get("trench")
+        if trench is not None:
+            tb = trench.books
+            def tval(unit, kind, pid):
+                return tb[(unit, kind)].get(pid, season, wi)[0]
+            line_attrs = {}
+            for i, r in pdf.iterrows():
+                if r.side == "offense" and r.position in elo_trenches.OL:
+                    vals = {k: tval("ol", k, r.player) for k in elo_trenches.TrenchRatings.KINDS}
+                elif r.side == "defense" and r.position in elo_trenches.FRONT:
+                    vals = {k: tval("front", k, r.player) for k in elo_trenches.TrenchRatings.KINDS}
+                else:
+                    continue
+                for k, v in vals.items():
+                    pdf.loc[i, f"line_{k}"] = v
+            for side, units, label in (("offense", elo_trenches.OL, ("Pass block", "Run block (no stuffs)", "Run push")),
+                                       ("defense", elo_trenches.FRONT, ("Pocket pressure", "Run stuffing", "Run fits"))):
+                m = (pdf.side == side) & pdf.position.isin(units)
+                if m.sum() < 2:
+                    continue
+                for k, name in zip(elo_trenches.TrenchRatings.KINDS, label):
+                    pct = (40 + 59 * pdf.loc[m, f"line_{k}"].rank(pct=True)).round()
+                    for i, v in pct.items():
+                        line_attrs.setdefault(i, {})[name] = int(v)
+                line_sum = sum(z(pdf.loc[m, f"line_{k}"]) for k in elo_trenches.TrenchRatings.KINDS)
+                if side == "offense":
+                    pdf.loc[m, "score"] = z(pdf.loc[m, "value"]) + 2 * line_sum / 3
+                else:
+                    pdf.loc[m, "score"] = pdf.loc[m, "score"] + line_sum / 3
+            for i, extra in line_attrs.items():
+                key = (pdf.at[i, "player"], pdf.at[i, "side"])
+                attrs[key] = {**extra, **attrs.get(key, {})}
+    # Kickers and punters.
+    kick = skill.get("kick") if skill is not None else None
+    if kick is not None:
+        st = snaps[(snaps.season == season)].dropna(subset=["gsis_id"])
+        st = st[st.position.isin(["K", "P"])].groupby("gsis_id").agg(team=("team", "last"), position=("position", "last"),
+                                                                       st=("st_snaps", "sum"))
+        krows = []
+        for pid, r in st[st.st >= 30].iterrows():
+            if pid not in kick.index:
+                continue
+            k = kick.loc[pid]
+            krows.append({"player": pid, "team": r.team, "position": r.position, "side": "special", "value": 0.0,
+                          "snaps": int(r.st), **{c: k[c] for c in kick.columns}})
+        kdf = pd.DataFrame(krows)
+        if not kdf.empty:
+            for pos, parts in (("K", {"fg_over_expected": ("Accuracy (over expected)", 1.0), "long_range": ("Range (50+)", 0.5),
+                                      "xp_rate": ("Extra points", 0.3)}),
+                               ("P", {"net_over_expected": ("Net punting", 1.0), "inside_20": ("Inside the 20", 0.5)})):
+                m = kdf.position == pos
+                if m.sum() < 2:
+                    continue
+                kdf.loc[m, "score"] = sum(w * z(kdf.loc[m, c].fillna(kdf.loc[m, c].median())) for c, (_, w) in parts.items())
+                for c, (name, _) in parts.items():
+                    pct = (40 + 59 * kdf.loc[m, c].rank(pct=True)).round()
+                    for i, v in pct.items():
+                        if pd.notna(v):
+                            attrs.setdefault((kdf.at[i, "player"], "special"), {})[name] = int(v)
+            pdf = pd.concat([pdf, kdf[[c for c in kdf.columns if c in pdf.columns or c == "score"]]], ignore_index=True)
     pdf["overall"] = pdf.groupby(["position", "side"])["score"].transform(overall)
     players_out = []
     for r in pdf.sort_values(["position", "overall"], ascending=[True, False]).itertuples(index=False):
@@ -310,7 +394,8 @@ def app_ratings(current: dict) -> dict:
         "note": ("Coach ratings are an extra number to weigh. They are not part of Coach's chance, "
                  "and in testing they did not beat the closing line (docs/ELO_RATINGS.md)."),
         "teams": [{"t": r["team"], "o": r["overall"], "off": r["offense"], "def": r["defense"],
-                   "net": r["netPointsVsAverage"], "qb": r["quarterback"]} for r in current["teams"]],
+                   "net": r["netPointsVsAverage"], "qb": r["quarterback"],
+                   **({"lines": r["lines"]} if r.get("lines") else {})} for r in current["teams"]],
         "players": players,
         "defVs": {r["team"]: {"WR": r["yardsPerTargetAllowedVsWR"], "TE": r["yardsPerTargetAllowedVsTE"],
                               "RB": r["yardsPerTargetAllowedVsRB"], "ypc": r["yardsPerCarryAllowed"]}
@@ -343,6 +428,15 @@ def main():
     eb.MARGIN_FEATURES = eb.MARGIN_FEATURES + ["p_pass", "p_run"]
     eb.TOTAL_FEATURES = eb.TOTAL_FEATURES + ["p_pass_sum", "p_run_sum"]
     report["teamPlusPlayers"] = game_report(feat, 2015, last)
+    trench_obs = elo_trenches.line_observations(cache, range(2013, last + 1))
+    trench_lu = elo_trenches.trench_lineups(snaps)
+    tfeat, trench = elo_trenches.run_trenches(games[games.season >= 2013], trench_lu, trench_obs)
+    feat = feat.merge(tfeat, on="game_id", how="left")
+    tcols = [c for c in tfeat.columns if c != "game_id"]
+    feat[tcols] = feat[tcols].fillna(0.0)
+    eb.MARGIN_FEATURES = eb.MARGIN_FEATURES + ["t_pass_pro", "t_run_stuff", "t_run_push"]
+    eb.TOTAL_FEATURES = eb.TOTAL_FEATURES + ["t_pass_pro_sum", "t_run_stuff_sum", "t_run_push_sum"]
+    report["teamPlusPlayersPlusLines"] = game_report(feat, 2015, last)
     (out / "game_backtest.json").write_text(json.dumps(report, indent=1))
     pos = player_positions(cache / "players.parquet")
     g13 = games[games.season >= 2013]
@@ -371,7 +465,9 @@ def main():
         pd.DataFrame({"player": tot.index[tot.de >= 100], "position": tot.position[tot.de >= 100].values, "side": "defense"}),
     ])
     attrs, prod = elo_skill.player_attributes(rated_rows, cur, cb, def_prod, avail, season_now)
-    skill = {"rated": rated, "attributes": attrs, "production": prod}
+    kick = elo_trenches.kicking_ratings(cache, range(2013, last + 1), season_now, week_now)
+    skill = {"rated": rated, "attributes": attrs, "production": prod, "trench": trench,
+             "trench_lineups": trench_lu, "kick": kick}
     rp = elo_skill.receiving_projection(hist, skill_games, range(last - 4, last + 1))
     check = skill_prop_check(rp, prop_rows)
     sb = json.loads((out / "skill_backtest.json").read_text())
