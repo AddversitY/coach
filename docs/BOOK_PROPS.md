@@ -30,7 +30,7 @@ A real browser on the owner's home connection shows all three books' props while
 
 The DraftKings probe now asks for the current feed instead of the retired `api/v5/eventgroups` one, so the daily check tests the right address. No parser is added until a feed answers from a free server, because a parser written without a real response would be a guess. A paid proxy is not used.
 
-The free route that is known to work is a home connection. That would mean a small collector on the owner's computer during the pre-kickoff windows, posting to the existing ingest route. It is not built. It needs the owner's yes.
+The free route that works is a home connection. DraftKings is now collected from the owner's desktop: see [HOME_COLLECTOR.md](HOME_COLLECTOR.md).
 
 ## How often
 

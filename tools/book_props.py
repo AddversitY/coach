@@ -867,13 +867,30 @@ def latest_snapshot(history):
     }
 
 
+def _read_store(target):
+    try:
+        request = urllib.request.Request(target, headers={'User-Agent': price_history.USER_AGENT, 'Accept': 'application/json'})
+        with urllib.request.urlopen(request, timeout=20) as response:
+            body = json.loads(response.read().decode('utf-8'))
+    except Exception:
+        return None
+    return body if isinstance(body, dict) and isinstance(body.get('observations'), list) else None
+
+
 def push_latest(history, url, secret, fetch):
     if not url or not secret:
         return False
     target = url.rstrip('/')
     if not target.endswith('/v1/book-prices'):
         target = target + '/v1/book-prices'
-    payload = json.dumps(latest_snapshot(history)).encode()
+    snapshot = latest_snapshot(history)
+    current = _read_store(target)
+    if current is not None:
+        # Keep prices other collectors saved (the Worker cron, the home computer).
+        import home_collector
+        merged = home_collector.merge_store(current, snapshot['observations'], _now())
+        snapshot = {**snapshot, 'observations': merged['observations']}
+    payload = json.dumps(snapshot).encode()
     request = urllib.request.Request(
         target,
         data=payload,
