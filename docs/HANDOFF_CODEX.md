@@ -118,6 +118,8 @@ about as accurate as the closing price, not better.
 | Opening lines 2008-21 | Model gap 4+ at opener +0.6% CLV (not significant) | [OPENING_LINES.md](OPENING_LINES.md) |
 | Non-QB starter outs | Lines barely move (WR 0.5, OL 0.25, CB 0.2 pts); negative CLV | [FREE_SIGNALS.md](FREE_SIGNALS.md) |
 | 18 public-bias tests | None passed | `research/endzone-eval/public_bias_results_2026-11-22.txt` |
+| Niche angles (9 ideas, PR #48) | Mostly no edge; Denver visitor unders and wind/cold kicker unders are proxy-line leads | [NICHE_EDGES.md](NICHE_EDGES.md) |
+| Backup projections (PR #49) | Beat backups' own averages; real-price sample too small (6 props) | [BACKUP_PLAYERS.md](BACKUP_PLAYERS.md) |
 | Same-game parlay correlation | QB+WR1 lift 1.29, QB+TE1 1.21; no free SGP prices to test against | [SGP_CORRELATION.md](SGP_CORRELATION.md) |
 
 Watch out for look-ahead: comparing to a Pinnacle open that was posted later
@@ -134,6 +136,40 @@ falsely showed +3.4%, and using the actual starter at the opener gave +3.0%.
 3. **Kalshi as a free sharp reference.** Public API, no key. One hour before
    kickoff its Brier was 0.2069 vs book close 0.2074. Saved in
    `assets/prediction-markets.json`. Polymarket is also reachable.
+4. **Visiting players at Denver, unders** (yards and receptions). Under lift
+   +6.3% (2007-14) and +2.9% (2015-21) on a proxy line (player's 10-game
+   median); the same Denver defense away from altitude shows nothing. Not yet
+   tested on real closing lines. [NICHE_EDGES.md](NICHE_EDGES.md).
+5. **Kicking-points unders in 15+ mph wind or 32°F or colder.** Under lift
+   +4.6% / +4.7% on a proxy line, strongest for strong-legged kickers. No free
+   kicker prop prices yet, so live alerts are logged without a price.
+6. Smaller leads: milestone overs in the last two weeks (+7.0% / +4.2% lift),
+   and betting against a team likely to rest starters in the final week
+   (+5.0% / +5.6% CLV, only 40 games).
+
+### Niche edge tests (PR #48, Nov 23)
+
+Nine ideas in [NICHE_EDGES.md](NICHE_EDGES.md) (`model/niche_backtest.py`,
+`model/player_angles_backtest.py`). No edge: sticky prop lines (lost badly),
+dome/turf/altitude game totals, revenge games, short weeks and Thanksgiving,
+first-quarter/first-half scripting, teams out of the race. Slow books
+(BetWay, Courtside, Dabble barely follow Pinnacle) still lose after the
+margin at every real sportsbook. Leads are listed above. Live logs, hourly in
+`niche-watch.yml`: `assets/niche-watch.json`, `assets/public-splits.json`
+(signals only, never shown in the app), `assets/book-lag.json`, all scored by
+`tools/edge_log.py`.
+
+### Backup players stepping in (PR #49, Nov 23)
+
+[BACKUP_PLAYERS.md](BACKUP_PLAYERS.md). When a starting QB/RB/WR/TE is newly
+ruled out, Coach projects his backup (`model/backup_backtest.py`; fitted
+share of the missing starter's volume: QB 0.72, RB carries 0.43, WR targets
+0.20, TE targets 0.31). On 265 step-ins in 2021-25 the projection beat the
+backup's own recent average in every market but one, but ran high for backup
+QBs and RBs (207 vs 166 passing yards). Real-price test: only 6 props, says
+nothing. `tools/backup_watch.py` runs in the 10-minute news watch, logs the
+first price after the news to `assets/backup-watch.json`, and grades it by
+CLV. Game answers show a "Next man up" line marked as research.
 
 ### Live grading toward ~200 bets
 
@@ -141,8 +177,9 @@ Every flagged bet (line shop, QB news, Coach suggestions) is saved with the
 price and time shown, then graded by closing line value. A flag type becomes a
 real pick only after **200 scored bets** with the low end of the 90% CLV range
 above zero. As of Nov 23: suggestions have 97 graded (-2.8% CLV), line shop
-and QB news have 0 live graded. Files: `assets/suggestion-log.json`,
-`assets/line-shop.json`, `assets/qb-news.json`.
+and QB news have 0 live graded. Niche angles and backup step-ins started logging Nov 23. Files: `assets/suggestion-log.json`,
+`assets/line-shop.json`, `assets/qb-news.json`, `assets/niche-watch.json`,
+`assets/book-lag.json`, `assets/backup-watch.json`.
 
 ## Pending: desktop DraftKings collector
 
@@ -164,15 +201,13 @@ is done.
 
 ## Open ideas (not started unless noted)
 
-- **Backup-player props:** in progress in another Claude thread ("Find soft
-  prices on backup players"). Idea: books may price backups slowly when a
-  starter is ruled out.
-- **Prop line anchoring:** do books anchor prop lines to last season or
-  round numbers in ways we can measure?
-- **Public-money fade:** needs saved public bet% / money% history (free
-  SportsBettingDime JSON, waiting on Vincent's go before collecting).
-- **Turf / stadium splits** for players and teams.
-- **Revenge spots** (player vs former team, coach vs former team).
+Backup players, prop line anchoring, public-money fade, turf/stadium splits,
+revenge spots and slow books were all tested on Nov 23 (sections above).
+What is left:
+
+- **Public-money fade, properly:** `tools/public_splits.py` now saves free
+  SportsBettingDime signals going forward; a real test needs a season of them.
+- **Kicker prop prices:** needed to test the wind/cold kicking under.
 - **Book blind spots:** niche props (longest reception, kicking points,
   tackles). `tools/book_props.py` now publishes `unmappedMarketLabels` so the
   labels can be mapped after a game-day run. [NICHE_PROPS.md](NICHE_PROPS.md).
@@ -181,7 +216,7 @@ is done.
 
 ## GitHub state (checked Nov 23, 2026)
 
-- PRs #38-#46 are merged. `main` is up to date; the newest commits are the
+- PRs #38-#49 are merged. `main` is up to date; the newest commits are the
   bots' data refreshes.
 - Open PRs **#7** and **#8** are old Cursor PRs from October / Nov 12. Their
   work was redone later and is in `main`; they can be closed. Left open for
