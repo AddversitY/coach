@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import '../domain/elo_ratings.dart';
 import '../domain/history.dart';
 import '../domain/matchup.dart';
 import '../domain/player_stats.dart';
@@ -89,6 +90,14 @@ Future<PlayBook> loadBundledPlayUnits() async {
 PlayBook _decodePlayUnits(String json) => PlayBook.fromJson(
   Map<String, dynamic>.from(jsonDecode(json.replaceFirst('\uFEFF', ''))),
 );
+
+/// Coach ratings (Elo). Extra context only; never part of a chance.
+Future<EloRatings> loadBundledEloRatings() async {
+  final json = await rootBundle.loadString('assets/elo-ratings.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return EloRatings.empty;
+  return EloRatings.fromJson(Map<String, dynamic>.from(decoded));
+}
 
 Future<TradeBook> loadBundledTrades() async {
   final json = await rootBundle.loadString('assets/nfl-trades.json');

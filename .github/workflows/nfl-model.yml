@@ -66,6 +66,9 @@ jobs:
       - name: Evaluate joint workload and efficiency production forecasts
         run: python model/production_forecast.py --schedule model/.cache/games.csv
 
+      - name: Refresh Coach ratings (Elo), an extra metric that is not part of any chance
+        run: python model/elo_report.py --cache model/.cache/nflverse --schedule model/.cache/games.csv
+
       - name: Set up Flutter to check the regenerated reports
         uses: subosito/flutter-action@v2
         with:
@@ -96,13 +99,15 @@ jobs:
             assets/football-research.json
             assets/workload-model.json
             assets/production-model.json
+            assets/elo-ratings.json
+            research/elo-ratings/
 
       - name: Commit a refreshed model report
         if: github.event_name != 'pull_request'
         run: |
           git config user.name "odds-edge-model"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/game-error-audit.json assets/regime-research.json assets/team-efficiency.json assets/football-research.json assets/workload-model.json assets/production-model.json
+          git add assets/nfl-model.json assets/parlay-calibration.json assets/game-forecast-model.json assets/forecast-lab.json assets/game-error-audit.json assets/regime-research.json assets/team-efficiency.json assets/football-research.json assets/workload-model.json assets/production-model.json assets/elo-ratings.json research/elo-ratings
           if git diff --cached --quiet; then
             echo "Model reports unchanged."
           else

@@ -78,8 +78,29 @@ class BriefingView extends StatelessWidget {
               ],
             ),
           if (brief.props != null) _props(brief.props!),
+          if (brief.eloLines.isNotEmpty || brief.eloNote != null) _elo(),
         ],
       ),
+    );
+  }
+
+  /// Coach ratings sit under their own heading so they read as an extra
+  /// number to weigh, separate from the chance.
+  Widget _elo() {
+    final note = brief.eloNote;
+    return ExpansionTile(
+      key: const Key('coach-elo-ratings'),
+      tilePadding: EdgeInsets.zero,
+      title: Text('Coach ratings (Elo)', style: CoachType.label),
+      children: [
+        for (final line in brief.eloLines)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(line, style: CoachType.label),
+          ),
+        if (note != null && note.isNotEmpty)
+          Text(note, style: CoachType.label.copyWith(fontSize: 11)),
+      ],
     );
   }
 

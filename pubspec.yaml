@@ -75,6 +75,7 @@ flutter:
     - assets/line-movement-backtest.json
     - assets/prop-usage.json
     - assets/prop-closes.json
+    - assets/elo-ratings.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
