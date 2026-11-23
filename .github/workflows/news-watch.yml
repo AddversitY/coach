@@ -1,0 +1,55 @@
+name: News watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 10 minutes. Free sources only (ESPN injuries, Kalshi, Open-Meteo);
+    # no Odds API credits are spent here.
+    - cron: '*/10 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: price-history
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Starters ruled out (ESPN injury feed)
+        run: python tools/qb_news.py --ratings assets/elo-ratings.json --history assets/price-history.json --output assets/qb-news.json || echo "Starter news skipped."
+      - name: Kalshi prices against the books
+        run: python tools/prediction_markets.py --history assets/price-history.json --output assets/prediction-markets.json || echo "Kalshi skipped."
+      - name: Hourly wind for open-air games
+        run: |
+          if curl -fsSL --max-time 60 -o "$RUNNER_TEMP/coach-index.json" https://addversity.github.io/coach/data/coach-index.json; then
+            python tools/weather_watch.py --index "$RUNNER_TEMP/coach-index.json" --history assets/price-history.json --output assets/weather-watch.json || echo "Weather skipped."
+          fi
+      - name: Commit only when an alert or price changed
+        run: |
+          files="assets/qb-news.json assets/prediction-markets.json assets/weather-watch.json"
+          git add -N $files 2>/dev/null || true
+          # Ignore lines that only carry a check time.
+          if ! git diff -U0 -- $files | grep -E '^[+-][^+-]' | grep -vqE '"(checkedAt|loggedAt)"'; then
+            echo "Nothing new."
+            exit 0
+          fi
+          git config user.name "odds-edge-evidence"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $files
+          git commit -m "News watch: starters, Kalshi and wind"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main

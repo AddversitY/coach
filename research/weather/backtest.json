@@ -1,0 +1,139 @@
+{
+ "source": "nflverse game-day wind (CC BY 4.0); Sportsbook Reviews Online opening and closing totals",
+ "find 2007-2014": {
+  "wind10+": {
+   "games": 468,
+   "totalMovePoints": -1.46,
+   "underAtOpenerClv": {
+    "n": 468,
+    "mean": -0.0203,
+    "low": -0.0289,
+    "high": -0.0106
+   },
+   "underAtOpenerProfit": {
+    "n": 460,
+    "mean": 0.0043,
+    "low": -0.0704,
+    "high": 0.0749
+   },
+   "underAtCloseProfit": {
+    "n": 456,
+    "mean": -0.0078,
+    "low": -0.0789,
+    "high": 0.0676
+   }
+  },
+  "wind15+": {
+   "games": 167,
+   "totalMovePoints": -3.94,
+   "underAtOpenerClv": {
+    "n": 167,
+    "mean": 0.0098,
+    "low": -0.0083,
+    "high": 0.03
+   },
+   "underAtOpenerProfit": {
+    "n": 163,
+    "mean": 0.1361,
+    "low": 0.0073,
+    "high": 0.2649
+   },
+   "underAtCloseProfit": {
+    "n": 165,
+    "mean": 0.0876,
+    "low": -0.0281,
+    "high": 0.2033
+   }
+  },
+  "wind20+": {
+   "games": 47,
+   "totalMovePoints": -12.16,
+   "underAtOpenerClv": {
+    "n": 47,
+    "mean": 0.044,
+    "low": 0.0005,
+    "high": 0.0936
+   },
+   "underAtOpenerProfit": {
+    "n": 46,
+    "mean": 0.0791,
+    "low": -0.1285,
+    "high": 0.2866
+   },
+   "underAtCloseProfit": {
+    "n": 47,
+    "mean": -0.0251,
+    "low": -0.2689,
+    "high": 0.2186
+   }
+  }
+ },
+ "check 2015-2021": {
+  "wind10+": {
+   "games": 403,
+   "totalMovePoints": -0.77,
+   "underAtOpenerClv": {
+    "n": 403,
+    "mean": 0.0009,
+    "low": -0.011,
+    "high": 0.0123
+   },
+   "underAtOpenerProfit": {
+    "n": 396,
+    "mean": 0.1426,
+    "low": 0.0654,
+    "high": 0.2149
+   },
+   "underAtCloseProfit": {
+    "n": 401,
+    "mean": 0.0855,
+    "low": 0.0045,
+    "high": 0.1664
+   }
+  },
+  "wind15+": {
+   "games": 143,
+   "totalMovePoints": -1.06,
+   "underAtOpenerClv": {
+    "n": 143,
+    "mean": 0.0186,
+    "low": -0.004,
+    "high": 0.0399
+   },
+   "underAtOpenerProfit": {
+    "n": 142,
+    "mean": 0.1562,
+    "low": 0.0352,
+    "high": 0.2907
+   },
+   "underAtCloseProfit": {
+    "n": 143,
+    "mean": 0.068,
+    "low": -0.0521,
+    "high": 0.2015
+   }
+  },
+  "wind20+": {
+   "games": 32,
+   "totalMovePoints": -3.08,
+   "underAtOpenerClv": {
+    "n": 32,
+    "mean": 0.125,
+    "low": 0.0825,
+    "high": 0.1684
+   },
+   "underAtOpenerProfit": {
+    "n": 31,
+    "mean": 0.2317,
+    "low": -0.0147,
+    "high": 0.478
+   },
+   "underAtCloseProfit": {
+    "n": 32,
+    "mean": -0.0455,
+    "low": -0.2841,
+    "high": 0.2528
+   }
+  }
+ }
+}
