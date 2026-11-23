@@ -64,11 +64,26 @@ jobs:
           python tools/line_shop.py \
             --history assets/price-history.json \
             --output assets/line-shop.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Log Coach's current suggestions and grade earlier ones by closing line value
+        run: |
+          if curl -fsSL --max-time 60 -o "$RUNNER_TEMP/coach-index.json" https://addversity.github.io/coach/data/coach-index.json; then
+            node hosting/suggestion-log.mjs "$RUNNER_TEMP/coach-index.json" assets/price-history.json "$RUNNER_TEMP/suggestions.json" || echo "Suggestion log skipped."
+          fi
+          python tools/suggestion_grade.py \
+            --suggestions "$RUNNER_TEMP/suggestions.json" \
+            --log assets/suggestion-log.json \
+            --history assets/price-history.json \
+            --closing-lines assets/closing-lines.json
+      - name: Watch for starting quarterbacks ruled out
+        run: python tools/qb_news.py --ratings assets/elo-ratings.json --history assets/price-history.json --output assets/qb-news.json || echo "Quarterback news watch skipped."
       - name: Commit saved prices and the scorecard
         run: |
           git config user.name "odds-edge-evidence"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/price-history.json assets/self-grade.json assets/line-moves.json assets/book-price-coverage.json assets/accuracy-scorecard.json assets/line-shop.json
+          git add assets/price-history.json assets/self-grade.json assets/line-moves.json assets/book-price-coverage.json assets/accuracy-scorecard.json assets/line-shop.json assets/suggestion-log.json assets/qb-news.json
           if git diff --cached --quiet; then
             echo "Price history unchanged."
           else
