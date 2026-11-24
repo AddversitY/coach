@@ -802,11 +802,30 @@
     "kickoff": "2026-12-01T01:15:00Z",
     "player": ""
    }
+  },
+  {
+   "away": "WAS",
+   "home": "ARI",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "fade the public (spread)",
+   "bucket": "80%+",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Arizona Cardinals",
+    "line": 7.0,
+    "book": "betmgm",
+    "decimal": 1.93,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "kickoff": "2026-11-29T21:25:00Z",
+    "player": ""
+   }
   }
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-24T06:58:08.661788Z",
+  "checkedAt": "2026-11-24T18:53:28.550520Z",
   "provider": "SportsBettingDime public feed"
  },
  "current": [
@@ -816,7 +835,7 @@
    "kickoff": "2026-11-26T01:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "over",
@@ -834,8 +853,8 @@
    "home": "LA",
    "kickoff": "2026-11-26T01:00:00Z",
    "angle": "fade the public (moneyline)",
-   "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "bucket": "70-80%",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -854,7 +873,7 @@
    "kickoff": "2026-11-26T01:00:00Z",
    "angle": "follow the money (moneyline)",
    "bucket": "money 20+ points over bets",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -873,7 +892,7 @@
    "kickoff": "2026-11-26T18:00:00Z",
    "angle": "follow the money (spread)",
    "bucket": "money 15+ points over bets",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -892,7 +911,7 @@
    "kickoff": "2026-11-26T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "over",
@@ -911,7 +930,7 @@
    "kickoff": "2026-11-26T18:00:00Z",
    "angle": "follow the money (moneyline)",
    "bucket": "money 15+ points over bets",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -930,7 +949,7 @@
    "kickoff": "2026-11-26T21:30:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "over",
@@ -949,7 +968,7 @@
    "kickoff": "2026-11-26T21:30:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -968,7 +987,7 @@
    "kickoff": "2026-11-27T01:20:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "over",
@@ -987,7 +1006,7 @@
    "kickoff": "2026-11-27T01:20:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1005,8 +1024,8 @@
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
    "angle": "follow the money (moneyline)",
-   "bucket": "money 20+ points over bets",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "bucket": "money 15+ points over bets",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1025,7 +1044,7 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1044,7 +1063,7 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1063,7 +1082,7 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1082,7 +1101,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1101,7 +1120,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1120,7 +1139,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1139,7 +1158,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1158,7 +1177,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1177,7 +1196,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1196,7 +1215,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1214,8 +1233,8 @@
    "home": "MIA",
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
-   "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "bucket": "70-80%",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1234,7 +1253,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1253,7 +1272,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1272,7 +1291,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1291,7 +1310,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1310,7 +1329,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1329,7 +1348,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1348,7 +1367,7 @@
    "kickoff": "2026-11-29T21:05:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1365,9 +1384,28 @@
    "away": "WAS",
    "home": "ARI",
    "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "fade the public (spread)",
+   "bucket": "80%+",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Arizona Cardinals",
+    "line": 7.0,
+    "book": "betmgm",
+    "decimal": 1.93,
+    "priceAt": "2026-11-23T19:26:30.417658Z",
+    "kickoff": "2026-11-29T21:25:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "WAS",
+   "home": "ARI",
+   "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1386,7 +1424,7 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1405,7 +1443,7 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1424,7 +1462,7 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1443,7 +1481,7 @@
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1461,8 +1499,8 @@
    "home": "CLE",
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "fade the public (moneyline)",
-   "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "bucket": "70-80%",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1480,8 +1518,8 @@
    "home": "CLE",
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "follow the money (moneyline)",
-   "bucket": "money 20+ points over bets",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "bucket": "money 25+ points over bets",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1500,7 +1538,7 @@
    "kickoff": "2026-12-01T01:15:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1519,7 +1557,7 @@
    "kickoff": "2026-12-01T01:15:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-24T06:58:08.661788Z",
+   "checkedAt": "2026-11-24T18:53:28.550520Z",
    "bet": {
     "market": "h2h",
     "side": "away",
