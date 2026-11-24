@@ -19,12 +19,12 @@
     "allVariablesPlusCombine": 0.3714
    },
    "2026": {
-    "allVariables": 0.363,
-    "simpleRating": 0.2788,
-    "allVariablesPlusCombine": 0.3618
+    "allVariables": 0.362,
+    "simpleRating": 0.2805,
+    "allVariablesPlusCombine": 0.3609
    }
   },
-  "playerGames": 9579
+  "playerGames": 9692
  },
  "TE": {
   "target": "rec_yds/team_db",
@@ -46,12 +46,12 @@
     "allVariablesPlusCombine": 0.4296
    },
    "2026": {
-    "allVariables": 0.4375,
-    "simpleRating": 0.3496,
-    "allVariablesPlusCombine": 0.4348
+    "allVariables": 0.4305,
+    "simpleRating": 0.3463,
+    "allVariablesPlusCombine": 0.4283
    }
   },
-  "playerGames": 6036
+  "playerGames": 6108
  },
  "RB": {
   "target": "scrimmage/team_plays",
@@ -73,12 +73,12 @@
     "allVariablesPlusCombine": 0.4875
    },
    "2026": {
-    "allVariables": 0.4937,
-    "simpleRating": 0.4688,
-    "allVariablesPlusCombine": 0.4897
+    "allVariables": 0.502,
+    "simpleRating": 0.4734,
+    "allVariablesPlusCombine": 0.4983
    }
   },
-  "playerGames": 5890
+  "playerGames": 5957
  },
  "QB": {
   "target": "pass_epa/dropbacks",
@@ -100,12 +100,12 @@
     "allVariablesPlusCombine": 0.1219
    },
    "2026": {
-    "allVariables": 0.1451,
-    "simpleRating": 0.0904,
-    "allVariablesPlusCombine": 0.1359
+    "allVariables": 0.1594,
+    "simpleRating": 0.0991,
+    "allVariablesPlusCombine": 0.1536
    }
   },
-  "playerGames": 2067
+  "playerGames": 2091
  },
  "receivingYardPropsVsBooks": {
   "2026": {
