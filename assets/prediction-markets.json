@@ -30,13 +30,58 @@
    "booksFair": 0.1765,
    "edge": 0.0381,
    "kind": "Kalshi beats the books"
+  },
+  {
+   "at": "2026-11-23T19:26:30.417658Z",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "away": "WAS",
+   "home": "ARI",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "betmgm",
+   "decimal": 1.31,
+   "kalshiFair": 0.7811,
+   "edge": 0.0232,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-24T05:22:27.499899Z",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "away": "WAS",
+   "home": "ARI",
+   "market": "h2h",
+   "player": "",
+   "side": "home",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 4.0,
+   "booksFair": 0.256,
+   "edge": 0.0238,
+   "kind": "Kalshi beats the books"
   }
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-23T21:15:35.541972Z"
+  "checkedAt": "2026-11-24T05:22:27.499899Z"
  },
  "current": [
+  {
+   "at": "2026-11-23T19:26:30.417658Z",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "away": "WAS",
+   "home": "ARI",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "betmgm",
+   "decimal": 1.31,
+   "kalshiFair": 0.7811,
+   "edge": 0.0232,
+   "kind": "book beats Kalshi"
+  },
   {
    "at": "2026-11-23T19:26:30.417658Z",
    "kickoff": "2026-11-26T01:00:00Z",
@@ -48,12 +93,27 @@
    "line": null,
    "book": "hardrockbet",
    "decimal": 2.3,
-   "kalshiFair": 0.445,
-   "edge": 0.0235,
+   "kalshiFair": 0.455,
+   "edge": 0.0465,
    "kind": "book beats Kalshi"
   },
   {
-   "at": "2026-11-23T21:15:35.541972Z",
+   "at": "2026-11-24T05:22:27.499899Z",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "away": "WAS",
+   "home": "ARI",
+   "market": "h2h",
+   "player": "",
+   "side": "home",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 4.0,
+   "booksFair": 0.256,
+   "edge": 0.0238,
+   "kind": "Kalshi beats the books"
+  },
+  {
+   "at": "2026-11-24T05:22:27.499899Z",
    "kickoff": "2026-11-29T18:00:00Z",
    "away": "NO",
    "home": "CIN",

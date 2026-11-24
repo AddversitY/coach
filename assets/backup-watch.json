@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-23T22:25:57.524240Z",
+ "checkedAt": "2026-11-24T05:22:26.299378Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -25,9 +25,9 @@
    "backupRating": null,
    "backupRecentSnaps": 0.4,
    "projection": {
-    "player_pass_yds": 147.4,
-    "player_pass_attempts": 23.3,
-    "player_pass_completions": 14.8
+    "player_pass_yds": 163.6,
+    "player_pass_attempts": 25.8,
+    "player_pass_completions": 16.5
    },
    "prices": [],
    "eventId": null
@@ -48,8 +48,8 @@
    "backupRating": 67,
    "backupRecentSnaps": 0.67,
    "projection": {
-    "player_reception_yds": 55.2,
-    "player_receptions": 4.4
+    "player_reception_yds": 57.7,
+    "player_receptions": 4.6
    },
    "prices": [],
    "eventId": null

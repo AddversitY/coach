@@ -52,12 +52,22 @@
  ],
  "starters": [
   {
+   "team": "SEA",
+   "player": "George Holani",
+   "group": "RB",
+   "rating": 42,
+   "status": "Injured Reserve",
+   "reportedAt": "2026-11-23T23:11Z",
+   "chanceToPlay": 0.0,
+   "expectedLineMovePoints": 1.13
+  },
+  {
    "team": "KC",
    "player": "Kenneth Walker III",
    "group": "RB",
    "rating": 97,
    "status": "Out",
-   "reportedAt": "2026-11-23T15:35Z",
+   "reportedAt": "2026-11-23T22:45Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 1.13
   },
@@ -72,32 +82,12 @@
    "expectedLineMovePoints": 1.13
   },
   {
-   "team": "DET",
-   "player": "Aidan Hutchinson",
-   "group": "DL",
-   "rating": 93,
-   "status": "Injured Reserve",
-   "reportedAt": "2026-11-18T22:02Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": 0.57
-  },
-  {
    "team": "SEA",
    "player": "Leonard Williams",
    "group": "DL",
    "rating": 99,
    "status": "Out",
    "reportedAt": "2026-11-17T12:23Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": 0.57
-  },
-  {
-   "team": "MIA",
-   "player": "Jordan Phillips",
-   "group": "DL",
-   "rating": 42,
-   "status": "Injured Reserve",
-   "reportedAt": "2026-11-18T19:24Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.57
   },
@@ -132,22 +122,12 @@
    "expectedLineMovePoints": 0.49
   },
   {
-   "team": "SEA",
-   "player": "George Holani",
-   "group": "RB",
-   "rating": 42,
-   "status": "Questionable",
-   "reportedAt": "2026-11-16T20:50Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.31
-  },
-  {
    "team": "PHI",
    "player": "Saquon Barkley",
    "group": "RB",
    "rating": 88,
    "status": "Questionable",
-   "reportedAt": "2026-11-22T22:41Z",
+   "reportedAt": "2026-11-23T22:04Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.31
   },
@@ -162,22 +142,22 @@
    "expectedLineMovePoints": 0.31
   },
   {
-   "team": "WAS",
-   "player": "Rachaad White",
-   "group": "RB",
-   "rating": 72,
-   "status": "Questionable",
-   "reportedAt": "2026-11-21T21:21Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.31
-  },
-  {
    "team": "CIN",
    "player": "Dalton Risner",
    "group": "OL",
    "rating": 79,
    "status": "Out",
-   "reportedAt": "2026-11-22T00:42Z",
+   "reportedAt": "2026-11-23T23:47Z",
+   "chanceToPlay": 0.0,
+   "expectedLineMovePoints": 0.25
+  },
+  {
+   "team": "NE",
+   "player": "Alijah Vera-Tucker",
+   "group": "OL",
+   "rating": 72,
+   "status": "Injured Reserve",
+   "reportedAt": "2026-11-24T01:00Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.25
   },
@@ -317,7 +297,7 @@
    "group": "OL",
    "rating": 95,
    "status": "Out",
-   "reportedAt": "2026-11-23T19:42Z",
+   "reportedAt": "2026-11-24T00:48Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.25
   },
@@ -347,7 +327,7 @@
    "group": "CB",
    "rating": 85,
    "status": "Out",
-   "reportedAt": "2026-11-23T15:20Z",
+   "reportedAt": "2026-11-24T00:34Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.23
   },
@@ -367,7 +347,17 @@
    "group": "CB",
    "rating": 91,
    "status": "Out",
-   "reportedAt": "2026-11-23T15:19Z",
+   "reportedAt": "2026-11-24T00:07Z",
+   "chanceToPlay": 0.0,
+   "expectedLineMovePoints": 0.23
+  },
+  {
+   "team": "WAS",
+   "player": "Amik Robertson",
+   "group": "CB",
+   "rating": 89,
+   "status": "Out",
+   "reportedAt": "2026-11-24T00:16Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.23
   },
@@ -377,17 +367,7 @@
    "group": "CB",
    "rating": 88,
    "status": "Out",
-   "reportedAt": "2026-11-23T19:55Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": 0.23
-  },
-  {
-   "team": "DET",
-   "player": "D.J. Reed",
-   "group": "CB",
-   "rating": 79,
-   "status": "Out",
-   "reportedAt": "2026-11-22T17:06Z",
+   "reportedAt": "2026-11-23T22:14Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.23
   },
@@ -417,7 +397,7 @@
    "group": "CB",
    "rating": 52,
    "status": "Injured Reserve",
-   "reportedAt": "2026-11-22T00:03Z",
+   "reportedAt": "2026-11-23T21:40Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.23
   },
@@ -428,6 +408,16 @@
    "rating": 90,
    "status": "Questionable",
    "reportedAt": "2026-11-20T02:50Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.15
+  },
+  {
+   "team": "DET",
+   "player": "DJ Wonnum",
+   "group": "DL",
+   "rating": 55,
+   "status": "Questionable",
+   "reportedAt": "2026-11-24T01:35Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.15
   },
@@ -512,22 +502,22 @@
    "expectedLineMovePoints": 0.11
   },
   {
-   "team": "CIN",
-   "player": "Dylan Fairchild",
+   "team": "BUF",
+   "player": "O'Cyrus Torrence",
    "group": "OL",
-   "rating": 96,
+   "rating": 99,
    "status": "Questionable",
-   "reportedAt": "2026-11-19T21:30Z",
+   "reportedAt": "2026-11-23T23:11Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
   {
-   "team": "WAS",
-   "player": "Lucas Patrick",
+   "team": "BUF",
+   "player": "Spencer Brown",
    "group": "OL",
-   "rating": 50,
+   "rating": 99,
    "status": "Questionable",
-   "reportedAt": "2026-11-22T00:59Z",
+   "reportedAt": "2026-11-23T23:12Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -552,6 +542,16 @@
    "expectedLineMovePoints": 0.07
   },
   {
+   "team": "GB",
+   "player": "Travis Glover",
+   "group": "OL",
+   "rating": 64,
+   "status": "Questionable",
+   "reportedAt": "2026-11-23T22:18Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.07
+  },
+  {
    "team": "SEA",
    "player": "Abraham Lucas",
    "group": "OL",
@@ -568,6 +568,16 @@
    "rating": 85,
    "status": "Questionable",
    "reportedAt": "2026-11-23T00:22Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.07
+  },
+  {
+   "team": "CHI",
+   "player": "Theo Benedet",
+   "group": "OL",
+   "rating": 77,
+   "status": "Questionable",
+   "reportedAt": "2026-11-24T01:27Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -602,26 +612,6 @@
    "expectedLineMovePoints": 0.06
   },
   {
-   "team": "WAS",
-   "player": "Amik Robertson",
-   "group": "CB",
-   "rating": 89,
-   "status": "Questionable",
-   "reportedAt": "2026-11-22T00:26Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.06
-  },
-  {
-   "team": "GB",
-   "player": "Brandon Cisse",
-   "group": "CB",
-   "rating": 79,
-   "status": "Questionable",
-   "reportedAt": "2026-11-22T21:41Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.06
-  },
-  {
    "team": "SF",
    "player": "Deommodore Lenoir",
    "group": "CB",
@@ -640,6 +630,16 @@
    "reportedAt": "2026-11-22T19:36Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
+  },
+  {
+   "team": "BUF",
+   "player": "Greg Rousseau",
+   "group": "LB",
+   "rating": 94,
+   "status": "Questionable",
+   "reportedAt": "2026-11-24T00:37Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.03
   },
   {
    "team": "NE",
@@ -662,6 +662,26 @@
    "expectedLineMovePoints": 0.03
   },
   {
+   "team": "DET",
+   "player": "Sam LaPorta",
+   "group": "TE",
+   "rating": 96,
+   "status": "Questionable",
+   "reportedAt": "2026-11-24T00:38Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.02
+  },
+  {
+   "team": "PHI",
+   "player": "Dallas Goedert",
+   "group": "TE",
+   "rating": 90,
+   "status": "Questionable",
+   "reportedAt": "2026-11-23T22:07Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.02
+  },
+  {
    "team": "NO",
    "player": "Juwan Johnson",
    "group": "TE",
@@ -672,6 +692,16 @@
    "expectedLineMovePoints": 0.02
   },
   {
+   "team": "DET",
+   "player": "Chuck Clark",
+   "group": "S",
+   "rating": 83,
+   "status": "Questionable",
+   "reportedAt": "2026-11-24T01:21Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": -0.01
+  },
+  {
    "team": "TEN",
    "player": "Tony Adams",
    "group": "S",
@@ -680,16 +710,6 @@
    "reportedAt": "2026-11-22T18:52Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": -0.01
-  },
-  {
-   "team": "MIA",
-   "player": "Dante Trader Jr.",
-   "group": "S",
-   "rating": 56,
-   "status": "Out",
-   "reportedAt": "2026-11-22T17:06Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": -0.04
   },
   {
    "team": "TB",
@@ -724,23 +744,23 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-23T21:15:34.904321Z"
+  "checkedAt": "2026-11-24T05:22:25.771392Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-23T21:15:34.904321Z",
+   "loggedAt": "2026-11-24T05:22:25.771392Z",
    "team": "SEA",
    "starter": "Sam Darnold",
    "status": "Out",
-   "reportedAt": "2026-11-16T18:03Z",
+   "reportedAt": "2026-11-23T23:33Z",
    "backup": "Drew Lock",
    "starterRating": 80,
    "backupRating": 75,
    "away": "SEA",
    "home": "SF",
    "kickoff": "2026-11-29T21:25:00Z",
-   "homeSpreadBeforeReport": null,
+   "homeSpreadBeforeReport": -3.0,
    "homeSpreadNow": -3.0,
    "priceAt": "2026-11-23T19:26:30.417658Z",
    "bet": {
@@ -753,7 +773,7 @@
    }
   },
   {
-   "loggedAt": "2026-11-23T21:15:34.904321Z",
+   "loggedAt": "2026-11-24T05:22:25.771392Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
