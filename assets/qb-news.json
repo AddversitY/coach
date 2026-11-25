@@ -62,6 +62,16 @@
    "expectedLineMovePoints": 1.13
   },
   {
+   "team": "KC",
+   "player": "Kenneth Walker III",
+   "group": "RB",
+   "rating": 97,
+   "status": "Out",
+   "reportedAt": "2026-11-25T16:48Z",
+   "chanceToPlay": 0.0,
+   "expectedLineMovePoints": 1.13
+  },
+  {
    "team": "MIN",
    "player": "Jordan Addison",
    "group": "WR",
@@ -72,22 +82,12 @@
    "expectedLineMovePoints": 0.49
   },
   {
-   "team": "KC",
-   "player": "Kenneth Walker III",
-   "group": "RB",
-   "rating": 97,
-   "status": "Questionable",
-   "reportedAt": "2026-11-24T21:49Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.31
-  },
-  {
    "team": "JAX",
    "player": "Bhayshul Tuten",
    "group": "RB",
    "rating": 78,
    "status": "Questionable",
-   "reportedAt": "2026-11-23T19:28Z",
+   "reportedAt": "2026-11-25T17:05Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.31
   },
@@ -97,7 +97,7 @@
    "group": "RB",
    "rating": 75,
    "status": "Questionable",
-   "reportedAt": "2026-11-23T19:05Z",
+   "reportedAt": "2026-11-25T19:00Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.31
   },
@@ -118,6 +118,16 @@
    "rating": 72,
    "status": "Injured Reserve",
    "reportedAt": "2026-11-24T01:00Z",
+   "chanceToPlay": 0.0,
+   "expectedLineMovePoints": 0.25
+  },
+  {
+   "team": "KC",
+   "player": "Jaylon Moore",
+   "group": "OL",
+   "rating": 84,
+   "status": "Out",
+   "reportedAt": "2026-11-25T16:54Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.25
   },
@@ -247,7 +257,7 @@
    "group": "WR",
    "rating": 82,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T18:17Z",
+   "reportedAt": "2026-11-25T18:16Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.13
   },
@@ -286,26 +296,6 @@
    "player": "Ben Brown",
    "group": "OL",
    "rating": 93,
-   "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.07
-  },
-  {
-   "team": "KC",
-   "player": "Trey Smith",
-   "group": "OL",
-   "rating": 97,
-   "status": "Questionable",
-   "reportedAt": "2026-11-25T02:10Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.07
-  },
-  {
-   "team": "KC",
-   "player": "Jaylon Moore",
-   "group": "OL",
-   "rating": 84,
    "status": "Questionable",
    "reportedAt": "2026-11-24T12:39Z",
    "chanceToPlay": 0.73,
@@ -468,16 +458,6 @@
    "rating": 85,
    "status": "Questionable",
    "reportedAt": "2026-11-25T00:53Z",
-   "chanceToPlay": 0.73,
-   "expectedLineMovePoints": 0.06
-  },
-  {
-   "team": "PHI",
-   "player": "Quinyon Mitchell",
-   "group": "CB",
-   "rating": 94,
-   "status": "Questionable",
-   "reportedAt": "2026-11-25T01:05Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -674,12 +654,12 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-25T09:16:39.663981Z"
+  "checkedAt": "2026-11-25T19:26:15.674247Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-25T09:16:39.663981Z",
+   "loggedAt": "2026-11-25T19:26:15.674247Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
