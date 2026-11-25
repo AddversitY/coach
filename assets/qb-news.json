@@ -132,16 +132,6 @@
    "expectedLineMovePoints": 0.25
   },
   {
-   "team": "PIT",
-   "player": "Mason McCormick",
-   "group": "OL",
-   "rating": 84,
-   "status": "Injured Reserve",
-   "reportedAt": "2026-11-19T01:44Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": 0.25
-  },
-  {
    "team": "SEA",
    "player": "Quenton Nelson",
    "group": "OL",
@@ -167,7 +157,7 @@
    "group": "CB",
    "rating": 89,
    "status": "Injured Reserve",
-   "reportedAt": "2026-11-24T20:14Z",
+   "reportedAt": "2026-11-25T00:42Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.23
   },
@@ -307,7 +297,7 @@
    "group": "OL",
    "rating": 97,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
+   "reportedAt": "2026-11-25T02:10Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -387,7 +377,7 @@
    "group": "OL",
    "rating": 65,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
+   "reportedAt": "2026-11-25T01:18Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -397,7 +387,7 @@
    "group": "OL",
    "rating": 60,
    "status": "Questionable",
-   "reportedAt": "2026-11-23T22:18Z",
+   "reportedAt": "2026-11-25T01:13Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -477,7 +467,7 @@
    "group": "CB",
    "rating": 85,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T00:34Z",
+   "reportedAt": "2026-11-25T00:53Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -487,7 +477,7 @@
    "group": "CB",
    "rating": 94,
    "status": "Questionable",
-   "reportedAt": "2026-11-22T20:56Z",
+   "reportedAt": "2026-11-25T01:05Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -667,7 +657,7 @@
    "group": "S",
    "rating": 80,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T01:21Z",
+   "reportedAt": "2026-11-25T00:47Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": -0.01
   },
@@ -684,12 +674,12 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-25T00:44:33.464166Z"
+  "checkedAt": "2026-11-25T09:16:39.663981Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-25T00:44:33.464166Z",
+   "loggedAt": "2026-11-25T09:16:39.663981Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
@@ -701,15 +691,15 @@
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
    "homeSpreadBeforeReport": -1.5,
-   "homeSpreadNow": -1.5,
-   "priceAt": "2026-11-23T19:26:30.417658Z",
+   "homeSpreadNow": -1.0,
+   "priceAt": "2026-11-25T09:01:54.075962Z",
    "bet": {
     "market": "spreads",
     "side": "home",
     "outcome": "Los Angeles Chargers",
-    "line": -1.0,
-    "book": "betmgm",
-    "decimal": 1.93
+    "line": -0.5,
+    "book": "ballybet",
+    "decimal": 1.92
    }
   }
  ],

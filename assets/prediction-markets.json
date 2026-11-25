@@ -64,40 +64,9 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-25T00:44:35.848188Z"
+  "checkedAt": "2026-11-25T09:16:41.485415Z"
  },
- "current": [
-  {
-   "at": "2026-11-23T19:26:30.417658Z",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "away": "GB",
-   "home": "LAR",
-   "market": "h2h",
-   "player": "",
-   "side": "away",
-   "line": null,
-   "book": "hardrockbet",
-   "decimal": 2.3,
-   "kalshiFair": 0.445,
-   "edge": 0.0235,
-   "kind": "book beats Kalshi"
-  },
-  {
-   "at": "2026-11-25T00:44:35.848188Z",
-   "kickoff": "2026-11-29T21:25:00Z",
-   "away": "WAS",
-   "home": "ARI",
-   "market": "h2h",
-   "player": "",
-   "side": "home",
-   "line": null,
-   "book": "kalshi",
-   "decimal": 4.0,
-   "booksFair": 0.256,
-   "edge": 0.0238,
-   "kind": "Kalshi beats the books"
-  }
- ],
+ "current": [],
  "summary": {
   "clv": {
    "n": 0,
