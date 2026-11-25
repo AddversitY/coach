@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-24T16:09:54.928199Z",
+ "checkedAt": "2026-11-25T00:44:34.130354Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -17,7 +17,7 @@
      "player": "Drake Maye",
      "status": "Out",
      "reportedAt": "2026-11-23T20:26Z",
-     "rating": 85
+     "rating": 86
     }
    ],
    "backup": "Tommy DeVito",
@@ -39,7 +39,7 @@
     {
      "player": "A.J. Brown",
      "status": "Doubtful",
-     "reportedAt": "2026-11-23T21:34Z",
+     "reportedAt": "2026-11-24T19:46Z",
      "rating": 91
     }
    ],
