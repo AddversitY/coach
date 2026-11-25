@@ -1,6 +1,6 @@
 {
   "schema": "coach-line-shop-v1",
-  "updatedAt": "2026-11-25T00:03:00.092072Z",
+  "updatedAt": "2026-11-25T09:02:19.457750Z",
   "notice": "Soft-book prices that pay more than Pinnacle's price with the margin removed. Research only. A flag becomes a pick only after flags like it have beaten the closing line on at least 200 bets.",
   "rule": {
     "sharpBook": "pinnacle",
@@ -124,5 +124,36 @@
       }
     }
   },
-  "flags": []
+  "flags": [
+    {
+      "at": "2026-11-25T09:01:54.075962Z",
+      "kickoff": "2026-11-29T18:00:00Z",
+      "away": "NYG",
+      "home": "IND",
+      "market": "h2h",
+      "player": "",
+      "side": "home",
+      "outcome": "Indianapolis Colts",
+      "line": null,
+      "book": "ballybet",
+      "decimal": 3.8,
+      "fairChance": 0.278,
+      "edge": 0.0564
+    },
+    {
+      "at": "2026-11-25T09:01:54.075962Z",
+      "kickoff": "2026-11-26T21:30:00Z",
+      "away": "PHI",
+      "home": "DAL",
+      "market": "h2h",
+      "player": "",
+      "side": "away",
+      "outcome": "Philadelphia Eagles",
+      "line": null,
+      "book": "fanduel",
+      "decimal": 4.8,
+      "fairChance": 0.2177,
+      "edge": 0.045
+    }
+  ]
 }
