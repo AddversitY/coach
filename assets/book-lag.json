@@ -532,6 +532,141 @@
     "priceAt": "2026-11-25T09:01:54.075962Z",
     "player": ""
    }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "draftkings",
+    "decimal": 1.83,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betrivers"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "fanduel",
+    "decimal": 1.87,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "draftkings",
+    "decimal": 1.83,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "fanduel",
+    "decimal": 1.91,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betmgm",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "betmgm",
+    "decimal": 1.85,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "espnbet",
+    "pinnacle"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Seattle Seahawks",
+    "line": 3.0,
+    "book": "hardrockbet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
   }
  ],
  "backtest": {
@@ -1460,16 +1595,16 @@
   {
    "book": "ballybet",
    "market": "spreads",
-   "moves": 7,
+   "moves": 8,
    "medianHoursToMatch": 37.59,
-   "neverMatched": 6
+   "neverMatched": 5
   },
   {
    "book": "ballybet",
    "market": "totals",
-   "moves": 15,
+   "moves": 16,
    "medianHoursToMatch": 15.96,
-   "neverMatched": 6
+   "neverMatched": 4
   },
   {
    "book": "betmgm",
@@ -1481,23 +1616,23 @@
   {
    "book": "betmgm",
    "market": "totals",
-   "moves": 6,
-   "medianHoursToMatch": 12.2,
+   "moves": 7,
+   "medianHoursToMatch": 11.35,
    "neverMatched": 3
   },
   {
    "book": "betrivers",
    "market": "spreads",
-   "moves": 6,
-   "medianHoursToMatch": null,
-   "neverMatched": 6
+   "moves": 7,
+   "medianHoursToMatch": 35.4,
+   "neverMatched": 5
   },
   {
    "book": "betrivers",
    "market": "totals",
    "moves": 15,
    "medianHoursToMatch": 15.96,
-   "neverMatched": 7
+   "neverMatched": 3
   },
   {
    "book": "draftkings",
@@ -1509,9 +1644,9 @@
   {
    "book": "draftkings",
    "market": "totals",
-   "moves": 10,
-   "medianHoursToMatch": 6.62,
-   "neverMatched": 4
+   "moves": 13,
+   "medianHoursToMatch": 7.68,
+   "neverMatched": 6
   },
   {
    "book": "espnbet",
@@ -1523,23 +1658,23 @@
   {
    "book": "espnbet",
    "market": "totals",
-   "moves": 6,
+   "moves": 9,
    "medianHoursToMatch": 37.59,
-   "neverMatched": 3
+   "neverMatched": 6
   },
   {
    "book": "fanduel",
    "market": "spreads",
    "moves": 12,
-   "medianHoursToMatch": 37.59,
-   "neverMatched": 9
+   "medianHoursToMatch": 24.89,
+   "neverMatched": 8
   },
   {
    "book": "fanduel",
    "market": "totals",
-   "moves": 14,
-   "medianHoursToMatch": 14.08,
-   "neverMatched": 4
+   "moves": 16,
+   "medianHoursToMatch": 12.2,
+   "neverMatched": 5
   },
   {
    "book": "fliff",
@@ -1551,23 +1686,23 @@
   {
    "book": "fliff",
    "market": "totals",
-   "moves": 20,
+   "moves": 22,
    "medianHoursToMatch": 5.57,
-   "neverMatched": 17
+   "neverMatched": 19
   },
   {
    "book": "hardrockbet",
    "market": "spreads",
-   "moves": 11,
-   "medianHoursToMatch": 5.57,
+   "moves": 12,
+   "medianHoursToMatch": 10.76,
    "neverMatched": 4
   },
   {
    "book": "hardrockbet",
    "market": "totals",
-   "moves": 3,
+   "moves": 5,
    "medianHoursToMatch": 34.83,
-   "neverMatched": 1
+   "neverMatched": 3
   },
   {
    "book": "pinnacle",
@@ -1579,12 +1714,78 @@
   {
    "book": "pinnacle",
    "market": "totals",
-   "moves": 4,
-   "medianHoursToMatch": 37.59,
-   "neverMatched": 3
+   "moves": 7,
+   "medianHoursToMatch": 10.51,
+   "neverMatched": 4
   }
  ],
  "current": [
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "draftkings",
+    "decimal": 1.83,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betrivers"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "fanduel",
+    "decimal": 1.87,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "ATL",
+   "home": "MIN",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betmgm",
+   "movedBooks": [
+    "ballybet",
+    "betrivers"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Atlanta Falcons",
+    "line": 7.0,
+    "book": "betmgm",
+    "decimal": 1.85,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
   {
    "away": "ATL",
    "home": "MIN",
@@ -1597,15 +1798,15 @@
     "fanduel",
     "hardrockbet"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 42.5,
     "book": "espnbet",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "decimal": 1.91,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1619,7 +1820,7 @@
     "betmgm",
     "hardrockbet"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1627,7 +1828,7 @@
     "line": -6.5,
     "book": "fanduel",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1641,7 +1842,7 @@
     "betmgm",
     "hardrockbet"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1649,57 +1850,7 @@
     "line": -6.5,
     "book": "espnbet",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "CAR",
-   "home": "TB",
-   "kickoff": "2026-12-01T01:15:00Z",
-   "angle": "slow book (spreads)",
-   "staleBook": "hardrockbet",
-   "movedBooks": [
-    "betmgm",
-    "draftkings",
-    "espnbet",
-    "pinnacle"
-   ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
-   "bet": {
-    "market": "spreads",
-    "side": "home",
-    "outcome": "Tampa Bay Buccaneers",
-    "line": -2.5,
-    "book": "hardrockbet",
-    "decimal": 1.83,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "CHI",
-   "home": "DET",
-   "kickoff": "2026-11-26T18:00:00Z",
-   "angle": "slow book (spreads)",
-   "staleBook": "fanduel",
-   "movedBooks": [
-    "ballybet",
-    "betmgm",
-    "betrivers",
-    "draftkings",
-    "espnbet",
-    "pinnacle"
-   ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
-   "bet": {
-    "market": "spreads",
-    "side": "home",
-    "outcome": "Detroit Lions",
-    "line": 2.5,
-    "book": "fanduel",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1713,7 +1864,7 @@
     "fanduel",
     "hardrockbet"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1721,7 +1872,7 @@
     "line": 3.0,
     "book": "draftkings",
     "decimal": 1.83,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1735,38 +1886,37 @@
     "fanduel",
     "hardrockbet"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "spreads",
     "side": "away",
     "outcome": "Kansas City Chiefs",
     "line": 3.0,
     "book": "espnbet",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "decimal": 1.91,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
   {
-   "away": "LV",
-   "home": "CLE",
-   "kickoff": "2026-11-30T01:20:00Z",
+   "away": "PHI",
+   "home": "DAL",
+   "kickoff": "2026-11-26T21:30:00Z",
    "angle": "slow book (totals)",
-   "staleBook": "betrivers",
+   "staleBook": "draftkings",
    "movedBooks": [
     "ballybet",
-    "fanduel",
-    "fliff"
+    "betrivers"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "totals",
-    "side": "under",
-    "outcome": "Under",
-    "line": 41.5,
-    "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "side": "over",
+    "outcome": "Over",
+    "line": 47.5,
+    "book": "draftkings",
+    "decimal": 1.86,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1778,18 +1928,17 @@
    "staleBook": "fanduel",
    "movedBooks": [
     "ballybet",
-    "betrivers",
-    "draftkings"
+    "betrivers"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "totals",
     "side": "over",
     "outcome": "Over",
     "line": 47.5,
     "book": "fanduel",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "decimal": 1.83,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   },
@@ -1801,10 +1950,9 @@
    "staleBook": "espnbet",
    "movedBooks": [
     "ballybet",
-    "betrivers",
-    "draftkings"
+    "betrivers"
    ],
-   "checkedAt": "2026-11-25T12:54:28.172911Z",
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
    "bet": {
     "market": "totals",
     "side": "over",
@@ -1812,7 +1960,98 @@
     "line": 47.5,
     "book": "espnbet",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T09:01:54.075962Z",
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "draftkings",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "draftkings",
+    "decimal": 1.83,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "fanduel",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "fanduel",
+    "decimal": 1.91,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "betmgm",
+   "movedBooks": [
+    "ballybet",
+    "betrivers",
+    "fliff"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "San Francisco 49ers",
+    "line": -2.5,
+    "book": "betmgm",
+    "decimal": 1.85,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "SEA",
+   "home": "SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "angle": "slow book (spreads)",
+   "staleBook": "hardrockbet",
+   "movedBooks": [
+    "espnbet",
+    "pinnacle"
+   ],
+   "checkedAt": "2026-11-25T22:32:17.481285Z",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Seattle Seahawks",
+    "line": 3.0,
+    "book": "hardrockbet",
+    "decimal": 1.87,
+    "priceAt": "2026-11-25T19:32:34.581220Z",
     "player": ""
    }
   }
