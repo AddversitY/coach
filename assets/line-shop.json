@@ -1,6 +1,6 @@
 {
   "schema": "coach-line-shop-v1",
-  "updatedAt": "2026-11-25T09:02:19.457750Z",
+  "updatedAt": "2026-11-25T19:33:06.922980Z",
   "notice": "Soft-book prices that pay more than Pinnacle's price with the margin removed. Research only. A flag becomes a pick only after flags like it have beaten the closing line on at least 200 bets.",
   "rule": {
     "sharpBook": "pinnacle",
@@ -12,16 +12,49 @@
     "gateMinBets": 200
   },
   "adopted": false,
-  "adoptedReason": "only 0 scored bets; 200 are needed",
+  "adoptedReason": "only 2 scored bets; 200 are needed",
   "live": {
     "clv": {
-      "n": 0,
-      "mean": null,
-      "low": null,
-      "high": null
+      "n": 2,
+      "mean": 0.0627,
+      "low": 0.0431,
+      "high": 0.0823
     },
-    "beatClose": null,
-    "recent": []
+    "beatClose": 1.0,
+    "recent": [
+      {
+        "at": "2026-11-25T09:01:54.075962Z",
+        "kickoff": "2026-11-29T18:00:00Z",
+        "away": "NYG",
+        "home": "IND",
+        "market": "h2h",
+        "player": "",
+        "side": "home",
+        "outcome": "Indianapolis Colts",
+        "line": null,
+        "book": "ballybet",
+        "decimal": 3.8,
+        "fairChance": 0.278,
+        "edge": 0.0564,
+        "clv": 0.0823
+      },
+      {
+        "at": "2026-11-25T09:01:54.075962Z",
+        "kickoff": "2026-11-26T21:30:00Z",
+        "away": "PHI",
+        "home": "DAL",
+        "market": "h2h",
+        "player": "",
+        "side": "away",
+        "outcome": "Philadelphia Eagles",
+        "line": null,
+        "book": "fanduel",
+        "decimal": 4.8,
+        "fairChance": 0.2177,
+        "edge": 0.045,
+        "clv": 0.0431
+      }
+    ]
   },
   "propline": {
     "pinnacle": {
@@ -126,22 +159,22 @@
   },
   "flags": [
     {
-      "at": "2026-11-25T09:01:54.075962Z",
+      "at": "2026-11-25T19:32:34.581220Z",
       "kickoff": "2026-11-29T18:00:00Z",
-      "away": "NYG",
-      "home": "IND",
+      "away": "TEN",
+      "home": "JAX",
       "market": "h2h",
       "player": "",
-      "side": "home",
-      "outcome": "Indianapolis Colts",
+      "side": "away",
+      "outcome": "Tennessee Titans",
       "line": null,
-      "book": "ballybet",
-      "decimal": 3.8,
-      "fairChance": 0.278,
-      "edge": 0.0564
+      "book": "espnbet",
+      "decimal": 9.0,
+      "fairChance": 0.1163,
+      "edge": 0.047
     },
     {
-      "at": "2026-11-25T09:01:54.075962Z",
+      "at": "2026-11-25T19:32:34.581220Z",
       "kickoff": "2026-11-26T21:30:00Z",
       "away": "PHI",
       "home": "DAL",
@@ -150,10 +183,25 @@
       "side": "away",
       "outcome": "Philadelphia Eagles",
       "line": null,
-      "book": "fanduel",
+      "book": "espnbet",
       "decimal": 4.8,
-      "fairChance": 0.2177,
-      "edge": 0.045
+      "fairChance": 0.2173,
+      "edge": 0.0431
+    },
+    {
+      "at": "2026-11-25T19:32:34.581220Z",
+      "kickoff": "2026-11-29T18:00:00Z",
+      "away": "NYG",
+      "home": "IND",
+      "market": "h2h",
+      "player": "",
+      "side": "home",
+      "outcome": "Indianapolis Colts",
+      "line": null,
+      "book": "draftkings",
+      "decimal": 3.61,
+      "fairChance": 0.2848,
+      "edge": 0.0282
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema": "coach-accuracy-scorecard-v1",
-  "updatedAt": "2026-11-25T09:02:18.970400Z",
+  "updatedAt": "2026-11-25T19:33:06.447643Z",
   "season": 2026,
   "notice": "Brier and log loss compare Coach's chance with the book's no-vig closing chance on the same line. Lower is better. A week with no saved close is unavailable. This is not a pick.",
   "lines": [
