@@ -137,7 +137,7 @@
    "group": "OL",
    "rating": 84,
    "status": "Out",
-   "reportedAt": "2026-11-25T16:54Z",
+   "reportedAt": "2026-11-26T02:51Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.25
   },
@@ -167,7 +167,7 @@
    "group": "OL",
    "rating": 95,
    "status": "Injured Reserve",
-   "reportedAt": "2026-11-25T19:24Z",
+   "reportedAt": "2026-11-26T03:03Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": 0.25
   },
@@ -257,7 +257,7 @@
    "group": "DL",
    "rating": 51,
    "status": "Questionable",
-   "reportedAt": "2026-11-22T23:19Z",
+   "reportedAt": "2026-11-26T03:34Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.15
   },
@@ -372,6 +372,26 @@
    "expectedLineMovePoints": 0.13
   },
   {
+   "team": "SF",
+   "player": "Jordan Watkins",
+   "group": "WR",
+   "rating": 67,
+   "status": "Questionable",
+   "reportedAt": "2026-11-26T02:57Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.13
+  },
+  {
+   "team": "GB",
+   "player": "Christian Watson",
+   "group": "WR",
+   "rating": 91,
+   "status": "Questionable",
+   "reportedAt": "2026-11-26T03:09Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.13
+  },
+  {
    "team": "WAS",
    "player": "Stefon Diggs",
    "group": "WR",
@@ -427,7 +447,7 @@
    "group": "OL",
    "rating": 78,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
+   "reportedAt": "2026-11-26T03:07Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -617,7 +637,7 @@
    "group": "CB",
    "rating": 93,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
+   "reportedAt": "2026-11-26T02:33Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -647,7 +667,7 @@
    "group": "CB",
    "rating": 91,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T00:16Z",
+   "reportedAt": "2026-11-26T02:29Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -667,7 +687,7 @@
    "group": "CB",
    "rating": 72,
    "status": "Questionable",
-   "reportedAt": "2026-11-23T19:29Z",
+   "reportedAt": "2026-11-26T02:42Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.06
   },
@@ -697,7 +717,7 @@
    "group": "LB",
    "rating": 99,
    "status": "Questionable",
-   "reportedAt": "2026-11-26T00:27Z",
+   "reportedAt": "2026-11-26T02:38Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.03
   },
@@ -747,7 +767,7 @@
    "group": "LB",
    "rating": 80,
    "status": "Questionable",
-   "reportedAt": "2026-11-25T23:54Z",
+   "reportedAt": "2026-11-26T02:30Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.03
   },
@@ -767,7 +787,7 @@
    "group": "LB",
    "rating": 71,
    "status": "Questionable",
-   "reportedAt": "2026-11-24T12:39Z",
+   "reportedAt": "2026-11-26T02:37Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.03
   },
@@ -817,7 +837,7 @@
    "group": "S",
    "rating": 98,
    "status": "Questionable",
-   "reportedAt": "2026-11-26T00:16Z",
+   "reportedAt": "2026-11-26T02:31Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": -0.01
   },
@@ -864,12 +884,12 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-26T02:24:07.385539Z"
+  "checkedAt": "2026-11-26T11:19:36.549921Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-26T02:24:07.385539Z",
+   "loggedAt": "2026-11-26T11:19:36.549921Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
@@ -881,15 +901,15 @@
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
    "homeSpreadBeforeReport": -1.5,
-   "homeSpreadNow": -1.0,
-   "priceAt": "2026-11-25T19:32:34.581220Z",
+   "homeSpreadNow": 1.0,
+   "priceAt": "2026-11-26T02:44:06.580629Z",
    "bet": {
     "market": "spreads",
     "side": "home",
     "outcome": "Los Angeles Chargers",
-    "line": -0.5,
-    "book": "ballybet",
-    "decimal": 1.92
+    "line": 1.5,
+    "book": "espnbet",
+    "decimal": 1.87
    }
   }
  ],
