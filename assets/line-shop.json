@@ -1,6 +1,6 @@
 {
   "schema": "coach-line-shop-v1",
-  "updatedAt": "2026-11-26T02:44:39.770063Z",
+  "updatedAt": "2026-11-26T12:11:28.681909Z",
   "notice": "Soft-book prices that pay more than Pinnacle's price with the margin removed. Research only. A flag becomes a pick only after flags like it have beaten the closing line on at least 200 bets.",
   "rule": {
     "sharpBook": "pinnacle",
@@ -12,13 +12,13 @@
     "gateMinBets": 200
   },
   "adopted": false,
-  "adoptedReason": "only 5 scored bets; 200 are needed",
+  "adoptedReason": "only 7 scored bets; 200 are needed",
   "live": {
     "clv": {
-      "n": 5,
-      "mean": 0.0578,
-      "low": 0.0453,
-      "high": 0.0806
+      "n": 7,
+      "mean": 0.051,
+      "low": 0.0391,
+      "high": 0.0683
     },
     "beatClose": 1.0,
     "recent": [
@@ -52,7 +52,7 @@
         "decimal": 4.8,
         "fairChance": 0.2177,
         "edge": 0.045,
-        "clv": 0.045
+        "clv": 0.0394
       },
       {
         "at": "2026-11-25T19:32:34.581220Z",
@@ -68,7 +68,7 @@
         "decimal": 9.0,
         "fairChance": 0.1163,
         "edge": 0.047,
-        "clv": 0.0458
+        "clv": 0.0481
       },
       {
         "at": "2026-11-25T19:32:34.581220Z",
@@ -84,7 +84,7 @@
         "decimal": 4.8,
         "fairChance": 0.2173,
         "edge": 0.0431,
-        "clv": 0.045
+        "clv": 0.0394
       },
       {
         "at": "2026-11-25T19:32:34.581220Z",
@@ -101,6 +101,38 @@
         "fairChance": 0.2848,
         "edge": 0.0282,
         "clv": 0.0491
+      },
+      {
+        "at": "2026-11-26T02:44:06.580629Z",
+        "kickoff": "2026-11-29T18:00:00Z",
+        "away": "TEN",
+        "home": "JAX",
+        "market": "h2h",
+        "player": "",
+        "side": "away",
+        "outcome": "Tennessee Titans",
+        "line": null,
+        "book": "ballybet",
+        "decimal": 9.0,
+        "fairChance": 0.1162,
+        "edge": 0.0458,
+        "clv": 0.0481
+      },
+      {
+        "at": "2026-11-26T02:44:06.580629Z",
+        "kickoff": "2026-11-26T21:30:00Z",
+        "away": "PHI",
+        "home": "DAL",
+        "market": "h2h",
+        "player": "",
+        "side": "away",
+        "outcome": "Philadelphia Eagles",
+        "line": null,
+        "book": "betmgm",
+        "decimal": 4.75,
+        "fairChance": 0.2177,
+        "edge": 0.0341,
+        "clv": 0.0286
       }
     ]
   },
@@ -207,22 +239,22 @@
   },
   "flags": [
     {
-      "at": "2026-11-26T02:44:06.580629Z",
-      "kickoff": "2026-11-29T18:00:00Z",
-      "away": "TEN",
-      "home": "JAX",
+      "at": "2026-11-26T12:11:00.209347Z",
+      "kickoff": "2026-11-26T18:00:00Z",
+      "away": "CHI",
+      "home": "DET",
       "market": "h2h",
       "player": "",
-      "side": "away",
-      "outcome": "Tennessee Titans",
+      "side": "home",
+      "outcome": "Detroit Lions",
       "line": null,
-      "book": "ballybet",
-      "decimal": 9.0,
-      "fairChance": 0.1162,
-      "edge": 0.0458
+      "book": "fanduel",
+      "decimal": 2.14,
+      "fairChance": 0.4845,
+      "edge": 0.0369
     },
     {
-      "at": "2026-11-26T02:44:06.580629Z",
+      "at": "2026-11-26T12:11:00.209347Z",
       "kickoff": "2026-11-26T21:30:00Z",
       "away": "PHI",
       "home": "DAL",
@@ -233,8 +265,8 @@
       "line": null,
       "book": "betmgm",
       "decimal": 4.75,
-      "fairChance": 0.2177,
-      "edge": 0.0341
+      "fairChance": 0.2165,
+      "edge": 0.0286
     }
   ]
 }
