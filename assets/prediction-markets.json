@@ -200,9 +200,25 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-26T11:19:38.717142Z"
+  "checkedAt": "2026-11-26T20:19:31.922981Z"
  },
- "current": [],
+ "current": [
+  {
+   "at": "2026-11-26T20:19:31.922981Z",
+   "kickoff": "2026-12-06T21:25:00Z",
+   "away": "BUF",
+   "home": "NE",
+   "market": "h2h",
+   "player": "",
+   "side": "home",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 7.1429,
+   "booksFair": 0.1447,
+   "edge": 0.0338,
+   "kind": "Kalshi beats the books"
+  }
+ ],
  "summary": {
   "clv": {
    "n": 1,
