@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-25T19:26:16.009752Z",
+ "checkedAt": "2026-11-26T02:24:07.943767Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -39,7 +39,7 @@
     {
      "player": "A.J. Brown",
      "status": "Doubtful",
-     "reportedAt": "2026-11-24T19:46Z",
+     "reportedAt": "2026-11-25T19:47Z",
      "rating": 91
     }
    ],
