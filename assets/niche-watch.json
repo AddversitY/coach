@@ -327,7 +327,9 @@
     "priceAt": "2026-11-23T19:26:30.417658Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": ""
-   }
+   },
+   "clv": -0.1007,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -347,7 +349,9 @@
     "priceAt": "2026-11-23T19:26:30.417658Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": ""
-   }
+   },
+   "clv": 0.0307,
+   "clvReference": "pinnacle"
   },
   {
    "away": "CHI",
@@ -729,7 +733,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Blake Corum"
-   }
+   },
+   "clv": -0.0977,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -751,7 +757,9 @@
     "priceAt": "2026-11-25T00:44:41.131Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Blake Corum"
-   }
+   },
+   "clv": -0.0319,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -773,7 +781,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Blake Corum"
-   }
+   },
+   "clv": -0.2312,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -795,7 +805,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Blake Corum"
-   }
+   },
+   "clv": -0.0437,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -817,7 +829,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Chris Brooks"
-   }
+   },
+   "clv": -0.0329,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -839,7 +853,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Chris Brooks"
-   }
+   },
+   "clv": -0.0329,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -861,7 +877,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Chris Brooks"
-   }
+   },
+   "clv": 0.0338,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -883,7 +901,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Chris Brooks"
-   }
+   },
+   "clv": -0.0423,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -905,7 +925,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Chris Brooks"
-   }
+   },
+   "clv": -0.0423,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -927,7 +949,9 @@
     "priceAt": "2026-11-25T00:44:41.131Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Davis Allen"
-   }
+   },
+   "clv": -0.085,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -949,7 +973,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Davis Allen"
-   }
+   },
+   "clv": -0.0673,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -971,7 +997,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Kaleb Johnson"
-   }
+   },
+   "clv": -0.0639,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -993,7 +1021,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Kaleb Johnson"
-   }
+   },
+   "clv": -0.0639,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1015,7 +1045,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Konata Mumpfield"
-   }
+   },
+   "clv": 0.0291,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1037,7 +1069,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Konata Mumpfield"
-   }
+   },
+   "clv": 0.0245,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1059,7 +1093,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Kyren Williams"
-   }
+   },
+   "clv": -0.0614,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1081,7 +1117,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "MarShawn Lloyd"
-   }
+   },
+   "clv": -0.0755,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1103,7 +1141,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "MarShawn Lloyd"
-   }
+   },
+   "clv": -0.0516,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1125,7 +1165,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "MarShawn Lloyd"
-   }
+   },
+   "clv": -0.0516,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1147,7 +1189,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "MarShawn Lloyd"
-   }
+   },
+   "clv": -0.0514,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1169,7 +1213,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "MarShawn Lloyd"
-   }
+   },
+   "clv": -0.0514,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1191,7 +1237,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Matthew Stafford"
-   }
+   },
+   "clv": -0.0671,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1213,7 +1261,9 @@
     "priceAt": "2026-11-25T00:44:41.131Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.1012,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1235,7 +1285,9 @@
     "priceAt": "2026-11-25T00:44:41.131Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.1012,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1257,7 +1309,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.2192,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1279,7 +1333,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.2192,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1301,7 +1357,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.039,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1323,7 +1381,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Savion Williams"
-   }
+   },
+   "clv": -0.039,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1345,7 +1405,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Tutu Atwell"
-   }
+   },
+   "clv": -0.0539,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1367,7 +1429,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Tutu Atwell"
-   }
+   },
+   "clv": -0.0539,
+   "clvReference": "book consensus"
   },
   {
    "away": "GB",
@@ -1389,7 +1453,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Tyler Higbee"
-   }
+   },
+   "clv": -0.0691,
+   "clvReference": "pinnacle"
   },
   {
    "away": "GB",
@@ -1411,7 +1477,9 @@
     "priceAt": "2026-11-25T00:48:41.680Z",
     "kickoff": "2026-11-26T01:00:00Z",
     "player": "Xavier Smith"
-   }
+   },
+   "clv": -0.0432,
+   "clvReference": "book consensus"
   },
   {
    "away": "CHI",
@@ -4305,759 +4373,1079 @@
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
-  }
- ],
- "checkedAt": "2026-11-25T22:32:14.825801Z",
- "current": [
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: dome or closed roof, over",
-   "side": "over",
-   "player": "",
-   "bet": {
-    "market": "totals",
-    "side": "over",
-    "outcome": "Over",
-    "line": 43.0,
-    "book": "hardrockbet",
-    "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": ""
-   }
   },
   {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: artificial turf, over",
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
    "side": "under",
-   "player": "",
-   "bet": {
-    "market": "totals",
-    "side": "under",
-    "outcome": "Under",
-    "line": 43.5,
-    "book": "draftkings",
-    "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Blake Corum",
+   "player": "Cyrus Allen",
    "market": "player_reception_yds",
-   "splitRatio": 0.765,
    "bet": {
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 13.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Blake Corum"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Blake Corum",
-   "market": "player_reception_yds",
-   "splitRatio": 1.141,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
     "line": 11.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:44:43.389Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Blake Corum"
+    "book": "bovada",
+    "decimal": 1.909091,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Cyrus Allen"
    }
   },
   {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
    "side": "under",
-   "player": "Blake Corum",
+   "player": "Cyrus Allen",
    "market": "player_receptions",
-   "splitRatio": 0.882,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 2.5,
-    "book": "espnbet",
-    "decimal": 1.56,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Blake Corum"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Blake Corum",
-   "market": "player_rush_yds",
-   "splitRatio": 0.848,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 57.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Blake Corum"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Chris Brooks",
-   "market": "player_reception_yds",
-   "splitRatio": 0.892,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 16.5,
-    "book": "fanduel",
-    "decimal": 1.847458,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Chris Brooks"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Chris Brooks",
-   "market": "player_reception_yds",
-   "splitRatio": 0.716,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 16.5,
-    "book": "fanduel",
-    "decimal": 1.847458,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Chris Brooks"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Chris Brooks",
-   "market": "player_receptions",
-   "splitRatio": 0.898,
    "bet": {
     "market": "player_receptions",
     "side": "under",
     "outcome": "Under",
     "line": 1.5,
-    "book": "hardrockbet",
-    "decimal": 1.69,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Chris Brooks"
+    "book": "bovada",
+    "decimal": 1.5,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Cyrus Allen"
    }
   },
   {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
-   "player": "Chris Brooks",
-   "market": "player_rush_yds",
-   "splitRatio": 1.629,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 6.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Chris Brooks"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Chris Brooks",
-   "market": "player_rush_yds",
-   "splitRatio": 1.562,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 6.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Chris Brooks"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Davis Allen",
+   "player": "DJ Moore",
    "market": "player_reception_yds",
-   "splitRatio": 1.205,
+   "splitRatio": 1.114,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 47.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "DJ Moore",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 48.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "DJ Moore",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 2.15,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dalton Kincaid",
+   "market": "player_reception_yds",
+   "splitRatio": 1.17,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 38.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dalton Kincaid",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 40.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dalton Kincaid",
+   "market": "player_receptions",
+   "splitRatio": 1.133,
+   "bet": {
+    "market": "player_receptions",
+    "side": "over",
+    "outcome": "Over",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 2.16,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dalton Kincaid",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 1.741,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dawson Knox",
+   "market": "player_reception_yds",
+   "splitRatio": 1.172,
    "bet": {
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
     "line": 9.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dawson Knox",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dawson Knox",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 1.714286,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 118.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Emmett Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.925926,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Emmett Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
     "book": "betrivers",
     "decimal": 1.85,
-    "priceAt": "2026-11-25T21:44:43.389Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Davis Allen"
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Emmett Johnson"
    }
   },
   {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Davis Allen",
-   "market": "player_receptions",
-   "splitRatio": 1.111,
-   "bet": {
-    "market": "player_receptions",
-    "side": "over",
-    "outcome": "Over",
-    "line": 1.5,
-    "book": "betrivers",
-    "decimal": 2.06,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Davis Allen"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
    "side": "under",
-   "player": "Kaleb Johnson",
-   "market": "player_rush_yds",
-   "splitRatio": 0.81,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 32.5,
-    "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-25T18:54:42.843Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Kaleb Johnson"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Kaleb Johnson",
-   "market": "player_rush_yds",
-   "splitRatio": 0.774,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 32.5,
-    "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-25T18:54:42.843Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Kaleb Johnson"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Konata Mumpfield",
+   "player": "James Cook",
    "market": "player_reception_yds",
-   "splitRatio": 0.666,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 33.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Konata Mumpfield"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Konata Mumpfield",
-   "market": "player_receptions",
-   "splitRatio": 0.82,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "betmgm",
-    "decimal": 1.5,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Konata Mumpfield"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Kyren Williams",
-   "market": "player_reception_yds",
-   "splitRatio": 0.9,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 21.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Kyren Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "MarShawn Lloyd",
-   "market": "player_reception_yds",
-   "splitRatio": 0.814,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 6.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "MarShawn Lloyd"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "MarShawn Lloyd",
-   "market": "player_receptions",
-   "splitRatio": 0.891,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "fanduel",
-    "decimal": 1.877193,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "MarShawn Lloyd"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "MarShawn Lloyd",
-   "market": "player_receptions",
-   "splitRatio": 0.891,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "fanduel",
-    "decimal": 1.877193,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "MarShawn Lloyd"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "MarShawn Lloyd",
-   "market": "player_rush_yds",
-   "splitRatio": 1.146,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 11.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "MarShawn Lloyd"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "MarShawn Lloyd",
-   "market": "player_rush_yds",
-   "splitRatio": 1.146,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 11.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "MarShawn Lloyd"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Matthew Stafford",
-   "market": "player_rush_yds",
-   "splitRatio": 0.136,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 0.5,
-    "book": "fanduel",
-    "decimal": 1.537634,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Matthew Stafford"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Savion Williams",
-   "market": "player_reception_yds",
-   "splitRatio": 1.296,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 14.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Savion Williams",
-   "market": "player_reception_yds",
-   "splitRatio": 1.276,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 14.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Savion Williams",
-   "market": "player_receptions",
-   "splitRatio": 1.12,
-   "bet": {
-    "market": "player_receptions",
-    "side": "over",
-    "outcome": "Over",
-    "line": 1.5,
-    "book": "espnbet",
-    "decimal": 1.62,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Savion Williams",
-   "market": "player_receptions",
-   "splitRatio": 1.159,
-   "bet": {
-    "market": "player_receptions",
-    "side": "over",
-    "outcome": "Over",
-    "line": 1.5,
-    "book": "espnbet",
-    "decimal": 1.62,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Savion Williams",
-   "market": "player_rush_yds",
-   "splitRatio": 0.776,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 4.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Savion Williams",
-   "market": "player_rush_yds",
-   "splitRatio": 0.783,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 4.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Savion Williams"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Tutu Atwell",
-   "market": "player_reception_yds",
-   "splitRatio": 1.167,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 21.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Tutu Atwell"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "over",
-   "player": "Tutu Atwell",
-   "market": "player_reception_yds",
-   "splitRatio": 1.174,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 21.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:40:44.208Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Tutu Atwell"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Tyler Higbee",
-   "market": "player_receptions",
-   "splitRatio": 0.885,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "espnbet",
-    "decimal": 1.71,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Tyler Higbee"
-   }
-  },
-  {
-   "away": "GB",
-   "home": "LA",
-   "kickoff": "2026-11-26T01:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
-   "angle": "venue: own split indoors",
-   "side": "under",
-   "player": "Xavier Smith",
-   "market": "player_reception_yds",
-   "splitRatio": 0.816,
    "bet": {
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
     "line": 8.5,
-    "book": "fanduel",
-    "decimal": 1.943396,
-    "priceAt": "2026-11-25T21:48:42.884Z",
-    "kickoff": "2026-11-26T01:00:00Z",
-    "player": "Xavier Smith"
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
    }
   },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "bovada",
+    "decimal": 1.666667,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_rush_yds",
+   "splitRatio": 0.878,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Allen",
+   "market": "player_pass_yds",
+   "bet": {
+    "market": "player_pass_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 224.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Josh Allen",
+   "market": "player_rush_yds",
+   "splitRatio": 1.117,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 36.5,
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Allen",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 39.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Downs",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 36.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Josh Downs"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Downs",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.649351,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Josh Downs"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Keon Coleman",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 24.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Keon Coleman"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Keon Coleman",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "bovada",
+    "decimal": 1.555556,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Keon Coleman"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Khalil Shakir",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Khalil Shakir"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Khalil Shakir",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 1.909091,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Khalil Shakir"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_reception_yds",
+   "splitRatio": 0.881,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 13.5,
+    "book": "betrivers",
+    "decimal": 1.83,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 13.5,
+    "book": "betrivers",
+    "decimal": 1.83,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 1.769231,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_pass_yds",
+   "bet": {
+    "market": "player_pass_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 236.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_rush_yds",
+   "splitRatio": 0.856,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Rashee Rice",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 47.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Rashee Rice"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Rashee Rice",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.877193,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Rashee Rice"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "over",
+   "player": "Ray Davis",
+   "market": "player_rush_yds",
+   "splitRatio": 1.197,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ray Davis"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ray Davis",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ray Davis"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Travis Kelce",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 46.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Travis Kelce"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Travis Kelce",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.60241,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Travis Kelce"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "splitRatio": 0.857,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "splitRatio": 0.853,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_receptions",
+   "splitRatio": 0.826,
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "splitRatio": 1.372,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 2.02,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "over",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "splitRatio": 1.12,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 2.02,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Xavier Worthy",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Xavier Worthy"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Xavier Worthy",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Xavier Worthy"
+   }
+  }
+ ],
+ "checkedAt": "2026-11-26T05:03:46.067015Z",
+ "current": [
   {
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: dome or closed roof, over",
    "side": "over",
    "player": "",
@@ -5068,7 +5456,7 @@
     "line": 55.0,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": ""
    }
@@ -5077,7 +5465,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -5088,7 +5476,7 @@
     "line": 55.5,
     "book": "fanduel",
     "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": ""
    }
@@ -5097,7 +5485,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, under",
    "side": "under",
    "player": "",
@@ -5108,7 +5496,7 @@
     "line": 55.5,
     "book": "fanduel",
     "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": ""
    }
@@ -5117,7 +5505,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, home side",
    "side": "away",
    "player": "",
@@ -5128,7 +5516,7 @@
     "line": -1.0,
     "book": "betmgm",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": ""
    }
@@ -5137,7 +5525,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Amon-Ra St. Brown",
@@ -5146,10 +5534,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 84.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 86.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Amon-Ra St. Brown"
    }
@@ -5158,7 +5546,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Amon-Ra St. Brown",
@@ -5170,7 +5558,7 @@
     "line": 7.5,
     "book": "bovada",
     "decimal": 1.76923,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Amon-Ra St. Brown"
    }
@@ -5179,7 +5567,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Brock Wright",
@@ -5192,7 +5580,7 @@
     "line": 2.5,
     "book": "bovada",
     "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Brock Wright"
    }
@@ -5201,7 +5589,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Brock Wright",
@@ -5213,7 +5601,7 @@
     "line": 3.5,
     "book": "fanduel",
     "decimal": 1.943396,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Brock Wright"
    }
@@ -5222,7 +5610,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Brock Wright",
@@ -5235,7 +5623,7 @@
     "line": 0.5,
     "book": "bovada",
     "decimal": 1.69,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Brock Wright"
    }
@@ -5244,7 +5632,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Brock Wright",
@@ -5257,7 +5645,7 @@
     "line": 0.5,
     "book": "bovada",
     "decimal": 1.69,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Brock Wright"
    }
@@ -5266,7 +5654,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Brock Wright",
@@ -5278,7 +5666,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.12,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Brock Wright"
    }
@@ -5287,7 +5675,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Caleb Williams",
@@ -5299,7 +5687,7 @@
     "line": 264.5,
     "book": "betrivers",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Caleb Williams"
    }
@@ -5308,7 +5696,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Caleb Williams",
@@ -5321,7 +5709,7 @@
     "line": 21.5,
     "book": "betrivers",
     "decimal": 1.85,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Caleb Williams"
    }
@@ -5330,7 +5718,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Caleb Williams",
@@ -5342,7 +5730,7 @@
     "line": 22.5,
     "book": "bovada",
     "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Caleb Williams"
    }
@@ -5351,7 +5739,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Colston Loveland",
@@ -5360,10 +5748,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 53.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 52.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Colston Loveland"
    }
@@ -5372,7 +5760,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Colston Loveland",
@@ -5384,7 +5772,7 @@
     "line": 5.5,
     "book": "fanduel",
     "decimal": 1.714286,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Colston Loveland"
    }
@@ -5393,7 +5781,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "D'Andre Swift",
@@ -5403,10 +5791,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 67.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "D'Andre Swift"
    }
@@ -5415,7 +5803,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "D'Andre Swift",
@@ -5425,10 +5813,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 67.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "D'Andre Swift"
    }
@@ -5437,7 +5825,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "D'Andre Swift",
@@ -5446,10 +5834,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 67.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "D'Andre Swift"
    }
@@ -5458,7 +5846,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "D'Andre Swift",
@@ -5469,8 +5857,8 @@
     "outcome": "Under",
     "line": 2.5,
     "book": "bovada",
-    "decimal": 1.76923,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.741,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "D'Andre Swift"
    }
@@ -5479,7 +5867,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "D'Andre Swift",
@@ -5491,7 +5879,7 @@
     "line": 48.5,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "D'Andre Swift"
    }
@@ -5500,7 +5888,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Isaac TeSlaa",
@@ -5512,8 +5900,8 @@
     "outcome": "Over",
     "line": 18.5,
     "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Isaac TeSlaa"
    }
@@ -5522,7 +5910,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Isaac TeSlaa",
@@ -5534,7 +5922,7 @@
     "line": 19.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Isaac TeSlaa"
    }
@@ -5543,7 +5931,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Isaac TeSlaa",
@@ -5554,8 +5942,8 @@
     "outcome": "Under",
     "line": 1.5,
     "book": "bovada",
-    "decimal": 1.741,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.69,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Isaac TeSlaa"
    }
@@ -5564,7 +5952,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jahmyr Gibbs",
@@ -5576,7 +5964,7 @@
     "line": 37.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jahmyr Gibbs"
    }
@@ -5585,7 +5973,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jahmyr Gibbs",
@@ -5597,7 +5985,7 @@
     "line": 4.5,
     "book": "fanduel",
     "decimal": 1.819672,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jahmyr Gibbs"
    }
@@ -5606,7 +5994,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Jahmyr Gibbs",
@@ -5619,7 +6007,7 @@
     "line": 92.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jahmyr Gibbs"
    }
@@ -5628,7 +6016,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jahmyr Gibbs",
@@ -5640,7 +6028,7 @@
     "line": 93.5,
     "book": "betrivers",
     "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jahmyr Gibbs"
    }
@@ -5649,7 +6037,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jameson Williams",
@@ -5658,10 +6046,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 59.5,
+    "line": 57.5,
     "book": "betrivers",
-    "decimal": 1.85,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.89,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jameson Williams"
    }
@@ -5670,7 +6058,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jameson Williams",
@@ -5682,7 +6070,7 @@
     "line": 3.5,
     "book": "bovada",
     "decimal": 2.05,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jameson Williams"
    }
@@ -5691,7 +6079,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jared Goff",
@@ -5703,7 +6091,7 @@
     "line": 280.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jared Goff"
    }
@@ -5712,7 +6100,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Jared Goff",
@@ -5725,7 +6113,7 @@
     "line": 1.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jared Goff"
    }
@@ -5734,7 +6122,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Jared Goff",
@@ -5746,7 +6134,7 @@
     "line": 1.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Jared Goff"
    }
@@ -5755,7 +6143,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Kalif Raymond",
@@ -5768,7 +6156,7 @@
     "line": 26.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5777,7 +6165,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "revenge: player against a former team",
    "side": "over",
    "player": "Kalif Raymond",
@@ -5787,9 +6175,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 25.5,
-    "book": "betrivers",
-    "decimal": 1.9,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5798,7 +6186,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Kalif Raymond",
@@ -5810,7 +6198,7 @@
     "line": 26.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5819,7 +6207,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Kalif Raymond",
@@ -5830,9 +6218,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 2.5,
-    "book": "bovada",
+    "book": "fanduel",
     "decimal": 2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5841,7 +6229,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Kalif Raymond",
@@ -5852,9 +6240,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 2.5,
-    "book": "bovada",
+    "book": "fanduel",
     "decimal": 2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5863,7 +6251,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "revenge: player against a former team",
    "side": "over",
    "player": "Kalif Raymond",
@@ -5874,8 +6262,8 @@
     "outcome": "Over",
     "line": 2.5,
     "book": "bovada",
-    "decimal": 1.76923,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.8,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5884,7 +6272,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Kalif Raymond",
@@ -5894,9 +6282,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 2.5,
-    "book": "bovada",
+    "book": "fanduel",
     "decimal": 2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kalif Raymond"
    }
@@ -5905,7 +6293,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Kyle Monangai",
@@ -5915,10 +6303,10 @@
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
-    "line": 3.5,
+    "line": 4.5,
     "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.8,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -5927,7 +6315,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Kyle Monangai",
@@ -5936,10 +6324,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 42.5,
+    "line": 41.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -5948,7 +6336,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Kyle Monangai",
@@ -5959,9 +6347,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.5,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.487805,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -5970,7 +6358,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Kyle Monangai",
@@ -5981,9 +6369,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "fanduel",
-    "decimal": 2.52,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "book": "bovada",
+    "decimal": 2.75,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -5992,7 +6380,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Kyle Monangai",
@@ -6002,9 +6390,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "fanduel",
-    "decimal": 2.52,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "book": "bovada",
+    "decimal": 2.75,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -6013,7 +6401,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Kyle Monangai",
@@ -6024,9 +6412,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 33.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -6035,7 +6423,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Kyle Monangai",
@@ -6048,7 +6436,7 @@
     "line": 35.5,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -6057,7 +6445,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Kyle Monangai",
@@ -6069,7 +6457,7 @@
     "line": 35.5,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Kyle Monangai"
    }
@@ -6078,7 +6466,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Luther Burden III",
@@ -6088,10 +6476,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 62.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 68.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6100,7 +6488,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Luther Burden III",
@@ -6110,10 +6498,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 62.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 68.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6122,7 +6510,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Luther Burden III",
@@ -6131,10 +6519,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 62.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "line": 68.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6143,7 +6531,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Luther Burden III",
@@ -6154,9 +6542,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 4.5,
-    "book": "bovada",
-    "decimal": 2.25,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 2.22,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6165,7 +6553,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Luther Burden III",
@@ -6175,9 +6563,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 4.5,
-    "book": "bovada",
-    "decimal": 2.25,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 2.22,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6186,7 +6574,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Luther Burden III",
@@ -6199,7 +6587,7 @@
     "line": 2.5,
     "book": "fanduel",
     "decimal": 1.769231,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6208,7 +6596,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Luther Burden III",
@@ -6221,7 +6609,7 @@
     "line": 2.5,
     "book": "fanduel",
     "decimal": 1.769231,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6230,7 +6618,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Luther Burden III",
@@ -6242,7 +6630,7 @@
     "line": 2.5,
     "book": "fanduel",
     "decimal": 1.769231,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Luther Burden III"
    }
@@ -6251,7 +6639,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Rome Odunze",
@@ -6263,7 +6651,7 @@
     "line": 49.5,
     "book": "betrivers",
     "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Rome Odunze"
    }
@@ -6272,7 +6660,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Rome Odunze",
@@ -6282,9 +6670,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 3.5,
-    "book": "bovada",
-    "decimal": 1.666667,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.649351,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Rome Odunze"
    }
@@ -6293,7 +6681,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sam LaPorta",
@@ -6304,8 +6692,8 @@
     "outcome": "Under",
     "line": 45.5,
     "book": "betrivers",
-    "decimal": 1.85,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam LaPorta"
    }
@@ -6314,7 +6702,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Sam LaPorta",
@@ -6327,7 +6715,7 @@
     "line": 4.5,
     "book": "bovada",
     "decimal": 1.69,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam LaPorta"
    }
@@ -6336,7 +6724,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sam LaPorta",
@@ -6348,7 +6736,7 @@
     "line": 4.5,
     "book": "bovada",
     "decimal": 1.69,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam LaPorta"
    }
@@ -6357,7 +6745,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Sam Roush",
@@ -6368,9 +6756,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 7.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam Roush"
    }
@@ -6379,7 +6767,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sam Roush",
@@ -6389,9 +6777,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 7.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam Roush"
    }
@@ -6400,7 +6788,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Sam Roush",
@@ -6413,7 +6801,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.72,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam Roush"
    }
@@ -6422,7 +6810,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sam Roush",
@@ -6434,7 +6822,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.72,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sam Roush"
    }
@@ -6443,7 +6831,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Sione Vaki",
@@ -6456,7 +6844,7 @@
     "line": 16.5,
     "book": "fanduel",
     "decimal": 1.847458,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6465,7 +6853,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sione Vaki",
@@ -6477,7 +6865,7 @@
     "line": 16.5,
     "book": "fanduel",
     "decimal": 1.847458,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6486,7 +6874,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Sione Vaki",
@@ -6499,7 +6887,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.04,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6508,7 +6896,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "under",
    "player": "Sione Vaki",
@@ -6521,7 +6909,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.04,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6530,7 +6918,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sione Vaki",
@@ -6542,7 +6930,7 @@
     "line": 0.5,
     "book": "fanduel",
     "decimal": 2.04,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6551,7 +6939,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Sione Vaki",
@@ -6564,7 +6952,7 @@
     "line": 9.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6573,7 +6961,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Sione Vaki",
@@ -6586,7 +6974,7 @@
     "line": 9.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6595,7 +6983,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Sione Vaki",
@@ -6607,7 +6995,7 @@
     "line": 9.5,
     "book": "fanduel",
     "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Sione Vaki"
    }
@@ -6616,7 +7004,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Zavion Thomas",
@@ -6626,10 +7014,10 @@
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
-    "line": 10.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "line": 9.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Zavion Thomas"
    }
@@ -6638,7 +7026,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Zavion Thomas",
@@ -6647,10 +7035,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 11.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 10.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:14:42.212Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Zavion Thomas"
    }
@@ -6659,7 +7047,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split indoors",
    "side": "over",
    "player": "Zavion Thomas",
@@ -6670,9 +7058,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 1.5,
-    "book": "fanduel",
-    "decimal": 2.44,
-    "priceAt": "2026-11-25T21:20:42.422Z",
+    "book": "bovada",
+    "decimal": 2.45,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Zavion Thomas"
    }
@@ -6681,7 +7069,7 @@
    "away": "CHI",
    "home": "DET",
    "kickoff": "2026-11-26T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Zavion Thomas",
@@ -6692,8 +7080,8 @@
     "outcome": "Under",
     "line": 1.5,
     "book": "bovada",
-    "decimal": 1.555556,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.526316,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T18:00:00Z",
     "player": "Zavion Thomas"
    }
@@ -6702,7 +7090,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -6713,7 +7101,7 @@
     "line": 48.0,
     "book": "hardrockbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": ""
    }
@@ -6722,7 +7110,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, under",
    "side": "under",
    "player": "",
@@ -6733,7 +7121,7 @@
     "line": 48.0,
     "book": "hardrockbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": ""
    }
@@ -6742,7 +7130,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, home side",
    "side": "away",
    "player": "",
@@ -6753,7 +7141,7 @@
     "line": 8.5,
     "book": "draftkings",
     "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": ""
    }
@@ -6762,7 +7150,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Brevyn Spann-Ford",
@@ -6775,7 +7163,7 @@
     "line": 14.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6784,7 +7172,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Brevyn Spann-Ford",
@@ -6794,10 +7182,10 @@
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
-    "line": 14.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 13.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6806,7 +7194,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Brevyn Spann-Ford",
@@ -6818,7 +7206,7 @@
     "line": 14.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6827,7 +7215,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Brevyn Spann-Ford",
@@ -6839,8 +7227,8 @@
     "outcome": "Under",
     "line": 1.5,
     "book": "bovada",
-    "decimal": 2.3,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 2.35,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6849,7 +7237,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Brevyn Spann-Ford",
@@ -6860,9 +7248,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.588235,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.581395,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6871,7 +7259,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Brevyn Spann-Ford",
@@ -6882,8 +7270,8 @@
     "outcome": "Under",
     "line": 1.5,
     "book": "bovada",
-    "decimal": 2.3,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 2.35,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Brevyn Spann-Ford"
    }
@@ -6892,7 +7280,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "CeeDee Lamb",
@@ -6901,10 +7289,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 91.5,
+    "line": 90.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "CeeDee Lamb"
    }
@@ -6913,7 +7301,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "CeeDee Lamb",
@@ -6925,7 +7313,7 @@
     "line": 7.5,
     "book": "bovada",
     "decimal": 1.741,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "CeeDee Lamb"
    }
@@ -6934,7 +7322,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "Dak Prescott",
@@ -6944,10 +7332,10 @@
     "market": "player_pass_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 263.5,
+    "line": 262.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dak Prescott"
    }
@@ -6956,7 +7344,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Dak Prescott",
@@ -6965,10 +7353,10 @@
     "market": "player_pass_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 263.5,
+    "line": 262.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dak Prescott"
    }
@@ -6977,7 +7365,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Dak Prescott",
@@ -6989,7 +7377,7 @@
     "line": 10.5,
     "book": "betrivers",
     "decimal": 1.84,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dak Prescott"
    }
@@ -6998,7 +7386,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Dallas Goedert",
@@ -7010,7 +7398,7 @@
     "line": 31.5,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dallas Goedert"
    }
@@ -7019,7 +7407,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Dallas Goedert",
@@ -7032,7 +7420,7 @@
     "line": 3.5,
     "book": "bovada",
     "decimal": 2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dallas Goedert"
    }
@@ -7041,7 +7429,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Dallas Goedert",
@@ -7051,9 +7439,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 3.5,
-    "book": "bovada",
-    "decimal": 1.76923,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.769231,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Dallas Goedert"
    }
@@ -7062,7 +7450,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Darius Cooper",
@@ -7072,10 +7460,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 31.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 30.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Darius Cooper"
    }
@@ -7084,7 +7472,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Darius Cooper",
@@ -7093,10 +7481,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 31.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 30.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Darius Cooper"
    }
@@ -7105,7 +7493,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Darius Cooper",
@@ -7115,9 +7503,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 2.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.819672,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Darius Cooper"
    }
@@ -7126,7 +7514,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "DeVonta Smith",
@@ -7137,9 +7525,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 63.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "DeVonta Smith"
    }
@@ -7148,7 +7536,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "DeVonta Smith",
@@ -7158,9 +7546,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 64.5,
-    "book": "bovada",
+    "book": "betrivers",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "DeVonta Smith"
    }
@@ -7169,7 +7557,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "DeVonta Smith",
@@ -7180,8 +7568,8 @@
     "outcome": "Under",
     "line": 5.5,
     "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "DeVonta Smith"
    }
@@ -7190,7 +7578,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "George Pickens",
@@ -7200,10 +7588,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 69.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 70.5,
+    "book": "betrivers",
+    "decimal": 1.88,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "George Pickens"
    }
@@ -7212,7 +7600,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "George Pickens",
@@ -7221,10 +7609,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 69.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 70.5,
+    "book": "betrivers",
+    "decimal": 1.88,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "George Pickens"
    }
@@ -7233,7 +7621,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "George Pickens",
@@ -7246,7 +7634,7 @@
     "line": 5.5,
     "book": "bovada",
     "decimal": 1.666667,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "George Pickens"
    }
@@ -7255,7 +7643,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "George Pickens",
@@ -7267,7 +7655,7 @@
     "line": 5.5,
     "book": "bovada",
     "decimal": 1.666667,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "George Pickens"
    }
@@ -7276,7 +7664,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "Javonte Williams",
@@ -7287,9 +7675,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 7.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Javonte Williams"
    }
@@ -7298,7 +7686,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Javonte Williams",
@@ -7309,8 +7697,8 @@
     "outcome": "Under",
     "line": 8.5,
     "book": "betrivers",
-    "decimal": 1.82,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.81,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Javonte Williams"
    }
@@ -7319,7 +7707,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Javonte Williams",
@@ -7330,8 +7718,8 @@
     "outcome": "Under",
     "line": 1.5,
     "book": "bovada",
-    "decimal": 2.2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 2.25,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Javonte Williams"
    }
@@ -7340,7 +7728,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Javonte Williams",
@@ -7352,7 +7740,7 @@
     "line": 77.5,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Javonte Williams"
    }
@@ -7361,7 +7749,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Joe Milton III",
@@ -7372,9 +7760,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 198.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Joe Milton III"
    }
@@ -7383,7 +7771,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Joe Milton III",
@@ -7393,9 +7781,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 198.5,
-    "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Joe Milton III"
    }
@@ -7404,7 +7792,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Joe Milton III",
@@ -7416,7 +7804,7 @@
     "line": 32.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Joe Milton III"
    }
@@ -7425,7 +7813,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "KaVontae Turpin",
@@ -7438,7 +7826,7 @@
     "line": 4.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7447,7 +7835,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7456,10 +7844,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 4.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 12.5,
+    "book": "fanduel",
+    "decimal": 1.900901,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7468,7 +7856,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "over",
    "player": "KaVontae Turpin",
@@ -7481,7 +7869,7 @@
     "line": 0.5,
     "book": "bovada",
     "decimal": 1.606061,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7490,7 +7878,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7501,9 +7889,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 2.25,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 2.28,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7512,7 +7900,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7522,9 +7910,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 2.25,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 2.28,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7533,7 +7921,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7543,10 +7931,10 @@
     "market": "player_rush_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 2.5,
+    "line": 3.5,
     "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7555,7 +7943,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7565,10 +7953,10 @@
     "market": "player_rush_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 2.5,
+    "line": 3.5,
     "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7577,7 +7965,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "KaVontae Turpin",
@@ -7586,10 +7974,10 @@
     "market": "player_rush_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 2.5,
+    "line": 3.5,
     "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "KaVontae Turpin"
    }
@@ -7598,7 +7986,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Luke Schoonmaker",
@@ -7608,9 +7996,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 2.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Luke Schoonmaker"
    }
@@ -7619,7 +8007,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Luke Schoonmaker",
@@ -7629,9 +8017,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 2.3,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 2.22,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Luke Schoonmaker"
    }
@@ -7640,7 +8028,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Makai Lemon",
@@ -7651,8 +8039,8 @@
     "outcome": "Under",
     "line": 31.5,
     "book": "betrivers",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Makai Lemon"
    }
@@ -7661,7 +8049,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Makai Lemon",
@@ -7671,9 +8059,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 3.5,
-    "book": "bovada",
-    "decimal": 1.588235,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.60241,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Makai Lemon"
    }
@@ -7682,7 +8070,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Ryan Flournoy",
@@ -7692,10 +8080,10 @@
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
-    "line": 30.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 29.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Ryan Flournoy"
    }
@@ -7704,7 +8092,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Ryan Flournoy",
@@ -7715,8 +8103,8 @@
     "outcome": "Under",
     "line": 31.5,
     "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-25T21:14:39.913Z",
+    "decimal": 1.89,
+    "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Ryan Flournoy"
    }
@@ -7725,7 +8113,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Ryan Flournoy",
@@ -7734,10 +8122,10 @@
     "market": "player_receptions",
     "side": "under",
     "outcome": "Under",
-    "line": 2.5,
-    "book": "bovada",
-    "decimal": 2.2,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.515464,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Ryan Flournoy"
    }
@@ -7746,7 +8134,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Saquon Barkley",
@@ -7755,10 +8143,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 7.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 8.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Saquon Barkley"
    }
@@ -7767,7 +8155,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Saquon Barkley",
@@ -7777,9 +8165,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.741,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.769231,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Saquon Barkley"
    }
@@ -7788,7 +8176,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Saquon Barkley",
@@ -7797,10 +8185,10 @@
     "market": "player_rush_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 66.5,
+    "line": 65.5,
     "book": "bovada",
     "decimal": 1.87,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Saquon Barkley"
    }
@@ -7809,7 +8197,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Will Shipley",
@@ -7819,10 +8207,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 6.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 22.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7831,7 +8219,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Will Shipley",
@@ -7840,10 +8228,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 6.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 22.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7852,7 +8240,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Will Shipley",
@@ -7863,9 +8251,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.434783,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.574713,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7874,7 +8262,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Will Shipley",
@@ -7884,9 +8272,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.434783,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.574713,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7895,7 +8283,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Will Shipley",
@@ -7906,9 +8294,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 13.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7917,7 +8305,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Will Shipley",
@@ -7928,9 +8316,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 13.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7939,7 +8327,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Will Shipley",
@@ -7949,9 +8337,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 13.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Will Shipley"
    }
@@ -7960,7 +8348,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Zach Ertz",
@@ -7970,10 +8358,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.724638,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -7982,7 +8370,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Zach Ertz",
@@ -7992,10 +8380,10 @@
     "market": "player_reception_yds",
     "side": "over",
     "outcome": "Over",
-    "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.952381,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 2.08,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -8004,7 +8392,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Zach Ertz",
@@ -8013,10 +8401,10 @@
     "market": "player_reception_yds",
     "side": "under",
     "outcome": "Under",
-    "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.724638,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -8025,7 +8413,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split on turf",
    "side": "under",
    "player": "Zach Ertz",
@@ -8036,9 +8424,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.925926,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -8047,7 +8435,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Zach Ertz",
@@ -8058,9 +8446,9 @@
     "side": "over",
     "outcome": "Over",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.909091,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.819672,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -8069,7 +8457,7 @@
    "away": "PHI",
    "home": "DAL",
    "kickoff": "2026-11-26T21:30:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving",
    "side": "under",
    "player": "Zach Ertz",
@@ -8079,9 +8467,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 0.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-25T21:10:45.576Z",
+    "book": "fanduel",
+    "decimal": 1.925926,
+    "priceAt": "2026-11-26T01:12:42.426Z",
     "kickoff": "2026-11-26T21:30:00Z",
     "player": "Zach Ertz"
    }
@@ -8090,7 +8478,7 @@
    "away": "KC",
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8099,9 +8487,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 46.5,
-    "book": "hardrockbet",
-    "decimal": 1.95,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "book": "ballybet",
+    "decimal": 1.93,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
    }
@@ -8110,7 +8498,7 @@
    "away": "KC",
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, under",
    "side": "under",
    "player": "",
@@ -8119,9 +8507,9 @@
     "side": "under",
     "outcome": "Under",
     "line": 46.5,
-    "book": "hardrockbet",
-    "decimal": 1.95,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "book": "ballybet",
+    "decimal": 1.93,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
    }
@@ -8130,7 +8518,7 @@
    "away": "KC",
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "short week: Thanksgiving, home side",
    "side": "away",
    "player": "",
@@ -8140,8 +8528,8 @@
     "outcome": "Kansas City Chiefs",
     "line": 3.0,
     "book": "espnbet",
-    "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
    }
@@ -8150,15 +8538,1079 @@
    "away": "KC",
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Cyrus Allen",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "bovada",
+    "decimal": 1.909091,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Cyrus Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Cyrus Allen",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "bovada",
+    "decimal": 1.5,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Cyrus Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "DJ Moore",
+   "market": "player_reception_yds",
+   "splitRatio": 1.114,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 47.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "DJ Moore",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 48.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "DJ Moore",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 2.15,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "DJ Moore"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dalton Kincaid",
+   "market": "player_reception_yds",
+   "splitRatio": 1.17,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 38.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dalton Kincaid",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 40.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dalton Kincaid",
+   "market": "player_receptions",
+   "splitRatio": 1.133,
+   "bet": {
+    "market": "player_receptions",
+    "side": "over",
+    "outcome": "Over",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 2.16,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dalton Kincaid",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 1.741,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dalton Kincaid"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Dawson Knox",
+   "market": "player_reception_yds",
+   "splitRatio": 1.172,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 9.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dawson Knox",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Dawson Knox",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 1.714286,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Dawson Knox"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 118.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Emmett Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.925926,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Emmett Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Emmett Johnson",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
+    "book": "betrivers",
+    "decimal": 1.85,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Emmett Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 8.5,
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "bovada",
+    "decimal": 1.666667,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_rush_yds",
+   "splitRatio": 0.878,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "James Cook",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 83.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "James Cook"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Allen",
+   "market": "player_pass_yds",
+   "bet": {
+    "market": "player_pass_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 224.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Josh Allen",
+   "market": "player_rush_yds",
+   "splitRatio": 1.117,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 36.5,
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Allen",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 39.5,
+    "book": "betrivers",
+    "decimal": 1.86,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Josh Allen"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Downs",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 36.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Josh Downs"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Josh Downs",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "fanduel",
+    "decimal": 1.649351,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Josh Downs"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Keon Coleman",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 24.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Keon Coleman"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Keon Coleman",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "bovada",
+    "decimal": 1.555556,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Keon Coleman"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Khalil Shakir",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 41.5,
+    "book": "bovada",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Khalil Shakir"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Khalil Shakir",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 3.5,
+    "book": "bovada",
+    "decimal": 1.909091,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Khalil Shakir"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_reception_yds",
+   "splitRatio": 0.881,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 13.5,
+    "book": "betrivers",
+    "decimal": 1.83,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 13.5,
+    "book": "betrivers",
+    "decimal": 1.83,
+    "priceAt": "2026-11-26T01:04:39.950Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Noah Gray",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 1.769231,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Noah Gray"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_pass_yds",
+   "bet": {
+    "market": "player_pass_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 236.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_rush_yds",
+   "splitRatio": 0.856,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Patrick Mahomes",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 11.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Patrick Mahomes"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Rashee Rice",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 47.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Rashee Rice"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Rashee Rice",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.877193,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Rashee Rice"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "over",
+   "player": "Ray Davis",
+   "market": "player_rush_yds",
+   "splitRatio": 1.197,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ray Davis"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ray Davis",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ray Davis"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Travis Kelce",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 46.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Travis Kelce"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Travis Kelce",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 4.5,
+    "book": "fanduel",
+    "decimal": 1.60241,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Travis Kelce"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "splitRatio": 0.857,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "splitRatio": 0.853,
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.869565,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_receptions",
+   "splitRatio": 0.826,
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split on turf",
+   "side": "over",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "splitRatio": 1.372,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 2.02,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "venue: own split outdoors",
+   "side": "over",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "splitRatio": 1.12,
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "over",
+    "outcome": "Over",
+    "line": 1.5,
+    "book": "fanduel",
+    "decimal": 2.02,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Ty Johnson",
+   "market": "player_rush_yds",
+   "bet": {
+    "market": "player_rush_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 1.5,
+    "book": "bovada",
+    "decimal": 1.833333,
+    "priceAt": "2026-11-26T01:00:47.496Z",
+    "kickoff": "2026-11-27T01:20:00Z",
+    "player": "Ty Johnson"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Xavier Worthy",
+   "market": "player_reception_yds",
+   "bet": {
+    "market": "player_reception_yds",
+    "side": "under",
+    "outcome": "Under",
+    "line": 20.5,
+    "book": "fanduel",
+    "decimal": 1.884956,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Xavier Worthy"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
+   "angle": "short week: Thanksgiving",
+   "side": "under",
+   "player": "Xavier Worthy",
+   "market": "player_receptions",
+   "bet": {
+    "market": "player_receptions",
+    "side": "under",
+    "outcome": "Under",
+    "line": 2.5,
+    "book": "fanduel",
+    "decimal": 1.625,
+    "priceAt": "2026-11-26T01:16:42.931Z",
+    "kickoff": "2026-11-27T01:15:00Z",
+    "player": "Xavier Worthy"
+   }
+  },
+  {
+   "away": "KC",
+   "home": "BUF",
+   "kickoff": "2026-11-27T01:20:00Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "BUF kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 19.4,
-    "gustMph": 49.2,
-    "rainMm": 13.3,
+    "windMph": 20.9,
+    "gustMph": 49.4,
+    "rainMm": 5.7,
     "tempF": 38.2
    },
    "noPrice": "no free price for this market yet"
@@ -8167,15 +9619,15 @@
    "away": "KC",
    "home": "BUF",
    "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "KC kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 19.4,
-    "gustMph": 49.2,
-    "rainMm": 13.3,
+    "windMph": 20.9,
+    "gustMph": 49.4,
+    "rainMm": 5.7,
     "tempF": 38.2
    },
    "noPrice": "no free price for this market yet"
@@ -8184,7 +9636,7 @@
    "away": "NO",
    "home": "CIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8192,10 +9644,10 @@
     "market": "totals",
     "side": "under",
     "outcome": "Under",
-    "line": 50.5,
-    "book": "fanduel",
-    "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "line": 50.0,
+    "book": "ballybet",
+    "decimal": 1.88,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8204,7 +9656,7 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8215,7 +9667,7 @@
     "line": 47.5,
     "book": "espnbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8224,16 +9676,16 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "HOU kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 15.0,
-    "gustMph": 20.6,
+    "windMph": 15.5,
+    "gustMph": 21.3,
     "rainMm": 0.0,
-    "tempF": 73.3
+    "tempF": 72.5
    },
    "noPrice": "no free price for this market yet"
   },
@@ -8241,16 +9693,16 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "BAL kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 15.0,
-    "gustMph": 20.6,
+    "windMph": 15.5,
+    "gustMph": 21.3,
     "rainMm": 0.0,
-    "tempF": 73.3
+    "tempF": 72.5
    },
    "noPrice": "no free price for this market yet"
   },
@@ -8258,7 +9710,7 @@
    "away": "NYG",
    "home": "IND",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8269,7 +9721,7 @@
     "line": 42.5,
     "book": "fanduel",
     "decimal": 1.83,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8278,7 +9730,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: dome or closed roof, over",
    "side": "over",
    "player": "",
@@ -8289,7 +9741,7 @@
     "line": 41.5,
     "book": "ballybet",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8298,7 +9750,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8308,8 +9760,8 @@
     "outcome": "Under",
     "line": 42.5,
     "book": "espnbet",
-    "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8318,7 +9770,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "revenge: quarterback against his former team, his side",
    "side": "away",
    "player": "",
@@ -8329,7 +9781,7 @@
     "line": 7.0,
     "book": "hardrockbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -8338,7 +9790,7 @@
    "away": "NE",
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: dome or closed roof, over",
    "side": "over",
    "player": "",
@@ -8349,7 +9801,7 @@
     "line": 35.5,
     "book": "betmgm",
     "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T21:05:00Z",
     "player": ""
    }
@@ -8358,7 +9810,7 @@
    "away": "NE",
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
-   "checkedAt": "2026-11-25T22:32:14.825801Z",
+   "checkedAt": "2026-11-26T05:03:46.067015Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -8366,10 +9818,10 @@
     "market": "totals",
     "side": "under",
     "outcome": "Under",
-    "line": 35.5,
+    "line": 36.5,
     "book": "ballybet",
-    "decimal": 1.93,
-    "priceAt": "2026-11-25T19:32:34.581220Z",
+    "decimal": 1.87,
+    "priceAt": "2026-11-26T02:44:06.580629Z",
     "kickoff": "2026-11-29T21:05:00Z",
     "player": ""
    }
@@ -8377,14 +9829,44 @@
  ],
  "summary": {
   "clv": {
-   "n": 11,
-   "mean": -0.0475,
-   "low": -0.0645,
-   "high": -0.0302
+   "n": 45,
+   "mean": -0.0598,
+   "low": -0.0737,
+   "high": -0.0464
   },
   "passes": false,
-  "reason": "only 11 scored bets; 200 are needed",
+  "reason": "only 45 scored bets; 200 are needed",
   "byAngle": {
+   "venue: artificial turf, over": {
+    "clv": {
+     "n": 1,
+     "mean": 0.0307,
+     "low": 0.0307,
+     "high": 0.0307
+    },
+    "passes": false,
+    "reason": "only 1 scored bets; 200 are needed"
+   },
+   "venue: dome or closed roof, over": {
+    "clv": {
+     "n": 1,
+     "mean": -0.1007,
+     "low": -0.1007,
+     "high": -0.1007
+    },
+    "passes": false,
+    "reason": "only 1 scored bets; 200 are needed"
+   },
+   "venue: own split indoors": {
+    "clv": {
+     "n": 17,
+     "mean": -0.0493,
+     "low": -0.0702,
+     "high": -0.03
+    },
+    "passes": false,
+    "reason": "only 17 scored bets; 200 are needed"
+   },
    "venue: own split on grass": {
     "clv": {
      "n": 8,
@@ -8394,6 +9876,16 @@
     },
     "passes": false,
     "reason": "only 8 scored bets; 200 are needed"
+   },
+   "venue: own split on turf": {
+    "clv": {
+     "n": 15,
+     "mean": -0.0838,
+     "low": -0.11,
+     "high": -0.0599
+    },
+    "passes": false,
+    "reason": "only 15 scored bets; 200 are needed"
    },
    "venue: own split outdoors": {
     "clv": {
