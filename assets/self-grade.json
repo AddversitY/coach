@@ -1,6 +1,6 @@
 {
   "schema": "coach-self-grade-v1",
-  "updatedAt": "2026-11-25T19:33:06.029147Z",
+  "updatedAt": "2026-11-26T02:44:38.648002Z",
   "propCloses": 537,
   "realCloseGate": 1000,
   "sources": [
@@ -13,14 +13,14 @@
     {
       "source": "betrivers-public",
       "status": "ok",
-      "detail": "141 new prices, 135 with a player id",
-      "checkedAt": "2026-11-25T19:32:51.044642Z"
+      "detail": "142 new prices, 141 with a player id",
+      "checkedAt": "2026-11-26T02:44:23.843186Z"
     },
     {
       "source": "bovada-public",
       "status": "ok",
-      "detail": "180 new prices, 176 with a player id",
-      "checkedAt": "2026-11-25T19:32:50.837121Z"
+      "detail": "170 new prices, 170 with a player id",
+      "checkedAt": "2026-11-26T02:44:23.547200Z"
     },
     {
       "source": "caesars-public",
@@ -49,8 +49,8 @@
     {
       "source": "fanduel-public",
       "status": "ok",
-      "detail": "240 new prices, 244 with a player id",
-      "checkedAt": "2026-11-25T19:32:51.374926Z"
+      "detail": "216 new prices, 222 with a player id",
+      "checkedAt": "2026-11-26T02:44:24.265079Z"
     },
     {
       "source": "hardrock-public",
@@ -73,8 +73,8 @@
     {
       "source": "the-odds-api-dense",
       "status": "ok",
-      "detail": "1104 game prices, 3 credits",
-      "checkedAt": "2026-11-25T19:33:05.831028Z"
+      "detail": "1056 game prices, 3 credits",
+      "checkedAt": "2026-11-26T02:44:38.649596Z"
     },
     {
       "source": "the-odds-api-props",
@@ -183,7 +183,7 @@
     "h2h": {
       "market": "h2h",
       "label": "moneylines",
-      "savedPrices": 2804,
+      "savedPrices": 3156,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -195,7 +195,7 @@
     "spreads": {
       "market": "spreads",
       "label": "spreads",
-      "savedPrices": 2810,
+      "savedPrices": 3162,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -207,7 +207,7 @@
     "totals": {
       "market": "totals",
       "label": "totals",
-      "savedPrices": 2806,
+      "savedPrices": 3158,
       "cards": 0,
       "graded": 0,
       "hits": 0,
