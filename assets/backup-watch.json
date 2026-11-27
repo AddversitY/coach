@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-27T11:59:45.518603Z",
+ "checkedAt": "2026-11-27T21:03:59.255454Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -9,6 +9,72 @@
  },
  "notice": "Backups stepping in for a starter ruled out: Coach projection, the first price seen after the news, and closing line value after kickoff. Research, not a pick.",
  "current": [
+  {
+   "team": "ATL",
+   "group": "WR",
+   "out": [
+    {
+     "player": "Jahan Dotson",
+     "status": "Out",
+     "reportedAt": "2026-11-27T19:03Z",
+     "rating": 65
+    }
+   ],
+   "backup": "Olamide Zaccheaus",
+   "backupId": "00-0035208",
+   "backupRating": 42,
+   "backupRecentSnaps": 0.47,
+   "projection": {
+    "player_reception_yds": 26.9,
+    "player_receptions": 2.5
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "CHI",
+   "group": "TE",
+   "out": [
+    {
+     "player": "Colston Loveland",
+     "status": "Doubtful",
+     "reportedAt": "2026-11-27T18:04Z",
+     "rating": 96
+    }
+   ],
+   "backup": "Cole Kmet",
+   "backupId": "00-0036290",
+   "backupRating": 72,
+   "backupRecentSnaps": 0.57,
+   "projection": {
+    "player_reception_yds": 39.7,
+    "player_receptions": 3.9
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "JAX",
+   "group": "WR",
+   "out": [
+    {
+     "player": "Parker Washington",
+     "status": "Out",
+     "reportedAt": "2026-11-27T15:44Z",
+     "rating": 90
+    }
+   ],
+   "backup": "Jakobi Meyers",
+   "backupId": "00-0034960",
+   "backupRating": 84,
+   "backupRecentSnaps": 0.68,
+   "projection": {
+    "player_reception_yds": 58.6,
+    "player_receptions": 4.9
+   },
+   "prices": [],
+   "eventId": null
+  },
   {
    "team": "NE",
    "group": "QB",
@@ -38,8 +104,8 @@
    "out": [
     {
      "player": "A.J. Brown",
-     "status": "Doubtful",
-     "reportedAt": "2026-11-26T20:52Z",
+     "status": "Out",
+     "reportedAt": "2026-11-27T18:18Z",
      "rating": 91
     }
    ],

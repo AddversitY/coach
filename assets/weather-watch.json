@@ -43,7 +43,8 @@
     "book": "ballybet",
     "decimal": 1.88,
     "priceAt": "2026-11-23T19:26:30.417658Z"
-   }
+   },
+   "clv": -0.0039
   },
   {
    "away": "KC",
@@ -71,32 +72,19 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-27T11:59:47.624800Z",
+  "checkedAt": "2026-11-27T21:04:01.267607Z",
   "provider": "Open-Meteo"
  },
  "current": [
   {
-   "away": "DEN",
-   "home": "PIT",
-   "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 12.3,
-   "gustMph": 31.3,
-   "rainMm": 1.5,
-   "tempF": 37.8,
-   "firstTotal": 40.5,
-   "totalNow": 36.5,
-   "windy": false
-  },
-  {
    "away": "NO",
    "home": "CIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 9.5,
-   "gustMph": 33.1,
-   "rainMm": 9.4,
-   "tempF": 51.9,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 12.8,
+   "gustMph": 37.1,
+   "rainMm": 0.1,
+   "tempF": 54.1,
    "firstTotal": 52.5,
    "totalNow": 49.5,
    "windy": false
@@ -105,9 +93,9 @@
    "away": "NYJ",
    "home": "MIA",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 6.7,
-   "gustMph": 9.8,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 8.9,
+   "gustMph": 11.6,
    "rainMm": 0.0,
    "tempF": 77.1,
    "firstTotal": 41.5,
@@ -118,24 +106,24 @@
    "away": "TEN",
    "home": "JAX",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 4.4,
-   "gustMph": 12.1,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 6.7,
+   "gustMph": 11.4,
    "rainMm": 0.0,
-   "tempF": 67.6,
+   "tempF": 70.0,
    "firstTotal": 47.25,
-   "totalNow": 49.5,
+   "totalNow": 48.75,
    "windy": false
   },
   {
    "away": "SEA",
    "home": "SF",
    "kickoff": "2026-11-29T21:25:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 9.2,
-   "gustMph": 24.6,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 10.1,
+   "gustMph": 26.2,
    "rainMm": 0.0,
-   "tempF": 64.5,
+   "tempF": 65.1,
    "firstTotal": 46.75,
    "totalNow": 43.75,
    "windy": false
@@ -144,24 +132,24 @@
    "away": "LV",
    "home": "CLE",
    "kickoff": "2026-11-30T01:20:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 8.0,
-   "gustMph": 18.8,
-   "rainMm": 5.7,
-   "tempF": 49.0,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 13.5,
+   "gustMph": 35.6,
+   "rainMm": 3.4,
+   "tempF": 49.9,
    "firstTotal": 41.5,
-   "totalNow": 40.25,
+   "totalNow": 40.0,
    "windy": false
   },
   {
    "away": "CAR",
    "home": "TB",
    "kickoff": "2026-12-01T01:15:00Z",
-   "checkedAt": "2026-11-27T11:59:47.624800Z",
-   "windMph": 5.3,
-   "gustMph": 15.0,
-   "rainMm": 0.5,
-   "tempF": 67.5,
+   "checkedAt": "2026-11-27T21:04:01.267607Z",
+   "windMph": 6.0,
+   "gustMph": 11.2,
+   "rainMm": 0.6,
+   "tempF": 68.0,
    "firstTotal": 43.5,
    "totalNow": 43.5,
    "windy": false
@@ -169,13 +157,13 @@
  ],
  "summary": {
   "clv": {
-   "n": 0,
-   "mean": null,
-   "low": null,
-   "high": null
+   "n": 1,
+   "mean": -0.0039,
+   "low": -0.0039,
+   "high": -0.0039
   },
   "passes": false,
-  "reason": "only 0 scored bets; 200 are needed"
+  "reason": "only 1 scored bets; 200 are needed"
  },
  "notice": "Forecast wind at kickoff for open-air games, and the under price when windy. Research, not a pick."
 }
