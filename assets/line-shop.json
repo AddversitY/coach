@@ -1,6 +1,6 @@
 {
   "schema": "coach-line-shop-v1",
-  "updatedAt": "2026-11-26T21:51:53.616790Z",
+  "updatedAt": "2026-11-27T04:02:13.627584Z",
   "notice": "Soft-book prices that pay more than Pinnacle's price with the margin removed. Research only. A flag becomes a pick only after flags like it have beaten the closing line on at least 200 bets.",
   "rule": {
     "sharpBook": "pinnacle",
