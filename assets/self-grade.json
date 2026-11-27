@@ -1,7 +1,7 @@
 {
   "schema": "coach-self-grade-v1",
-  "updatedAt": "2026-11-26T21:51:52.633106Z",
-  "propCloses": 655,
+  "updatedAt": "2026-11-27T14:12:56.889530Z",
+  "propCloses": 861,
   "realCloseGate": 1000,
   "sources": [
     {
@@ -13,14 +13,14 @@
     {
       "source": "betrivers-public",
       "status": "ok",
-      "detail": "158 new prices, 155 with a player id",
-      "checkedAt": "2026-11-26T21:51:38.254754Z"
+      "detail": "83 new prices, 81 with a player id",
+      "checkedAt": "2026-11-27T14:12:43.533161Z"
     },
     {
       "source": "bovada-public",
       "status": "ok",
-      "detail": "178 new prices, 178 with a player id",
-      "checkedAt": "2026-11-26T21:51:37.995017Z"
+      "detail": "96 new prices, 94 with a player id",
+      "checkedAt": "2026-11-27T14:12:43.390334Z"
     },
     {
       "source": "caesars-public",
@@ -49,8 +49,8 @@
     {
       "source": "fanduel-public",
       "status": "ok",
-      "detail": "239 new prices, 243 with a player id",
-      "checkedAt": "2026-11-26T21:51:38.625664Z"
+      "detail": "138 new prices, 134 with a player id",
+      "checkedAt": "2026-11-27T14:12:43.734538Z"
     },
     {
       "source": "hardrock-public",
@@ -73,14 +73,14 @@
     {
       "source": "the-odds-api-dense",
       "status": "ok",
-      "detail": "948 game prices, 3 credits",
-      "checkedAt": "2026-11-26T21:51:52.371706Z"
+      "detail": "900 game prices, 3 credits",
+      "checkedAt": "2026-11-27T14:12:56.752257Z"
     },
     {
       "source": "the-odds-api-props",
       "status": "ok",
-      "detail": "88 player_rush_yds prices, 1 credits",
-      "checkedAt": "2026-11-26T21:51:52.634800Z"
+      "detail": "206 player_reception_yds prices, 1 credits",
+      "checkedAt": "2026-11-27T14:12:56.891511Z"
     }
   ],
   "markets": {
@@ -111,7 +111,7 @@
     "player_reception_yds": {
       "market": "player_reception_yds",
       "label": "receiving yards props",
-      "savedPrices": 220,
+      "savedPrices": 426,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -183,7 +183,7 @@
     "h2h": {
       "market": "h2h",
       "label": "moneylines",
-      "savedPrices": 3822,
+      "savedPrices": 4122,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -195,7 +195,7 @@
     "spreads": {
       "market": "spreads",
       "label": "spreads",
-      "savedPrices": 3828,
+      "savedPrices": 4128,
       "cards": 0,
       "graded": 0,
       "hits": 0,
@@ -207,7 +207,7 @@
     "totals": {
       "market": "totals",
       "label": "totals",
-      "savedPrices": 3824,
+      "savedPrices": 4124,
       "cards": 0,
       "graded": 0,
       "hits": 0,

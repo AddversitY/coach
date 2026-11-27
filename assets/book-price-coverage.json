@@ -1,12 +1,12 @@
 {
   "schema": "coach-book-price-coverage-v1",
-  "updatedAt": "2026-11-26T21:51:38.624900Z",
+  "updatedAt": "2026-11-27T14:12:43.733994Z",
   "store": "Normalized prices are in the gitignored file backend/data/book-props.json, kept between runs by the GitHub Actions cache. The Worker durable object keeps the latest snapshot when BOOK_PROPS_INGEST_SECRET is set. Raw book payloads are not stored. This public file has counts only.",
   "consensusAdopted": false,
   "consensusReason": "Two-sided closes are unavailable for 2025 and 2026.",
   "games": 17,
-  "prices": 5706,
-  "closes": 4468,
+  "prices": 6023,
+  "closes": 4478,
   "books": [
     {
       "book": "betmgm",
@@ -20,7 +20,7 @@
     {
       "book": "betrivers",
       "status": "ok",
-      "prices": 1548,
+      "prices": 1631,
       "closes": 1208,
       "matchedPlayers": 332,
       "unmatchedPlayers": 11
@@ -28,10 +28,10 @@
     {
       "book": "bovada",
       "status": "ok",
-      "prices": 1642,
-      "closes": 1386,
-      "matchedPlayers": 214,
-      "unmatchedPlayers": 2
+      "prices": 1738,
+      "closes": 1390,
+      "matchedPlayers": 215,
+      "unmatchedPlayers": 3
     },
     {
       "book": "caesars",
@@ -72,9 +72,9 @@
     {
       "book": "fanduel",
       "status": "ok",
-      "prices": 2516,
-      "closes": 1874,
-      "matchedPlayers": 476,
+      "prices": 2654,
+      "closes": 1880,
+      "matchedPlayers": 477,
       "unmatchedPlayers": 12
     },
     {
@@ -99,45 +99,646 @@
   "markets": {
     "player_anytime_td": {
       "market": "player_anytime_td",
-      "prices": 1328,
-      "closes": 1048
+      "prices": 1401,
+      "closes": 1050
     },
     "player_pass_attempts": {
       "market": "player_pass_attempts",
-      "prices": 168,
+      "prices": 176,
       "closes": 136
     },
     "player_pass_tds": {
       "market": "player_pass_tds",
-      "prices": 256,
+      "prices": 268,
       "closes": 204
     },
     "player_pass_yds": {
       "market": "player_pass_yds",
-      "prices": 258,
+      "prices": 270,
       "closes": 206
     },
     "player_reception_yds": {
       "market": "player_reception_yds",
-      "prices": 1754,
-      "closes": 1312
+      "prices": 1862,
+      "closes": 1316
     },
     "player_rush_yds": {
       "market": "player_rush_yds",
-      "prices": 730,
-      "closes": 584
+      "prices": 766,
+      "closes": 588
     },
     "player_pass_completions": {
       "market": "player_pass_completions",
-      "prices": 80,
+      "prices": 84,
       "closes": 68
     },
     "player_receptions": {
       "market": "player_receptions",
-      "prices": 1132,
+      "prices": 1196,
       "closes": 910
     }
   },
-  "unmappedMarketLabels": [],
+  "unmappedMarketLabels": [
+    {
+      "label": "betrivers: Including Overtime",
+      "count": 429
+    },
+    {
+      "label": "betrivers: First Half",
+      "count": 140
+    },
+    {
+      "label": "bovada: Moneyline",
+      "count": 58
+    },
+    {
+      "label": "bovada: Point Spread",
+      "count": 58
+    },
+    {
+      "label": "bovada: Total",
+      "count": 58
+    },
+    {
+      "label": "bovada: Anytime Touchdown Scorer",
+      "count": 39
+    },
+    {
+      "label": "bovada: Both teams to score 10 or more points?",
+      "count": 36
+    },
+    {
+      "label": "bovada: Dynamic Winning Margin",
+      "count": 36
+    },
+    {
+      "label": "bovada: Total Points Range",
+      "count": 36
+    },
+    {
+      "label": "bovada: To Win and Allow 0 Points",
+      "count": 36
+    },
+    {
+      "label": "bovada: Odd/Even Total Points",
+      "count": 36
+    },
+    {
+      "label": "bovada: Correct Score Range",
+      "count": 35
+    },
+    {
+      "label": "bovada: Winning Margin",
+      "count": 34
+    },
+    {
+      "label": "betrivers: Player to score a TD in Quarter 1",
+      "count": 31
+    },
+    {
+      "label": "betrivers: Player to score a TD in Quarter 2",
+      "count": 31
+    },
+    {
+      "label": "betrivers: Player to score a TD in Quarter 4",
+      "count": 31
+    },
+    {
+      "label": "betrivers: Player to score a TD in Quarter 3",
+      "count": 31
+    },
+    {
+      "label": "betrivers: 2nd Half Including Overtime",
+      "count": 31
+    },
+    {
+      "label": "bovada: Spread",
+      "count": 24
+    },
+    {
+      "label": "bovada: Total Points",
+      "count": 24
+    },
+    {
+      "label": "bovada: Both Teams To Score",
+      "count": 24
+    },
+    {
+      "label": "bovada: Both teams to score 14 or more points?",
+      "count": 24
+    },
+    {
+      "label": "bovada: Both teams to score 17 or more points?",
+      "count": 24
+    },
+    {
+      "label": "bovada: Both teams to score 7 or more points?",
+      "count": 24
+    },
+    {
+      "label": "bovada: Double Chance",
+      "count": 24
+    },
+    {
+      "label": "bovada: Total Touchdowns",
+      "count": 22
+    },
+    {
+      "label": "fanduel: Alt Receiving Yds",
+      "count": 17
+    },
+    {
+      "label": "fanduel: Alt Receptions",
+      "count": 16
+    },
+    {
+      "label": "bovada: First Touchdown Scorer",
+      "count": 13
+    },
+    {
+      "label": "bovada: Bo Nix (DEN)",
+      "count": 13
+    },
+    {
+      "label": "bovada: Player to Score 2 or More Touchdowns",
+      "count": 12
+    },
+    {
+      "label": "bovada: Jaylen Warren (PIT)",
+      "count": 12
+    },
+    {
+      "label": "bovada: Jonah Coleman (DEN)",
+      "count": 12
+    },
+    {
+      "label": "bovada: Both teams to score 13 or more points?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Both teams to score 21 or more points?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Both teams to score 24 or more points?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Both teams to score 27 or more points?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Both teams to score 30 or more points?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Will the game go to Overtime?",
+      "count": 12
+    },
+    {
+      "label": "bovada: Player to Score 3 or More Touchdowns",
+      "count": 11
+    },
+    {
+      "label": "bovada: Both teams to score 34 or more points?",
+      "count": 11
+    },
+    {
+      "label": "bovada: J.J. McCarthy (NYG)",
+      "count": 11
+    },
+    {
+      "label": "bovada: Deshaun Watson (CLE)",
+      "count": 11
+    },
+    {
+      "label": "betrivers: 1st Half",
+      "count": 11
+    },
+    {
+      "label": "bovada: First Team To Score",
+      "count": 10
+    },
+    {
+      "label": "bovada: Half Time / Full Time",
+      "count": 10
+    },
+    {
+      "label": "bovada: Bijan Robinson (ATL)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Chase Brown (CIN)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Travis Etienne (NOR)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Anthony Richardson (IND)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Cam Skattebo (NYG)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Jonathan Taylor (IND)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Breece Hall (NYJ)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Tony Pollard (TEN)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Christian McCaffrey (SF)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Ashton Jeanty (LV)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Dylan Sampson (CLE)",
+      "count": 10
+    },
+    {
+      "label": "bovada: Rico Dowdle (PIT)",
+      "count": 9
+    },
+    {
+      "label": "bovada: Aaron Jones (MIN)",
+      "count": 9
+    },
+    {
+      "label": "bovada: Ollie Gordon II (MIA)",
+      "count": 9
+    },
+    {
+      "label": "bovada: Jadarian Price (SEA)",
+      "count": 9
+    },
+    {
+      "label": "bovada: David Montgomery (HOU)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Derrick Henry (BAL)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Woody Marks (HOU)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Tyler Shough (NOR)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Geno Smith (NYJ)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Cam Ward (TEN)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Rhamondre Stevenson (NE)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Zach Charbonnet (SEA)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Jayden Daniels (WAS)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Josh Johnson (ARI)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Fernando Mendoza (LV)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Quinshon Judkins (CLE)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Bucky Irving (TB)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Chuba Hubbard (CAR)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Kenneth Gainwell (TB)",
+      "count": 8
+    },
+    {
+      "label": "bovada: Michael Penix Jr. (ATL)",
+      "count": 7
+    },
+    {
+      "label": "bovada: C.J. Stroud (HOU)",
+      "count": 7
+    },
+    {
+      "label": "bovada: Jacoby Brissett (BAL)",
+      "count": 7
+    },
+    {
+      "label": "bovada: Joe Burrow (CIN)",
+      "count": 7
+    },
+    {
+      "label": "bovada: Trevor Lawrence (JAX)",
+      "count": 7
+    },
+    {
+      "label": "bovada: Baker Mayfield (TB)",
+      "count": 7
+    },
+    {
+      "label": "fanduel: Alt Rushing Yds",
+      "count": 7
+    },
+    {
+      "label": "bovada: Mason Rudolph (PIT)",
+      "count": 6
+    },
+    {
+      "label": "bovada: Kirk Cousins (MIN)",
+      "count": 6
+    },
+    {
+      "label": "bovada: Kyle McCord (MIA)",
+      "count": 6
+    },
+    {
+      "label": "bovada: Sam Darnold (SEA)",
+      "count": 6
+    },
+    {
+      "label": "bovada: Bam Knight (ARI)",
+      "count": 6
+    },
+    {
+      "label": "betrivers: Quarter 1",
+      "count": 6
+    },
+    {
+      "label": "bovada: Denver Broncos",
+      "count": 5
+    },
+    {
+      "label": "bovada: Pittsburgh Steelers",
+      "count": 5
+    },
+    {
+      "label": "bovada: Atlanta Falcons",
+      "count": 5
+    },
+    {
+      "label": "bovada: Minnesota Vikings",
+      "count": 5
+    },
+    {
+      "label": "bovada: Jordan Mason (MIN)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Baltimore Ravens",
+      "count": 5
+    },
+    {
+      "label": "bovada: Houston Texans",
+      "count": 5
+    },
+    {
+      "label": "bovada: Samaje Perine (CIN)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Indianapolis Colts",
+      "count": 5
+    },
+    {
+      "label": "bovada: New York Giants",
+      "count": 5
+    },
+    {
+      "label": "bovada: Miami Dolphins",
+      "count": 5
+    },
+    {
+      "label": "bovada: New York Jets",
+      "count": 5
+    },
+    {
+      "label": "bovada: Braelon Allen (NYJ)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Jacksonville Jaguars",
+      "count": 5
+    },
+    {
+      "label": "bovada: Tennessee Titans",
+      "count": 5
+    },
+    {
+      "label": "bovada: San Francisco 49ers",
+      "count": 5
+    },
+    {
+      "label": "bovada: Seattle Seahawks",
+      "count": 5
+    },
+    {
+      "label": "bovada: Brock Purdy (SF)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Kaelon Black (SF)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Deebo Samuel Sr. (SF)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Jacory Croskey-Merritt (WAS)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Tyler Allgeier (ARI)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Cleveland Browns",
+      "count": 5
+    },
+    {
+      "label": "bovada: Las Vegas Raiders",
+      "count": 5
+    },
+    {
+      "label": "bovada: Mike Washington Jr. (LV)",
+      "count": 5
+    },
+    {
+      "label": "bovada: KC Concepcion (CLE)",
+      "count": 5
+    },
+    {
+      "label": "bovada: Carolina Panthers",
+      "count": 5
+    },
+    {
+      "label": "bovada: Tampa Bay Buccaneers",
+      "count": 5
+    },
+    {
+      "label": "bovada: Courtland Sutton (DEN)",
+      "count": 4
+    },
+    {
+      "label": "bovada: Evan Engram (DEN)",
+      "count": 4
+    },
+    {
+      "label": "bovada: Jaylen Waddle (DEN)",
+      "count": 4
+    },
+    {
+      "label": "bovada: Pat Bryant (DEN)",
+      "count": 4
+    },
+    {
+      "label": "bovada: Cincinnati Bengals",
+      "count": 4
+    },
+    {
+      "label": "bovada: New Orleans Saints",
+      "count": 4
+    },
+    {
+      "label": "bovada: Los Angeles Chargers",
+      "count": 4
+    },
+    {
+      "label": "bovada: New England Patriots",
+      "count": 4
+    },
+    {
+      "label": "bovada: Arizona Cardinals",
+      "count": 4
+    },
+    {
+      "label": "bovada: Washington Commanders",
+      "count": 4
+    },
+    {
+      "label": "bovada: Bryce Young (CAR)",
+      "count": 4
+    },
+    {
+      "label": "fanduel: Spread",
+      "count": 4
+    },
+    {
+      "label": "fanduel: Moneyline",
+      "count": 4
+    },
+    {
+      "label": "fanduel: Total Points",
+      "count": 4
+    },
+    {
+      "label": "bovada: Darnell Washington (PIT)",
+      "count": 3
+    },
+    {
+      "label": "bovada: DK Metcalf (PIT)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Germie Bernard (PIT)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Marvin Mims Jr. (DEN)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Pat Freiermuth (PIT)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Roman Wilson (PIT)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Drake London (ATL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Jahan Dotson (ATL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Jauan Jennings (MIN)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Justin Jefferson (MIN)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Kyle Pitts (ATL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: T.J. Hockenson (MIN)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Tai Felton (MIN)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Dalton Schultz (HOU)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Ja'Kobi Lane (BAL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Justice Hill (BAL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Mark Andrews (BAL)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Marvin Harrison Jr. (HOU)",
+      "count": 3
+    },
+    {
+      "label": "bovada: Nico Collins (HOU)",
+      "count": 3
+    }
+  ],
   "notice": "A price that is not in the private store is unavailable. The no-vig consensus is not on the card. This is a comparison, not a pick."
 }
