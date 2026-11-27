@@ -327,7 +327,7 @@
    "group": "DL",
    "rating": 83,
    "status": "Questionable",
-   "reportedAt": "2026-11-27T01:22Z",
+   "reportedAt": "2026-11-27T03:11Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.15
   },
@@ -418,6 +418,16 @@
    "rating": 78,
    "status": "Questionable",
    "reportedAt": "2026-11-26T03:07Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": 0.07
+  },
+  {
+   "team": "KC",
+   "player": "Trey Smith",
+   "group": "OL",
+   "rating": 97,
+   "status": "Questionable",
+   "reportedAt": "2026-11-27T05:22Z",
    "chanceToPlay": 0.73,
    "expectedLineMovePoints": 0.07
   },
@@ -862,6 +872,16 @@
    "expectedLineMovePoints": -0.01
   },
   {
+   "team": "PHI",
+   "player": "Marcus Epps",
+   "group": "S",
+   "rating": 62,
+   "status": "Questionable",
+   "reportedAt": "2026-11-27T00:13Z",
+   "chanceToPlay": 0.73,
+   "expectedLineMovePoints": -0.01
+  },
+  {
    "team": "DET",
    "player": "Chuck Clark",
    "group": "S",
@@ -870,26 +890,16 @@
    "reportedAt": "2026-11-26T16:46Z",
    "chanceToPlay": 0.0,
    "expectedLineMovePoints": -0.04
-  },
-  {
-   "team": "PHI",
-   "player": "Marcus Epps",
-   "group": "S",
-   "rating": 62,
-   "status": "Out",
-   "reportedAt": "2026-11-27T00:13Z",
-   "chanceToPlay": 0.0,
-   "expectedLineMovePoints": -0.04
   }
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-27T02:58:40.808539Z"
+  "checkedAt": "2026-11-27T11:59:44.933443Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-27T02:58:40.808539Z",
+   "loggedAt": "2026-11-27T11:59:44.933443Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
