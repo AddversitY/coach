@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-26T20:19:30.541955Z",
+ "checkedAt": "2026-11-27T02:58:41.641648Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -9,28 +9,6 @@
  },
  "notice": "Backups stepping in for a starter ruled out: Coach projection, the first price seen after the news, and closing line value after kickoff. Research, not a pick.",
  "current": [
-  {
-   "team": "CHI",
-   "group": "TE",
-   "out": [
-    {
-     "player": "Colston Loveland",
-     "status": "Out",
-     "reportedAt": "2026-11-26T18:45Z",
-     "rating": 96
-    }
-   ],
-   "backup": "Cole Kmet",
-   "backupId": "00-0036290",
-   "backupRating": 72,
-   "backupRecentSnaps": 0.57,
-   "projection": {
-    "player_reception_yds": 39.7,
-    "player_receptions": 3.9
-   },
-   "prices": [],
-   "eventId": null
-  },
   {
    "team": "NE",
    "group": "QB",
@@ -61,7 +39,7 @@
     {
      "player": "A.J. Brown",
      "status": "Doubtful",
-     "reportedAt": "2026-11-25T19:47Z",
+     "reportedAt": "2026-11-26T20:52Z",
      "rating": 91
     }
    ],
