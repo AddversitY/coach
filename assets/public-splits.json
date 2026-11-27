@@ -898,11 +898,49 @@
     "kickoff": "2026-12-04T01:15:00Z",
     "player": ""
    }
+  },
+  {
+   "away": "LV",
+   "home": "CLE",
+   "kickoff": "2026-11-30T01:20:00Z",
+   "angle": "fade the public (spread)",
+   "bucket": "70-80%",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Cleveland Browns",
+    "line": -4.5,
+    "book": "draftkings",
+    "decimal": 1.95,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
+    "kickoff": "2026-11-30T01:20:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "angle": "follow the money (total)",
+   "bucket": "money 20+ points over bets",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 44.5,
+    "book": "draftkings",
+    "decimal": 1.89,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
   }
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-27T08:32:00.341771Z",
+  "checkedAt": "2026-11-27T18:58:53.168349Z",
   "provider": "SportsBettingDime public feed"
  },
  "current": [
@@ -912,15 +950,15 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "home",
     "outcome": "Pittsburgh Steelers",
     "line": 5.5,
     "book": "espnbet",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "decimal": 1.91,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-27T20:00:00Z",
     "player": ""
    }
@@ -931,15 +969,15 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 37.5,
-    "book": "espnbet",
-    "decimal": 1.83,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "draftkings",
+    "decimal": 1.84,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-27T20:00:00Z",
     "player": ""
    }
@@ -950,15 +988,15 @@
    "kickoff": "2026-11-27T20:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "home",
     "outcome": "Pittsburgh Steelers",
     "line": null,
-    "book": "draftkings",
-    "decimal": 3.11,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "espnbet",
+    "decimal": 3.15,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-27T20:00:00Z",
     "player": ""
    }
@@ -969,7 +1007,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -977,7 +1015,7 @@
     "line": 10.0,
     "book": "betmgm",
     "decimal": 1.91,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -988,7 +1026,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -996,7 +1034,7 @@
     "line": null,
     "book": "ballybet",
     "decimal": 5.3,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1007,15 +1045,15 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
     "outcome": "Baltimore Ravens",
     "line": null,
-    "book": "ballybet",
-    "decimal": 3.8,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "draftkings",
+    "decimal": 3.67,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1026,7 +1064,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1034,7 +1072,7 @@
     "line": 6.5,
     "book": "fanduel",
     "decimal": 1.87,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1045,7 +1083,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1053,7 +1091,7 @@
     "line": 42.5,
     "book": "fanduel",
     "decimal": 1.83,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1064,7 +1102,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1072,26 +1110,7 @@
     "line": null,
     "book": "ballybet",
     "decimal": 3.45,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-29T18:00:00Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "NYJ",
-   "home": "MIA",
-   "kickoff": "2026-11-29T18:00:00Z",
-   "angle": "fade the public (total)",
-   "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
-   "bet": {
-    "market": "totals",
-    "side": "under",
-    "outcome": "Under",
-    "line": 40.5,
-    "book": "ballybet",
-    "decimal": 1.92,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1102,7 +1121,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "home",
@@ -1110,7 +1129,7 @@
     "line": null,
     "book": "espnbet",
     "decimal": 3.15,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1121,7 +1140,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1129,7 +1148,7 @@
     "line": 7.0,
     "book": "hardrockbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1140,15 +1159,15 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
     "outcome": "Atlanta Falcons",
     "line": null,
-    "book": "espnbet",
-    "decimal": 3.7,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "hardrockbet",
+    "decimal": 3.75,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1159,7 +1178,7 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "away",
@@ -1167,7 +1186,7 @@
     "line": 15.0,
     "book": "hardrockbet",
     "decimal": 1.91,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1178,15 +1197,15 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 49.5,
-    "book": "espnbet",
-    "decimal": 1.95,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "ballybet",
+    "decimal": 1.91,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1197,15 +1216,15 @@
    "kickoff": "2026-11-29T18:00:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
     "outcome": "Tennessee Titans",
     "line": null,
-    "book": "draftkings",
-    "decimal": 8.8,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "betmgm",
+    "decimal": 8.75,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T18:00:00Z",
     "player": ""
    }
@@ -1216,7 +1235,7 @@
    "kickoff": "2026-11-29T21:05:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1224,26 +1243,7 @@
     "line": 35.5,
     "book": "fanduel",
     "decimal": 1.93,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-29T21:05:00Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "NE",
-   "home": "LAC",
-   "kickoff": "2026-11-29T21:05:00Z",
-   "angle": "follow the money (moneyline)",
-   "bucket": "money 15+ points over bets",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
-   "bet": {
-    "market": "h2h",
-    "side": "home",
-    "outcome": "Los Angeles Chargers",
-    "line": null,
-    "book": "draftkings",
-    "decimal": 2.16,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:05:00Z",
     "player": ""
    }
@@ -1254,7 +1254,7 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (spread)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "spreads",
     "side": "home",
@@ -1262,7 +1262,7 @@
     "line": 7.0,
     "book": "betrivers",
     "decimal": 1.88,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:25:00Z",
     "player": ""
    }
@@ -1273,7 +1273,7 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1281,7 +1281,7 @@
     "line": 41.5,
     "book": "draftkings",
     "decimal": 1.93,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:25:00Z",
     "player": ""
    }
@@ -1292,34 +1292,15 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "home",
     "outcome": "Arizona Cardinals",
     "line": null,
     "book": "draftkings",
-    "decimal": 3.82,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-29T21:25:00Z",
-    "player": ""
-   }
-  },
-  {
-   "away": "SEA",
-   "home": "SF",
-   "kickoff": "2026-11-29T21:25:00Z",
-   "angle": "fade the public (spread)",
-   "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
-   "bet": {
-    "market": "spreads",
-    "side": "away",
-    "outcome": "Seattle Seahawks",
-    "line": 3.0,
-    "book": "betmgm",
-    "decimal": 1.89,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "decimal": 3.81,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:25:00Z",
     "player": ""
    }
@@ -1330,15 +1311,15 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 44.5,
-    "book": "ballybet",
-    "decimal": 1.91,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "fanduel",
+    "decimal": 1.83,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:25:00Z",
     "player": ""
    }
@@ -1349,16 +1330,35 @@
    "kickoff": "2026-11-29T21:25:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
     "outcome": "Seattle Seahawks",
     "line": null,
-    "book": "draftkings",
+    "book": "hardrockbet",
     "decimal": 2.3,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-29T21:25:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "LV",
+   "home": "CLE",
+   "kickoff": "2026-11-30T01:20:00Z",
+   "angle": "fade the public (spread)",
+   "bucket": "70-80%",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
+   "bet": {
+    "market": "spreads",
+    "side": "home",
+    "outcome": "Cleveland Browns",
+    "line": -4.5,
+    "book": "draftkings",
+    "decimal": 1.95,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
+    "kickoff": "2026-11-30T01:20:00Z",
     "player": ""
    }
   },
@@ -1368,15 +1368,15 @@
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "fade the public (total)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 40.5,
-    "book": "fanduel",
+    "book": "espnbet",
     "decimal": 1.87,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-30T01:20:00Z",
     "player": ""
    }
@@ -1387,7 +1387,7 @@
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "70-80%",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1395,7 +1395,7 @@
     "line": null,
     "book": "draftkings",
     "decimal": 3.01,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-30T01:20:00Z",
     "player": ""
    }
@@ -1406,7 +1406,7 @@
    "kickoff": "2026-11-30T01:20:00Z",
    "angle": "follow the money (moneyline)",
    "bucket": "money 20+ points over bets",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "h2h",
     "side": "away",
@@ -1414,7 +1414,7 @@
     "line": null,
     "book": "draftkings",
     "decimal": 3.01,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-11-30T01:20:00Z",
     "player": ""
    }
@@ -1425,7 +1425,7 @@
    "kickoff": "2026-12-01T01:15:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
@@ -1433,7 +1433,7 @@
     "line": 43.5,
     "book": "fanduel",
     "decimal": 1.95,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-12-01T01:15:00Z",
     "player": ""
    }
@@ -1444,15 +1444,34 @@
    "kickoff": "2026-12-04T01:15:00Z",
    "angle": "fade the public (total)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
     "line": 44.5,
-    "book": "ballybet",
-    "decimal": 1.93,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "book": "draftkings",
+    "decimal": 1.89,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "angle": "follow the money (total)",
+   "bucket": "money 20+ points over bets",
+   "checkedAt": "2026-11-27T18:58:53.168349Z",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 44.5,
+    "book": "draftkings",
+    "decimal": 1.89,
+    "priceAt": "2026-11-27T14:12:34.917108Z",
     "kickoff": "2026-12-04T01:15:00Z",
     "player": ""
    }
@@ -1463,7 +1482,7 @@
    "kickoff": "2026-12-04T01:15:00Z",
    "angle": "fade the public (moneyline)",
    "bucket": "80%+",
-   "checkedAt": "2026-11-27T08:32:00.341771Z"
+   "checkedAt": "2026-11-27T18:58:53.168349Z"
   }
  ],
  "summary": {
