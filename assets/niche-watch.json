@@ -525,7 +525,9 @@
     "priceAt": "2026-11-23T19:26:30.417658Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
-   }
+   },
+   "clv": -0.0454,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -545,7 +547,9 @@
     "priceAt": "2026-11-23T19:26:30.417658Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
-   }
+   },
+   "clv": -0.0454,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -565,7 +569,9 @@
     "priceAt": "2026-11-23T19:26:30.417658Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": ""
-   }
+   },
+   "clv": -0.0362,
+   "clvReference": "pinnacle"
   },
   {
    "away": "NO",
@@ -4675,7 +4681,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Cyrus Allen"
-   }
+   },
+   "clv": -0.0455,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4696,7 +4704,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Cyrus Allen"
-   }
+   },
+   "clv": -0.0319,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4718,7 +4728,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "DJ Moore"
-   }
+   },
+   "clv": -0.052,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4739,7 +4751,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "DJ Moore"
-   }
+   },
+   "clv": -0.0575,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4760,7 +4774,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "DJ Moore"
-   }
+   },
+   "clv": -0.0317,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4782,7 +4798,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Dalton Kincaid"
-   }
+   },
+   "clv": -0.0525,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4803,7 +4821,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Dalton Kincaid"
-   }
+   },
+   "clv": -0.0338,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4825,7 +4845,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Dalton Kincaid"
-   }
+   },
+   "clv": -0.1276,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4846,7 +4868,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Dalton Kincaid"
-   }
+   },
+   "clv": 0.0378,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4868,7 +4892,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Dawson Knox"
-   }
+   },
+   "clv": -0.0336,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4889,7 +4915,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Dawson Knox"
-   }
+   },
+   "clv": -0.0576,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4910,7 +4938,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Dawson Knox"
-   }
+   },
+   "clv": -0.0915,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4952,7 +4982,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Emmett Johnson"
-   }
+   },
+   "clv": -0.1073,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -4973,7 +5005,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Emmett Johnson"
-   }
+   },
+   "clv": -0.0052,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -4994,7 +5028,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "James Cook"
-   }
+   },
+   "clv": -0.0656,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5015,7 +5051,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "James Cook"
-   }
+   },
+   "clv": -0.0124,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5037,7 +5075,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "James Cook"
-   }
+   },
+   "clv": -0.1375,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5058,7 +5098,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "James Cook"
-   }
+   },
+   "clv": -0.1375,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5079,7 +5121,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Josh Allen"
-   }
+   },
+   "clv": -0.0235,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5101,7 +5145,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Josh Allen"
-   }
+   },
+   "clv": -0.0391,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5122,7 +5168,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Josh Allen"
-   }
+   },
+   "clv": -0.0622,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5143,7 +5191,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Josh Downs"
-   }
+   },
+   "clv": -0.0575,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5164,7 +5214,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Josh Downs"
-   }
+   },
+   "clv": -0.0449,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5185,7 +5237,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Keon Coleman"
-   }
+   },
+   "clv": -0.0182,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5206,7 +5260,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Keon Coleman"
-   }
+   },
+   "clv": -0.0876,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5227,7 +5283,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Khalil Shakir"
-   }
+   },
+   "clv": -0.0083,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5248,7 +5306,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Khalil Shakir"
-   }
+   },
+   "clv": -0.0243,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5270,7 +5330,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Noah Gray"
-   }
+   },
+   "clv": -0.0575,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5291,7 +5353,9 @@
     "priceAt": "2026-11-26T01:04:39.950Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Noah Gray"
-   }
+   },
+   "clv": -0.0575,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5312,7 +5376,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Noah Gray"
-   }
+   },
+   "clv": 0.0178,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5333,7 +5399,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Patrick Mahomes"
-   }
+   },
+   "clv": -0.0227,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5355,7 +5423,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Patrick Mahomes"
-   }
+   },
+   "clv": -0.0556,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5376,7 +5446,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Patrick Mahomes"
-   }
+   },
+   "clv": -0.0556,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5397,7 +5469,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Rashee Rice"
-   }
+   },
+   "clv": -0.002,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5418,7 +5492,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Rashee Rice"
-   }
+   },
+   "clv": 0.0006,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5440,7 +5516,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ray Davis"
-   }
+   },
+   "clv": -0.0828,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5461,7 +5539,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ray Davis"
-   }
+   },
+   "clv": -0.0323,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5482,7 +5562,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Travis Kelce"
-   }
+   },
+   "clv": -0.0202,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5503,7 +5585,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Travis Kelce"
-   }
+   },
+   "clv": -0.0579,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5525,7 +5609,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0005,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5547,7 +5633,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0005,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5568,7 +5656,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0005,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5590,7 +5680,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0816,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5611,7 +5703,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0816,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5633,7 +5727,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0559,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5655,7 +5751,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0559,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5676,7 +5774,9 @@
     "priceAt": "2026-11-26T01:00:47.496Z",
     "kickoff": "2026-11-27T01:20:00Z",
     "player": "Ty Johnson"
-   }
+   },
+   "clv": -0.0235,
+   "clvReference": "pinnacle"
   },
   {
    "away": "KC",
@@ -5697,7 +5797,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Xavier Worthy"
-   }
+   },
+   "clv": -0.0662,
+   "clvReference": "book consensus"
   },
   {
    "away": "KC",
@@ -5718,7 +5820,9 @@
     "priceAt": "2026-11-26T01:16:42.931Z",
     "kickoff": "2026-11-27T01:15:00Z",
     "player": "Xavier Worthy"
-   }
+   },
+   "clv": -0.075,
+   "clvReference": "book consensus"
   },
   {
    "away": "DEN",
@@ -6049,15 +6153,32 @@
     "kickoff": "2026-11-27T20:00:00Z",
     "player": "Troy Franklin"
    }
-  }
- ],
- "checkedAt": "2026-11-26T23:53:38.552893Z",
- "current": [
+  },
   {
    "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "venue: dome or closed roof, over",
+   "side": "over",
+   "player": "",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 44.5,
+    "book": "draftkings",
+    "decimal": 1.91,
+    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -6065,1157 +6186,62 @@
     "market": "totals",
     "side": "under",
     "outcome": "Under",
-    "line": 46.5,
-    "book": "espnbet",
-    "decimal": 1.87,
+    "line": 44.5,
+    "book": "ballybet",
+    "decimal": 1.93,
     "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
+    "kickoff": "2026-12-04T01:15:00Z",
     "player": ""
    }
   },
   {
    "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving, under",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "short week: Thursday, under",
    "side": "under",
    "player": "",
    "bet": {
     "market": "totals",
     "side": "under",
     "outcome": "Under",
-    "line": 46.5,
-    "book": "espnbet",
-    "decimal": 1.87,
+    "line": 44.5,
+    "book": "ballybet",
+    "decimal": 1.93,
     "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
+    "kickoff": "2026-12-04T01:15:00Z",
     "player": ""
    }
   },
   {
    "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving, home side",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "short week: Thursday, home side",
    "side": "away",
    "player": "",
    "bet": {
     "market": "spreads",
     "side": "away",
     "outcome": "Kansas City Chiefs",
-    "line": 3.0,
-    "book": "hardrockbet",
-    "decimal": 1.91,
+    "line": 1.5,
+    "book": "draftkings",
+    "decimal": 1.81,
     "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
+    "kickoff": "2026-12-04T01:15:00Z",
     "player": ""
    }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Cyrus Allen",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 12.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Cyrus Allen"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Cyrus Allen",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "fanduel",
-    "decimal": 1.47619,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Cyrus Allen"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "DJ Moore",
-   "market": "player_reception_yds",
-   "splitRatio": 1.114,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 45.5,
-    "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "DJ Moore"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "DJ Moore",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 49.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "DJ Moore"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "DJ Moore",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "fanduel",
-    "decimal": 2.12,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "DJ Moore"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Dalton Kincaid",
-   "market": "player_reception_yds",
-   "splitRatio": 1.17,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 34.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Dalton Kincaid"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Dalton Kincaid",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 38.5,
-    "book": "betrivers",
-    "decimal": 1.88,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Dalton Kincaid"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Dalton Kincaid",
-   "market": "player_receptions",
-   "splitRatio": 1.133,
-   "bet": {
-    "market": "player_receptions",
-    "side": "over",
-    "outcome": "Over",
-    "line": 2.5,
-    "book": "bovada",
-    "decimal": 1.555556,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Dalton Kincaid"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Dalton Kincaid",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "fanduel",
-    "decimal": 1.555556,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Dalton Kincaid"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Dawson Knox",
-   "market": "player_reception_yds",
-   "splitRatio": 1.172,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 11.5,
-    "book": "betrivers",
-    "decimal": 1.9,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Dawson Knox"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Dawson Knox",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 13.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Dawson Knox"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Dawson Knox",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "fanduel",
-    "decimal": 1.819672,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Dawson Knox"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Emmett Johnson",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 31.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Emmett Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Emmett Johnson",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "bovada",
-    "decimal": 2.05,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Emmett Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Emmett Johnson",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 83.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Emmett Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "James Cook",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 8.5,
-    "book": "bovada",
-    "decimal": 1.833333,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "James Cook"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "James Cook",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.666667,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "James Cook"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "James Cook",
-   "market": "player_rush_yds",
-   "splitRatio": 0.878,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 89.5,
-    "book": "draftkings",
-    "decimal": 1.88,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "James Cook"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "James Cook",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 89.5,
-    "book": "draftkings",
-    "decimal": 1.88,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "James Cook"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Josh Allen",
-   "market": "player_pass_yds",
-   "bet": {
-    "market": "player_pass_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 217.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Josh Allen"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Josh Allen",
-   "market": "player_rush_yds",
-   "splitRatio": 1.117,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 37.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Josh Allen"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Josh Allen",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 40.5,
-    "book": "draftkings",
-    "decimal": 1.88,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Josh Allen"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Josh Downs",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 38.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Josh Downs"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Josh Downs",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "bovada",
-    "decimal": 1.606061,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Josh Downs"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Keon Coleman",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 21.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Keon Coleman"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Keon Coleman",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "fanduel",
-    "decimal": 2.4,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Keon Coleman"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Khalil Shakir",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 38.5,
-    "book": "betrivers",
-    "decimal": 1.86,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Khalil Shakir"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Khalil Shakir",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "bovada",
-    "decimal": 1.952381,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Khalil Shakir"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Noah Gray",
-   "market": "player_reception_yds",
-   "splitRatio": 0.881,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 12.5,
-    "book": "betrivers",
-    "decimal": 1.85,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Noah Gray"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Noah Gray",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 12.5,
-    "book": "betrivers",
-    "decimal": 1.85,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Noah Gray"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Noah Gray",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "bovada",
-    "decimal": 1.741,
-    "priceAt": "2026-11-26T22:00:42.974Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Noah Gray"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Patrick Mahomes",
-   "market": "player_pass_yds",
-   "bet": {
-    "market": "player_pass_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 229.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Patrick Mahomes"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Patrick Mahomes",
-   "market": "player_rush_yds",
-   "splitRatio": 0.856,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 13.5,
-    "book": "hardrockbet",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Patrick Mahomes"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Patrick Mahomes",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 13.5,
-    "book": "hardrockbet",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Patrick Mahomes"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Rashee Rice",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 45.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Rashee Rice"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Rashee Rice",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 4.5,
-    "book": "bovada",
-    "decimal": 1.8,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Rashee Rice"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split outdoors",
-   "side": "over",
-   "player": "Ray Davis",
-   "market": "player_rush_yds",
-   "splitRatio": 1.197,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 3.5,
-    "book": "espnbet",
-    "decimal": 1.95,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ray Davis"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Ray Davis",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 3.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Ray Davis"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Travis Kelce",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 45.5,
-    "book": "bovada",
-    "decimal": 1.87,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Travis Kelce"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Travis Kelce",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 4.5,
-    "book": "bovada",
-    "decimal": 1.666667,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Travis Kelce"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_reception_yds",
-   "splitRatio": 0.857,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.9,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split outdoors",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_reception_yds",
-   "splitRatio": 0.853,
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.9,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 16.5,
-    "book": "betrivers",
-    "decimal": 1.9,
-    "priceAt": "2026-11-26T23:40:43.959Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_receptions",
-   "splitRatio": 0.826,
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 2.5,
-    "book": "fanduel",
-    "decimal": 1.649351,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 2.5,
-    "book": "fanduel",
-    "decimal": 1.649351,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split on turf",
-   "side": "over",
-   "player": "Ty Johnson",
-   "market": "player_rush_yds",
-   "splitRatio": 1.372,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 0.5,
-    "book": "hardrockbet",
-    "decimal": 1.83,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "venue: own split outdoors",
-   "side": "over",
-   "player": "Ty Johnson",
-   "market": "player_rush_yds",
-   "splitRatio": 1.12,
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "over",
-    "outcome": "Over",
-    "line": 0.5,
-    "book": "hardrockbet",
-    "decimal": 1.83,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Ty Johnson",
-   "market": "player_rush_yds",
-   "bet": {
-    "market": "player_rush_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 1.5,
-    "book": "betmgm",
-    "decimal": 1.91,
-    "priceAt": "2026-11-26T21:51:22.435671Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Ty Johnson"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Xavier Worthy",
-   "market": "player_reception_yds",
-   "bet": {
-    "market": "player_reception_yds",
-    "side": "under",
-    "outcome": "Under",
-    "line": 21.5,
-    "book": "fanduel",
-    "decimal": 1.884956,
-    "priceAt": "2026-11-26T23:44:42.331Z",
-    "kickoff": "2026-11-27T01:15:00Z",
-    "player": "Xavier Worthy"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "short week: Thanksgiving",
-   "side": "under",
-   "player": "Xavier Worthy",
-   "market": "player_receptions",
-   "bet": {
-    "market": "player_receptions",
-    "side": "under",
-    "outcome": "Under",
-    "line": 2.5,
-    "book": "bovada",
-    "decimal": 1.666667,
-    "priceAt": "2026-11-26T23:36:39.833Z",
-    "kickoff": "2026-11-27T01:20:00Z",
-    "player": "Xavier Worthy"
-   }
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "kicker: wind or cold, kicking points under",
-   "side": "under",
-   "player": "BUF kicker",
-   "market": "player_kicking_points",
-   "weather": {
-    "windMph": 15.3,
-    "gustMph": 46.1,
-    "rainMm": 5.7,
-    "tempF": 36.2
-   },
-   "noPrice": "no free price for this market yet"
-  },
-  {
-   "away": "KC",
-   "home": "BUF",
-   "kickoff": "2026-11-27T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "kicker: wind or cold, kicking points under",
-   "side": "under",
-   "player": "KC kicker",
-   "market": "player_kicking_points",
-   "weather": {
-    "windMph": 15.3,
-    "gustMph": 46.1,
-    "rainMm": 5.7,
-    "tempF": 36.2
-   },
-   "noPrice": "no free price for this market yet"
-  },
+  }
+ ],
+ "checkedAt": "2026-11-27T08:31:58.024245Z",
+ "current": [
   {
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "Bo Nix",
@@ -7237,7 +6263,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "Courtland Sutton",
@@ -7259,7 +6285,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "DK Metcalf",
@@ -7281,7 +6307,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "Darnell Washington",
@@ -7303,7 +6329,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Germie Bernard",
@@ -7325,7 +6351,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Germie Bernard",
@@ -7347,7 +6373,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Jonah Coleman",
@@ -7369,7 +6395,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Jonah Coleman",
@@ -7391,7 +6417,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Jonah Coleman",
@@ -7413,7 +6439,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split outdoors",
    "side": "over",
    "player": "Marvin Mims Jr.",
@@ -7435,7 +6461,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "Mason Rudolph",
@@ -7457,7 +6483,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "under",
    "player": "Mason Rudolph",
@@ -7479,7 +6505,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split outdoors",
    "side": "under",
    "player": "Rico Dowdle",
@@ -7501,7 +6527,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "Rico Dowdle",
@@ -7523,7 +6549,7 @@
    "away": "DEN",
    "home": "PIT",
    "kickoff": "2026-11-27T20:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: own split on grass",
    "side": "over",
    "player": "Troy Franklin",
@@ -7545,7 +6571,7 @@
    "away": "NO",
    "home": "CIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -7565,7 +6591,7 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -7585,16 +6611,16 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "HOU kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 16.0,
-    "gustMph": 23.3,
+    "windMph": 16.1,
+    "gustMph": 22.1,
     "rainMm": 0.0,
-    "tempF": 70.1
+    "tempF": 69.2
    },
    "noPrice": "no free price for this market yet"
   },
@@ -7602,16 +6628,16 @@
    "away": "BAL",
    "home": "HOU",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "kicker: wind or cold, kicking points under",
    "side": "under",
    "player": "BAL kicker",
    "market": "player_kicking_points",
    "weather": {
-    "windMph": 16.0,
-    "gustMph": 23.3,
+    "windMph": 16.1,
+    "gustMph": 22.1,
     "rainMm": 0.0,
-    "tempF": 70.1
+    "tempF": 69.2
    },
    "noPrice": "no free price for this market yet"
   },
@@ -7619,7 +6645,7 @@
    "away": "NYG",
    "home": "IND",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -7639,7 +6665,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: dome or closed roof, over",
    "side": "over",
    "player": "",
@@ -7659,7 +6685,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -7679,7 +6705,7 @@
    "away": "ATL",
    "home": "MIN",
    "kickoff": "2026-11-29T18:00:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "revenge: quarterback against his former team, his side",
    "side": "away",
    "player": "",
@@ -7699,7 +6725,7 @@
    "away": "NE",
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: dome or closed roof, over",
    "side": "over",
    "player": "",
@@ -7719,7 +6745,7 @@
    "away": "NE",
    "home": "LAC",
    "kickoff": "2026-11-29T21:05:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
    "angle": "venue: artificial turf, over",
    "side": "under",
    "player": "",
@@ -7736,49 +6762,95 @@
    }
   },
   {
-   "away": "LV",
-   "home": "CLE",
-   "kickoff": "2026-11-30T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "kicker: wind or cold, kicking points under",
-   "side": "under",
-   "player": "CLE kicker",
-   "market": "player_kicking_points",
-   "weather": {
-    "windMph": 15.0,
-    "gustMph": 33.1,
-    "rainMm": 9.5,
-    "tempF": 46.3
-   },
-   "noPrice": "no free price for this market yet"
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "venue: dome or closed roof, over",
+   "side": "over",
+   "player": "",
+   "bet": {
+    "market": "totals",
+    "side": "over",
+    "outcome": "Over",
+    "line": 44.5,
+    "book": "draftkings",
+    "decimal": 1.91,
+    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
   },
   {
-   "away": "LV",
-   "home": "CLE",
-   "kickoff": "2026-11-30T01:20:00Z",
-   "checkedAt": "2026-11-26T23:53:38.552893Z",
-   "angle": "kicker: wind or cold, kicking points under",
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "venue: artificial turf, over",
    "side": "under",
-   "player": "LV kicker",
-   "market": "player_kicking_points",
-   "weather": {
-    "windMph": 15.0,
-    "gustMph": 33.1,
-    "rainMm": 9.5,
-    "tempF": 46.3
-   },
-   "noPrice": "no free price for this market yet"
+   "player": "",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 44.5,
+    "book": "ballybet",
+    "decimal": 1.93,
+    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "short week: Thursday, under",
+   "side": "under",
+   "player": "",
+   "bet": {
+    "market": "totals",
+    "side": "under",
+    "outcome": "Under",
+    "line": 44.5,
+    "book": "ballybet",
+    "decimal": 1.93,
+    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
+  },
+  {
+   "away": "KC",
+   "home": "LA",
+   "kickoff": "2026-12-04T01:15:00Z",
+   "checkedAt": "2026-11-27T08:31:58.024245Z",
+   "angle": "short week: Thursday, home side",
+   "side": "away",
+   "player": "",
+   "bet": {
+    "market": "spreads",
+    "side": "away",
+    "outcome": "Kansas City Chiefs",
+    "line": 1.5,
+    "book": "draftkings",
+    "decimal": 1.81,
+    "priceAt": "2026-11-26T21:51:22.435671Z",
+    "kickoff": "2026-12-04T01:15:00Z",
+    "player": ""
+   }
   }
  ],
  "summary": {
   "clv": {
-   "n": 186,
-   "mean": -0.0595,
-   "low": -0.0645,
-   "high": -0.0544
+   "n": 238,
+   "mean": -0.0566,
+   "low": -0.0612,
+   "high": -0.0523
   },
   "passes": false,
-  "reason": "only 186 scored bets; 200 are needed",
+  "reason": "closing line value is not clearly above zero",
   "byAngle": {
    "revenge: player against a former team": {
     "clv": {
@@ -7792,43 +6864,43 @@
    },
    "short week: Thanksgiving": {
     "clv": {
-     "n": 74,
-     "mean": -0.0593,
-     "low": -0.0666,
-     "high": -0.0523
+     "n": 109,
+     "mean": -0.0535,
+     "low": -0.0599,
+     "high": -0.0474
     },
     "passes": false,
-    "reason": "only 74 scored bets; 200 are needed"
+    "reason": "only 109 scored bets; 200 are needed"
    },
    "short week: Thanksgiving, home side": {
     "clv": {
-     "n": 2,
-     "mean": -0.0955,
-     "low": -0.1337,
-     "high": -0.0573
-    },
-    "passes": false,
-    "reason": "only 2 scored bets; 200 are needed"
-   },
-   "short week: Thanksgiving, under": {
-    "clv": {
-     "n": 2,
-     "mean": -0.0854,
-     "low": -0.1061,
-     "high": -0.0648
-    },
-    "passes": false,
-    "reason": "only 2 scored bets; 200 are needed"
-   },
-   "venue: artificial turf, over": {
-    "clv": {
      "n": 3,
-     "mean": -0.0467,
-     "low": -0.0923,
-     "high": -0.0011
+     "mean": -0.0757,
+     "low": -0.1082,
+     "high": -0.0432
     },
     "passes": false,
     "reason": "only 3 scored bets; 200 are needed"
+   },
+   "short week: Thanksgiving, under": {
+    "clv": {
+     "n": 3,
+     "mean": -0.0721,
+     "low": -0.0923,
+     "high": -0.0519
+    },
+    "passes": false,
+    "reason": "only 3 scored bets; 200 are needed"
+   },
+   "venue: artificial turf, over": {
+    "clv": {
+     "n": 4,
+     "mean": -0.0464,
+     "low": -0.0909,
+     "high": -0.0074
+    },
+    "passes": false,
+    "reason": "only 4 scored bets; 200 are needed"
    },
    "venue: dome or closed roof, over": {
     "clv": {
@@ -7862,23 +6934,23 @@
    },
    "venue: own split on turf": {
     "clv": {
-     "n": 44,
-     "mean": -0.0686,
-     "low": -0.0798,
-     "high": -0.0577
+     "n": 55,
+     "mean": -0.0675,
+     "low": -0.0782,
+     "high": -0.0587
     },
     "passes": false,
-    "reason": "only 44 scored bets; 200 are needed"
+    "reason": "only 55 scored bets; 200 are needed"
    },
    "venue: own split outdoors": {
     "clv": {
-     "n": 15,
-     "mean": -0.0498,
-     "low": -0.0614,
-     "high": -0.037
+     "n": 18,
+     "mean": -0.0492,
+     "low": -0.0612,
+     "high": -0.038
     },
     "passes": false,
-    "reason": "only 15 scored bets; 200 are needed"
+    "reason": "only 18 scored bets; 200 are needed"
    }
   }
  },
