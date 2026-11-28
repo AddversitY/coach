@@ -1,0 +1,20 @@
+{
+  "schema": "coach-prop-consensus-v1",
+  "signal": "prop-consensus",
+  "adopted": false,
+  "passes": false,
+  "notice": "A comparison of logged-out prop prices against the no-vig average of books on the same line. Not a pick. A flag is a signal only after 200 scored bets beat the closing line.",
+  "rule": {
+    "minBooks": 3,
+    "minEdge": 0.03,
+    "fairRange": [0.1, 0.9],
+    "sameLineOnly": true
+  },
+  "summary": {
+    "clv": {"n": 0, "mean": null, "low": null, "high": null},
+    "passes": false,
+    "reason": "only 0 scored bets; 200 are needed"
+  },
+  "alerts": [],
+  "current": []
+}

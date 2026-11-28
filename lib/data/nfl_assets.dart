@@ -12,6 +12,7 @@ import '../domain/play_units.dart';
 import '../domain/line_movement.dart';
 import '../domain/accuracy_scorecard.dart';
 import '../domain/price_history.dart';
+import '../domain/prop_line_shop.dart';
 import '../domain/recent_evidence.dart';
 import '../domain/prop_context.dart';
 import '../domain/trades.dart';
@@ -48,6 +49,13 @@ Future<SelfGradeReport> loadBundledSelfGrade() async {
   final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
   if (decoded is! Map) return SelfGradeReport.empty;
   return SelfGradeReport.fromJson(Map<String, dynamic>.from(decoded));
+}
+
+Future<PropConsensusRecord> loadBundledPropConsensus() async {
+  final json = await rootBundle.loadString('assets/prop-consensus.json');
+  final decoded = jsonDecode(json.replaceFirst('\uFEFF', ''));
+  if (decoded is! Map) return PropConsensusRecord.unavailable;
+  return PropConsensusRecord.fromJson(Map<String, dynamic>.from(decoded));
 }
 
 Future<BookPriceCoverage> loadBundledBookPrices() async {

@@ -356,6 +356,8 @@ String bookDisplayName(String book) => switch (book) {
   'fanduel' => 'FanDuel',
   'bovada' => 'Bovada',
   'betrivers' => 'BetRivers',
+  'draftkings' => 'DraftKings',
+  'betmgm' => 'BetMGM',
   _ => book,
 };
 

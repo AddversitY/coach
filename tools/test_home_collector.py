@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+import home_collector
 from argparse import Namespace
 from datetime import datetime, timezone
 
@@ -174,3 +175,32 @@ class PushMergeTests(unittest.TestCase):
              mock.patch('urllib.request.urlopen', urlopen):
             self.assertTrue(book_props.push_latest({}, 'https://w.example', 's', None))
         self.assertEqual({r['book'] for r in sent[0]['observations']}, {'draftkings', 'bovada'})
+
+
+class BetMgmParseTests(unittest.TestCase):
+    def fixture(self):
+        def market(name, happening, value, options, sub=None, participant='1'):
+            params = [{'key': 'DecimalValue', 'value': value}, {'key': 'FixtureParticipant', 'value': participant},
+                      {'key': 'Happening', 'value': happening}, {'key': 'Period', 'value': 'FullTime'}]
+            if sub:
+                params.append({'key': 'MarketSubType', 'value': sub})
+            return {'name': {'value': name}, 'status': 'Visible', 'parameters': params, 'options': options}
+
+        def option(label, side, odds):
+            return {'name': {'value': label}, 'price': {'odds': odds}, 'parameters': {'optionTypes': [side]}}
+        return {'fixtures': [{
+            'id': '6:1', 'stage': 'PreMatch', 'startDate': '2026-11-29T18:00:00Z',
+            'name': {'value': 'Tennessee Titans @ Jacksonville Jaguars'},
+            'participants': [{'id': 1, 'name': {'value': 'Trevor Lawrence'}}],
+            'optionMarkets': [
+                market('Trevor Lawrence - Passing Yards', 'PassingYards', '258.5', [option('Over 258.5', 'Over', 1.95), option('Under 258.5', 'Under', 1.8)]),
+                market('Trevor Lawrence to throw 300+ passing yards', 'PassingYards', '300', [option('Yes', 'Over', 9)], sub='YesNo'),
+                market('Trevor Lawrence to score 1+ TDs', 'Touchdown', '0.5', [option('Yes', 'Over', 6.5)], sub='PlayerTD'),
+                market('Trevor Lawrence to score 2+ TDs', 'Touchdown', '1.5', [option('Yes', 'Over', 30)], sub='PlayerTD'),
+            ]}]}
+
+    def test_main_lines_and_anytime_td_only(self):
+        rows = home_collector.parse_betmgm(self.fixture(), datetime(2026, 11, 28, tzinfo=timezone.utc))
+        got = sorted((r['market'], r['outcome'], r['line'], r['decimal']) for r in rows)
+        self.assertEqual(got, [('player_anytime_td', 'Yes', 0.5, 6.5), ('player_pass_yds', 'Over', 258.5, 1.95), ('player_pass_yds', 'Under', 258.5, 1.8)])
+        self.assertEqual({(r['away'], r['home'], r['book']) for r in rows}, {('TEN', 'JAX', 'betmgm')})

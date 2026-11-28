@@ -9,6 +9,7 @@ import 'play_units.dart';
 import 'player_stats.dart';
 import 'accuracy_scorecard.dart';
 import 'price_history.dart';
+import 'prop_line_shop.dart';
 import 'recent_evidence.dart';
 import 'rematch.dart';
 import 'trades.dart';
@@ -129,6 +130,7 @@ CoachBrief? interpretQuestion({
   BookPriceCoverage? bookPrices,
   AccuracyScorecard? scorecard,
   EloRatings? elo,
+  PropConsensusRecord? propConsensus,
 }) {
   final eloBrief = eloQuestionBrief(
     question: question,
@@ -157,13 +159,23 @@ CoachBrief? interpretQuestion({
   }
   if (asksForBookPrices(question)) {
     final coverage = bookPrices ?? BookPriceCoverage.empty;
+    final sentence = bookPriceSentence(
+      coverage,
+      question: question,
+      player: contextPlayer,
+    );
+    final shop = bestPriceVsOtherBooksSentence(
+      prices: coverage.prices,
+      question: question,
+      player: contextPlayer != null &&
+              question.toLowerCase().contains(contextPlayer.toLowerCase())
+          ? contextPlayer
+          : null,
+      record: propConsensus,
+    );
     return CoachBrief(
       title: 'Book prices',
-      text: bookPriceSentence(
-        coverage,
-        question: question,
-        player: contextPlayer,
-      ),
+      text: '$sentence\n\n$shop',
       handlesQuestion: true,
       props: propBoardForBookPrices(
         coverage,

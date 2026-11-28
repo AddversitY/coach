@@ -84,3 +84,13 @@ not counted.
   (`LOGIT_SLOPE`), capped (`MAX_SHIFT`). It is an approximation.
 - Odds API Pinnacle prices are whatever the free plan returns. If Pinnacle is
   missing from a snapshot, nothing in that snapshot is flagged.
+
+## Prop prices against the other books
+
+`tools/prop_consensus.py` is a separate comparison. It does not use the Odds API. It reads the logged-out rows already in `/v1/book-prices`.
+
+For each player, market and line, it takes the margin out of every book that posts both sides, then averages those fair chances. At least 3 books have to be on that same line. A different line is not treated as the same chance. A side is logged when its price pays at least 3% more than a fair payout at the consensus chance, and that chance is between 10% and 90%. The bar is 3%, wider than the 2% Pinnacle rule above, because this average is the same soft books and each book sits inside the average, so a 2% gap is ordinary vig noise. The PropLine 2% test against Pinnacle still lost to the close.
+
+Each flag is stored in `assets/prop-consensus.json` with the book, price, line, consensus fair chance and the time the price was saved. The signal name is `prop-consensus`. After kickoff it is graded the same way as the other logs: Pinnacle's no-vig close when that close exists, otherwise the median no-vig close of the saved books. The price-history workflow reads `/v1/book-prices` every 30 minutes and updates the file. That read spends no Odds API credits.
+
+The answer says "Best price vs other books" and includes the live scored-bet count. It is a comparison, not a pick. The served prop chance is unchanged. The 200-bet bar is the same as the rest of this file.

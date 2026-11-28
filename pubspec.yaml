@@ -69,6 +69,7 @@ flutter:
     - assets/parlay-calibration.json
     - assets/self-grade.json
     - assets/book-price-coverage.json
+    - assets/prop-consensus.json
     - assets/accuracy-scorecard.json
     - assets/nfl-trades.json
     - assets/line-moves.json
