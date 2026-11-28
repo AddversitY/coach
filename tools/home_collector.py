@@ -1,13 +1,15 @@
-"""DraftKings player-prop prices, collected from the owner's home computer.
+"""DraftKings and BetMGM player-prop prices from a Pennsylvania home connection.
 
-DraftKings answers its public prop feed from a home connection but blocks
-GitHub, Cloudflare and other server addresses (see docs/HOME_COLLECTOR.md).
-This script runs on the owner's desktop from Windows Task Scheduler.
+DraftKings and BetMGM answer logged-out prop feeds from a PA residential
+connection and block GitHub, Cloudflare and other servers (see
+docs/HOME_COLLECTOR.md). The script can run on any machine whose traffic
+comes out of that connection.
 
-Logged out, no account, no cookies, no paid service. It only asks the books
-while a game is inside one of the six pre-kickoff windows the Worker uses, and
-each window is captured once per game. Prices go to the Worker's existing
-/v1/book-prices store with the same schema. A missing price stays missing.
+Logged out, no account, no paid service. BetMGM uses only the anonymous
+cookies its own page sets. The script asks the books while a game is inside
+one of the six pre-kickoff windows the Worker uses, and each window once per
+game. Prices go to the Worker's /v1/book-prices store. A missing price stays
+missing.
 
 Standard library only, so it runs from a single downloaded file.
 
@@ -301,6 +303,108 @@ def collect_draftkings(fetch, pause, now):
     return list(unique.values()), statuses
 
 
+# ---- BetMGM (logged out) ----------------------------------------------------
+BM_HOME = 'https://www.pa.betmgm.com'
+BM_PAGE = BM_HOME + '/en/sports/football-11/betting/usa-9/nfl-35'
+BM_HAPPENING = {
+    'PassingYards': 'player_pass_yds', 'ReceivingYards': 'player_reception_yds',
+    'Reception': 'player_receptions', 'RushingYards': 'player_rush_yds',
+    'PassAttempt': 'player_pass_attempts', 'TouchdownPass': 'player_pass_tds',
+    'PassCompleted': 'player_pass_completions',
+}
+
+
+def _bm_params(market):
+    return {p.get('key'): p.get('value') for p in market.get('parameters') or []}
+
+
+def parse_betmgm(payload, now):
+    """BetMGM cds-api fixtures -> rows in the coach-book-prices-v1 shape (main lines only)."""
+    rows = []
+    for fixture in (payload or {}).get('fixtures') or []:
+        name = str((fixture.get('name') or {}).get('value') or '')
+        if ' @ ' not in name or str(fixture.get('stage') or 'PreMatch') != 'PreMatch':
+            continue
+        away_name, home_name = name.split(' @ ', 1)
+        away, home = team_code({'name': away_name}), team_code({'name': home_name})
+        kickoff = parse_time(fixture.get('startDate'))
+        people = {str(p.get('id')): str((p.get('name') or {}).get('value') or '').strip() for p in fixture.get('participants') or []}
+        for market in fixture.get('optionMarkets') or []:
+            params = _bm_params(market)
+            if market.get('status') not in (None, 'Visible') or params.get('Period') != 'FullTime':
+                continue
+            player = people.get(str(params.get('FixtureParticipant')), '')
+            if not player or params.get('Happening') in (None, 'Point'):
+                continue
+            options = market.get('options') or []
+            if params.get('Happening') == 'Touchdown' and params.get('MarketSubType') == 'PlayerTD':
+                if str(params.get('DecimalValue')) not in ('0.5',) or len(options) != 1:
+                    continue
+                price = (options[0].get('price') or {}).get('odds')
+                if isinstance(price, (int, float)) and 1 < price <= 100:
+                    rows.append({'at': iso(now), 'book': 'betmgm', 'eventId': fixture.get('id'), 'kickoff': iso(kickoff) if kickoff else None,
+                                 'away': away, 'home': home, 'market': 'player_anytime_td', 'outcome': 'Yes', 'player': player, 'line': 0.5, 'decimal': round(float(price), 6)})
+                continue
+            kind = BM_HAPPENING.get(params.get('Happening'))
+            if not kind or params.get('MarketSubType') == 'YesNo' or len(options) != 2:
+                continue
+            if kind == 'player_reception_yds' and 'Reception Yards' not in str((market.get('name') or {}).get('value')):
+                continue
+            for option in options:
+                side = (option.get('parameters') or {}).get('optionTypes') or []
+                outcome = side[0] if side and side[0] in ('Over', 'Under') else ''
+                price = (option.get('price') or {}).get('odds')
+                try:
+                    line = float(params.get('DecimalValue'))
+                except (TypeError, ValueError):
+                    line = None
+                if outcome and line is not None and isinstance(price, (int, float)) and 1 < price <= 100:
+                    rows.append({'at': iso(now), 'book': 'betmgm', 'eventId': fixture.get('id'), 'kickoff': iso(kickoff) if kickoff else None,
+                                 'away': away, 'home': home, 'market': kind, 'outcome': outcome, 'player': player, 'line': line, 'decimal': round(float(price), 6)})
+    return select_main_lines(rows)
+
+
+def collect_betmgm(now):
+    """Logged out: a plain browser-like session (anonymous cookies only) plus the public access id."""
+    import http.cookiejar
+    import urllib.parse
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    base = {'User-Agent': UA, 'Accept-Language': 'en-US,en;q=0.9'}
+
+    def get(url, headers=None):
+        request = urllib.request.Request(url, headers={**base, **(headers or {})})
+        try:
+            with opener.open(request, timeout=30) as response:
+                return response.status, response.read().decode('utf-8', 'replace')
+        except urllib.error.HTTPError as error:
+            return error.code, ''
+        except (urllib.error.URLError, TimeoutError):
+            return 0, ''
+
+    status, _ = get(BM_PAGE, {'Accept': 'text/html'})
+    if status != 200:
+        return [], [status]
+    browser_url = urllib.parse.quote(BM_HOME + '/api/clientconfig', safe='')
+    status, text = get(BM_HOME + '/en/api/clientconfig?browserUrl=' + browser_url,
+                       {'x-bwin-browser-url': browser_url, 'x-from-product': 'host-app', 'x-bwin-sports-api': 'prod', 'x-bwin-sf-api': 'prod'})
+    found = re.search(r'"publicAccessId":"([^"]+)"', text or '')
+    if status != 200 or not found:
+        return [], [status]
+    query = urllib.parse.urlencode({
+        'x-bwin-accessid': found.group(1), 'lang': 'en-us', 'country': 'US', 'userCountry': 'US', 'subdivision': 'US-Pennsylvania',
+        'offerMapping': 'All', 'scoreboardMode': 'Full', 'fixtureTypes': 'Standard', 'state': 'Latest',
+        'sportIds': 11, 'regionIds': 9, 'competitionIds': 35, 'skip': 0, 'take': 50})
+    status, text = get(BM_HOME + '/cds-api/bettingoffer/fixtures?' + query, {
+        'Accept': 'application/json, text/plain, */*', 'Referer': BM_PAGE, 'Origin': BM_HOME,
+        'x-bwin-browser-url': BM_PAGE, 'sec-fetch-site': 'same-origin', 'sec-fetch-mode': 'cors'})
+    try:
+        body = json.loads(text) if status == 200 else None
+    except ValueError:
+        body = None
+    return (parse_betmgm(body, now) if body else []), [status]
+
+
 def run(args, fetch=http_json, pause=time.sleep, now=None):
     now = now or datetime.now(timezone.utc)
     folder = Path(args.folder)
@@ -316,11 +420,26 @@ def run(args, fetch=http_json, pause=time.sleep, now=None):
     due = due_games(index, state, now)
     if not due and not args.force:
         return log(folder, now, 'No pre-kickoff window open.', quiet=True)
-    rows, statuses = collect_draftkings(fetch, pause, now)
-    rows = attach_identity(rows, index)
+    books = [b.strip() for b in str(getattr(args, 'books', 'draftkings')).split(',') if b.strip()]
+    rows, parts = [], []
+    if 'draftkings' in books:
+        dk_rows, statuses = collect_draftkings(fetch, pause, now)
+        dk_rows = attach_identity(dk_rows, index)
+        rows += dk_rows
+        parts.append(f'DraftKings HTTP {sorted(set(statuses))} {len(dk_rows)}')
+    if 'betmgm' in books:
+        if 'draftkings' in books:
+            pause(PAUSE_SECONDS)
+        try:
+            bm_rows, bm_status = collect_betmgm(now)
+        except Exception:  # one book failing must not stop the other
+            bm_rows, bm_status = [], ['error']
+        bm_rows = attach_identity(bm_rows, index)
+        rows += bm_rows
+        parts.append(f'BetMGM HTTP {sorted(set(map(str, bm_status)))} {len(bm_rows)}')
     if not args.force:
         rows = [r for r in rows if r['eventId'] in due]
-    message = f'DraftKings HTTP {sorted(set(statuses))}; {len(rows)} prices for {len({r["eventId"] for r in rows})} games.'
+    message = f'{"; ".join(parts)}; {len(rows)} prices for {len({r["eventId"] for r in rows})} games.'
     if args.dry_run:
         print(json.dumps(rows[:10], indent=1))
         return log(folder, now, message + ' Dry run, nothing pushed.')
@@ -329,6 +448,9 @@ def run(args, fetch=http_json, pause=time.sleep, now=None):
     if rows and secret:
         code, stored = fetch(WORKER + '/v1/book-prices')
         if code == 200 and isinstance(stored, dict):
+            # The Worker that is live today replaces the whole store, so the
+            # other books stay in this body. Once the Worker's book merge is
+            # deployed, a cron row newer than this copy is kept.
             body = json.dumps(merge_store(stored, rows, now)).encode('utf-8')
             code, _ = fetch(WORKER + '/v1/book-prices', body, {'Content-Type': 'application/json', 'Authorization': f'Bearer {secret}'})
             pushed = f'pushed (HTTP {code})' if code == 200 else f'push failed (HTTP {code})'
@@ -361,6 +483,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--folder', default=str(Path(__file__).resolve().parent))
     parser.add_argument('--dry-run', action='store_true', help='collect and print, push nothing')
+    parser.add_argument('--books', default='draftkings,betmgm', help='comma list: draftkings,betmgm')
     parser.add_argument('--force', action='store_true', help='collect now even if no window is open')
     run(parser.parse_args(argv))
     return 0

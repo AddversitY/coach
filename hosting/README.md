@@ -49,6 +49,10 @@ before interpretation can succeed. Run `node --test hosting/*.test.mjs`.
   adjustments are inferred.
 - Markets read existing published snapshots, retaining original observation
   times and the existing credit limits. This is not real-time market data.
+  `POST /v1/book-prices` merges by book: rows for books in the post replace
+  older rows for those books, a stored row with a newer time is kept, and a
+  kickoff more than 36 hours ago is dropped. That merge is in this Worker and
+  needs a redeploy before it is live.
 - Reporter headlines use ESPN's published RSS feed, preserving author bylines
   and publication dates, and respecting its 30-minute TTL. No article bodies or
   private social posts are fetched. It is not comprehensive beat-writer coverage.

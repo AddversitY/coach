@@ -51,3 +51,5 @@ Checked from a Cloudflare Worker on November 21, 2026: BetRivers, Bovada, and Fa
 ## The consensus
 
 A multi-book no-vig price is not on the card. The rule is the same as the rest of the prop work: it has to beat the current chance on Brier and log loss in both 2025 and 2026. This store has no 2025 closes, so that comparison is unavailable. `consensusAdopted` is false.
+
+A separate comparison, `prop-consensus`, looks at the logged-out prices already in `/v1/book-prices`. It takes the margin out of each book that posts both sides of the same line, averages those chances, and names a book when its price pays at least 3% more than a fair payout at that chance. At least 3 books have to be on that exact line. It does not change the served chance, and it is not a pick. The running count is `assets/prop-consensus.json`. It becomes a signal only after 200 scored bets beat the closing line, with the low end of the range above zero.

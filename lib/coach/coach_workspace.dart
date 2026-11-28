@@ -34,6 +34,7 @@ import '../domain/play_units.dart';
 import '../domain/player_stats.dart';
 import '../domain/line_movement.dart';
 import '../domain/price_history.dart';
+import '../domain/prop_line_shop.dart';
 import '../domain/prop_depth.dart';
 import '../domain/team_trends.dart';
 import '../domain/trades.dart';
@@ -156,6 +157,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
   EloRatings? eloRatings;
   SelfGradeReport? selfGrade;
   BookPriceCoverage? bookPrices;
+  PropConsensusRecord? propConsensus;
   AccuracyScorecard? scorecard;
   LineMoveBook? lineMoves;
   MatchupContext? matchupContext;
@@ -265,6 +267,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       moves: lineMoves,
       bookPrices: bookPrices,
       elo: eloRatings,
+      propConsensus: propConsensus,
     );
   }
 
@@ -335,6 +338,12 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       } catch (_) {
         prices = null;
       }
+      PropConsensusRecord? consensus;
+      try {
+        consensus = await loadBundledPropConsensus();
+      } catch (_) {
+        consensus = null;
+      }
       if (prices != null && api != null) {
         prices = mergeLiveBookPrices(prices, await api!.loggedOutBookPrices());
       }
@@ -371,6 +380,7 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
         eloRatings = elo;
         selfGrade = grades;
         bookPrices = prices;
+        propConsensus = consensus;
         scorecard = accuracy;
         lineMoves = moves;
         ratingBook ??= RatingBook.build(data?.rows ?? const []);
@@ -1483,6 +1493,31 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
       visual.remove('priceComparison');
       visual['historyOnlyNotice'] = 'Recorded history retained. The live assessment and saved-price comparison are withdrawn until refreshed.';
     }
+    final shown = turn.invalidation ??
+        turn.liveNotice ??
+        (turn.lockedEvidence
+            ? a.text
+            : turn.game != null
+            ? a.text
+            : turn.generated?.answer ?? turn.analysis?.summary ?? a.text);
+    final shopNames = <String>{
+      ...?snapshot?.playerIdsByName.keys,
+      for (final row in bookPrices?.prices ?? const <SavedBookPrice>[])
+        row.player,
+    };
+    final shop = asksPropComparison(
+              turn.question,
+              hasPlayer: namedPlayer(turn.question, shopNames) != null,
+            ) &&
+            !shown.contains('Best price vs other books') &&
+            !(turn.brief?.text.contains('Best price vs other books') ?? false)
+        ? bestPriceVsOtherBooksSentence(
+            prices: bookPrices?.prices ?? const [],
+            question: turn.question,
+            record: propConsensus,
+            knownNames: shopNames,
+          )
+        : null;
     return Padding(
       key: turn.anchor,
       padding: const EdgeInsets.only(bottom: 36),
@@ -1574,17 +1609,14 @@ class _CoachWorkspaceState extends State<CoachWorkspace> {
               turn.game!.raw['decision'] is! Map)
             if (turn.brief != null) BriefingView(brief: turn.brief!),
           SelectableText(
-            turn.invalidation ??
-                turn.liveNotice ??
-                (turn.lockedEvidence
-                    ? a.text
-                    : turn.game != null
-                    ? a.text
-                    : turn.generated?.answer ??
-                          turn.analysis?.summary ??
-                          a.text),
+            shown,
             style: CoachType.body,
           ),
+          if (shop != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: SelectableText(shop, style: CoachType.body),
+            ),
           if (turn.game?.raw['decision'] is Map &&
               turn.invalidation == null &&
               !primarySummary &&
