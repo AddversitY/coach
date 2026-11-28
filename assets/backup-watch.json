@@ -1,7 +1,583 @@
 {
  "schema": "coach-backup-watch-v1",
- "bets": [],
- "checkedAt": "2026-11-28T03:16:02.384338Z",
+ "bets": [
+  {
+   "team": "JAX",
+   "group": "RB",
+   "out": [
+    "Bhayshul Tuten"
+   ],
+   "backup": "Chris Rodriguez Jr.",
+   "backupId": "00-0038611",
+   "projection": 12.7,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "draftkings",
+   "market": "player_reception_yds",
+   "line": 8.5,
+   "over": 1.934579,
+   "under": 1.854701,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.566,
+   "overEdge": 0.0951,
+   "underEdge": -0.1952,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "RB",
+   "out": [
+    "Bhayshul Tuten"
+   ],
+   "backup": "Chris Rodriguez Jr.",
+   "backupId": "00-0038611",
+   "projection": 1.6,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "draftkings",
+   "market": "player_receptions",
+   "line": 1.5,
+   "over": 2.08,
+   "under": 1.729927,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.424,
+   "overEdge": -0.118,
+   "underEdge": -0.0036,
+   "side": null,
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "RB",
+   "out": [
+    "Bhayshul Tuten"
+   ],
+   "backup": "Chris Rodriguez Jr.",
+   "backupId": "00-0038611",
+   "projection": 68.2,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "draftkings",
+   "market": "player_rush_yds",
+   "line": 76.5,
+   "over": 1.877193,
+   "under": 1.909091,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.284,
+   "overEdge": -0.466,
+   "underEdge": 0.366,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "WR",
+   "out": [
+    "Parker Washington"
+   ],
+   "backup": "Jakobi Meyers",
+   "backupId": "00-0034960",
+   "projection": 58.6,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "betmgm",
+   "market": "player_reception_yds",
+   "line": 66.5,
+   "over": 1.799999,
+   "under": 1.95,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.342,
+   "overEdge": -0.3842,
+   "underEdge": 0.2829,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "WR",
+   "out": [
+    "Parker Washington"
+   ],
+   "backup": "Jakobi Meyers",
+   "backupId": "00-0034960",
+   "projection": 4.9,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "betmgm",
+   "market": "player_receptions",
+   "line": 5.5,
+   "over": 2.25,
+   "under": 1.6,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.379,
+   "overEdge": -0.1482,
+   "underEdge": -0.0057,
+   "side": null,
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "WR",
+   "out": [
+    "Parker Washington"
+   ],
+   "backup": "Jakobi Meyers",
+   "backupId": "00-0034960",
+   "projection": 58.6,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "draftkings",
+   "market": "player_reception_yds",
+   "line": 70.5,
+   "over": 1.892857,
+   "under": 1.900901,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.33,
+   "overEdge": -0.3757,
+   "underEdge": 0.2739,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "JAX",
+   "group": "WR",
+   "out": [
+    "Parker Washington"
+   ],
+   "backup": "Jakobi Meyers",
+   "backupId": "00-0034960",
+   "projection": 4.9,
+   "eventId": "nflverse:2026_12_TEN_JAX",
+   "kickoff": "2026-11-29T18:00:00Z",
+   "book": "draftkings",
+   "market": "player_receptions",
+   "line": 4.5,
+   "over": 1.714286,
+   "under": 2.09,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.488,
+   "overEdge": -0.1632,
+   "underEdge": 0.0698,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "LAC",
+   "group": "QB",
+   "out": [
+    "Justin Herbert"
+   ],
+   "backup": "DJ Uiagalelei",
+   "backupId": "00-0040464",
+   "projection": 26.3,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_pass_attempts",
+   "line": 26.5,
+   "over": 1.961538,
+   "under": 1.813008,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.41,
+   "overEdge": -0.1953,
+   "underEdge": 0.0693,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "LAC",
+   "group": "QB",
+   "out": [
+    "Justin Herbert"
+   ],
+   "backup": "DJ Uiagalelei",
+   "backupId": "00-0040464",
+   "projection": 182.9,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_pass_yds",
+   "line": 148.5,
+   "over": 1.892857,
+   "under": 1.892857,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.559,
+   "overEdge": 0.0572,
+   "underEdge": -0.1643,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    "Drake Maye"
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "projection": 25.8,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "betmgm",
+   "market": "player_pass_attempts",
+   "line": 27.5,
+   "over": 1.95,
+   "under": 1.799999,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.383,
+   "overEdge": -0.2535,
+   "underEdge": 0.1109,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    "Drake Maye"
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "projection": 16.5,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "betmgm",
+   "market": "player_pass_completions",
+   "line": 17.5,
+   "over": 1.83,
+   "under": 1.909999,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.351,
+   "overEdge": -0.3575,
+   "underEdge": 0.2394,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    "Drake Maye"
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "projection": 163.6,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "betmgm",
+   "market": "player_pass_yds",
+   "line": 174.5,
+   "over": 1.87,
+   "under": 1.87,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.38,
+   "overEdge": -0.2886,
+   "underEdge": 0.1586,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    "Drake Maye"
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "projection": 25.8,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_pass_attempts",
+   "line": 27.5,
+   "over": 1.943396,
+   "under": 1.833333,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.383,
+   "overEdge": -0.256,
+   "underEdge": 0.1315,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "QB",
+   "out": [
+    "Drake Maye"
+   ],
+   "backup": "Tommy DeVito",
+   "backupId": "00-0038476",
+   "projection": 163.6,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_pass_yds",
+   "line": 175.5,
+   "over": 1.884956,
+   "under": 1.900901,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.376,
+   "overEdge": -0.2914,
+   "underEdge": 0.1863,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "WR",
+   "out": [
+    "A.J. Brown"
+   ],
+   "backup": "Mack Hollins",
+   "backupId": "00-0033555",
+   "projection": 57.7,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "betmgm",
+   "market": "player_reception_yds",
+   "line": 30.5,
+   "over": 1.899999,
+   "under": 1.85,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.624,
+   "overEdge": 0.1849,
+   "underEdge": -0.3037,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "WR",
+   "out": [
+    "A.J. Brown"
+   ],
+   "backup": "Mack Hollins",
+   "backupId": "00-0033555",
+   "projection": 4.6,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "betmgm",
+   "market": "player_receptions",
+   "line": 2.5,
+   "over": 1.779999,
+   "under": 1.95,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.688,
+   "overEdge": 0.2254,
+   "underEdge": -0.3925,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "WR",
+   "out": [
+    "A.J. Brown"
+   ],
+   "backup": "Mack Hollins",
+   "backupId": "00-0033555",
+   "projection": 57.7,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_reception_yds",
+   "line": 27.5,
+   "over": 1.877193,
+   "under": 1.909091,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.646,
+   "overEdge": 0.2132,
+   "underEdge": -0.3247,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "NE",
+   "group": "WR",
+   "out": [
+    "A.J. Brown"
+   ],
+   "backup": "Mack Hollins",
+   "backupId": "00-0033555",
+   "projection": 4.6,
+   "eventId": "nflverse:2026_12_NE_LAC",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "book": "draftkings",
+   "market": "player_receptions",
+   "line": 2.5,
+   "over": 1.869565,
+   "under": 1.900901,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.688,
+   "overEdge": 0.2871,
+   "underEdge": -0.4078,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "QB",
+   "out": [
+    "Brock Purdy"
+   ],
+   "backup": "Mac Jones",
+   "backupId": "00-0036972",
+   "projection": 147.4,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "betmgm",
+   "market": "player_pass_yds",
+   "line": 221.5,
+   "over": 2,
+   "under": 1.75,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.102,
+   "overEdge": -0.795,
+   "underEdge": 0.5706,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "QB",
+   "out": [
+    "Brock Purdy"
+   ],
+   "backup": "Mac Jones",
+   "backupId": "00-0036972",
+   "projection": 22.0,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "draftkings",
+   "market": "player_pass_attempts",
+   "line": 31.5,
+   "over": 1.877193,
+   "under": 1.900901,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.148,
+   "overEdge": -0.7227,
+   "underEdge": 0.6201,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "QB",
+   "out": [
+    "Brock Purdy"
+   ],
+   "backup": "Mac Jones",
+   "backupId": "00-0036972",
+   "projection": 147.4,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "draftkings",
+   "market": "player_pass_yds",
+   "line": 212.5,
+   "over": 1.892857,
+   "under": 1.892857,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.146,
+   "overEdge": -0.7233,
+   "underEdge": 0.6162,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "WR",
+   "out": [
+    "Jordan Watkins"
+   ],
+   "backup": "Deebo Samuel Sr.",
+   "backupId": "00-0035719",
+   "projection": 34.3,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "betmgm",
+   "market": "player_reception_yds",
+   "line": 21.5,
+   "over": 1.83,
+   "under": 1.899999,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.562,
+   "overEdge": 0.0282,
+   "underEdge": -0.1675,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "WR",
+   "out": [
+    "Jordan Watkins"
+   ],
+   "backup": "Deebo Samuel Sr.",
+   "backupId": "00-0035719",
+   "projection": 2.7,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "betmgm",
+   "market": "player_receptions",
+   "line": 2.5,
+   "over": 1.75,
+   "under": 2,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.485,
+   "overEdge": -0.1509,
+   "underEdge": 0.0296,
+   "side": "under",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "WR",
+   "out": [
+    "Jordan Watkins"
+   ],
+   "backup": "Deebo Samuel Sr.",
+   "backupId": "00-0035719",
+   "projection": 34.3,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "draftkings",
+   "market": "player_reception_yds",
+   "line": 20.5,
+   "over": 1.909091,
+   "under": 1.877193,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.583,
+   "overEdge": 0.1136,
+   "underEdge": -0.2178,
+   "side": "over",
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  },
+  {
+   "team": "SF",
+   "group": "WR",
+   "out": [
+    "Jordan Watkins"
+   ],
+   "backup": "Deebo Samuel Sr.",
+   "backupId": "00-0035719",
+   "projection": 2.7,
+   "eventId": "nflverse:2026_12_SEA_SF",
+   "kickoff": "2026-11-29T21:25:00Z",
+   "book": "draftkings",
+   "market": "player_receptions",
+   "line": 2.5,
+   "over": 1.925926,
+   "under": 1.847458,
+   "priceAt": "2026-11-28T09:30:39Z",
+   "overChance": 0.485,
+   "overEdge": -0.0656,
+   "underEdge": -0.0489,
+   "side": null,
+   "loggedAt": "2026-11-28T11:59:24.242891Z"
+  }
+ ],
+ "checkedAt": "2026-11-28T11:59:24.242891Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -73,8 +649,51 @@
     "player_reception_yds": 12.7,
     "player_receptions": 1.6
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "draftkings",
+     "market": "player_reception_yds",
+     "line": 8.5,
+     "over": 1.934579,
+     "under": 1.854701,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.566,
+     "overEdge": 0.0951,
+     "underEdge": -0.1952,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "draftkings",
+     "market": "player_receptions",
+     "line": 1.5,
+     "over": 2.08,
+     "under": 1.729927,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.424,
+     "overEdge": -0.118,
+     "underEdge": -0.0036,
+     "side": null
+    },
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "draftkings",
+     "market": "player_rush_yds",
+     "line": 76.5,
+     "over": 1.877193,
+     "under": 1.909091,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.284,
+     "overEdge": -0.466,
+     "underEdge": 0.366,
+     "side": "under"
+    }
+   ],
+   "eventId": "nflverse:2026_12_TEN_JAX"
   },
   {
    "team": "JAX",
@@ -95,8 +714,65 @@
     "player_reception_yds": 58.6,
     "player_receptions": 4.9
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "betmgm",
+     "market": "player_reception_yds",
+     "line": 66.5,
+     "over": 1.799999,
+     "under": 1.95,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.342,
+     "overEdge": -0.3842,
+     "underEdge": 0.2829,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "betmgm",
+     "market": "player_receptions",
+     "line": 5.5,
+     "over": 2.25,
+     "under": 1.6,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.379,
+     "overEdge": -0.1482,
+     "underEdge": -0.0057,
+     "side": null
+    },
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "draftkings",
+     "market": "player_reception_yds",
+     "line": 70.5,
+     "over": 1.892857,
+     "under": 1.900901,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.33,
+     "overEdge": -0.3757,
+     "underEdge": 0.2739,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_TEN_JAX",
+     "kickoff": "2026-11-29T18:00:00Z",
+     "book": "draftkings",
+     "market": "player_receptions",
+     "line": 4.5,
+     "over": 1.714286,
+     "under": 2.09,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.488,
+     "overEdge": -0.1632,
+     "underEdge": 0.0698,
+     "side": "under"
+    }
+   ],
+   "eventId": "nflverse:2026_12_TEN_JAX"
   },
   {
    "team": "LAC",
@@ -118,8 +794,37 @@
     "player_pass_attempts": 26.3,
     "player_pass_completions": 16.4
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_pass_attempts",
+     "line": 26.5,
+     "over": 1.961538,
+     "under": 1.813008,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.41,
+     "overEdge": -0.1953,
+     "underEdge": 0.0693,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_pass_yds",
+     "line": 148.5,
+     "over": 1.892857,
+     "under": 1.892857,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.559,
+     "overEdge": 0.0572,
+     "underEdge": -0.1643,
+     "side": "over"
+    }
+   ],
+   "eventId": "nflverse:2026_12_NE_LAC"
   },
   {
    "team": "NE",
@@ -141,8 +846,79 @@
     "player_pass_attempts": 25.8,
     "player_pass_completions": 16.5
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "betmgm",
+     "market": "player_pass_attempts",
+     "line": 27.5,
+     "over": 1.95,
+     "under": 1.799999,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.383,
+     "overEdge": -0.2535,
+     "underEdge": 0.1109,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "betmgm",
+     "market": "player_pass_completions",
+     "line": 17.5,
+     "over": 1.83,
+     "under": 1.909999,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.351,
+     "overEdge": -0.3575,
+     "underEdge": 0.2394,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "betmgm",
+     "market": "player_pass_yds",
+     "line": 174.5,
+     "over": 1.87,
+     "under": 1.87,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.38,
+     "overEdge": -0.2886,
+     "underEdge": 0.1586,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_pass_attempts",
+     "line": 27.5,
+     "over": 1.943396,
+     "under": 1.833333,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.383,
+     "overEdge": -0.256,
+     "underEdge": 0.1315,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_pass_yds",
+     "line": 175.5,
+     "over": 1.884956,
+     "under": 1.900901,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.376,
+     "overEdge": -0.2914,
+     "underEdge": 0.1863,
+     "side": "under"
+    }
+   ],
+   "eventId": "nflverse:2026_12_NE_LAC"
   },
   {
    "team": "NE",
@@ -163,8 +939,65 @@
     "player_reception_yds": 57.7,
     "player_receptions": 4.6
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "betmgm",
+     "market": "player_reception_yds",
+     "line": 30.5,
+     "over": 1.899999,
+     "under": 1.85,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.624,
+     "overEdge": 0.1849,
+     "underEdge": -0.3037,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "betmgm",
+     "market": "player_receptions",
+     "line": 2.5,
+     "over": 1.779999,
+     "under": 1.95,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.688,
+     "overEdge": 0.2254,
+     "underEdge": -0.3925,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_reception_yds",
+     "line": 27.5,
+     "over": 1.877193,
+     "under": 1.909091,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.646,
+     "overEdge": 0.2132,
+     "underEdge": -0.3247,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_NE_LAC",
+     "kickoff": "2026-11-29T21:05:00Z",
+     "book": "draftkings",
+     "market": "player_receptions",
+     "line": 2.5,
+     "over": 1.869565,
+     "under": 1.900901,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.688,
+     "overEdge": 0.2871,
+     "underEdge": -0.4078,
+     "side": "over"
+    }
+   ],
+   "eventId": "nflverse:2026_12_NE_LAC"
   },
   {
    "team": "SF",
@@ -186,8 +1019,51 @@
     "player_pass_attempts": 22.0,
     "player_pass_completions": 14.6
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "betmgm",
+     "market": "player_pass_yds",
+     "line": 221.5,
+     "over": 2,
+     "under": 1.75,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.102,
+     "overEdge": -0.795,
+     "underEdge": 0.5706,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "draftkings",
+     "market": "player_pass_attempts",
+     "line": 31.5,
+     "over": 1.877193,
+     "under": 1.900901,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.148,
+     "overEdge": -0.7227,
+     "underEdge": 0.6201,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "draftkings",
+     "market": "player_pass_yds",
+     "line": 212.5,
+     "over": 1.892857,
+     "under": 1.892857,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.146,
+     "overEdge": -0.7233,
+     "underEdge": 0.6162,
+     "side": "under"
+    }
+   ],
+   "eventId": "nflverse:2026_12_SEA_SF"
   },
   {
    "team": "SF",
@@ -208,8 +1084,65 @@
     "player_reception_yds": 34.3,
     "player_receptions": 2.7
    },
-   "prices": [],
-   "eventId": null
+   "prices": [
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "betmgm",
+     "market": "player_reception_yds",
+     "line": 21.5,
+     "over": 1.83,
+     "under": 1.899999,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.562,
+     "overEdge": 0.0282,
+     "underEdge": -0.1675,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "betmgm",
+     "market": "player_receptions",
+     "line": 2.5,
+     "over": 1.75,
+     "under": 2,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.485,
+     "overEdge": -0.1509,
+     "underEdge": 0.0296,
+     "side": "under"
+    },
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "draftkings",
+     "market": "player_reception_yds",
+     "line": 20.5,
+     "over": 1.909091,
+     "under": 1.877193,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.583,
+     "overEdge": 0.1136,
+     "underEdge": -0.2178,
+     "side": "over"
+    },
+    {
+     "eventId": "nflverse:2026_12_SEA_SF",
+     "kickoff": "2026-11-29T21:25:00Z",
+     "book": "draftkings",
+     "market": "player_receptions",
+     "line": 2.5,
+     "over": 1.925926,
+     "under": 1.847458,
+     "priceAt": "2026-11-28T09:30:39Z",
+     "overChance": 0.485,
+     "overEdge": -0.0656,
+     "underEdge": -0.0489,
+     "side": null
+    }
+   ],
+   "eventId": "nflverse:2026_12_SEA_SF"
   }
  ],
  "summary": {

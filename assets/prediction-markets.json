@@ -632,11 +632,71 @@
    "booksFair": 0.5727,
    "edge": 0.1454,
    "kind": "Kalshi beats the books"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "away": "NE",
+   "home": "LAC",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "draftkings",
+   "decimal": 1.73,
+   "kalshiFair": 0.595,
+   "edge": 0.0293,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "DET",
+   "home": "ATL",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "draftkings",
+   "decimal": 1.52,
+   "kalshiFair": 0.6782,
+   "edge": 0.0309,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-28T11:59:25.795719Z",
+   "kickoff": "2026-12-07T01:20:00Z",
+   "away": "HOU",
+   "home": "PIT",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 1.5625,
+   "booksFair": 0.6584,
+   "edge": 0.0287,
+   "kind": "Kalshi beats the books"
+  },
+  {
+   "at": "2026-11-28T11:59:25.795719Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "DET",
+   "home": "ATL",
+   "market": "h2h",
+   "player": "",
+   "side": "home",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 2.8571,
+   "booksFair": 0.3614,
+   "edge": 0.0327,
+   "kind": "Kalshi beats the books"
   }
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-28T03:16:03.940265Z"
+  "checkedAt": "2026-11-28T11:59:25.795719Z"
  },
  "current": [
   {
@@ -650,8 +710,23 @@
    "line": null,
    "book": "ballybet",
    "decimal": 2.75,
-   "kalshiFair": 0.3842,
-   "edge": 0.0567,
+   "kalshiFair": 0.403,
+   "edge": 0.1082,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "MIA",
+   "home": "DEN",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "ballybet",
+   "decimal": 9.0,
+   "kalshiFair": 0.1256,
+   "edge": 0.1307,
    "kind": "book beats Kalshi"
   },
   {
@@ -665,8 +740,8 @@
    "line": null,
    "book": "ballybet",
    "decimal": 3.7,
-   "kalshiFair": 0.2886,
-   "edge": 0.0677,
+   "kalshiFair": 0.2828,
+   "edge": 0.0465,
    "kind": "book beats Kalshi"
   },
   {
@@ -680,8 +755,8 @@
    "line": null,
    "book": "ballybet",
    "decimal": 1.78,
-   "kalshiFair": 0.585,
-   "edge": 0.0413,
+   "kalshiFair": 0.595,
+   "edge": 0.0591,
    "kind": "book beats Kalshi"
   },
   {
@@ -695,8 +770,23 @@
    "line": null,
    "book": "ballybet",
    "decimal": 2.23,
-   "kalshiFair": 0.525,
-   "edge": 0.1707,
+   "kalshiFair": 0.5224,
+   "edge": 0.1649,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "away": "NE",
+   "home": "LAC",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "betmgm",
+   "decimal": 1.74,
+   "kalshiFair": 0.595,
+   "edge": 0.0353,
    "kind": "book beats Kalshi"
   },
   {
@@ -710,8 +800,8 @@
    "line": null,
    "book": "betmgm",
    "decimal": 2.25,
-   "kalshiFair": 0.525,
-   "edge": 0.1813,
+   "kalshiFair": 0.5224,
+   "edge": 0.1754,
    "kind": "book beats Kalshi"
   },
   {
@@ -725,8 +815,23 @@
    "line": null,
    "book": "betrivers",
    "decimal": 2.75,
-   "kalshiFair": 0.3842,
-   "edge": 0.0567,
+   "kalshiFair": 0.403,
+   "edge": 0.1082,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "MIA",
+   "home": "DEN",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "betrivers",
+   "decimal": 9.0,
+   "kalshiFair": 0.1256,
+   "edge": 0.1307,
    "kind": "book beats Kalshi"
   },
   {
@@ -740,8 +845,8 @@
    "line": null,
    "book": "betrivers",
    "decimal": 3.7,
-   "kalshiFair": 0.2886,
-   "edge": 0.0677,
+   "kalshiFair": 0.2828,
+   "edge": 0.0465,
    "kind": "book beats Kalshi"
   },
   {
@@ -755,8 +860,8 @@
    "line": null,
    "book": "betrivers",
    "decimal": 1.78,
-   "kalshiFair": 0.585,
-   "edge": 0.0413,
+   "kalshiFair": 0.595,
+   "edge": 0.0591,
    "kind": "book beats Kalshi"
   },
   {
@@ -770,8 +875,8 @@
    "line": null,
    "book": "betrivers",
    "decimal": 2.23,
-   "kalshiFair": 0.525,
-   "edge": 0.1707,
+   "kalshiFair": 0.5224,
+   "edge": 0.1649,
    "kind": "book beats Kalshi"
   },
   {
@@ -785,8 +890,38 @@
    "line": null,
    "book": "draftkings",
    "decimal": 2.86,
-   "kalshiFair": 0.3842,
-   "edge": 0.0989,
+   "kalshiFair": 0.403,
+   "edge": 0.1525,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "away": "NE",
+   "home": "LAC",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "draftkings",
+   "decimal": 1.73,
+   "kalshiFair": 0.595,
+   "edge": 0.0293,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "DET",
+   "home": "ATL",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "draftkings",
+   "decimal": 1.52,
+   "kalshiFair": 0.6782,
+   "edge": 0.0309,
    "kind": "book beats Kalshi"
   },
   {
@@ -800,8 +935,23 @@
    "line": null,
    "book": "draftkings",
    "decimal": 2.29,
-   "kalshiFair": 0.525,
-   "edge": 0.2023,
+   "kalshiFair": 0.5224,
+   "edge": 0.1963,
+   "kind": "book beats Kalshi"
+  },
+  {
+   "at": "2026-11-27T14:12:34.917108Z",
+   "kickoff": "2026-11-29T21:05:00Z",
+   "away": "NE",
+   "home": "LAC",
+   "market": "h2h",
+   "player": "",
+   "side": "away",
+   "line": null,
+   "book": "espnbet",
+   "decimal": 1.74,
+   "kalshiFair": 0.595,
+   "edge": 0.0353,
    "kind": "book beats Kalshi"
   },
   {
@@ -815,23 +965,8 @@
    "line": null,
    "book": "espnbet",
    "decimal": 2.2,
-   "kalshiFair": 0.525,
-   "edge": 0.155,
-   "kind": "book beats Kalshi"
-  },
-  {
-   "at": "2026-11-27T14:12:34.917108Z",
-   "kickoff": "2026-12-06T18:00:00Z",
-   "away": "JAX",
-   "home": "CHI",
-   "market": "h2h",
-   "player": "",
-   "side": "home",
-   "line": null,
-   "book": "fanduel",
-   "decimal": 1.7,
-   "kalshiFair": 0.605,
-   "edge": 0.0285,
+   "kalshiFair": 0.5224,
+   "edge": 0.1493,
    "kind": "book beats Kalshi"
   },
   {
@@ -845,8 +980,8 @@
    "line": null,
    "book": "fanduel",
    "decimal": 2.84,
-   "kalshiFair": 0.3842,
-   "edge": 0.0912,
+   "kalshiFair": 0.403,
+   "edge": 0.1445,
    "kind": "book beats Kalshi"
   },
   {
@@ -860,8 +995,8 @@
    "line": null,
    "book": "fanduel",
    "decimal": 9.3,
-   "kalshiFair": 0.1106,
-   "edge": 0.0281,
+   "kalshiFair": 0.1256,
+   "edge": 0.1683,
    "kind": "book beats Kalshi"
   },
   {
@@ -875,8 +1010,8 @@
    "line": null,
    "book": "fanduel",
    "decimal": 1.83,
-   "kalshiFair": 0.585,
-   "edge": 0.0705,
+   "kalshiFair": 0.595,
+   "edge": 0.0889,
    "kind": "book beats Kalshi"
   },
   {
@@ -890,8 +1025,8 @@
    "line": null,
    "book": "fanduel",
    "decimal": 2.24,
-   "kalshiFair": 0.525,
-   "edge": 0.176,
+   "kalshiFair": 0.5224,
+   "edge": 0.1701,
    "kind": "book beats Kalshi"
   },
   {
@@ -905,8 +1040,8 @@
    "line": null,
    "book": "hardrockbet",
    "decimal": 1.77,
-   "kalshiFair": 0.585,
-   "edge": 0.0354,
+   "kalshiFair": 0.595,
+   "edge": 0.0532,
    "kind": "book beats Kalshi"
   },
   {
@@ -920,27 +1055,27 @@
    "line": null,
    "book": "hardrockbet",
    "decimal": 2.3,
-   "kalshiFair": 0.525,
-   "edge": 0.2075,
+   "kalshiFair": 0.5224,
+   "edge": 0.2015,
    "kind": "book beats Kalshi"
   },
   {
-   "at": "2026-11-28T03:16:03.940265Z",
-   "kickoff": "2026-12-06T18:00:00Z",
-   "away": "JAX",
-   "home": "CHI",
+   "at": "2026-11-28T11:59:25.795719Z",
+   "kickoff": "2026-12-07T01:20:00Z",
+   "away": "HOU",
+   "home": "PIT",
    "market": "h2h",
    "player": "",
    "side": "away",
    "line": null,
    "book": "kalshi",
-   "decimal": 2.381,
-   "booksFair": 0.4378,
-   "edge": 0.0425,
+   "decimal": 1.5625,
+   "booksFair": 0.6584,
+   "edge": 0.0287,
    "kind": "Kalshi beats the books"
   },
   {
-   "at": "2026-11-28T03:16:03.940265Z",
+   "at": "2026-11-28T11:59:25.795719Z",
    "kickoff": "2026-11-29T21:05:00Z",
    "away": "NE",
    "home": "LAC",
@@ -949,13 +1084,28 @@
    "side": "home",
    "line": null,
    "book": "kalshi",
-   "decimal": 2.2727,
+   "decimal": 2.3256,
    "booksFair": 0.4552,
-   "edge": 0.0346,
+   "edge": 0.0587,
    "kind": "Kalshi beats the books"
   },
   {
-   "at": "2026-11-28T03:16:03.940265Z",
+   "at": "2026-11-28T11:59:25.795719Z",
+   "kickoff": "2026-12-06T18:00:00Z",
+   "away": "DET",
+   "home": "ATL",
+   "market": "h2h",
+   "player": "",
+   "side": "home",
+   "line": null,
+   "book": "kalshi",
+   "decimal": 2.8571,
+   "booksFair": 0.3614,
+   "edge": 0.0327,
+   "kind": "Kalshi beats the books"
+  },
+  {
+   "at": "2026-11-28T11:59:25.795719Z",
    "kickoff": "2026-11-29T21:25:00Z",
    "away": "SEA",
    "home": "SF",
@@ -964,9 +1114,9 @@
    "side": "home",
    "line": null,
    "book": "kalshi",
-   "decimal": 2.0,
+   "decimal": 1.9608,
    "booksFair": 0.5727,
-   "edge": 0.1454,
+   "edge": 0.1229,
    "kind": "Kalshi beats the books"
   }
  ],

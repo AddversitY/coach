@@ -682,12 +682,12 @@
  ],
  "source": {
   "status": "ok",
-  "checkedAt": "2026-11-28T03:16:01.633328Z"
+  "checkedAt": "2026-11-28T11:59:23.323255Z"
  },
  "notice": "A starting quarterback listed out, the line before and after, and the price on the other side when Coach first saw it. Research, not a pick.",
  "current": [
   {
-   "loggedAt": "2026-11-28T03:16:01.633328Z",
+   "loggedAt": "2026-11-28T11:59:23.323255Z",
    "team": "SF",
    "starter": "Brock Purdy",
    "status": "Out",
@@ -711,7 +711,7 @@
    }
   },
   {
-   "loggedAt": "2026-11-28T03:16:01.633328Z",
+   "loggedAt": "2026-11-28T11:59:23.323255Z",
    "team": "NE",
    "starter": "Drake Maye",
    "status": "Out",
@@ -735,7 +735,7 @@
    }
   },
   {
-   "loggedAt": "2026-11-28T03:16:01.633328Z",
+   "loggedAt": "2026-11-28T11:59:23.323255Z",
    "team": "LAC",
    "starter": "Justin Herbert",
    "status": "Out",
