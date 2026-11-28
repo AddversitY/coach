@@ -1,7 +1,7 @@
 {
  "schema": "coach-backup-watch-v1",
  "bets": [],
- "checkedAt": "2026-11-27T21:03:59.255454Z",
+ "checkedAt": "2026-11-28T03:16:02.384338Z",
  "source": {
   "injuries": "ok",
   "prices": "ok",
@@ -16,7 +16,7 @@
     {
      "player": "Jahan Dotson",
      "status": "Out",
-     "reportedAt": "2026-11-27T19:03Z",
+     "reportedAt": "2026-11-27T17:51Z",
      "rating": 65
     }
    ],
@@ -55,6 +55,29 @@
   },
   {
    "team": "JAX",
+   "group": "RB",
+   "out": [
+    {
+     "player": "Bhayshul Tuten",
+     "status": "Out",
+     "reportedAt": "2026-11-27T17:16Z",
+     "rating": 78
+    }
+   ],
+   "backup": "Chris Rodriguez Jr.",
+   "backupId": "00-0038611",
+   "backupRating": 57,
+   "backupRecentSnaps": 0.27,
+   "projection": {
+    "player_rush_yds": 68.2,
+    "player_reception_yds": 12.7,
+    "player_receptions": 1.6
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "JAX",
    "group": "WR",
    "out": [
     {
@@ -71,6 +94,29 @@
    "projection": {
     "player_reception_yds": 58.6,
     "player_receptions": 4.9
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "LAC",
+   "group": "QB",
+   "out": [
+    {
+     "player": "Justin Herbert",
+     "status": "Out",
+     "reportedAt": "2026-11-27T22:24Z",
+     "rating": 60
+    }
+   ],
+   "backup": "DJ Uiagalelei",
+   "backupId": "00-0040464",
+   "backupRating": null,
+   "backupRecentSnaps": 0.21,
+   "projection": {
+    "player_pass_yds": 182.9,
+    "player_pass_attempts": 26.3,
+    "player_pass_completions": 16.4
    },
    "prices": [],
    "eventId": null
@@ -116,6 +162,51 @@
    "projection": {
     "player_reception_yds": 57.7,
     "player_receptions": 4.6
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "SF",
+   "group": "QB",
+   "out": [
+    {
+     "player": "Brock Purdy",
+     "status": "Out",
+     "reportedAt": "2026-11-27T22:25Z",
+     "rating": 98
+    }
+   ],
+   "backup": "Mac Jones",
+   "backupId": "00-0036972",
+   "backupRating": null,
+   "backupRecentSnaps": 0.11,
+   "projection": {
+    "player_pass_yds": 147.4,
+    "player_pass_attempts": 22.0,
+    "player_pass_completions": 14.6
+   },
+   "prices": [],
+   "eventId": null
+  },
+  {
+   "team": "SF",
+   "group": "WR",
+   "out": [
+    {
+     "player": "Jordan Watkins",
+     "status": "Out",
+     "reportedAt": "2026-11-27T23:00Z",
+     "rating": 67
+    }
+   ],
+   "backup": "Deebo Samuel Sr.",
+   "backupId": "00-0035719",
+   "backupRating": 76,
+   "backupRecentSnaps": 0.59,
+   "projection": {
+    "player_reception_yds": 34.3,
+    "player_receptions": 2.7
    },
    "prices": [],
    "eventId": null
