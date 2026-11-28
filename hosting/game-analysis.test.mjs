@@ -31,7 +31,7 @@ test('analyze a game supports four market categories and coherent win/push/loss 
 test('unpriced score outlook never invents a sportsbook opportunity',()=>{
   const result=report([]);assert.equal(result.basis,'experimental_score_candidate');assert.equal(result.ranked.length,0);
   assert.ok(result.categories.every(c=>c.status==='prices_unavailable'));assert.ok(result.projections.length);
-  assert.match(result.summary,/prices are missing/);assert.equal(result.score.homeWin+result.score.tie<=1,true);
+  assert.match(result.summary,/prices are unavailable/);assert.equal(result.score.homeWin+result.score.tie<=1,true);
 });
 
 test('named-book subsets constrain price rows, comparisons and best-observed flags without changing score forecasts',()=>{

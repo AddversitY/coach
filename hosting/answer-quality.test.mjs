@@ -4,8 +4,7 @@ import {readFileSync} from 'node:fs';
 import {decisionBrief} from './game-context.mjs';
 import {selectionExplanation} from './answer-quality.mjs';
 import {resolveGame,analyzeGame,requestedBook} from './game-analysis.mjs';
-import {deterministicGameRoute} from './worker.mjs';
-import {validatePlan} from './worker.mjs';
+import {deterministicGameRoute,deterministicPlan,validatePlan} from './worker.mjs';
 const cases=JSON.parse(readFileSync(new URL('./fixtures/answer-scenarios.json',import.meta.url)));
 const now=Date.UTC(2026,10,17,12),at=new Date(now).toISOString();
 const event={id:'nflverse:2026_11_KC_BUF',home:'Buffalo Bills',away:'Kansas City Chiefs',homeCode:'BUF',awayCode:'KC',startsAt:'2026-11-22T18:00:00Z',forecast:{homeMean:24,awayMean:20,modelVersion:'test',cutoff:'2026-11-12'}};
@@ -37,7 +36,7 @@ test('stale prices, blocked roles and an unavailable requested book cannot becom
 
 test('shorthand routes without model inference and charts preserve the actual requested market',()=>{
  const data=source();
- for(const question of ['Bills -3.5','Bills ML -150','Bills under 45.5','Recorded Receiver rec yds over 65.5'])assert.equal(deterministicGameRoute(question,data.index,{}),true);
+ for(const question of ['Bills -3.5','Bills ML -150','Bills under 45.5','Recorded Receiver rec yds over 65.5'])assert.equal(deterministicGameRoute(question,data.index,{},now),true);
  assert.equal(analyzeGame(data,event,{now,question:'Bills -3.5'}).visualEvidence.teamMetric,'margin');
  const r=analyzeGame(data,event,{now,question:'Recorded Receiver over 65.5'});
  assert.match(r.decision.clarification,/Which player market/);assert.equal(r.decision.price,null);assert.equal(r.visualEvidence.players[0].line,null);
@@ -86,9 +85,9 @@ test('an unknown new subject cannot reuse a previous game, while clear contextua
  const data=source(),context={eventId:event.id};
  for(const q of ['Lakers total over 221.5','Unknown Receiver receiving yards under 65.5']){
   assert.equal(resolveGame(data.index,q,context,now),null);
-  assert.equal(validatePlan({tool:'analyze_game',query:'Game total over '+(q.includes('221.5')?'221.5':'65.5')},q,data.index,context).tool,'clarify');
+  assert.equal(validatePlan({tool:'analyze_game',query:'Game total over '+(q.includes('221.5')?'221.5':'65.5')},q,data.index,context,now).tool,'clarify');
  }
- for(const q of ['Is that still a good bet?','What about the under at DraftKings?','Game total under 45.5'])assert.equal(resolveGame(data.index,q,context,now)?.id,event.id);
+ for(const q of ['Is that still a good bet?','What about the under at DraftKings?','Game total under 45.5','over/under 45.5','the money line'])assert.equal(resolveGame(data.index,q,context,now)?.id,event.id);
  for(const q of ['buf -3.5','kc moneyline'])assert.equal(resolveGame(data.index,q,{},now)?.id,event.id);
  const r=analyzeGame(data,event,{now,question:'Game spread -3.5'});
  assert.ok(r.decision.clarification);for(const t of r.visualEvidence.teams)assert.equal(t.series.find(s=>s.metric==='margin').line,null);
@@ -104,4 +103,27 @@ test('a lineup concern is not misrepresented as a directional case against the r
  const brief=decisionBrief(report,report.context,{question:'Bills spread line -3.5'});
  assert.match(brief.decidingFactor,/KC has/);assert.match(brief.counterargument,/selection losing/);assert.match(brief.counterargument,/could change/);
  assert.notEqual(brief.counterargument,brief.decidingFactor);
+});
+test('everyday wording keeps the asked team and total, and a missing price stays unavailable',()=>{
+ const data=source();
+ for(const question of ['over/under 45.5','game o/u 45.5']){
+  const r=analyzeGame(data,event,{now,question});
+  assert.equal(r.decision.price,null);assert.equal(r.decision.lean,null);assert.equal(r.decision.reason,'selection_incomplete');
+  assert.match(r.decision.clarification,/over or under/);assert.equal(r.visualEvidence.teamMetric,'total');
+  assert.equal(r.visualEvidence.teams[0].series.find(s=>s.metric==='total').line,45.5);
+ }
+ const under=analyzeGame(data,event,{now,question:'Bills o/u under 45.5'});
+ assert.equal(under.decision.price.selection.outcome,'Under');assert.equal(under.decision.price.selection.point,45.5);assert.equal(under.decision.lean,null);
+ const ml=analyzeGame(data,event,{now,question:'Bills money line'});
+ assert.equal(ml.decision.price.selection.market,'h2h');assert.equal(ml.decision.price.selection.outcome,'Buffalo Bills');assert.equal(ml.decision.lean,null);
+ assert.match(ml.decision.judgment.text,/comparison, not a pick/);
+ assert.equal(analyzeGame(data,event,{now,question:'Bills to win'}).decision.price.selection.outcome,'Buffalo Bills');
+ assert.equal(analyzeGame(data,event,{now,question:'KC money line at +150'}).decision.price.selection.outcome,'Kansas City Chiefs');
+ const prop=analyzeGame(data,event,{now,question:'Recorded Receiver over/under 65.5'});
+ assert.equal(prop.decision.price,null);assert.equal(prop.decision.lean,null);assert.match(prop.decision.clarification,/Which player market/);
+ const missing=analyzeGame(data,event,{now,question:'Bills spread -2.5'});
+ assert.equal(missing.decision.price,null);assert.match(missing.decision.headline,/unavailable/);assert.match(missing.decision.priceNotice,/unavailable/);
+ assert.throws(()=>validatePlan({tool:'analyze_game',query:'Game total under 45.5'},'over/under 45.5',data.index,{},now),/explicit side/);
+ assert.equal(deterministicGameRoute('Bills money line',data.index,{},now),true);
+ assert.equal(deterministicPlan('Recorded Receiver over/under 65.5',data.index,{},now).tool,'clarify');
 });

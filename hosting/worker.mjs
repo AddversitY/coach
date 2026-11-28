@@ -1,5 +1,5 @@
 import {aiFailure} from './ai-diagnostics.mjs';
-import {requestedMarket,unsupportedScope} from './selection-focus.mjs';
+import {requestedMarket,unsupportedScope,questionWithoutTotalPhrase} from './selection-focus.mjs';
 import {collectOfficialInactives} from './official-inactives.mjs';
 import {collectOfficialInjuries} from './official-injuries.mjs';
 import {collectFinals} from './final-results.mjs';
@@ -135,24 +135,26 @@ export function retrieve(question, context, source, telemetry, now=Date.now()) {
     ...(playerEvidence.length?{player_evidence:playerEvidence}:{}),
   };
 }
-export function deterministicGameRoute(question,index,context={}){
+/* `now` is the same clock game resolution uses. A frozen caller, including tests, must pass it. */
+export function deterministicGameRoute(question,index,context={},now=Date.now()){
   const simple=person(question).replace(/^(?:tell me about|show me|show|what about|how about|analyze|explore)\s+/,'').replace(/^the\s+/,'');
   const teamOnly=index.events.some(e=>[e.home,e.away,e.home?.split(' ').at(-1),e.away?.split(' ').at(-1),e.homeCode,e.awayCode].filter(Boolean).some(alias=>person(alias)===simple));
   const prop=/\b(receiving|receptions|rushing|passing)\b/i.test(question)&&(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
   const namedPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
   const shorthand=requestedMarket(question,{hasPlayer:namedPlayer,hasTeam:true});
-  return !/injur|availab|news|weather|sharp|parlay|simulate|stress|robust|rank/i.test(question)&&(teamOnly||prop||shorthand||/\b(analyze|spreads?|totals?|moneyline|matchup|forecast|projection|efficiency|pace|rest|quarterback|roles?|worth|options|best bet|which bet|what bet|which market)\b/i.test(question))&&!!resolveGame(index,question,context);
+  return !/injur|availab|news|weather|sharp|parlay|simulate|stress|robust|rank/i.test(question)&&(teamOnly||prop||shorthand||/\b(analyze|spreads?|totals?|moneyline|money line|matchup|forecast|projection|efficiency|pace|rest|quarterback|roles?|worth|options|best bet|which bet|what bet|which market)\b/i.test(question))&&!!resolveGame(index,question,context,now);
 }
-export function deterministicPlan(question,index,context={}){
+export function deterministicPlan(question,index,context={},now=Date.now()){
   const hasPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
   const market=requestedMarket(question,{hasPlayer,hasTeam:true});
-  if(unsupportedScope(question)||hasPlayer&&/\b(over|under)\b/i.test(question)&&!market||market&&!resolveGame(index,question,context))return {tool:'clarify',query:question,route:'missing_or_unsupported_selection'};
-  return deterministicGameRoute(question,index,context)?{tool:'analyze_game',query:question,route:'deterministic'}:null;
+  const bareTotal=/\bover[\s./-]*under\b|\bo\/u\b/i.test(question);
+  if(unsupportedScope(question)||hasPlayer&&(/\b(over|under)\b/i.test(questionWithoutTotalPhrase(question))||bareTotal)&&!market||market&&!resolveGame(index,question,context,now))return {tool:'clarify',query:question,route:'missing_or_unsupported_selection'};
+  return deterministicGameRoute(question,index,context,now)?{tool:'analyze_game',query:question,route:'deterministic'}:null;
 }
-export function validatePlan(plan,question,index,context={}) {
+export function validatePlan(plan,question,index,context={},now=Date.now()) {
   if(!plan||!TYPES.has(plan.tool)||typeof plan.query!=='string'||plan.query.length>500)throw new Error('Invalid tool plan');
   if(unsupportedScope(question)!==unsupportedScope(plan.query))throw new Error('Planner changed market scope');
-  if(plan.tool==='analyze_game'&&!resolveGame(index,question,context)&&resolveGame(index,plan.query,context))return {tool:'clarify',query:question};
+  if(plan.tool==='analyze_game'&&!resolveGame(index,question,context,now)&&resolveGame(index,plan.query,context,now))return {tool:'clarify',query:question};
   const hasPlayer=(index.players||[]).some(p=>(' '+person(question)+' ').includes(' '+person(p.name)+' '));
   const originalMarket=requestedMarket(question,{hasPlayer,hasTeam:true});
   const plannedMarket=requestedMarket(plan.query,{hasPlayer,hasTeam:true});
@@ -163,7 +165,7 @@ export function validatePlan(plan,question,index,context={}) {
   const allowed=new Set(originalNumbers);
   if((plan.query.match(/\d+(?:\.\d+)?/g)||[]).some(n=>!allowed.has(n)))throw new Error('Planner invented a number');
   if(plan.tool!=='clarify' && JSON.stringify([...(plan.query.match(/\d+(?:\.\d+)?/g)||[])].sort())!==JSON.stringify([...originalNumbers].sort()))throw new Error('Planner dropped an explicit number');
-  const selections=s=>(s.match(/\b(?:over|under)\s+\d+(?:\.\d+)?/gi)||[]).map(x=>x.toLowerCase()).sort();
+  const selections=s=>(questionWithoutTotalPhrase(s).match(/\b(?:over|under)\s+\d+(?:\.\d+)?/gi)||[]).map(x=>x.toLowerCase()).sort();
   if(plan.tool!=='clarify'&&JSON.stringify(selections(question))!==JSON.stringify(selections(plan.query)))throw new Error('Planner changed an explicit side');
   const originalNames=index.players.filter(p=>person(question).includes(person(p.name))).map(p=>p.id);
   const contextIds=[...originalNames,context.playerId].filter(Boolean);
@@ -541,34 +543,34 @@ export default {
     if(request.method!=='POST'||!['/v1/coach','/v1/plan','/v1/game-analysis'].includes(url.pathname))return reply({error:'Not found'},404);
     if(origin!==allowed)return reply({error:'Origin not allowed'},403);
     try{
-      const body=await readRequest(request);const question=validateQuestion(body);
+      const body=await readRequest(request);const question=validateQuestion(body);const now=Date.now();
       if(url.pathname==='/v1/coach'&&unsupportedScope(question))return reply({available:false,failureReason:'unsupported_scope',answer:'Coach currently supports pregame full-game research. The requested period, team-total or settlement scope is not verified; no full-game quote or probability is substituted.',cited:[]},200,allowed);
       const source=await published(env);const context=body.context||{playerId:body.playerEvidence?.[0]?.playerId,eventId:body.teamEvidence?.[0]?.eventId};
       if(url.pathname==='/v1/game-analysis'){
         if(!await reserve(env,request,'/analysis-reserve'))return reply({available:false,failureReason:'analysis_rate_limit',answer:'Too many research requests from this connection. Try again within the hour.'},429,allowed);
-        const event=resolveGame(source.index,question,context);
-        if(!event)return reply({available:false,reason:'choose_game',games:source.index.events.filter(e=>Date.parse(e.startsAt)>Date.now()).slice(0,8)},200,allowed);
+        const event=resolveGame(source.index,question,context,now);
+        if(!event)return reply({available:false,reason:'choose_game',games:source.index.events.filter(e=>Date.parse(e.startsAt)>now).slice(0,8)},200,allowed);
         const observations=await telemetry(env),scope=requestedBookIds(question,context);
-        const report=analyzeGame(source,event,{telemetry:observations,bookIds:scope,question});
+        const report=analyzeGame(source,event,{now,telemetry:observations,bookIds:scope,question});
         // The frozen evaluation record is always the all-books view; a user's book filter only scopes the answer.
-        const frozen=scope==null?report:analyzeGame(source,event,{telemetry:observations,bookIds:null});
+        const frozen=scope==null?report:analyzeGame(source,event,{now,telemetry:observations,bookIds:null});
         const snapshot=await captureForecast(env,frozen,source);
         if(ctx?.waitUntil)ctx.waitUntil(benchmarkForecast(env,request,snapshot));
         return reply({available:true,...report},200,allowed);
       }
       if(url.pathname==='/v1/plan'){
-        const plan=deterministicPlan(question,source.index,context);
+        const plan=deterministicPlan(question,source.index,context,now);
         if(plan)return reply(plan,200,allowed);
       }
       if(!await reserve(env,request))return providerQuotaReply(env,allowed);
       if(url.pathname==='/v1/plan'){
-        const raw=await model(env,PLAN_SYSTEM,{question,context,knownPlayers:source.index.players.map(p=>({id:p.id,name:p.name})).slice(0,500),knownGames:source.index.events.filter(e=>Date.parse(e.startsAt)>Date.now()).slice(0,30)});
-        return reply(validatePlan(parseModel(raw),question,source.index,context),200,allowed);
+        const raw=await model(env,PLAN_SYSTEM,{question,context,knownPlayers:source.index.players.map(p=>({id:p.id,name:p.name})).slice(0,500),knownGames:source.index.events.filter(e=>Date.parse(e.startsAt)>now).slice(0,30)});
+        return reply(validatePlan(parseModel(raw),question,source.index,context,now),200,allowed);
       }
-      const provided=retrieve(question,context,source,await telemetry(env));
+      const provided=retrieve(question,context,source,await telemetry(env),now);
       if(context.analysisOverview===true){
-        const event=resolveGame(source.index,question,context);
-        if(event){const report=analyzeGame(source,event,{telemetry:await telemetry(env),bookIds:requestedBookIds(question,context),question});
+        const event=resolveGame(source.index,question,context,now);
+        if(event){const report=analyzeGame(source,event,{now,telemetry:await telemetry(env),bookIds:requestedBookIds(question,context),question});
           const focused=source.index.players.filter(p=>person(question).includes(person(p.name))).map(p=>p.id);
           const workloadRows=focused.length?report.workloadTrial.forecasts.filter(p=>focused.includes(p.playerId)):report.workloadTrial.forecasts;
           const productionRows=focused.length?report.productionTrial.forecasts.filter(p=>focused.includes(p.playerId)):report.productionTrial.forecasts;

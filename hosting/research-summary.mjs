@@ -48,7 +48,7 @@ export function compareResearch(report){
    return {row,books,age,...evidence(report,row,category.market,age,books)};});
   candidates.sort((a,b)=>Number(b.reviewable)-Number(a.reviewable)||b.quality-a.quality||a.age-b.age||key(a.row.selection).localeCompare(key(b.row.selection))||b.row.decimal-a.row.decimal||String(a.row.id).localeCompare(String(b.row.id)));
   const best=candidates[0];
-  if(!best)return {market:category.market,label:labels[category.market],status:category.rows.some(r=>r.blocked)?'blocked':'missing_price',selection:null,reason:category.rows.some(r=>r.blocked)?'Available selections have unresolved player-role or availability concerns.':'No usable saved price in this market.',priority:null,criteria:[],facts:[],risks:['A usable exact-selection quote is required.'],researchState:'unavailable',coverage:{present:0,total:0}};
+  if(!best)return {market:category.market,label:labels[category.market],status:category.rows.some(r=>r.blocked)?'blocked':'missing_price',selection:null,reason:category.rows.some(r=>r.blocked)?'Available selections have unresolved player-role or availability concerns.':'A saved price in this market is unavailable.',priority:null,criteria:[],facts:[],risks:['A usable exact-selection quote is required.'],researchState:'unavailable',coverage:{present:0,total:0}};
   const alternatives=new Set(candidates.filter(c=>c.quality===best.quality&&c.reviewable===best.reviewable).map(c=>key(c.row.selection))).size;
   return {market:category.market,label:labels[category.market],status:'research_only',selection:best.row.selection,book:best.row.book,decimal:best.row.decimal,sourceAt:best.row.sourceAt,
    pairedMarket:best.paired,books:best.books,priority:best.quality,criteria:best.criteria,facts:best.facts,risks:best.risks,
