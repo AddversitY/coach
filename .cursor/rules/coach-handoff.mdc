@@ -1,0 +1,12 @@
+---
+description: Coach project handoff and standing rules
+alwaysApply: true
+---
+
+Start with docs/HANDOFF_CURSOR.md: what Coach is, how to run and test it,
+what has been measured against the sportsbooks, and the next steps.
+
+Rules: free data only, NFL only, never commit secrets, never invent numbers,
+and ship a model change only if it beats the current one (or the closing line)
+in out-of-sample tests. Vincent reads on his phone: plain words, one question
+at a time, US Eastern time. Merge your own PRs once tests pass.
