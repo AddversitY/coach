@@ -73,7 +73,7 @@ test('decision stays on the requested team and does not substitute a winner for 
   assert.equal(decisionBrief(report,context,{question:'Game total over 45.5'}).lean,null);
   const emptyContext={...context,alerts:[]};
   const brief=decisionBrief(report,emptyContext,{question:'Game total over 45.5'});
-  assert.equal(brief.reason,'matching_price_missing');assert.equal(brief.action,'pass');assert.match(brief.priceNotice,/matches this question/);
+  assert.equal(brief.reason,'matching_price_missing');assert.equal(brief.action,'pass');assert.match(brief.priceNotice,/unavailable/);assert.match(brief.priceNotice,/cannot supply/);
 });
 
 

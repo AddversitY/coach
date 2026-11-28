@@ -1,5 +1,5 @@
 /* Dated observations for charts. Never turn missing records into zeroes. */
-import {spreadHandicap,requestedMarket,unsupportedScope} from './selection-focus.mjs';
+import {spreadHandicap,requestedMarket,unsupportedScope,explicitTotalSide,namedTotalLine} from './selection-focus.mjs';
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 const METRICS={passing_yards:'Passing yards',rushing_yards:'Rushing yards',receiving_yards:'Receiving yards',receptions:'Receptions',attempts:'Pass attempts',carries:'Carries',targets:'Targets'};
 const marketMetric={player_pass_yds:'passing_yards',player_rush_yds:'rushing_yards',player_reception_yds:'receiving_yards',player_receptions:'receptions'};
@@ -12,15 +12,15 @@ export function visualEvidence(source,event,report,question,now,quotes=[]){
  const unsupported=unsupportedScope(question);
  const market=unsupported?null:requestedMarket(question,{hasPlayer:selected.length>0,hasTeam:true});
  const explicitMetric=marketMetric[market]||null;
- const explicit=question.match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/i);
+ const picked=explicitTotalSide(question);
  const players=selected.length===1?selected.map(p=>{
   const metric=explicitMetric||marketMetric[selection?.market]||({QB:'passing_yards',RB:'rushing_yards',WR:'receiving_yards',TE:'receiving_yards'})[p.position];
   const rows=[...new Map(p.games.filter(earlier).sort((a,b)=>b.date.localeCompare(a.date)).map(g=>[g.date,g])).values()].slice(0,10).reverse();
   const relevant=({QB:['passing_yards','attempts','rushing_yards','carries'],RB:['rushing_yards','carries','receiving_yards','receptions','targets'],WR:['receiving_yards','receptions','targets'],TE:['receiving_yards','receptions','targets']})[p.position]||[];
   const series=Object.entries(METRICS).filter(([key])=>(relevant.includes(key)||key===metric)&&rows.some(g=>Number.isFinite(g.stats?.[key]))).map(([key,label])=>({metric:key,label,samples:rows.map(g=>({date:g.date,label:'W'+g.week,value:Number.isFinite(g.stats?.[key])?g.stats[key]:null}))}));
-  const explicitPlayerLine=explicit&&explicitMetric;
-  const line=explicitPlayerLine?Number(explicit[2]):selection?.participant===p.name&&marketMetric[selection.market]===metric?selection.point:null;
-  return {id:p.id,name:p.name,team:p.team,position:p.position,metric,line:Number.isFinite(line)?line:null,side:explicitPlayerLine?explicit[1].toLowerCase():selection?.outcome?.toLowerCase()||null,lineSource:explicitPlayerLine?'Requested line':Number.isFinite(line)?'Saved quote line':null,series,workloadMetrics:{passing_yards:'attempts',rushing_yards:'carries',receiving_yards:'targets',receptions:'targets'}};
+  const explicitPlayerLine=!!picked&&!!explicitMetric;
+  const line=explicitPlayerLine?picked.point:selection?.participant===p.name&&marketMetric[selection.market]===metric?selection.point:null;
+  return {id:p.id,name:p.name,team:p.team,position:p.position,metric,line:Number.isFinite(line)?line:null,side:explicitPlayerLine?picked.word:selection?.outcome?.toLowerCase()||null,lineSource:explicitPlayerLine?'Requested line':Number.isFinite(line)?'Saved quote line':null,series,workloadMetrics:{passing_yards:'attempts',rushing_yards:'carries',receiving_yards:'targets',receptions:'targets'}};
  }):[];
  const teams=['away','home'].map(side=>{
   const name=event[side];
@@ -33,7 +33,8 @@ export function visualEvidence(source,event,report,question,now,quotes=[]){
  const handicap=mode==='margin'?spreadHandicap(question):null;
  const spread=named.length===1||selection?.market==='spreads'?handicap??(mode==='margin'&&selection?.market==='spreads'?selection.point:null):null;
  const totalText=question.replace(/\b20\d{2}-\d{2}-\d{2}\b/g,'').match(/(?:total|line)\s*(?:of\s+|at\s+)?(\d+(?:\.\d+)?)/i)?.[1];
- const totalLine=mode==='total'?(explicit?Number(explicit[2]):totalText!=null?Number(totalText):selection?.market==='totals'?selection.point:null):null;
+ const namedLine=namedTotalLine(question);
+ const totalLine=mode==='total'?(namedLine!=null?namedLine:totalText!=null?Number(totalText):selection?.market==='totals'?selection.point:null):null;
  for(const team of teams){
   const threshold=team.name===selectedTeam&&Number.isFinite(spread)?(spread===0?0:-spread):null;
   team.series=[{metric:'scoring',label:'Points scored & allowed',paired:true,samples:team.samples},

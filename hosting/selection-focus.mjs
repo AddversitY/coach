@@ -6,16 +6,32 @@ export function spreadHandicap(question){
  return value==null?null:Number(value);
 }
 
+/* "over/under" and "o/u" name a total. They are not a chosen Under. */
+export function questionWithoutTotalPhrase(question){
+ return String(question||'').replace(/\bover[\s./-]*under\b|\bo\/u\b/gi,' ');
+}
+export function explicitTotalSide(question){
+ const side=questionWithoutTotalPhrase(question).match(/\b(over|under)\s+(-?\d+(?:\.\d+)?)/i);
+ return side?{word:side[1].toLowerCase(),point:Number(side[2])}:null;
+}
+export function namedTotalLine(question){
+ const side=explicitTotalSide(question);
+ if(side&&side.point>=0&&side.point<100)return side.point;
+ const phrase=String(question||'').match(/\b(?:over[\s./-]*under|o\/u)\s+(-?\d+(?:\.\d+)?)/i);
+ const point=phrase?Number(phrase[1]):null;
+ return point!=null&&point>=0&&point<100?point:null;
+}
+
 export function requestedMarket(question,{hasPlayer=false,hasTeam=false}={}){
  const q=question.toLowerCase();
- if(/\bmoneyline\b|\bml\b|win outright/.test(q))return 'h2h';
+ if(/\bmoney\s*lines?\b|\bml\b|win outright|\bto win\b(?!\s+by\b)/.test(q))return 'h2h';
  if(/\bspreads?\b|\bcover\b/.test(q))return 'spreads';
  if(/\breceiving\b|\brec\.?\s+(?:yards?|yds?)\b/.test(q))return 'player_reception_yds';
  if(/\breceptions\b/.test(q))return 'player_receptions';
  if(/\bpassing\b|\bpass\s+(?:yards?|yds?)\b/.test(q))return 'player_pass_yds';
  if(/\brushing\b|\brush\s+(?:yards?|yds?)\b/.test(q))return 'player_rush_yds';
- if(/\btotals?\b|over.?under/.test(q))return 'totals';
- const side=/\b(?:over|under)\b/.test(q);
+ if(!hasPlayer&&/\btotals?\b|\bover.?under\b|\bo\/u\b/.test(q))return 'totals';
+ const side=/\b(?:over|under)\b/.test(questionWithoutTotalPhrase(q));
  if(!hasPlayer&&side)return 'totals';
  if(hasTeam&&!hasPlayer&&!side&&spreadHandicap(question)!==null)return 'spreads';
  return null;
